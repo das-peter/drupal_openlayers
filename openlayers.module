@@ -32,11 +32,10 @@ function openlayers_test() {
   //drupal_add_js(drupal_get_path('module', 'openlayers') .'/openlayers/lib/OpenLayers.js');
   drupal_set_html_head('<script type="text/javascript" src="http://openlayers.org/api/2.5-rc3/OpenLayers.js"></script>');
 
-  return <<<EOD
+  $output = <<<EOD
     <div id='openlayerstestmap'></div>
     <script type="text/javascript">
 $(document).ready(function() {
-//(function($) {
       var map = new OpenLayers.Map('openlayerstestmap',{maxResolution: 0.703125} );
       var wmscURL = [
         "http://wmsc1.terrapages.net/getmap?",
@@ -60,18 +59,25 @@ $(document).ready(function() {
       var theWKT = new OpenLayers.Format.WKT();
 
       vectorLayer.onFeatureInsert = function(feature) {
-        alert(theWKT.write(feature.layer.features));
-        $('#edit-code').val(theWKT.write(feature.layer.features));
+        $('#edit-testwkt').val(theWKT.write(feature.layer.features));
       }
 
-
       map.zoomToMaxExtent();
-//})(OpenLayers.Util.getElement);
-
-//});
-
 });
 
     </script>
 EOD;
+
+  $output .= drupal_get_form('openlayers_test_form');
+  return $output;
+}
+
+function openlayers_test_form() {
+  $form = array();
+  $form['testwkt'] = array(
+    '#type' => 'textarea',
+    '#rows' => 6,
+  );
+
+  return $form;
 }
