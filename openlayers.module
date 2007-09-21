@@ -28,8 +28,6 @@ function openlayers_menu($may_cache) {
  * Page callback: Hello World
  */
 function openlayers_test() {
-  //drupal_set_html_head('<script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>');
-  //drupal_add_js(drupal_get_path('module', 'openlayers') .'/openlayers/lib/OpenLayers.js');
   drupal_set_html_head('<script type="text/javascript" src="http://openlayers.org/api/2.5-rc3/OpenLayers.js"></script>');
 
   $output = <<<EOD
@@ -58,11 +56,25 @@ $(document).ready(function() {
 
       var theWKT = new OpenLayers.Format.WKT();
 
+      var loading = false;
+
       vectorLayer.onFeatureInsert = function(feature) {
-        $('#edit-testwkt').val(theWKT.write(feature.layer.features));
+        if (!loading) {
+          $('#edit-testwkt').val(theWKT.write(feature.layer.features));
+        }
       }
 
       map.zoomToMaxExtent();
+
+      
+      $('#thetestlink').click(function() {
+        loading = true;
+        vectorLayer.destroyFeatures();
+        vectorLayer.addFeatures(theWKT.read($('#edit-testwkt').val()));
+        loading = false;
+      });
+
+
 });
 
     </script>
@@ -77,6 +89,9 @@ function openlayers_test_form() {
   $form['testwkt'] = array(
     '#type' => 'textarea',
     '#rows' => 6,
+  );
+  $form['loadit'] = array(
+    '#value' => '<a href="#" id="thetestlink">Load WKT from textarea</a>',
   );
 
   return $form;
