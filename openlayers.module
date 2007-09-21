@@ -1,0 +1,48 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * OpenLayers
+ */
+
+/**
+ * Implementation of hook_menu().
+ */
+function openlayers_menu($may_cache) {
+  if ($may_cache) {
+    $items[] = array(
+      'path' => 'openlayerstest',
+      'callback' => 'openlayers_test',
+      'access' => TRUE,
+      'type' => MENU_CALLBACK,
+    );
+    return $items;
+  }
+  else {
+    drupal_add_css(drupal_get_path('module', 'openlayers') .'/openlayers.css');
+  }
+}
+
+/**
+ * Page callback: Hello World
+ */
+function openlayers_test() {
+  drupal_set_html_head('<script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>');
+
+  return <<<EOD
+    <div id='openlayerstestmap'></div>
+    <script type="text/javascript">
+      var map = new OpenLayers.Map('openlayerstestmap',{maxResolution: 0.703125} );
+      var wmscURL = [
+        "http://wmsc1.terrapages.net/getmap?",
+        "http://wmsc2.terrapages.net/getmap?",
+        "http://wmsc3.terrapages.net/getmap?",
+        "http://wmsc4.terrapages.net/getmap?"
+      ];
+      var terrapagesStreetLayer = new OpenLayers.Layer.WMS( 'TerraPages Street',wmscURL, {layers: 'UnprojectedStreet', format: 'image/jpeg' }, {buffer: 1, isBaseLayer: true} );
+      map.addLayer(terrapagesStreetLayer);
+      map.zoomToMaxExtent();    
+    </script>
+EOD;
+}

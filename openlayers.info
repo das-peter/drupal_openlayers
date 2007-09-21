@@ -1,0 +1,4 @@
+; $Id$
+name = OpenLayers
+description = OpenLayers support for Drupal
+package = Location
