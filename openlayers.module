@@ -28,11 +28,13 @@ function openlayers_menu($may_cache) {
  * Page callback: Hello World
  */
 function openlayers_test() {
-  drupal_set_html_head('<script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>');
+  //drupal_set_html_head('<script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>');
+  drupal_add_js(drupal_get_path('module', 'openlayers') .'/openlayers/lib/OpenLayers.js');
 
   return <<<EOD
     <div id='openlayerstestmap'></div>
     <script type="text/javascript">
+(function($) {
       var map = new OpenLayers.Map('openlayerstestmap',{maxResolution: 0.703125} );
       var wmscURL = [
         "http://wmsc1.terrapages.net/getmap?",
@@ -41,8 +43,30 @@ function openlayers_test() {
         "http://wmsc4.terrapages.net/getmap?"
       ];
       var terrapagesStreetLayer = new OpenLayers.Layer.WMS( 'TerraPages Street',wmscURL, {layers: 'UnprojectedStreet', format: 'image/jpeg' }, {buffer: 1, isBaseLayer: true} );
-      map.addLayer(terrapagesStreetLayer);
-      map.zoomToMaxExtent();    
+
+      var vectorLayer = new OpenLayers.Layer.Vector("Vector Layer", {displayInLayerSwitcher: false});
+
+      map.addLayers([terrapagesStreetLayer, vectorLayer]);
+
+      map.addControl(new OpenLayers.Control.Navigation());
+      map.addControl(new OpenLayers.Control.PanZoomBar());
+      map.addControl(new OpenLayers.Control.MousePosition());
+      map.addControl(new OpenLayers.Control.Permalink());
+      map.addControl(new OpenLayers.Control.LayerSwitcher());
+      map.addControl(new OpenLayers.Control.EditingToolbar(vectorLayer));
+
+      var theWKT = new OpenLayers.Format.WKT();
+
+      vectorLayer.onFeatureInsert = function(feature) {
+        alert(theWKT.write(feature.layer.features));
+      }
+
+
+      map.zoomToMaxExtent();
+})(OpenLayers.Util.getElement);
+
+//});
+
     </script>
 EOD;
 }
