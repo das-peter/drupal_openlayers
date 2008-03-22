@@ -1,0 +1,35 @@
+<?php
+// $Id$
+
+function openlayers_install() {
+  switch ($GLOBALS['db_type']) {
+    case 'mysql':
+    case 'mysqli':
+      db_query("CREATE TABLE {ol_layers} (
+        nid int(10) unsigned NOT NULL DEFAULT '0',
+        vid int(10) unsigned NOT NULL DEFAULT '0',
+        type varchar(64) DEFAULT '',
+        uri varchar(255) DEFAULT '',
+        submaps longtext DEFAULT '',
+        properties longtext DEFAULT '',
+        add_js longtext DEFAULT '',
+        PRIMARY KEY (nid, vid)
+      ) TYPE=MyISAM /*!40100 DEFAULT CHARACTER SET utf8 */;");
+      db_query("CREATE TABLE {ol_maps} (
+        nid int(10) unsigned NOT NULL DEFAULT '0',
+        vid int(10) unsigned NOT NULL DEFAULT '0',
+        layers longtext DEFAULT '',
+        controls longtext DEFAULT '',
+        init longtext DEFAULT '',
+        add_js longtext DEFAULT ''
+      ) TYPE=MyISAM /*!40100 DEFAULT CHARACTER SET utf8 */;");
+      break;
+    case 'pgsql':
+      //TODO
+      break;
+  }
+}
+
+/* uninstall
+  Variables: ol_add_js
+*/
