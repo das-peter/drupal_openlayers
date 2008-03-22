@@ -1,98 +1,207 @@
 <?php
 // $Id$
 
+define('DEVELMODE', FALSE);
+
 /**
- * @file
- * OpenLayers
+ * Implementation of hook_help().
  */
+function openlayers_help($section) {
+  switch ($section) {
+  }
+}
+
+/**
+ * Implementation of hook_node_info().
+ * We define two node types and outsource them to their own function prefixes
+ */
+function openlayers_node_info() {
+  $nodes['ol_layer'] = array(
+    'name' => t('Map Layer'),
+    'module' => 'openlayers_layer',
+    'description' => t('Create a layer resource identifier.'),
+    'body_label' => t('Description'),
+  );
+  $nodes['ol_map'] = array(
+    'name' => t('Map'),
+    'module' => 'openlayers_map',
+    'description' => t('Create a Map which displays a number of Layers.'),
+    'body_label' => t('Description'),
+  );
+
+  return $nodes;
+}
 
 /**
  * Implementation of hook_menu().
  */
 function openlayers_menu($may_cache) {
+  //Load layer types and make them available globally
+  global $ol_layertypes;
+  $ol_layertypes = openlayers_get_layertypes();
+
+  $items = array();
   if ($may_cache) {
     $items[] = array(
-      'path' => 'openlayerstest',
-      'callback' => 'openlayers_test',
-      'access' => TRUE,
-      'type' => MENU_CALLBACK,
+      'path' => 'admin/settings/ol',
+      'title' => t('OpenLayers'),
+      'description' => t('Manage basic OpenLayers settings'),
+      'access' => user_access('administer site configuration'),
+      'callback' => 'drupal_get_form',
+      'callback arguments' => 'openlayers_settings',
+      'type' => MENU_NORMAL_ITEM,
     );
-    return $items;
   }
   else {
-    drupal_add_css(drupal_get_path('module', 'openlayers') .'/openlayers.css');
+    if (DEVELMODE) {
+      $items[] = array(
+        'path' => 'ol_test',
+        'callback' => 'openlayers_test',
+        'access' => TRUE,
+        'type' => MENU_CALLBACK,
+      );
+      $items[] = array(
+        'path' => 'ol_formtest',
+        'callback' => 'drupal_get_form',
+        'callback arguments' => 'openlayers_formtest',
+        'access' => TRUE,
+        'type' => MENU_CALLBACK,
+      );
+    }
+  }
+
+  return $items;
+}
+
+/*****************************
+ * Administration form stuff *
+ *****************************/
+/**
+ * Implementation of hook_settings
+ */
+function openlayers_settings() {
+  $form = array();
+  $form['add_js'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Additional JavaScript'),
+    '#description' => t('<p>You can add additional JavaScript here, which will be included in the OpenLayers initialization.<p><p>This will be added before any node-specific additional JavaScript.'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  $form['add_js']['ol_add_js'] = array(
+    '#type' => 'textarea',
+    '#rows' => 15,
+    '#default_value' => variable_get('ol_add_js', ''),
+  );
+
+  $form['various'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Various settings'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  $form['various']['ol_image_error_color'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Image error color'),
+    '#description' => t('Set the color which will be used for images which can not be loaded.'),
+    '#default_value' => variable_get('ol_image_error_color', 'pink'),
+  );
+  $form['various']['ol_image_reload_attempts'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Number of image reload attempts'),
+    '#description' => t('Set how many times OpenLayers should try to load an image.'),
+    '#default_value' => variable_get('ol_image_reload_attempts', 0),
+  );
+  $form['various']['ol_dpi'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Assumed display resolution'),
+    '#description' => t('For scale calculations a display resolution must be guessed. The default 72dpi is a sensible default.'),
+    '#default_value' => variable_get('ol_dpi', 72),
+  );
+
+  return system_settings_form($form);
+}
+
+/*********************
+ * Permission access stuff *
+ *********************/
+/**
+ * Implementation of hook_perm
+ */
+function openlayers_perm() {
+  return array(
+    'create layer', 'create map',
+    'edit own layer', 'edit own map',
+    'edit layer', 'edit map'
+  );
+}
+
+function openlayers_form_alter($form_id, &$form) {
+  //Call the specific function for the node type
+  if ($form_id == 'ol_layer_node_form') {
+    return openlayers_layer_node_form_alter(&$form);
+  }
+  if ($form_id == 'ol_map_node_form') {
+    return openlayers_map_node_form_alter(&$form);
+  }
+}
+
+/*******************************
+ * Layer node stuff lives here *
+ * No magic, just dragons      *
+ *******************************/
+include('openlayers_layer.inc');
+
+/******************
+ * Map node stuff *
+ ******************/
+include('openlayers_map.inc');
+
+/**
+ * Implementation of hook_nodeapi
+ * We need this to delete node revisions
+ */
+function openlayers_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
+  if ($node->type == 'ol_layer' && $op == 'delete revision') {
+    db_query('DELETE FROM {ol_layers} WHERE vid = %d', $node->vid);
+  }
+  if ($node->type == 'ol_map' && $op == 'delete revision') {
+    db_query('DELETE FROM {ol_maps} WHERE vid = %d', $node->vid);
   }
 }
 
 /**
- * Page callback: Hello World
+ * Implementation of hook_keys_service(). (from the keys api)
+ * We pretend to be the GMap module so that we can use their Google Maps API Key...
  */
-function openlayers_test() {
-  drupal_set_html_head('<script type="text/javascript" src="http://openlayers.org/api/2.5-rc3/OpenLayers.js"></script>');
-
-  $output = <<<EOD
-    <div id='openlayerstestmap'></div>
-    <script type="text/javascript">
-$(document).ready(function() {
-      var map = new OpenLayers.Map('openlayerstestmap',{maxResolution: 0.703125} );
-      var wmscURL = [
-        "http://wmsc1.terrapages.net/getmap?",
-        "http://wmsc2.terrapages.net/getmap?",
-        "http://wmsc3.terrapages.net/getmap?",
-        "http://wmsc4.terrapages.net/getmap?"
-      ];
-      var terrapagesStreetLayer = new OpenLayers.Layer.WMS( 'TerraPages Street',wmscURL, {layers: 'UnprojectedStreet', format: 'image/jpeg' }, {buffer: 1, isBaseLayer: true} );
-
-      var vectorLayer = new OpenLayers.Layer.Vector("Vector Layer", {displayInLayerSwitcher: false});
-
-      map.addLayers([terrapagesStreetLayer, vectorLayer]);
-
-      map.addControl(new OpenLayers.Control.Navigation());
-      map.addControl(new OpenLayers.Control.PanZoomBar());
-      map.addControl(new OpenLayers.Control.MousePosition());
-      map.addControl(new OpenLayers.Control.Permalink());
-      map.addControl(new OpenLayers.Control.LayerSwitcher());
-      map.addControl(new OpenLayers.Control.EditingToolbar(vectorLayer));
-
-      var theWKT = new OpenLayers.Format.WKT();
-
-      var loading = false;
-
-      vectorLayer.onFeatureInsert = function(feature) {
-        if (!loading) {
-          $('#edit-testwkt').val(theWKT.write(feature.layer.features));
-        }
-      }
-
-      map.zoomToMaxExtent();
-
-      
-      $('#thetestlink').click(function() {
-        loading = true;
-        vectorLayer.destroyFeatures();
-        vectorLayer.addFeatures(theWKT.read($('#edit-testwkt').val()));
-        loading = false;
-      });
-
-
-});
-
-    </script>
-EOD;
-
-  $output .= drupal_get_form('openlayers_test_form');
-  return $output;
+function openlayers_keys_service() {
+  return array(
+    'gmap' => array(
+      'name' => t('Gmap'),
+      'description' => t('Google Maps API Key'),
+    ),
+  );
 }
 
-function openlayers_test_form() {
-  $form = array();
-  $form['testwkt'] = array(
-    '#type' => 'textarea',
-    '#rows' => 6,
-  );
-  $form['loadit'] = array(
-    '#value' => '<a href="#" id="thetestlink">Load WKT from textarea</a>',
-  );
+/**
+ * Just a test page callback for development
+ */
+function openlayers_test() {
+  phpinfo();
+}
 
+function openlayers_formtest() {
+        $form['foo1'] = array(
+        '#type' => 'checkbox',
+        '#title' => 'FOO1',
+        '#default_value' => TRUE,
+        '#weight' => -1,
+      );
+      $form['foo'] = array(
+        '#type' => 'checkbox',
+        '#title' => 'FOO',
+        '#default_value' => TRUE,
+        '#weight' => -1,
+      );
   return $form;
 }
