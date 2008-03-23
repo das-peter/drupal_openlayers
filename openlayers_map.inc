@@ -24,7 +24,7 @@ function openlayers_map_access($op, $node) {
  * Implementation of hook_load
  */
 function openlayers_map_load($node) {
-  $fetch = db_fetch_object(db_query('SELECT layers, controls, init_j, add_js FROM {ol_maps} WHERE vid = %d', $node->vid));
+  $fetch = db_fetch_object(db_query('SELECT layers, controls, init_js, add_js FROM {ol_maps} WHERE vid = %d', $node->vid));
   $map['title'] = $node->title;
   $map['layers'] = unserialize($fetch->layers);
   $map['controls'] = unserialize($fetch->controls);
@@ -32,7 +32,7 @@ function openlayers_map_load($node) {
   $map['add_js'] = $fetch->add_js;
 
   $obj = new StdClass();
-  $obj->mapset = $map;
+  $obj->map = $map;
   return $obj;
 }
 
@@ -85,6 +85,19 @@ function openlayers_map_form(&$node, &$param) {
     '#description' => 'TODO',
     '#weight' => -2,
   );
+  //TODO: All controls, and control-specific options (so each control into it's own fieldset and unchecked fieldsets collapsed?)
+  $form['controls']['controls'] = array(
+    '#type' => 'checkboxes',
+    '#options' => array(
+      'PanZoomBar' => t('Pan and Zoom'),
+      'MouseToolbar' => t('Mouse toolbar'),
+      'LayerSwitcher' => t('Layer switcher'),
+      'Permalink' => t('Permalink'),
+      'MousePosition' => t('Mouse position'),
+      'OverviewMap' => t('Overview map'),
+    ),
+    '#default_value' => variable_get($node->map['controls'], array('PanZoomBar', 'OverviewMap')),
+  );
 
   $form['init_js'] = array(
     '#type' => 'textarea',
@@ -127,8 +140,8 @@ function openlayers_map_validate($node, &$form) {
 function openlayers_map_submit(&$node) {
   //TODO
   //dpm(__FUNCTION__);
-  $map['layers'] = serialize(explode("\n", $node->layers));
-  $map['controls'] = array(); //TODO
+  $map['layers'] = explode("\n", $node->layers);
+  $map['controls'] = $node->controls; //TODO
   $map['init_js'] = $node->init_js;
   $map['add_js'] = $node->add_js;
 
@@ -141,8 +154,8 @@ function openlayers_map_submit(&$node) {
 function openlayers_map_insert($node) {
   db_query("INSERT INTO {ol_maps} (nid, vid, layers, controls, init_js, add_js) VALUES (%d, %d, '%s', '%s', '%s', '%s')", $node->nid,
     $node->vid,
-    $node->map['layers'],
-    $node->map['controls'],
+    serialize($node->map['layers']),
+    serialize($node->map['controls']),
     $node->map['init_js'],
     $node->map['add_js']);
 }
@@ -151,8 +164,8 @@ function openlayers_map_insert($node) {
  * Implementation of hook_update
  */
 function openlayers_map_update($node) {
-  db_query("UPDATE {ol_maps} SET layers = '%s', controls = '%s', init_js = '%s', add_js = '%s' WHERE vid = %d", $node->map['layers'],
-    $node->map['controls'],
+  db_query("UPDATE {ol_maps} SET layers = '%s', controls = '%s', init_js = '%s', add_js = '%s' WHERE vid = %d", serialize($node->map['layers']),
+    serialize($node->map['controls']),
     $node->map['init_js'],
     $node->map['add_js'],
     $node->vid);
@@ -169,22 +182,23 @@ function openlayers_map_delete(&$node) {
  * Implementation of hook_view
  * For map nodes display an OpenLayers viewer
  */
-function openlayers_map_view($node) {
-  $layers = array();
-  foreach ($node->map['layers'] as $lid) {
-    $layer = node_load($lid);
-    $layers[] = $layer->layer;
+function openlayers_map_view($node, $teaser = FALSE, $page = FALSE) {
+  $node = node_prepare($node, $teaser);
+  if ($teaser) {
   }
-  $controls = array();
-  foreach ($node->map['controls'] as $control) {
-    //TODO
+  else {
+    $layers = array();
+
+    foreach ($node->map['layers'] as $lid) {
+      $layer = node_load($lid);
+      $layers[] = $layer->layer;
+    }
+
+    $node->content['map'] = array(
+      '#value' => theme('openlayers_map', "node_{$node->nid}", $layers, $node->map['controls'], $node->map['init_js'], $node->map['add_js']),
+      '#weight' => 1,
+    );
   }
-
-  $node->content['map'] = array(
-    '#value' => theme('openlayers_map', "node_{$node->nid}", $layers, $controls, $node->map['init_js'], $node->map['add_js']),
-    '#weight' => 1,
-  );
-
   return $node;
 }
 
@@ -198,7 +212,7 @@ function theme_openlayers_map($id, $layers, $controls = array(), $init_js = '', 
   drupal_add_css(drupal_get_path('module', 'openlayers') .'/openlayers.css');
 
   $ol_js_head  = "$(document).ready(function() {\n";
-  $ol_js_head .= "  var map = new OpenLayers.Map('$id');\n";
+  $ol_js_head .= "  var map = new OpenLayers.Map('$id', { controls: [] });\n";
 
 //TODO - add these settings.
 // OpenLayers.ImgPath = '';
@@ -225,6 +239,32 @@ function theme_openlayers_map($id, $layers, $controls = array(), $init_js = '', 
     $layer_ids[] = "layer$counter";
     $layer_add_js[] = $layer['add_js'];
   }
+
+  foreach ($controls as $control => $active) {
+    if ($active != '0') {
+      switch ($control) {
+        case 'PanZoomBar':
+          $ol_js_body .= "  map.addControl(new OpenLayers.Control.PanZoomBar());\n";
+          break;
+        case 'MouseToolbar':
+          $ol_js_body .= "  map.addControl(new OpenLayers.Control.MouseToolbar());\n";
+          break;
+        case 'LayerSwitcher':
+          $ol_js_body .= "  map.addControl(new OpenLayers.Control.LayerSwitcher());\n";
+          break;
+        case 'Permalink':
+          $ol_js_body .= "  map.addControl(new OpenLayers.Control.Permalink());\n";
+          break;
+        case 'MousePosition':
+          $ol_js_body .= "  map.addControl(new OpenLayers.Control.MousePosition());\n";
+          break;
+        case 'OverviewMap':
+          $ol_js_body .= "  map.addControl(new OpenLayers.Control.OverviewMap());\n";
+          break;
+      }
+    }
+  }
+
   $ol_js_body .= "  map.addLayers([" . implode(',', $layer_ids) . "]);\n";
   $ol_js_body .= "  map.zoomToMaxExtent();\n"; //TODO - Make some choices for this
 
