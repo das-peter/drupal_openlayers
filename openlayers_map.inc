@@ -24,32 +24,93 @@ function openlayers_map_access($op, $node) {
  * Implementation of hook_load
  */
 function openlayers_map_load($node) {
-  //TODO
-  //dpm(__FUNCTION__);
+  $fetch = db_fetch_object(db_query('SELECT layers, controls, init_j, add_js FROM {ol_maps} WHERE vid = %d', $node->vid));
+  $map['title'] = $node->title;
+  $map['layers'] = unserialize($fetch->layers);
+  $map['controls'] = unserialize($fetch->controls);
+  $map['init_js'] = $fetch->init_js;
+  $map['add_js'] = $fetch->add_js;
+
+  $obj = new StdClass();
+  $obj->mapset = $map;
+  return $obj;
 }
 
 /**
  * Implementation of hook_prepare
  */
 function openlayers_map_prepare(&$node) {
-  //TODO
-  //dpm(__FUNCTION__);
+  //TODO; Needed?
 }
 
 /**
  * Implementation of hook_form
  */
 function openlayers_map_form(&$node, &$param) {
-  //TODO
-  //dpm(__FUNCTION__);
+  $nodetype = node_get_types('type', $node);
+  $form = array();
+  $form['title']= array(
+    '#type' => 'textfield',
+    '#title' => check_plain($nodetype->title_label),
+    '#required' => TRUE,
+    '#default_value' => $node->title,
+    '#size' => 60,
+    '#maxlength' => 255,
+    '#weight' => -5
+  );
+
+  $form['body_filter'] = array(
+    '#weight' => -4,
+  );
+  $form['body_filter']['body'] = array(
+    '#type' => 'textarea',
+    '#title' => check_plain($nodetype->body_label),
+    '#default_value' => $node->body,
+    '#required' => FALSE
+  );
+  $form['body_filter']['filter'] = filter_form($node->format);
+
+  $form['layers'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Layers'),
+    '#description' => t('List all layers to be displayed. Enter one node id per line, top-most layer to bottom-most.'),
+    '#rows' => 10,
+    '#default_value' => ($node->nid ? implode("\n", $node->map['layers']) : ''),
+    '#weight' => -3,
+  );
+
+  $form['controls'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Map controls'),
+    '#description' => 'TODO',
+    '#weight' => -2,
+  );
+
+  $form['init_js'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Initialization javascript'),
+    '#description' => t('Enter javascript to be executed after Mapset has been declared as <kbd>var map = new OpenLayers.Map();</kbd> and before layers will be declared and added to the mapset.'),
+    '#rows' => 10,
+    '#default_value' => $node->map['init_js'],
+    '#weight' => -1,
+  );
+
+  $form['add_js'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Additional JavaScript'),
+    '#rows' => 15,
+    '#default_value' => $node->map['add_js'],
+    '#weight' => 0,
+  );
+
+  return $form;
 }
 
 /**
  * This gets called for hook_form_alter('ol_map_node_form', &$form)
  */
 function openlayers_map_node_form_alter(&$form) {
-  //TODO
-  //dpm(__FUNCTION__);
+  //TODO; Needed?
 }
 
 /**
@@ -66,30 +127,42 @@ function openlayers_map_validate($node, &$form) {
 function openlayers_map_submit(&$node) {
   //TODO
   //dpm(__FUNCTION__);
+  $map['layers'] = serialize(explode("\n", $node->layers));
+  $map['controls'] = array(); //TODO
+  $map['init_js'] = $node->init_js;
+  $map['add_js'] = $node->add_js;
+
+  $node->map = $map;
 }
 
 /**
  * Implementation of hook_insert
  */
 function openlayers_map_insert($node) {
-  //TODO
-  //dpm(__FUNCTION__);
+  db_query("INSERT INTO {ol_maps} (nid, vid, layers, controls, init_js, add_js) VALUES (%d, %d, '%s', '%s', '%s', '%s')", $node->nid,
+    $node->vid,
+    $node->map['layers'],
+    $node->map['controls'],
+    $node->map['init_js'],
+    $node->map['add_js']);
 }
 
 /**
  * Implementation of hook_update
  */
 function openlayers_map_update($node) {
-  //TODO
-  //dpm(__FUNCTION__);
+  db_query("UPDATE {ol_maps} SET layers = '%s', controls = '%s', init_js = '%s', add_js = '%s' WHERE vid = %d", $node->map['layers'],
+    $node->map['controls'],
+    $node->map['init_js'],
+    $node->map['add_js'],
+    $node->vid);
 }
 
 /**
  * Implementation of hook_delete
  */
 function openlayers_map_delete(&$node) {
-  //TODO
-  //dpm(__FUNCTION__);
+  db_query('DELETE FROM {ol_maps} WHERE nid = %d', $node->nid);
 }
 
 /**
@@ -97,11 +170,25 @@ function openlayers_map_delete(&$node) {
  * For map nodes display an OpenLayers viewer
  */
 function openlayers_map_view($node) {
-  //TODO
-  //dpm(__FUNCTION__);
+  $layers = array();
+  foreach ($node->map['layers'] as $lid) {
+    $layer = node_load($lid);
+    $layers[] = $layer->layer;
+  }
+  $controls = array();
+  foreach ($node->map['controls'] as $control) {
+    //TODO
+  }
+
+  $node->content['map'] = array(
+    '#value' => theme('openlayers_map', "node_{$node->nid}", $layers, $controls, $node->map['init_js'], $node->map['add_js']),
+    '#weight' => 1,
+  );
+
+  return $node;
 }
 
-function theme_openlayers_map($id, $layers, $controls = array(), $add_js = '') {
+function theme_openlayers_map($id, $layers, $controls = array(), $init_js = '', $add_js = '') {
   if (DEVELMODE) {
     drupal_add_js(drupal_get_path('module', 'openlayers') .'/lib/OpenLayers.js');
   }
@@ -112,11 +199,19 @@ function theme_openlayers_map($id, $layers, $controls = array(), $add_js = '') {
 
   $ol_js_head  = "$(document).ready(function() {\n";
   $ol_js_head .= "  var map = new OpenLayers.Map('$id');\n";
+
 //TODO - add these settings.
 // OpenLayers.ImgPath = '';
-// variable_get('ol_image_error_color', 'pink')
-// variable_get('ol_image_reload_attempts', 0)
-// variable_get('ol_dpi', 72)
+  if (($ol_image_error_color = variable_get('ol_image_error_color', 'pink')) != 'pink') {
+  }
+  if (($ol_image_reload_attempts = variable_get('ol_image_reload_attempts', '0')) != 0) {
+  }
+  if (($ol_dpi = variable_get('ol_dpi', 72)) != 72) {
+  }
+
+  if ($init_js != '') {
+    $ol_js_head .= "  $init_js";
+  }
 
   $layer_ids = array();
   $layer_add_js = array();

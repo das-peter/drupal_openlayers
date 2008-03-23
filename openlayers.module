@@ -51,6 +51,13 @@ function openlayers_menu($may_cache) {
       'callback arguments' => 'openlayers_settings',
       'type' => MENU_NORMAL_ITEM,
     );
+    $items[] = array(
+      'path' => 'openlayers/uripoll',
+      'title' => t('Layer Descriptor'),
+      'access' => user_access('access content'),
+      'callback' => 'openlayers_uri_poll',
+      'type' => MENU_CALLBACK,
+    );
   }
   else {
     if (DEVELMODE) {

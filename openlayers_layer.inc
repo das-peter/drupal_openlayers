@@ -50,6 +50,9 @@ function openlayers_layer_prepare(&$node) {
 function openlayers_layer_form(&$node, &$param) {
   global $ol_layertypes;
   $nodetype = node_get_types('type', $node);
+  drupal_add_js(drupal_get_path('module', 'openlayers') . '/jquery.popupwindow.js');
+  drupal_add_js(drupal_get_path('module', 'openlayers') . '/ol-edit.js');
+
   $form = array();
   // this will be set to textfield type in form_alter once the layer type is set.
   $form['title']= array(
@@ -75,12 +78,6 @@ function openlayers_layer_form(&$node, &$param) {
     '#weight' => -4,
     '#attributes' => array('onchange' => '$("#node-form").submit()'),
   );
-  $form['ahah_target'] = array(
-    '#type' => 'item',
-    '#value' => '<p>' . t('Select a layer type first...') . '</p>',
-    '#prefix' => '<div id="ahah_target">',
-    '#suffix' => '</div>',
-  );
 
   // The rest of the form (URI, Properties, etc.) will be build
   // in openlayers_layer_node_form_alter once the layer type is set
@@ -90,7 +87,7 @@ function openlayers_layer_form(&$node, &$param) {
   );
   $form['body_filter']['body'] = array(
     '#type' => 'value',
-    '#title' => check_plain($nodetype->body_label),
+    '#title' => t('Description'),
     '#default_value' => $node->body,
     '#required' => FALSE
   );
@@ -124,13 +121,23 @@ function openlayers_layer_node_form_alter(&$form) {
 
   if ($layer['uri']) {
     $form['uri'] = array(
+      '#weight' => -3,
+    );
+    $form['uri']['uri'] = array(
       '#type' => 'textfield',
       '#title' => t('URI'),
       '#description' => t('Enter the URI of the layer'),
       '#default_value' => $form['#node']->layer['uri'],
       '#required' => TRUE,
-      '#weight' => -3,
+      '#weight' => 0,
     );
+
+    if (function_exists("layertype_{$type}_uri_poll")) {
+      $form['uri']['uri_poll'] = array(
+        '#value' => l(t('Poll URI'), "openlayers/uripoll/{$type}", array('class' => 'popupwindow', 'rel' => 'poller'), "uri=" . urlencode($form['#node']->layer['uri'])),
+        '#weight' => 1,
+      );
+    }
   }
 
   //Sublayers
@@ -292,4 +299,21 @@ function openlayers_get_layertypes() {
   }
 
   return $layertypes;
+}
+
+function openlayers_uri_poll() {
+  $args = func_get_args();
+  $type = array_shift($args);
+  global $ol_layertypes;
+  if (!in_array($type, array_keys($ol_layertypes))) {
+    return drupal_not_found();
+  }
+
+  $poller = "layertype_{$type}_uri_poll";
+  if (function_exists($poller)) {
+    print theme('page', $poller(), FALSE);
+  }
+  else {
+    return drupal_not_found();
+  }
 }

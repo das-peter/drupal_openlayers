@@ -31,6 +31,8 @@ valid Google Maps API key.
 (This will be made optional in the future, because we don't want you to enter
 the lion's den to request a Google Maps API key)
 
+The WMS layer type needs PHP cURL and XSL to be enabled.
+
  TRAPS
 =======
 The way we build the node edit form breaks edited properties for the layer when
