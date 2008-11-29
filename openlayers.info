@@ -1,5 +1,5 @@
 ; $Id$
 name = OpenLayers
 description = OpenLayers support for Drupal
+core = 6.x
 package = WebGIS
-dependencies = keys_api
