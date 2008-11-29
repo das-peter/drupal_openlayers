@@ -1,6 +1,14 @@
 <?php
 // $Id$
 
+define('DEVELMODE', TRUE);
+
+if(DEVELMODE) {
+  $openlayers_js = '/OpenLayers-2.7/lib/OpenLayers.js';
+} else {
+  $openlayers_js = '/OpenLayers-2.7/OpenLayers.js';
+}
+
 function openlayers_help($path, $arg) {
 }
 
@@ -8,46 +16,52 @@ function openlayers_help($path, $arg) {
  * Access permission stuff
  */
 function openlayers_perm() {
-	return array(
-		'create ol_map',
-		'edit own ol_map',
-	);
+  return array(
+	'create ol_map',
+	'edit own ol_map',
+  );
 }
 
 function openlayers_access($op, $node, $account) {
-	if ($op == 'create') {
-		return user_access('create ol_map', $account);
-	}
+  if ($op == 'create') {
+    return user_access('create ol_map', $account);
+  }
 
-	if ($op == 'update' || $op == 'delete') {
-		if (user_access('edit own ol_map', $account) && ($account->uid == $node->uid)) {
-			return TRUE;
-		}
-	}
+  if ($op == 'update' || $op == 'delete') {
+    if (user_access('edit own ol_map', $account) && ($account->uid == $node->uid)) {
+      return TRUE;
+    }
+  }
 }
 
 function openlayers_menu() {
-	$items = array();
+  $items = array();
 
-	$items['admin/settings/openlayers'] = array(
-		'title' => 'OpenLayers',
-		'description' => t('Set some defaults for OpenLayer maps.'),
-		'page callback' => 'drupal_get_form',
-		'page arguments' => array('openlayers_settings'),
-		'access arguments' => array('access administration pages'),
-		'type' => MENU_NORMAL_ITEM,
-	);
+  $items['admin/settings/openlayers'] = array(
+	'title' => 'OpenLayers',
+	'description' => t('Set some defaults for OpenLayer maps.'),
+	'page callback' => 'drupal_get_form',
+	'page arguments' => array('openlayers_settings'),
+	'access arguments' => array('access administration pages'),
+	'type' => MENU_NORMAL_ITEM,
+  );
 
-	return $items;
+  $items['ol_test'] = array(
+    'title' => 'OpenLayers Test Page',
+	'page callback' => 'openlayers_test_page',
+	'access arguments' => array('access administration pages'),
+  );
+
+  return $items;
 }
 
 /*
  * Settings page & validation
  */
 function openlayers_settings() {
-	$form = array();
+  $form = array();
 
-	return system_settings_form($form);
+  return system_settings_form($form);
 }
 
 function openlayers_settings_validate($form, &$form_state) {
@@ -56,15 +70,54 @@ function openlayers_settings_validate($form, &$form_state) {
 /*
  * node stuff
  */
-
 function openlayers_node_info() {
-	return array(
-		'ol_map' => array(
-			'name' => t('Map'),
-			'module' => 'openlayers',
-			'description' => t('Create a map.'),
-	),
-	);
+  return array(
+  	'ol_map' => array(
+  		'name' => t('Map'),
+		'module' => 'openlayers',
+		'description' => t('Create a map.'),
+		'body_label' => t('Description'), 
+  ),
+  );
 }
 
 require_once('openlayers_map.inc');
+
+/*
+ * Test stuff, will be gone for production use later on. Very much later on probably... :)
+ */
+
+function openlayers_test_page() {
+  drupal_add_js(drupal_get_path('module', 'openlayers') . '/OpenLayers-2.7/lib/OpenLayers.js');
+
+  $o = <<<EOF
+  <div id="ol_map" style="height:400px; width:100%; border: 1px solid #333;" />
+EOF;
+
+  $js = <<<EOF
+  $(document).ready(function() {
+  	
+  	map = new OpenLayers.Map('ol_map');
+  	
+  	var ol_wms = new OpenLayers.Layer.WMS(
+  		"OpenLayers WMS",
+		"http://labs.metacarta.com/wms/vmap0",
+		{layers: 'basic'}
+	);
+
+    var jpl_wms = new OpenLayers.Layer.WMS(
+		"NASA Global Mosaic",
+        "http://t1.hypercube.telascience.org/cgi-bin/landsat7", 
+        {layers: "landsat7"}
+	);
+  	
+	map.addLayers([ol_wms, jpl_wms]);
+    map.addControl(new OpenLayers.Control.LayerSwitcher());
+    map.zoomToMaxExtent();
+  });
+EOF;
+
+  drupal_add_js($js, 'inline');
+
+  return $o;
+}

@@ -1,10 +1,6 @@
 <?php
 // $Id$
 
-function openlayers_node_info() {
-
-}
-
 function openlayers_form(&$node) {
 	$type = node_get_types('type', $node);
 
