@@ -1,5 +1,5 @@
 ; $Id$
 name = OpenLayers
-description = OpenLayers support for Drupal
+description = OpenLayers base API module
 core = 6.x
-package = WebGIS
+package = GIS

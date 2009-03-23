@@ -1,2 +1,40 @@
 <?php
 // $Id$
+
+/**
+ * @file
+ * This file holds the functions for the installing
+ * and enabling of the openlayers module.
+ */
+ 
+/**
+ * Implementation of hook_enable().
+ */
+function openlayers_enable() {
+}
+ 
+/**
+ * Implementation of hook_disable().
+ */
+function openlayers_disable() {
+}
+ 
+/**
+ * Implementation of hook_install().
+ */
+function openlayers_install() {
+}
+ 
+/**
+ * Implementation of hook_uninstall().
+ */
+function openlayers_uninstall() {
+  // @@TODO: This may be a bad idea, as it will destroy all opnlayers modules variables. ??
+  
+  // Get module variables
+  $results = db_query("SELECT v.name FROM {variable} AS v WHERE v.name LIKE '%s%%'", 'openlayers_');
+  // Remove variables
+  while ($row = db_fetch_array($results)) {
+    variable_del($row['name']);
+  }
+}
