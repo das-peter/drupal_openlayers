@@ -1,0 +1,20 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * This file holds the main Drupal hook functions 
+ * and private functions for the openlayers_cck module.
+ */
+
+/**
+ * Implementation of hook_help
+ */
+function openlayers_cck_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#openlayers_cck':
+      $output = '<p>' . t('The openlayers_cck module provides fields and widgets that interface with OpenLayers.') . '</p>';
+  }
+  
+  return $output;
+}
