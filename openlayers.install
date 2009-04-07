@@ -29,7 +29,7 @@ function openlayers_install() {
  * Implementation of hook_uninstall().
  */
 function openlayers_uninstall() {
-  // @@TODO: This may be a bad idea, as it will destroy all opnlayers modules variables. ??
+  // @@TODO: This may be a bad idea, as it will destroy all openlayers modules variables. ??
   
   // Get module variables
   $results = db_query("SELECT v.name FROM {variable} AS v WHERE v.name LIKE '%s%%'", 'openlayers_');

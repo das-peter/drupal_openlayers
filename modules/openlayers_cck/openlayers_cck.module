@@ -8,6 +8,11 @@
  */
 
 /**
+ * Map ID Prefix
+ */
+define('OPENLAYERS_CCK_MAP_ID_PREFIX', 'openlayers-cck-map-auto-id');
+
+/**
  * Implementation of hook_help
  */
 function openlayers_cck_help($path, $arg) {
@@ -16,5 +21,192 @@ function openlayers_cck_help($path, $arg) {
       $output = '<p>' . t('The openlayers_cck module provides fields and widgets that interface with OpenLayers.') . '</p>';
   }
   
+  return $output;
+}
+
+/**
+ * Implementation of hook_theme().
+ */
+function openlayers_cck_theme() {
+  return array(
+    'openlayers_cck_geo_field' => array(
+      'arguments' => array('element' => NULL),
+    ),
+    'openlayers_cck_map' => array(
+      'arguments' => array(
+        'field' => NULL,
+        'mapid' => NULL,
+      ),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_widget_info
+ */
+function openlayers_cck_widget_info() {
+  $info = array();
+  
+  // Check for geo_field module
+  if (module_exists('geo_field')) {
+    $info['openlayers_cck_geo_field'] = array(
+      'label' => t('OpenLayers Map Widget'),
+      'field types' => array('geo'),
+      // 'multiple values' => CONTENT_HANDLE_MODULE,
+    );
+  }
+  
+  return $info;
+}
+
+/**
+ * Implementation of hook_widget().
+ */
+function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0) {
+  // @@TODO: Put this outside the widget, but inside the field, so it is not rendered
+  // for each item in the field
+  
+  $fieldname = $field['field_name'];
+  // Only include map once per field
+  static $included_field = '';
+  if ($included_field != $fieldname) {
+    $mapid = OPENLAYERS_CCK_MAP_ID_PREFIX . '-' . $fieldname;
+    // Create map
+    $map['id'] = $mapid;
+    // Check for type
+    switch ($field['geo_type']) {
+      case 'point':
+        $map['draw_features'] = array(
+          'point' => array(
+            'type' => 'Point',
+            'vector' => 'default_vector',
+            'handler' => 'openlayersCCKFeatureHandler',
+          ),
+        );
+        break;
+        
+      case 'linestring':
+        $map['draw_features'] = array(
+          'point' => array(
+            'type' => 'Path',
+            'vector' => 'default_vector',
+            'handler' => 'openlayersCCKFeatureHandler',
+          ),
+        );
+        break;
+        
+      case 'polygon':
+        $map['draw_features'] = array(
+          'point' => array(
+            'type' => 'Polygon',
+            'vector' => 'default_vector',
+            'handler' => 'openlayersCCKFeatureHandler',
+          ),
+        );
+        break;
+    
+    }
+    // Send info to JS
+    $openlayers_cck = array(
+      'openlayers_cck' => array(
+        'maps' => array(
+          $mapid => array(
+            'field_name' => $fieldname,
+            'field_data' => $field,
+            'field_name_js' => str_replace('_', '-', $fieldname), // Best way?
+            'field_map_themed' => theme('openlayers_cck_map', $field, $mapid),
+            'field_container' => str_replace('_', '-', $fieldname) . '-items',  // Best way??
+            'field_items' => $items,
+          ),
+        ),
+      ),
+    );
+    // Add JS
+    drupal_add_js($openlayers_cck, 'setting');
+    drupal_add_js(drupal_get_path('module', 'openlayers_cck') . '/js/openlayers_cck.js');
+    // Render Map
+    openlayers_render_map($map);
+    $included_field = $fieldname;
+  }
+
+  // Return array
+  return array(
+    '#type' => $field['widget']['type'],
+    '#default_value' => isset($items[$delta]) ? $items[$delta] : '',
+  );
+}
+
+/**
+ * Implementation of FAPI hook_elements().
+ */
+function openlayers_cck_elements() {
+  return array(
+    'openlayers_cck_geo_field' => array(
+      '#input' => TRUE,
+      '#columns' => array('lat', 'lon', 'wkt'),
+      '#delta' => 0,
+      '#process' => array('openlayers_cck_geo_field_process'),
+    ),
+  );
+}
+
+/**
+ * Process an individual element.
+ *
+ * Build the form element. When creating a form using FAPI #process,
+ * note that $element['#value'] is already set.
+ *
+ * The $fields array is in $form['#field_info'][$element['#field_name']].
+ */
+function openlayers_cck_geo_field_process($element, $edit, $form_state, $form) {
+  // Define some variables
+  $field = $form['#field_info'][$element['#field_name']];
+  $delta = $element['#delta'];
+  $field_data = content_fields($element['#field_name'], $element['#type_name']);
+  
+  // Define elements
+  $element['wkt'] = array(
+    '#type' => 'textarea',
+    '#title' => t($field['widget']['label']),
+    '#rows' => 2,
+    '#default_value' => isset($element['#value']['wkt']) ? $element['#value']['wkt'] : NULL,
+    '#required' => $field['required'],
+    '#description' => $field['widget']['description'],
+  );
+  
+  // Remove title and description for multiple
+  if ($field_data['multiple'] > 0) {
+    unset($element['wkt']['#title']);
+    unset($element['wkt']['#description']);
+  }
+  
+  return $element;
+}
+
+/**
+ * Theme function for openlayers_cck_geo_field element
+ */
+function theme_openlayers_cck_geo_field($element) {
+  return $element['#children'];
+}
+
+/**
+ * Theme function for openlayers_cck_map
+ */
+function theme_openlayers_cck_map($field, $mapid) {
+  $output = '';
+  
+  $output .= '
+    <div class="form-item">
+      <label for="' . $mapid . '">' . $field['widget']['label'] . '</label>
+      <div id="' . $mapid . '"></div>
+      <div class="description">
+        ' . $field['widget']['description'] . '
+      </div>
+      <div class="openlayers-cck-actions">
+        <a href="#" id="' . $mapid . '-wkt-switcher">' . t('Show/Hide WKT Fields') . '</a>
+      </div>
+    </div>
+  ';
   return $output;
 }

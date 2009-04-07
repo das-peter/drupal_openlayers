@@ -1,1 +1,42 @@
 /*  $Id$ */
+
+/* general link */
+.openlayers-controls-draw-feature-link {
+display: block;
+width: 24px;
+height: 22px;
+z-index: 1000;
+margin:2px;
+float: right;
+}
+
+/* pan */
+.openlayers-controls-draw-feature-link-pan.openlayers-controls-draw-feature-link-on {
+background: url("images/pan_on.png") top left no-repeat;
+}
+.openlayers-controls-draw-feature-link-pan.openlayers-controls-draw-feature-link-off {
+background: url("images/pan_off.png") top left no-repeat;
+}
+
+/* point */
+.openlayers-controls-draw-feature-link-point.openlayers-controls-draw-feature-link-on {
+background: url("images/draw_point_on.png") top left no-repeat;
+}
+.openlayers-controls-draw-feature-link-point.openlayers-controls-draw-feature-link-off {
+background: url("images/draw_point_off.png") top left no-repeat;
+}
+
+/* path */
+.openlayers-controls-draw-feature-link-path.openlayers-controls-draw-feature-link-on {
+background: url("images/draw_path_on.png") top left no-repeat;
+}
+.openlayers-controls-draw-feature-link-path.openlayers-controls-draw-feature-link-off {
+background: url("images/draw_path_off.png") top left no-repeat;
+}
+/* polygon */
+.openlayers-controls-draw-feature-link-polygon.openlayers-controls-draw-feature-link-on {
+background: url("images/draw_polygon_on.png") top left no-repeat;
+}
+.openlayers-controls-draw-feature-link-polygon.openlayers-controls-draw-feature-link-off {
+background: url("images/draw_polygon_off.png") top left no-repeat;
+}

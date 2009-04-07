@@ -8,6 +8,11 @@
  */
 
 /**
+ * Map ID Prefix
+ */
+define('OPENLAYERS_MAP_ID_PREFIX', 'openlayers-map-auto-id');
+
+/**
  * Implementation of hook_help
  */
 function openlayers_help($path, $arg) {
@@ -63,7 +68,7 @@ function openlayers_intialize() {
   // Include the OpenLayers JS
   // We need to check if it a local path or URL, but really only need to do it once.
   static $included = FALSE;
-  if ($include == FALSE) {
+  if ($included == FALSE) {
     $path = check_plain(variable_get('openlayers_source', 'http://openlayers.org/api/OpenLayers.js'));
     // Check for full URL
     if (valid_url($path, TRUE)) {
@@ -77,5 +82,191 @@ function openlayers_intialize() {
     }
   }
 
+  // Add CSS
+  // @@TODO: Use a static variable cache
+  drupal_add_css(drupal_get_path('module', 'openlayers') . '/openlayers.css', 'module');
+
+  // Add base JS file
+  // @@TODO: Use a static variable cache
+  drupal_add_js(drupal_get_path('module', 'openlayers') . '/js/openlayers.js', 'module');
   return $success;
 }
+
+/**
+ * Render Map
+ *
+ * Given perimeters, render an OpenLayers map
+ *
+ * @ingroup API
+ * @param $map
+ *   Associative array of map paramters
+ *  
+ * @return
+ *   Boolean if successful
+ */
+function openlayers_render_map($map = array()) {
+  // Check array
+  if (!is_array($map)) {
+    return FALSE;
+  }
+  
+  // Intialize
+  if (openlayers_intialize() == FALSE) {
+    return FALSE;
+  }
+  
+  // Check ID
+  if (!$map['id']) {
+    $map['id'] = _openlayers_create_map_id();
+  }
+  
+  // @@TODO: Add an alter hook for array
+  
+  // Merge with defaults
+  $map_default = _openlayers_get_map_defaults();
+  // @@TODO: Better merging
+  $map = array_merge($map_default, $map); 
+  
+  // Add map container to drupal JS settings
+  $openlayers = array(
+    'openlayers' => array(
+      'maps' => array(
+        $map['id'] => $map,
+      ),
+    ),
+  );
+  drupal_add_js($openlayers, 'setting');
+  
+  return TRUE;
+}
+
+/**
+ * Create Map ID
+ *
+ * Create a unique ID for any maps that are not assigned an ID
+ *
+ * @note
+ *   Technically someone, can assign a map ID identical
+ *   to the one that is created
+ * @return
+ *   New map id
+ */
+function _openlayers_create_map_id() {
+  // Set up variables
+  $map_id = '';
+  static $map_count = 0;
+  // Put together ID
+  $map_id = OPENLAYERS_MAP_ID_PREFIX . '-' . $map_count;
+  // Add another
+  $map_count += 1;
+  // Return ID
+  return $map_id;
+}
+
+/**
+ * Get Map Defaults
+ *
+ * Get Map Defaults
+ *
+ * @return
+ *   map array
+ */
+function _openlayers_get_map_defaults() {
+  $map_default = array(
+    'id' => _openlayers_create_map_id(),
+    'width' => 'auto',
+    'height' => '300px',
+    'center' => array(
+      'lat' => 40,
+      'lon' => 5,
+      'zoom' => 5,
+    ),
+    'options' => array(
+      'numZoomLevels' => 10,
+    ),
+    'controls' => array(
+      'LayerSwitcher' => TRUE,
+    ),
+    'layers' => array(
+      'default_wms' => array(
+        'id' => 'default_wms',
+        'type'=> 'WMS',
+        'name' => t('Default Open Layers WMS'),
+        'url' => 'http://labs.metacarta.com/wms/vmap0',
+        'params' => array(
+          'layers' => 'basic',
+        ),
+        'options' => array(),
+      ),
+      'default_vector' => array(
+        'id' => 'default_vector',
+        'type' => 'Vector',
+        'name' => t('Default Vector'),
+        'options' => array(),
+      ),
+    ),
+  );
+  return $map_default;
+}
+
+/**
+Super array:
+
+  $map_default = array(
+    'id' => _openlayers_create_map_id(),
+    'width' => 'auto',
+    'height' => '300px',
+    'center' => array(
+      'lat' => 40,
+      'lon' => 5,
+      'zoom' => 5,
+    ),
+    'options' => array(
+      'numZoomLevels' => 10,
+    ),
+    'controls' => array(
+      'LayerSwitcher' => TRUE,
+    ),
+    'layers' => array(
+      'default_wms' => array(
+        'id' => 'default_wms',
+        'type'=> 'WMS',
+        'name' => t('Default Open Layers WMS'),
+        'url' => 'http://labs.metacarta.com/wms/vmap0',
+        'params' => array(
+          'layers' => 'basic',
+        ),
+        'options' => array(),
+      ),
+      'default_vector' => array(
+        'id' => 'default_vector',
+        'type' => 'Vector',
+        'name' => t('Default Vector'),
+        'options' => array(),
+      ),
+    ),
+    'draw_features' => array(
+      'point' => array(
+        'type' => 'Point',
+        'vector' => 'default_vector',
+        'handler' => 'openlayersDefaultFeatureHandler',
+      ),
+      'path' => array(
+        'type' => 'Path',
+        'vector' => 'default_vector',
+        'handler' => 'openlayersDefaultFeatureHandler',
+      ),
+      'polygon' => array(
+        'type' => 'Polygon',
+        'vector' => 'default_vector',
+        'handler' => 'openlayersDefaultFeatureHandler',
+      ),
+    ),
+    'features' => array(
+      'points' => array(),
+      'lines' => array(),
+      'polygons' => array(),
+    ),
+  );
+  
+*/
