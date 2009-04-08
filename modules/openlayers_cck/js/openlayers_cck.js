@@ -25,20 +25,28 @@ jQuery(document).ready(function() {
     // Define click actions for WKT Switcher
     // @@TODO: not working, seems to keep the most recent fieldContainer
     $('#' + map + '-wkt-switcher').click(function() {
+    	var mapid = $(this).attr('rel');
+    	var fieldContainer = Drupal.settings.openlayers_cck.maps[mapid].field_container;
       $('#' + fieldContainer).toggle();
       return false;
     });
+    
   }
 });
 
 /**
  * OpenLayers CCK Feature Handler
  */
-function openlayersCCKFeatureHandler(feature) {
+function openlayersCCKFeatureHandler(event) {
+	
+	var feature = event.feature;
+	
+	
   // Make some variables
-  var featureCount = feature.feature.layer.features.length;
+  var featureCount = feature.layer.features.length;
   var featureNew = featureCount - 1;
-  var mapid = feature.feature.layer.mapid;
+  
+  var mapid = feature.layer.map.mapid;
   
   // Get field names
   var fieldName;
@@ -51,9 +59,9 @@ function openlayersCCKFeatureHandler(feature) {
   var wktFieldAddID = 'edit-' + fieldName + '-' + fieldName + '-add-more';
   
   // If new features, add field to feature
-  var geometry = feature.feature.layer.features[featureNew].geometry.clone();
+  var geometry = feature.layer.features[featureNew].geometry.clone();
   // Assign field to feature
-  feature.feature.layer.features[featureNew].field = wktFieldNewID;
+  feature.layer.features[featureNew].field = wktFieldNewID;
   // geometry.transform(map_proj, maps[field_name]['dbproj']);
   var wkt = geometry.toString();
   $('#' + wktFieldNewID).val(wkt);

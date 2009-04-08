@@ -80,27 +80,27 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
           'point' => array(
             'type' => 'Point',
             'vector' => 'default_vector',
-            'handler' => 'openlayersCCKFeatureHandler',
+            'featureadded_handler' => 'openlayersCCKFeatureHandler',
           ),
         );
         break;
         
       case 'linestring':
         $map['draw_features'] = array(
-          'point' => array(
+          'path' => array(
             'type' => 'Path',
             'vector' => 'default_vector',
-            'handler' => 'openlayersCCKFeatureHandler',
+            'featureadded_handler' => 'openlayersCCKFeatureHandler',
           ),
         );
         break;
         
       case 'polygon':
         $map['draw_features'] = array(
-          'point' => array(
+          'polygon' => array(
             'type' => 'Polygon',
             'vector' => 'default_vector',
-            'handler' => 'openlayersCCKFeatureHandler',
+            'featureadded_handler' => 'openlayersCCKFeatureHandler',
           ),
         );
         break;
@@ -204,7 +204,7 @@ function theme_openlayers_cck_map($field, $mapid) {
         ' . $field['widget']['description'] . '
       </div>
       <div class="openlayers-cck-actions">
-        <a href="#" id="' . $mapid . '-wkt-switcher">' . t('Show/Hide WKT Fields') . '</a>
+        <a href="#" id="' . $mapid . '-wkt-switcher" rel="'.$mapid.'">' . t('Show/Hide WKT Fields') . '</a>
       </div>
     </div>
   ';

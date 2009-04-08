@@ -137,7 +137,7 @@ function openlayers_render_map($map = array()) {
   );
   drupal_add_js($openlayers, 'setting');
   
-  return TRUE;
+  return $map;
 }
 
 /**
@@ -166,8 +166,6 @@ function _openlayers_create_map_id() {
 /**
  * Get Map Defaults
  *
- * Get Map Defaults
- *
  * @return
  *   map array
  */
@@ -177,9 +175,9 @@ function _openlayers_get_map_defaults() {
     'width' => 'auto',
     'height' => '300px',
     'center' => array(
-      'lat' => 40,
-      'lon' => 5,
-      'zoom' => 5,
+      'lat' => 0,
+      'lon' => 0,
+      'zoom' => 2,
     ),
     'options' => array(
       'numZoomLevels' => 10,
@@ -249,17 +247,17 @@ Super array:
       'point' => array(
         'type' => 'Point',
         'vector' => 'default_vector',
-        'handler' => 'openlayersDefaultFeatureHandler',
+        'featureadded_handler' => 'openlayersDefaultFeatureHandler',
       ),
       'path' => array(
         'type' => 'Path',
         'vector' => 'default_vector',
-        'handler' => 'openlayersDefaultFeatureHandler',
+        'featureadded_handler' => 'openlayersDefaultFeatureHandler',
       ),
       'polygon' => array(
         'type' => 'Polygon',
         'vector' => 'default_vector',
-        'handler' => 'openlayersDefaultFeatureHandler',
+        'featureadded_handler' => 'openlayersDefaultFeatureHandler',
       ),
     ),
     'features' => array(
@@ -270,3 +268,36 @@ Super array:
   );
   
 */
+
+
+
+function openlayersTestingTesting123(){
+	  
+	  $output = '';
+
+		$options = array(
+		  'draw_features' => array(
+	      'point' => array(
+	        'type' => 'Point',
+	        'vector' => 'default_vector',
+	        'handler' => 'openlayersDefaultFeatureHandler',
+	      ),
+	      'path' => array(
+	        'type' => 'Path',
+	        'vector' => 'default_vector',
+	        'featureadded_handler' => 'openlayersDefaultFeatureHandler',
+	      ),
+	      'polygon' => array(
+	        'type' => 'Polygon',
+	        'vector' => 'default_vector',
+	        'featureadded_handler' => 'openlayersDefaultFeatureHandler',
+	      ),
+    	),
+    );
+	  
+	  $map = openlayers_render_map($options);
+  	
+  	$output .= "<div id='" . $map['id'] . "'></div>";
+		
+		return $output;
+}

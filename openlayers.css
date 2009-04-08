@@ -1,5 +1,9 @@
 /*  $Id$ */
 
+.openlayers-controls{
+	z-index:1000;
+}
+
 /* general link */
 .openlayers-controls-draw-feature-link {
 display: block;
