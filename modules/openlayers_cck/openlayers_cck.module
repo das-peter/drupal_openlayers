@@ -77,7 +77,7 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
     
     //Add an event to the map. When a layer is added fire the JS function openlayersCCKLoadValues
     $map['events'] = array(
-        'addlayer' => array('openlayersCCKLoadValues'),
+      'addlayer' => array('openlayersCCKLoadValues'),
     );
     
     // @@TODO: I should not need to specify the WMS layer. We need a better array merge function in openlayers.module!

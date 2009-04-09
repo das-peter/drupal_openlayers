@@ -107,6 +107,7 @@ function openlayersProcessDrawFeatures(drawFeatures, mapid) {
   Drupal.openlayers.activeObjects[mapid].controls = [];
   
   // Add Base Pan button
+  // TODO: Make this out put a themed item in PHP
   $('#openlayers-controls-' + mapid).append('<a href="#" id="openlayers-controls-pan-' + mapid + '" class="openlayers-controls-draw-feature-link openlayers-controls-draw-feature-link-pan openlayers-controls-draw-feature-link-on" rel="type:pan;mapid:'+mapid+'"></a>');
   
   // Go through draw features
@@ -119,7 +120,7 @@ function openlayersProcessDrawFeatures(drawFeatures, mapid) {
     if (drawFeatures[dF].type == 'Path')  			var handler = OpenLayers.Handler.Path;
     if (drawFeatures[dF].type == 'Polygon')     var handler = OpenLayers.Handler.Polygon;
 		
-		//Add our create and modify controls to the control object. Use a # prefix since these are speacial controls created by drawFeatures.
+		// Add our create and modify controls to the control object. Use a # prefix since these are speacial controls created by drawFeatures.
     var create_control = new OpenLayers.Control.DrawFeature(layer, handler);
     var modify_control = new OpenLayers.Control.ModifyFeature(layer);
     
@@ -139,6 +140,7 @@ function openlayersProcessDrawFeatures(drawFeatures, mapid) {
     }
         
     // Add action link
+    // TODO: Make this out put a themed item in PHP, might need a placeholder for dF
     $('#openlayers-controls-' + mapid).append('<a href="#" id="openlayers-controls-draw-' + typeLower + '-' + mapid + '" class="openlayers-controls-draw-feature-link openlayers-controls-draw-feature-link-' + typeLower + ' openlayers-controls-draw-feature-link-off" rel="type:' + dF + ';mapid:'+ mapid +'"></a>');
   }
   
