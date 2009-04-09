@@ -5,7 +5,8 @@
  */
 jQuery(document).ready(function() {
   // Store rendered maps in Drupal.setting
-  Drupal.settings.openlayers.activeObjects = [];
+  Drupal.openlayers = {}
+  Drupal.openlayers.activeObjects = [];
   // Go through array and make maps
   for (var i in Drupal.settings.openlayers.maps) {
     var map = Drupal.settings.openlayers.maps[i];
@@ -18,7 +19,7 @@ jQuery(document).ready(function() {
       
       
       //Set-up our registry of active OpenLayers javascript objects
-      Drupal.settings.openlayers.activeObjects[map.id] = {};
+      Drupal.openlayers.activeObjects[map.id] = {};
       
       // Render Map
       openlayersRenderMap(Drupal.settings.openlayers.maps[i]);
@@ -35,34 +36,42 @@ function openlayersRenderMap(map) {
   var options = openlayersCreateMapOptions(map.options, map.controls, map.id);
   
   // Store map in our registry of active OpenLayers objects
-  Drupal.settings.openlayers.activeObjects[map.id].map = new OpenLayers.Map(map.id, options);
+  Drupal.openlayers.activeObjects[map.id].map = new OpenLayers.Map(map.id, options);
     
   // Add ID to map
-  Drupal.settings.openlayers.activeObjects[map.id].map.mapid = map.id;
+  Drupal.openlayers.activeObjects[map.id].map.mapid = map.id;
+  
+  //Add events to the map 
+  for (var evtype in map.events){
+  	for (var ev in map.events[evtype]){ 
+ 			eval("Drupal.openlayers.activeObjects[map.id].map.events.register(evtype,Drupal.openlayers.activeObjects[map.id].map," +  map.events[evtype][ev] + ");");  //Can we do this without using eval()?  		
+  	}
+  }
   
   // We set up all our layers
   openlayersProcessLayers(map.layers, map.id);
   
-  // Draw Features
+  // Set up layers for editablity
   if (map.draw_features) {
     openlayersProcessDrawFeatures(map.draw_features, map.id);
   }
   
   // Add layers to map
-  for (var l in Drupal.settings.openlayers.activeObjects[map.id].layers) {
-  	var layer =  Drupal.settings.openlayers.activeObjects[map.id].layers[l];
-  	Drupal.settings.openlayers.activeObjects[map.id].map.addLayer(layer);
+  for (var l in Drupal.openlayers.activeObjects[map.id].layers) {
+  	var layer =  Drupal.openlayers.activeObjects[map.id].layers[l];
+  	Drupal.openlayers.activeObjects[map.id].map.addLayer(layer);
   }
   
   // Add controls to map
-  for (var c in Drupal.settings.openlayers.activeObjects[map.id].controls) {
-  	var control = Drupal.settings.openlayers.activeObjects[map.id].controls[c];
-  	Drupal.settings.openlayers.activeObjects[map.id].map.addControl(control);
+  for (var c in Drupal.openlayers.activeObjects[map.id].controls) {
+  	var control = Drupal.openlayers.activeObjects[map.id].controls[c];
+  	Drupal.openlayers.activeObjects[map.id].map.addControl(control);
   	if (control.activeByDefault) control.activate();
 	}
                
   // Zoom to Center
-  Drupal.settings.openlayers.activeObjects[map.id].map.setCenter(new OpenLayers.LonLat(map.center.lon, map.center.lat), map.center.zoom);
+  var center = new OpenLayers.LonLat(map.center.lon, map.center.lat);
+  Drupal.openlayers.activeObjects[map.id].map.setCenter(center,map.center.zoom);
 }
 
 /**
@@ -90,19 +99,19 @@ function openlayersCreateMapOptions(options, controls, mapid) {
 }
 
 /**
- * Process Draw Features
+ * Process Draw Features. This is for marking vector layers as editable. Calling this function will add standard functionality for adding and editing features.
  */
 function openlayersProcessDrawFeatures(drawFeatures, mapid) {
   
   //Set up a place to store our controls in our registry of active OpenLayers objects
-  Drupal.settings.openlayers.activeObjects[mapid].controls = [];
+  Drupal.openlayers.activeObjects[mapid].controls = [];
   
   // Add Base Pan button
   $('#openlayers-controls-' + mapid).append('<a href="#" id="openlayers-controls-pan-' + mapid + '" class="openlayers-controls-draw-feature-link openlayers-controls-draw-feature-link-pan openlayers-controls-draw-feature-link-on" rel="type:pan;mapid:'+mapid+'"></a>');
   
   // Go through draw features
   for (var dF in drawFeatures) {
-    var layer = Drupal.settings.openlayers.activeObjects[mapid].layers[drawFeatures[dF].vector];
+    var layer = Drupal.openlayers.activeObjects[mapid].layers[drawFeatures[dF].vector];
     var typeLower = drawFeatures[dF].type.toLowerCase();
     
     // Add control to list
@@ -121,8 +130,8 @@ function openlayersProcessDrawFeatures(drawFeatures, mapid) {
     create_control.drawType = typeLower;
     modify_control.drawType = typeLower;
     
-    Drupal.settings.openlayers.activeObjects[mapid].controls['#create-' + typeLower] = create_control;
-    Drupal.settings.openlayers.activeObjects[mapid].controls['#modify-' + typeLower] = modify_control;
+    Drupal.openlayers.activeObjects[mapid].controls['#create-' + typeLower] = create_control;
+    Drupal.openlayers.activeObjects[mapid].controls['#modify-' + typeLower] = modify_control;
             
     // Add event handler
     if (drawFeatures[dF].featureadded_handler) {
@@ -145,9 +154,8 @@ function openlayersProcessDrawFeatures(drawFeatures, mapid) {
       $(this).removeClass('openlayers-controls-draw-feature-link-off');
       
       for (var f in Drupal.settings.openlayers.maps[parsedRel['mapid']].draw_features){
-      	
-      	var createControl = Drupal.settings.openlayers.activeObjects[parsedRel['mapid']].controls['#create-'+f];
-      	var modifyControl = Drupal.settings.openlayers.activeObjects[parsedRel['mapid']].controls['#modify-'+f];
+      	var createControl = Drupal.openlayers.activeObjects[parsedRel['mapid']].controls['#create-'+f];
+      	var modifyControl = Drupal.openlayers.activeObjects[parsedRel['mapid']].controls['#modify-'+f];
       	
       	//Deactivate everything
       	createControl.deactivate();
@@ -176,7 +184,7 @@ function openlayersDefaultFeatureHandler(feature) {
  */
 function openlayersProcessLayers(layers, mapid) {
 	
-	Drupal.settings.openlayers.activeObjects[mapid].layers = [];
+	Drupal.openlayers.activeObjects[mapid].layers = [];
 	
   // Go through layers
   if (layers) {
@@ -184,12 +192,22 @@ function openlayersProcessLayers(layers, mapid) {
       switch (layers[layer].type) {
         case 'WMS':    
         	var new_layer = openlayersProcessLayerWMS(layers[layer], mapid);
-        	Drupal.settings.openlayers.activeObjects[mapid].layers[layer] = new_layer;
+        	Drupal.openlayers.activeObjects[mapid].layers[layer] = new_layer;
           break;    
         case 'Vector':
         	var new_layer = openlayersProcessLayerVector(layers[layer], mapid);
-       		Drupal.settings.openlayers.activeObjects[mapid].layers[layer] = new_layer;
+       		Drupal.openlayers.activeObjects[mapid].layers[layer] = new_layer;
           break;
+      }
+      //Add our Drupal data to the layer
+      new_layer.drupalId = layer;
+      new_layer.drupalData = layers[layer];
+      
+      //Add events
+      for (var evtype in layers[layer].events){
+      	for (var ev in layers[layer].events[evtype]){ 
+      		eval("new_layer.events.register(evtype,new_layer," + layers[layer].events[evtype][ev] + ");");  //Can we do this without using eval()?  		
+      	}
       }
     }
   }
@@ -245,8 +263,17 @@ function openlayersProcessLayerVector(layerOptions, mapid) {
  */
 function openlayersParseRel(rel){
 	var outputArray = [];
+	
+	//Some preprosessing
+	//replace dangling whitespaces. Use regex?
+	rel = rel.replace('; ',';');
+	//Cut out final ; if it exists
+	if (rel.charAt(rel.length-1) == ";") rel = rel.substr(0,rel.length-1);
+	
+	//Get all the key:value strings
 	var keyValueStrings = rel.split(';');
 	
+	//Process the key:value strings into key:value pairs
 	for (var i in keyValueStrings){
 		var singleKeyValue = keyValueStrings[i].split(':');
 		outputArray[singleKeyValue[0]] = singleKeyValue[1];

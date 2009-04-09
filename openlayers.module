@@ -195,12 +195,14 @@ function _openlayers_get_map_defaults() {
           'layers' => 'basic',
         ),
         'options' => array(),
+        'events' => array(),
       ),
       'default_vector' => array(
         'id' => 'default_vector',
         'type' => 'Vector',
         'name' => t('Default Vector'),
         'options' => array(),
+        'events' => array(),
       ),
     ),
   );
@@ -235,12 +237,26 @@ Super array:
           'layers' => 'basic',
         ),
         'options' => array(),
+        'events' => array(
+        	'loadstart'=> array(),
+        	'loadend' => array(),
+        	'loadcancel' => array(),
+          'visibilitychanged' => array(),
+          'moveend' => array(),
+        ),
       ),
       'default_vector' => array(
         'id' => 'default_vector',
         'type' => 'Vector',
         'name' => t('Default Vector'),
         'options' => array(),
+        'events' => array(
+        	'loadstart'=> array(),
+        	'loadend' => array(),
+        	'loadcancel' => array(),
+          'visibilitychanged' => array(),
+          'moveend' => array(),
+        ),
       ),
     ),
     'draw_features' => array(
@@ -260,44 +276,9 @@ Super array:
         'featureadded_handler' => 'openlayersDefaultFeatureHandler',
       ),
     ),
-    'features' => array(
-      'points' => array(),
-      'lines' => array(),
-      'polygons' => array(),
+    'events' => array(
+      'addlayer' => array(''),
     ),
   );
   
 */
-
-
-
-function openlayersTestingTesting123(){
-	  
-	  $output = '';
-
-		$options = array(
-		  'draw_features' => array(
-	      'point' => array(
-	        'type' => 'Point',
-	        'vector' => 'default_vector',
-	        'handler' => 'openlayersDefaultFeatureHandler',
-	      ),
-	      'path' => array(
-	        'type' => 'Path',
-	        'vector' => 'default_vector',
-	        'featureadded_handler' => 'openlayersDefaultFeatureHandler',
-	      ),
-	      'polygon' => array(
-	        'type' => 'Polygon',
-	        'vector' => 'default_vector',
-	        'featureadded_handler' => 'openlayersDefaultFeatureHandler',
-	      ),
-    	),
-    );
-	  
-	  $map = openlayers_render_map($options);
-  	
-  	$output .= "<div id='" . $map['id'] . "'></div>";
-		
-		return $output;
-}

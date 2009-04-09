@@ -23,14 +23,12 @@ jQuery(document).ready(function() {
     // openlayersCCKPopulateMap(Drupal.settings.openlayers_cck.maps[map].field_items, vector)
     
     // Define click actions for WKT Switcher
-    // @@TODO: not working, seems to keep the most recent fieldContainer
     $('#' + map + '-wkt-switcher').click(function() {
     	var mapid = $(this).attr('rel');
     	var fieldContainer = Drupal.settings.openlayers_cck.maps[mapid].field_container;
       $('#' + fieldContainer).toggle();
       return false;
     });
-    
   }
 });
 
@@ -40,7 +38,6 @@ jQuery(document).ready(function() {
 function openlayersCCKFeatureHandler(event) {
 	
 	var feature = event.feature;
-	
 	
   // Make some variables
   var featureCount = feature.layer.features.length;
@@ -55,20 +52,24 @@ function openlayersCCKFeatureHandler(event) {
       fieldName = Drupal.settings.openlayers_cck.maps[map].field_name_js;
     }
   }
+  
   var wktFieldNewID = 'edit-' + fieldName + '-' + featureNew + '-wkt';
   var wktFieldAddID = 'edit-' + fieldName + '-' + fieldName + '-add-more';
   
   // If new features, add field to feature
-  var geometry = feature.layer.features[featureNew].geometry.clone();
+    
+  var geometry = feature.geometry.clone();
+    
   // Assign field to feature
-  feature.layer.features[featureNew].field = wktFieldNewID;
+  feature.drupalField = wktFieldNewID;
   // geometry.transform(map_proj, maps[field_name]['dbproj']);
   var wkt = geometry.toString();
   $('#' + wktFieldNewID).val(wkt);
   
   // If delete, remove value form field
   
-  // Add another field
+  // Add another field ..
+  // @@TODO:  When reloading this function is reloading all of Drupal.settings.openlayers  .  On the reload for some reason it is only reloading our current CCK-field, not all CCK-fields, and so is causing the error: Drupal.settings.openlayers.maps[parsedRel.mapid] is undefined
   $('#' + wktFieldAddID).trigger('mousedown');
 }
 
@@ -76,7 +77,7 @@ function openlayersCCKFeatureHandler(event) {
  * Get Values From CCK
  */
 function openlayersCCKPopulateMap(features, vector){
-  var featuresAdd = [];
+  var featuresToAdd = [];
   var wktFormat = new OpenLayers.Format.WKT();
   
   // Get Features
@@ -84,12 +85,22 @@ function openlayersCCKPopulateMap(features, vector){
     if (features[f].wkt) {
       var wkt = wktFormat.read(features[f].wkt);
       // wkt.geometry.transform(maps[field_name]['dbproj'], map_proj);
-      featuresAdd.push(wkt);
+      featuresToAdd.push(wkt);
     }
   }
   
   // Add features to vector
-  if (featuresAdd.length != 0){
-    vector.addFeatures(featuresAdd);
+  if (featuresToAdd.length != 0){
+    vector.addFeatures(featuresToAdd);
   }
+}
+
+
+/**
+ * When the layer is done loading, load in the values from the CCK text fields if it is the correct layer.
+ */
+function openlayersCCKLoadValues(event){
+	if (event.layer.drupalId == "default_vector"){
+		//Do something with openlayersCCKPopulateMap
+	}
 }

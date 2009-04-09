@@ -74,6 +74,33 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
     // Create map
     $map['id'] = $mapid;
     // Check for type
+    
+    //Add an event to the map. When a layer is added fire the JS function openlayersCCKLoadValues
+    $map['events'] = array(
+        'addlayer' => array('openlayersCCKLoadValues'),
+    );
+    
+    // @@TODO: I should not need to specify the WMS layer. We need a better array merge function in openlayers.module!
+    $map['layers'] = array(
+      'default_wms' => array(
+        'id' => 'default_wms',
+        'type'=> 'WMS',
+        'name' => t('Default Open Layers WMS'),
+        'url' => 'http://labs.metacarta.com/wms/vmap0',
+        'params' => array(
+          'layers' => 'basic',
+        ),
+        'options' => array(),
+        'events' => array(),
+      ),
+      'default_vector' => array(
+        'id' => 'default_vector',
+        'type' => 'Vector',
+        'name' => t('Editable Vector'),
+        'options' => array(),
+      )
+    );
+    
     switch ($field['geo_type']) {
       case 'point':
         $map['draw_features'] = array(
