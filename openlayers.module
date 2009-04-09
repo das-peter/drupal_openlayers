@@ -38,13 +38,13 @@ function openlayers_menu() {
   $items = array();
 
   $items['admin/settings/openlayers'] = array(
-  'title' => 'OpenLayers',
-  'description' => t('Set some defaults for OpenLayer maps.'),
-  'page callback' => 'drupal_get_form',
-  'page arguments' => array('openlayers_admin_settings'),
-  'access arguments' => array('administer openlayers'),
-  'file' => 'includes/openlayers.admin.inc',
-  'type' => MENU_NORMAL_ITEM,
+    'title' => 'OpenLayers',
+    'description' => t('Set some defaults for OpenLayer maps.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_admin_settings'),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
   );
 
   return $items;
