@@ -113,6 +113,7 @@ function openlayersCreateMapOptions(options, controls, mapid) {
  */
 function openlayersProcessDrawFeatures(drawFeatures, mapid) {
   // Add Base Pan button
+  // @@TODO: Make this out put a themed item in PHP
   $('#openlayers-controls-' + mapid).append('<a href="#" id="openlayers-controls-pan-' + mapid + '" class="openlayers-controls-draw-feature-link openlayers-controls-draw-feature-link-pan openlayers-controls-draw-feature-link-on" rel="type:pan;mapid:' + mapid + '"></a>');
   
   // Go through each type of feature (point, path, polygon) that is specified and build functionality
@@ -159,6 +160,7 @@ function openlayersProcessDrawFeatures(drawFeatures, mapid) {
         
     // Add action link (button)
     // We store the type and associated mapid in the rel attribute.
+    // @@TODO: Make this out put a themed item in PHP, might need a placeholder for dF
     $('#openlayers-controls-' + mapid).append('<a href="#" id="openlayers-controls-draw-' + typeLower + '-' + mapid + '" class="openlayers-controls-draw-feature-link openlayers-controls-draw-feature-link-' + typeLower + ' openlayers-controls-draw-feature-link-off" rel="type:' + dF + ';mapid:' + mapid + '"></a>');
   }
   
