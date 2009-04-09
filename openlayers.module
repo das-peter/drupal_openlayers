@@ -18,7 +18,7 @@ define('OPENLAYERS_MAP_ID_PREFIX', 'openlayers-map-auto-id');
 function openlayers_help($path, $arg) {
   switch ($path) {
     case 'admin/help#openlayers':
-      $output = '<p>' . t('The OpenLayers module is the base module for the OpenLayer suite of modules, and provides the main API.') . '</p>';
+      $output = '<p>'. t('The OpenLayers module is the base module for the OpenLayer suite of modules, and provides the main API.') .'</p>';
   }
   
   return $output;
@@ -38,13 +38,13 @@ function openlayers_menu() {
   $items = array();
 
   $items['admin/settings/openlayers'] = array(
-  	'title' => 'OpenLayers',
-  	'description' => t('Set some defaults for OpenLayer maps.'),
-  	'page callback' => 'drupal_get_form',
-  	'page arguments' => array('openlayers_admin_settings'),
-  	'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
-  	'type' => MENU_NORMAL_ITEM,
+  'title' => 'OpenLayers',
+  'description' => t('Set some defaults for OpenLayer maps.'),
+  'page callback' => 'drupal_get_form',
+  'page arguments' => array('openlayers_admin_settings'),
+  'access arguments' => array('administer openlayers'),
+  'file' => 'includes/openlayers.admin.inc',
+  'type' => MENU_NORMAL_ITEM,
   );
 
   return $items;
@@ -73,7 +73,7 @@ function openlayers_intialize() {
     // Check for full URL
     if (valid_url($path, TRUE)) {
       // If URL, we have to manually include it in Drupal
-      drupal_set_html_head('<script src="' . check_url($path) . '" type="text/javascript"></script>');
+      drupal_set_html_head('<script src="'. check_url($path) .'" type="text/javascript"></script>');
       $included = TRUE;
     }
     else {
@@ -84,11 +84,11 @@ function openlayers_intialize() {
 
   // Add CSS
   // @@TODO: Use a static variable cache
-  drupal_add_css(drupal_get_path('module', 'openlayers') . '/openlayers.css', 'module');
+  drupal_add_css(drupal_get_path('module', 'openlayers') .'/openlayers.css', 'module');
 
   // Add base JS file
   // @@TODO: Use a static variable cache
-  drupal_add_js(drupal_get_path('module', 'openlayers') . '/js/openlayers.js', 'module');
+  drupal_add_js(drupal_get_path('module', 'openlayers') .'/js/openlayers.js', 'module');
   return $success;
 }
 
@@ -156,7 +156,7 @@ function _openlayers_create_map_id() {
   $map_id = '';
   static $map_count = 0;
   // Put together ID
-  $map_id = OPENLAYERS_MAP_ID_PREFIX . '-' . $map_count;
+  $map_id = OPENLAYERS_MAP_ID_PREFIX .'-'. $map_count;
   // Add another
   $map_count += 1;
   // Return ID
@@ -188,7 +188,7 @@ function _openlayers_get_map_defaults() {
     'layers' => array(
       'default_wms' => array(
         'id' => 'default_wms',
-        'type'=> 'WMS',
+        'type' => 'WMS',
         'name' => t('Default Open Layers WMS'),
         'url' => 'http://labs.metacarta.com/wms/vmap0',
         'params' => array(
@@ -238,9 +238,9 @@ Super array:
         ),
         'options' => array(),
         'events' => array(
-        	'loadstart'=> array(),
-        	'loadend' => array(),
-        	'loadcancel' => array(),
+          'loadstart'=> array(),
+          'loadend' => array(),
+          'loadcancel' => array(),
           'visibilitychanged' => array(),
           'moveend' => array(),
         ),
@@ -251,9 +251,9 @@ Super array:
         'name' => t('Default Vector'),
         'options' => array(),
         'events' => array(
-        	'loadstart'=> array(),
-        	'loadend' => array(),
-        	'loadcancel' => array(),
+          'loadstart'=> array(),
+          'loadend' => array(),
+          'loadcancel' => array(),
           'visibilitychanged' => array(),
           'moveend' => array(),
         ),
@@ -263,17 +263,20 @@ Super array:
       'point' => array(
         'type' => 'Point',
         'vector' => 'default_vector',
-        'featureadded_handler' => 'openlayersDefaultFeatureHandler',
+        'featureadded_handler' => array(),
+        'featuremodified_handler' => array(),
       ),
       'path' => array(
         'type' => 'Path',
         'vector' => 'default_vector',
-        'featureadded_handler' => 'openlayersDefaultFeatureHandler',
+        'featureadded_handler' => array(),
+        'featuremodified_handler' => array(),
       ),
       'polygon' => array(
         'type' => 'Polygon',
         'vector' => 'default_vector',
-        'featureadded_handler' => 'openlayersDefaultFeatureHandler',
+        'featureadded_handler' => array(),
+        'featuremodified_handler' => array(),
       ),
     ),
     'events' => array(

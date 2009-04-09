@@ -18,7 +18,7 @@ define('OPENLAYERS_CCK_MAP_ID_PREFIX', 'openlayers-cck-map-auto-id');
 function openlayers_cck_help($path, $arg) {
   switch ($path) {
     case 'admin/help#openlayers_cck':
-      $output = '<p>' . t('The openlayers_cck module provides fields and widgets that interface with OpenLayers.') . '</p>';
+      $output = '<p>'. t('The openlayers_cck module provides fields and widgets that interface with OpenLayers.') .'</p>';
   }
   
   return $output;
@@ -70,35 +70,15 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
   // Only include map once per field
   static $included_field = '';
   if ($included_field != $fieldname) {
-    $mapid = OPENLAYERS_CCK_MAP_ID_PREFIX . '-' . $fieldname;
+    $mapid = OPENLAYERS_CCK_MAP_ID_PREFIX .'-'. $fieldname;
     // Create map
     $map['id'] = $mapid;
     // Check for type
     
-    //Add an event to the map. When a layer is added fire the JS function openlayersCCKLoadValues
+    //Add an event to the map. When a layer is added fire the JavaScript function openlayersCCKLoadValues.
+    //openlayersCCKLoadValues takes care of loading data from the CCK fields into the map.
     $map['events'] = array(
-      'addlayer' => array('openlayersCCKLoadValues'),
-    );
-    
-    // @@TODO: I should not need to specify the WMS layer. We need a better array merge function in openlayers.module!
-    $map['layers'] = array(
-      'default_wms' => array(
-        'id' => 'default_wms',
-        'type'=> 'WMS',
-        'name' => t('Default Open Layers WMS'),
-        'url' => 'http://labs.metacarta.com/wms/vmap0',
-        'params' => array(
-          'layers' => 'basic',
-        ),
-        'options' => array(),
-        'events' => array(),
-      ),
-      'default_vector' => array(
-        'id' => 'default_vector',
-        'type' => 'Vector',
-        'name' => t('Editable Vector'),
-        'options' => array(),
-      )
+        'addlayer' => array('openlayersCCKLoadValues'),
     );
     
     switch ($field['geo_type']) {
@@ -107,7 +87,8 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
           'point' => array(
             'type' => 'Point',
             'vector' => 'default_vector',
-            'featureadded_handler' => 'openlayersCCKFeatureHandler',
+            'featureadded_handler' => array('openlayersCCKFeatureAdded'),
+            'featuremodified_handler' => array('openlayersCCKFeatureModified'),
           ),
         );
         break;
@@ -117,7 +98,8 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
           'path' => array(
             'type' => 'Path',
             'vector' => 'default_vector',
-            'featureadded_handler' => 'openlayersCCKFeatureHandler',
+            'featureadded_handler' => array('openlayersCCKFeatureAdded'),
+            'featuremodified_handler' => array('openlayersCCKFeatureModified'),
           ),
         );
         break;
@@ -127,7 +109,8 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
           'polygon' => array(
             'type' => 'Polygon',
             'vector' => 'default_vector',
-            'featureadded_handler' => 'openlayersCCKFeatureHandler',
+            'featureadded_handler' => array('openlayersCCKFeatureAdded'),
+            'featuremodified_handler' => array('openlayersCCKFeatureModified'),
           ),
         );
         break;
@@ -142,7 +125,7 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
             'field_data' => $field,
             'field_name_js' => str_replace('_', '-', $fieldname), // Best way?
             'field_map_themed' => theme('openlayers_cck_map', $field, $mapid),
-            'field_container' => str_replace('_', '-', $fieldname) . '-items',  // Best way??
+            'field_container' => str_replace('_', '-', $fieldname) .'-items',  // Best way??
             'field_items' => $items,
           ),
         ),
@@ -150,7 +133,7 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
     );
     // Add JS
     drupal_add_js($openlayers_cck, 'setting');
-    drupal_add_js(drupal_get_path('module', 'openlayers_cck') . '/js/openlayers_cck.js');
+    drupal_add_js(drupal_get_path('module', 'openlayers_cck') .'/js/openlayers_cck.js');
     // Render Map
     openlayers_render_map($map);
     $included_field = $fieldname;
@@ -225,13 +208,13 @@ function theme_openlayers_cck_map($field, $mapid) {
   
   $output .= '
     <div class="form-item">
-      <label for="' . $mapid . '">' . $field['widget']['label'] . '</label>
-      <div id="' . $mapid . '"></div>
+      <label for="'. $mapid .'">'. $field['widget']['label'] .'</label>
+      <div id="'. $mapid .'"></div>
       <div class="description">
-        ' . $field['widget']['description'] . '
+        '. $field['widget']['description'] .'
       </div>
       <div class="openlayers-cck-actions">
-        <a href="#" id="' . $mapid . '-wkt-switcher" rel="'.$mapid.'">' . t('Show/Hide WKT Fields') . '</a>
+        <a href="#" id="'. $mapid .'-wkt-switcher" rel="'. $mapid .'">'. t('Show/Hide WKT Fields') .'</a>
       </div>
     </div>
   ';
