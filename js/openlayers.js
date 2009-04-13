@@ -206,16 +206,11 @@ function openlayersProcessLayers(layers, mapid) {
   // Go through layers
   if (layers) {
     for (var layer in layers) {
-      switch (layers[layer].type) {
-        case 'WMS':    
-          var newLayer = openlayersProcessLayerWMS(layers[layer], mapid);
-          Drupal.openlayers.activeObjects[mapid].layers[layer] = newLayer;
-          break;    
-        case 'Vector':
-          var newLayer = openlayersProcessLayerVector(layers[layer], mapid);
-           Drupal.openlayers.activeObjects[mapid].layers[layer] = newLayer;
-          break;
-      }
+      // Process layer
+      // @@TODO: Do this without eval. See http://drupal.org/node/172169 on why we should not use eval.
+      eval("var newLayer = " + layers[layer].layer_handler + "(layers[layer], mapid);");
+      Drupal.openlayers.activeObjects[mapid].layers[layer] = newLayer;
+
       // Add our Drupal data to the layer
       newLayer.drupalId = layer;
       newLayer.drupalData = layers[layer];
@@ -223,58 +218,13 @@ function openlayersProcessLayers(layers, mapid) {
       // Add events
       for (var evtype in layers[layer].events){
         for (var ev in layers[layer].events[evtype]){ 
-        	//@@TODO: Do this without eval. See http://drupal.org/node/172169 on why we should not use eval.
+        	// @@TODO: Do this without eval. See http://drupal.org/node/172169 on why we should not use eval.
           eval("new_layer.events.register(evtype,new_layer," + layers[layer].events[evtype][ev] + ");");
         }
       }
     }
   }
 }
-
-/**
- * Process WMS Layers
- */
-function openlayersProcessLayerWMS(layerOptions, mapid) {
-  var wmsOptions = {
-    layers: layerOptions.params.layers,
-  };
-  var returnWMS = new OpenLayers.Layer.WMS(layerOptions.name, layerOptions.url, wmsOptions);
-  return returnWMS;
-}
-
-/**
- * Process Vector Layers
- */
-function openlayersProcessLayerVector(layerOptions, mapid) {
-  var stylesAll = [];
-  if (layerOptions.options.styles) {
-    var stylesAdded = [];
-    for (var styleName in layerOptions.options.styles) {
-      stylesAdded[styleName] = new OpenLayers.Style(layerOptions.options.styles[styleName].options);
-    }
-    stylesAll = new OpenLayers.StyleMap(stylesAdded);
-  };
-  
-  // @@TODO: not be hard-coded
-  var myStyles = new OpenLayers.StyleMap({
-                "default": new OpenLayers.Style({
-                    pointRadius: 5, // sized according to type attribute
-                    fillColor: "#ffcc66",
-                    strokeColor: "#ff9933",
-                    strokeWidth: 4,
-                    fillOpacity:0.5
-                }),
-                "select": new OpenLayers.Style({
-                    fillColor: "#66ccff",
-                    strokeColor: "#3399ff"
-                })
-    });
-    
-  var returnVector = new OpenLayers.Layer.Vector(layerOptions.name, {styleMap: myStyles});
-  return returnVector;
-}
-
-
 
 /**
  * Parse out key / value pairs out of a string that looks like "key:value;key2:value2"

@@ -120,13 +120,20 @@ function openlayers_render_map($map = array()) {
     $map['id'] = _openlayers_create_map_id();
   }
   
-  // @@TODO: Add an alter hook for array
+  // @@TODO: Merge with site defaults
   
-  // Merge with defaults
+  // Merge with module defaults
   $map_default = _openlayers_get_map_defaults();
-  // @@TODO: Better merging
-  $map = array_merge($map_default, $map); 
+  $map = _openlayers_merge_maps($map_default, $map);
   
+  // Hook for handling layers
+  // hook_openlayers_layers(&$layers = array(), $map = array())
+  $map['layers'] = module_invoke_all('openlayers_layers', $map['layers'], $map);
+
+  // Hook for one last alter
+  // hook_openlayers_map_alter(&$map = array())
+  drupal_alter('openlayers_map', &$map);
+
   // Add map container to drupal JS settings
   $openlayers = array(
     'openlayers' => array(
@@ -141,12 +148,41 @@ function openlayers_render_map($map = array()) {
 }
 
 /**
+ * Implemnetation of hook_openlayers_layers
+ */
+function openlayers_openlayers_layers(&$layers = array(), $map = array()) {
+  $layers_return = (is_array($layers)) ? $layers : array();
+
+  // Add Layers JS
+  drupal_add_js(drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js', 'module');
+  
+  // Go through array and add handler
+  foreach ($layers as $k => $layer) {
+    // switch by type
+    switch ($layer['type']) {
+      case 'WMS':
+        $layers_return[$k]['layer_handler'] = 'openlayersLayerHandlerWMS';
+        break;
+        
+      case 'Vector':
+        $layers_return[$k]['layer_handler'] = 'openlayersLayerHandlerVector';
+        break;
+        
+      default:
+        break;
+    }
+  }
+  
+  return $layers_return;
+}
+
+/**
  * Create Map ID
  *
  * Create a unique ID for any maps that are not assigned an ID
  *
  * @note
- *   Technically someone, can assign a map ID identical
+ *   Technically someone can assign a map ID identical
  *   to the one that is created
  * @return
  *   New map id
@@ -207,6 +243,26 @@ function _openlayers_get_map_defaults() {
     ),
   );
   return $map_default;
+}
+
+/**
+ * Merge Maps
+ *
+ * Wrapper for merging map arrays
+ *
+ * @return
+ *   map array
+ */
+function _openlayers_merge_maps($map1 = array(), $map2 = array()) {
+  $map_return = array();
+  
+  // Check maps
+  if (is_array($map1) && is_array($map2)) {
+    // @@TODO: Better merging
+    $map_return = array_merge($map1, $map2); 
+  }
+  
+  return $map_return;
 }
 
 /**
