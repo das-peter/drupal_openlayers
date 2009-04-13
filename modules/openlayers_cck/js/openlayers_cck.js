@@ -28,6 +28,30 @@ jQuery(document).ready(function() {
       $('#' + fieldContainer).toggle();
       return false;
     });
+    
+    // Set-up onblur event so that when users change the raw WKT fields, the map gets updated in real time
+    // @@BUG: For some reason after adding another text field by drawing an extra feature (or clicking "add another item") this is no longer triggering
+    $('#' + fieldContainer + ' textarea').blur(function() {
+      var mapid = $(this).attr('rel');
+      if ($(this).val() != ''){
+	      for (var l in Drupal.openlayers.activeObjects[mapid].layers['default_vector'].features) {
+	    	  if (Drupal.openlayers.activeObjects[mapid].layers['default_vector'].features[l].drupalField == $(this).attr('id')) {
+	        	var newFeature = openlayersCCKLoadFeatureFromTextarea(mapid, this);
+	        	if (newFeature != false) {
+	        		Drupal.openlayers.activeObjects[mapid].layers['default_vector'].features[l].destroy();
+	        		Drupal.openlayers.activeObjects[mapid].layers['default_vector'].addFeatures([newFeature]);
+	        	}
+	    	  }
+	  	  }
+  		}else{
+  			//Delete the layer and do not load any WKT
+  			for (var l in Drupal.openlayers.activeObjects[mapid].layers['default_vector'].features) {
+  				if (Drupal.openlayers.activeObjects[mapid].layers['default_vector'].features[l].drupalField == $(this).attr('id')) {
+  				  Drupal.openlayers.activeObjects[mapid].layers['default_vector'].features[l].destroy();
+  			  }
+  			}
+  		}
+    });
   }
 });
 
@@ -63,9 +87,14 @@ function openlayersCCKFeatureAdded(event) {
     
   // Assign field to feature
   feature.drupalField = wktFieldNewID;
-  // geometry.transform(map_proj, maps[field_name]['dbproj']);
+  
+  // @@TODO:  Transform the geometry if nessisary
+  // update CCK field with WKT values
   var wkt = geometry.toString();
   $('#' + wktFieldNewID).val(wkt);
+  
+  //Link the field to the map
+  $('#' + wktFieldNewID).attr('rel',feature.layer.map.mapid);
     
   // Add another field ..
   // @@BUG:  When triggering this function it is reloading all of Drupal.settings.openlayers.  On the reload for some reason it is only reloading our current CCK-field, not all CCK-fields, and so is causing the error: Drupal.settings.openlayers.maps[parsedRel.mapid] is undefined
@@ -77,32 +106,46 @@ function openlayersCCKFeatureAdded(event) {
  */
 function openlayersCCKPopulateMap(mapid){  
   var featuresToAdd = [];
-  var wktFormat = new OpenLayers.Format.WKT();
   var fieldContainer = Drupal.settings.openlayers_cck.maps[mapid].field_container;
   
   // Cycle through the fieldContainer item and read WKT from all the textareas
   $('#' + fieldContainer + ' textarea').each(function(){
     if ($(this).val() != ''){
-    	//read the wkt values into an OpenLayers geometry object
-      var newFeature = wktFormat.read($(this).val());
-      if (typeof(newFeature) == "undefined"){
-        alert(Drupal.t('WKT is not valid'));
-      }
-      else{
-      	// @@TODO: project the geometry if our map has a different geospatial projection as our CCK geo data.
-        // newFeature.geometry.transform(maps[field_name]['dbproj'], map_proj);
-        
-        // Link the feature to the field.
-        newFeature.drupalField = $(this).attr('id');
-        // Queue the feature for addition to the layer.
-        featuresToAdd.push(newFeature);
-      }
+      var newFeature = openlayersCCKLoadFeatureFromTextarea(mapid, this);
+      if (newFeature != false) featuresToAdd.push(newFeature);
     }
   });
   
   // Add features to vector
   if (featuresToAdd.length != 0){
     Drupal.openlayers.activeObjects[mapid].layers['default_vector'].addFeatures(featuresToAdd);
+  }
+}
+
+/**
+ * OpenLayers CCK Load Feature From Textarea
+ * 
+ * This function loads the WKT from a textarea, and returns an OpenLayers feature
+ */
+function openlayersCCKLoadFeatureFromTextarea(mapid, textarea){
+	var wktFormat = new OpenLayers.Format.WKT();
+	
+	//read the wkt values into an OpenLayers geometry object
+  var newFeature = wktFormat.read($(textarea).val());
+  if (typeof(newFeature) == "undefined"){
+    alert(Drupal.t('WKT is not valid'));
+    return false;
+  }
+  else{
+  	// @@TODO: project the geometry if our map has a different geospatial projection as our CCK geo data.
+    
+    // Link the feature to the field.
+    newFeature.drupalField = $(textarea).attr('id');
+    
+    //Link the field to the map
+    $(textarea).attr('rel',mapid);
+    
+		return newFeature;
   }
 }
 
@@ -121,8 +164,11 @@ function openlayersCCKLoadValues(event){
  * When the any feature on the layer is modified, fill in the WKT values into the text fields
  */
 function openlayersCCKFeatureModified(event){
+  var feature = event.feature;
   
-  // @@TODO: If modified, update CCK fields
+  // If modified, update CCK fields
+  var wkt = feature.geometry.toString();
+  $('#' + feature.drupalField).val(wkt);
   
   // @@TODO: If deleted, remove value form field
   
