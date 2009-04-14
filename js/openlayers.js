@@ -24,7 +24,8 @@ jQuery(document).ready(function() {
       // Set up places for us to store layers, controls, etc.
       Drupal.openlayers.activeObjects[map.id].controls = [];
       Drupal.openlayers.activeObjects[map.id].layers = [];
-      
+      Drupal.openlayers.activeObjects[map.id].active = false;
+
       // Render Map
       openlayersRenderMap(Drupal.settings.openlayers.maps[i]);
     }
@@ -52,6 +53,13 @@ function openlayersRenderMap(map) {
       eval("Drupal.openlayers.activeObjects[map.id].map.events.register(evtype,Drupal.openlayers.activeObjects[map.id].map," +  map.events[evtype][ev] + ");");
     }
   }
+  
+  //On MouseOver mark the map as "active".
+  $('#' + map.id).mouseover(function(){
+  	Drupal.openlayers.activeObjects[$(this).attr('id')].active = true;
+  }).mouseout(function(){
+  	Drupal.openlayers.activeObjects[$(this).attr('id')].active = false;
+  });
   
   // We set up all our layers
   openlayersProcessLayers(map.layers, map.id);
@@ -129,7 +137,7 @@ function openlayersProcessDrawFeatures(drawFeatures, mapid) {
     
     // Create our conrols and attach them to our layer.
     var createControl = new OpenLayers.Control.DrawFeature(layer, handler);
-    var modifyControl = new OpenLayers.Control.ModifyFeature(layer);
+    var modifyControl = new OpenLayers.Control.ModifyFeature(layer, {deleteCodes:[68]});
     
     //Disable the active mode by default.  This could be changed if we wanted people to draw on the map immediately.
     createControl.activeByDefault = false;
@@ -143,7 +151,7 @@ function openlayersProcessDrawFeatures(drawFeatures, mapid) {
     // Use a # prefix since these are special controls created by drawFeatures.
     Drupal.openlayers.activeObjects[mapid].controls['#create-' + typeLower] = createControl;
     Drupal.openlayers.activeObjects[mapid].controls['#modify-' + typeLower] = modifyControl;
-            
+    
     // Add special event handlers to controls
     if (drawFeatures[dF].featureadded_handler) {
       for (var ev in drawFeatures[dF].featureadded_handler){
@@ -151,11 +159,38 @@ function openlayersProcessDrawFeatures(drawFeatures, mapid) {
           eval("createControl.events.register('featureadded',createControl," + drawFeatures[dF].featureadded_handler[ev] + ");");
       }
     }
+       
     if (drawFeatures[dF].featuremodified_handler) {
     	for (var ev in drawFeatures[dF].featuremodified_handler){ 
     		// @@TODO: Do this without eval.
         eval("layer.events.register('afterfeaturemodified',layer," + drawFeatures[dF].featuremodified_handler[ev] + ");");
       }
+    }
+    
+    if (drawFeatures[dF].featureremoved_handler) {
+    	for (var ev in drawFeatures[dF].featureremoved_handler){ 
+    		// @@TODO: Do this without eval.
+        eval("layer.events.register('beforefeatureremoved',layer," + drawFeatures[dF].featureremoved_handler[ev] + ");");
+      }
+    
+	    //If a user presses the delete key, delete the currently selected polygon. This will in turn trigger the featuremodified_handler function. 
+	    document.onkeydown = function(event){
+	    	vKeyCode = event.keyCode;
+	    	// If it is the Mac delete key (63272), or regular delete key (46) delete all selected features for the active map.
+	    	if ((vKeyCode == 63272) || vKeyCode == 46){
+	        for (var m in Drupal.openlayers.activeObjects){
+	        	if (Drupal.openlayers.activeObjects[m].active == true){
+	        		for (var dF in Drupal.settings.openlayers.maps[m].draw_features){
+	        			var vector = Drupal.settings.openlayers.maps[m].draw_features[dF].vector;
+	        			var featureToErase = Drupal.openlayers.activeObjects[m].layers[vector].selectedFeatures[0];
+	        			Drupal.openlayers.activeObjects[m].layers[vector].destroyFeatures([featureToErase]);
+	        		  Drupal.openlayers.activeObjects[m].controls['#modify-' + dF].deactivate();
+	        			Drupal.openlayers.activeObjects[m].controls['#modify-' + dF].activate();
+	        		}
+	        	}
+	        }
+	      }
+	    };
     }
         
     // Add action link (button)
