@@ -147,9 +147,12 @@ function openlayers_render_map($map = array()) {
   $system_defaults = _openlayers_get_map_defaults();
   $map = openlayers_merge_maps($system_defaults, $map);
   
-  // Hook for handling layers
+  // Process layers
+  $map['layers'] = _openlayers_layers_process($map['layers']);
+  
+  // Hook for layer handlers
   // hook_openlayers_layers(&$layers = array(), $map = array())
-  $map['layers'] = module_invoke_all('openlayers_layers', $map['layers'], $map);
+  $map['layers'] = module_invoke_all('openlayers_layers_handler', $map['layers'], $map);
 
   // Hook for one last alter
   // hook_openlayers_map_alter(&$map = array())
@@ -166,6 +169,25 @@ function openlayers_render_map($map = array()) {
   drupal_add_js($openlayers, 'setting');
   
   return $map;
+}
+
+/**
+ * Get Layer Info
+ *
+ * Wrapper around layer info hook
+ *
+ * @ingroup API
+ * @return
+ *   array of layer info
+ */
+function openlayers_layers_get_info() {
+  $info = array();
+  
+  // Hook layer info ($map is not necessary)
+  // hook_openlayers_layers_info($map = array())
+  $info = module_invoke_all('openlayers_layers_handler');
+  
+  return $info;
 }
 
 /**
@@ -253,9 +275,9 @@ function openlayers_merge_maps($map1 = array(), $map2 = array()) {
 }
 
 /**
- * Implemnetation of hook_openlayers_layers
+ * Implemnetation of hook_openlayers_layers_handler
  */
-function openlayers_openlayers_layers(&$layers = array(), $map = array()) {
+function openlayers_openlayers_layers_handler(&$layers = array(), $map = array()) {
   $layers_return = (is_array($layers)) ? $layers : array();
 
   // Add Layers JS
@@ -279,6 +301,53 @@ function openlayers_openlayers_layers(&$layers = array(), $map = array()) {
   }
   
   return $layers_return;
+}
+
+/**
+ * Create Map ID
+ *
+ * Create a unique ID for any maps that are not assigned an ID
+ *
+ * @note
+ *   Technically someone can assign a map ID identical
+ *   to the one that is created
+ * @return
+ *   New map id
+ */
+function _openlayers_layers_process($layers = array()) {
+  $processed = array();
+  
+  // Get layer info array
+  $layer_info = openlayers_layers_get_info();
+  
+  // Go through layers
+  foreach ($layers as $k => $layer) {
+    // Check if array, if array, just pass on
+    if (is_array($layer)) {
+      $processed[$k] = $layer;
+    }
+    else {
+      // If not array, we want to include the file and call the function
+      if ($info = is_array($layer_info[$layer])) {
+        // Check if file exists
+        if (is_file('./'. $info['file'])) {
+          require_once './'. $info['file'];
+          // Check for function
+          if (function_exists($info['callback'])) {
+            // Call function and give it the layer name
+            $result = call_user_func_array($info['callback'], $layer);
+            // Check for result
+            if (isset($result) && is_array($reault)) {
+              $processed[$k] = $result;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  // Return processed
+  return $processed;
 }
 
 /**
