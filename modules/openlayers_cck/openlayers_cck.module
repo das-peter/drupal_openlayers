@@ -75,10 +75,33 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
     $map['id'] = $mapid;
     // Check for type
     
-    //Add an event to the map. When a layer is added fire the JavaScript function openlayersCCKLoadValues.
-    //openlayersCCKLoadValues takes care of loading data from the CCK fields into the map.
+    // Add an event to the map. When a layer is added fire the JavaScript function openlayersCCKLoadValues.
+    // openlayersCCKLoadValues takes care of loading data from the CCK fields into the map.
     $map['events'] = array(
         'addlayer' => array('openlayersCCKLoadValues'),
+    );
+    
+    // Define our map layers.
+    // @@TODO: Let the user define the basemap.
+    $map['layers'] = array(
+      'default_wms' => array(
+        'id' => 'default_wms',
+        'type' => 'WMS',
+        'name' => t('Default Open Layers WMS'),
+        'url' => 'http://labs.metacarta.com/wms/vmap0',
+        'params' => array(
+          'layers' => 'basic',
+        ),
+        'options' => array(),
+        'events' => array(),
+      ),
+      'openlayers_cck_vector' => array(
+        'id' => 'openlayers_cck_vector',
+        'type' => 'Vector',
+        'name' => $field['widget']['label'],
+        'options' => array(),
+        'events' => array(),
+      ),
     );
     
     switch ($field['geo_type']) {
@@ -86,7 +109,7 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
         $map['draw_features'] = array(
           'point' => array(
             'type' => 'Point',
-            'vector' => 'default_vector',
+            'vector' => 'openlayers_cck_vector',
             'featureadded_handler' => array('openlayersCCKFeatureAdded'),
             'featuremodified_handler' => array('openlayersCCKFeatureModified'),
           ),
@@ -97,7 +120,7 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
         $map['draw_features'] = array(
           'path' => array(
             'type' => 'Path',
-            'vector' => 'default_vector',
+            'vector' => 'openlayers_cck_vector',
             'featureadded_handler' => array('openlayersCCKFeatureAdded'),
             'featuremodified_handler' => array('openlayersCCKFeatureModified'),
           ),
@@ -108,7 +131,7 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
         $map['draw_features'] = array(
           'polygon' => array(
             'type' => 'Polygon',
-            'vector' => 'default_vector',
+            'vector' => 'openlayers_cck_vector',
             'featureadded_handler' => array('openlayersCCKFeatureAdded'),
             'featuremodified_handler' => array('openlayersCCKFeatureModified'),
           ),
@@ -213,6 +236,7 @@ function theme_openlayers_cck_map($field, $mapid) {
       <div class="description">
         '. $field['widget']['description'] .'
       </div>
+      <div class="description">'.t('Click the tools in the upper right-hand corner of the map to switch between draw mode and zoom/pan mode. Draw your shape, double-clicking to finish. You may edit your shape using the control points. To delete a shape, select it and press the delete key.').'</div>
       <div class="openlayers-cck-actions">
         <a href="#" id="'. $mapid .'-wkt-switcher" rel="'. $mapid .'">'. t('Show/Hide WKT Fields') .'</a>
       </div>

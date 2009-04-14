@@ -15,41 +15,42 @@
 jQuery(document).ready(function() {
   // Go through CCK Fields and diplay map
   var fieldContainer = '';
-  for (var map in Drupal.settings.openlayers_cck.maps) {
-    fieldContainer = Drupal.settings.openlayers_cck.maps[map].field_container;
+  for (var mapid in Drupal.settings.openlayers_cck.maps) {
+    fieldContainer = Drupal.settings.openlayers_cck.maps[mapid].field_container;
     // Add Themed Map container
-    $('#' + fieldContainer).before(Drupal.settings.openlayers_cck.maps[map].field_map_themed);
+    $('#' + fieldContainer).before(Drupal.settings.openlayers_cck.maps[mapid].field_map_themed);
     $('#' + fieldContainer).hide();
     
     // Define click actions for WKT Switcher
-    $('#' + map + '-wkt-switcher').click(function() {
+    $('#' + mapid + '-wkt-switcher').click(function() {
       var mapid = $(this).attr('rel');
       var fieldContainer = Drupal.settings.openlayers_cck.maps[mapid].field_container;
       $('#' + fieldContainer).toggle();
       return false;
     });
     
+    //Link each textarea to their map
+    $('#' + fieldContainer + ' textarea').attr('rel',mapid);
+    
     // Set-up onblur event so that when users change the raw WKT fields, the map gets updated in real time
     // @@BUG: For some reason after adding another text field by drawing an extra feature (or clicking "add another item") this is no longer triggering
     $('#' + fieldContainer + ' textarea').blur(function() {
       var mapid = $(this).attr('rel');
+      //Create the new feature
       if ($(this).val() != ''){
-	      for (var l in Drupal.openlayers.activeObjects[mapid].layers['default_vector'].features) {
-	    	  if (Drupal.openlayers.activeObjects[mapid].layers['default_vector'].features[l].drupalField == $(this).attr('id')) {
-	        	var newFeature = openlayersCCKLoadFeatureFromTextarea(mapid, this);
-	        	if (newFeature != false) {
-	        		Drupal.openlayers.activeObjects[mapid].layers['default_vector'].features[l].destroy();
-	        		Drupal.openlayers.activeObjects[mapid].layers['default_vector'].addFeatures([newFeature]);
-	        	}
-	    	  }
-	  	  }
-  		}else{
-  			//Delete the layer and do not load any WKT
-  			for (var l in Drupal.openlayers.activeObjects[mapid].layers['default_vector'].features) {
-  				if (Drupal.openlayers.activeObjects[mapid].layers['default_vector'].features[l].drupalField == $(this).attr('id')) {
-  				  Drupal.openlayers.activeObjects[mapid].layers['default_vector'].features[l].destroy();
-  			  }
-  			}
+      	var newFeature = openlayersCCKLoadFeatureFromTextarea(mapid, this);
+      }
+      
+      //Delete the existing feature
+  		for (var l in Drupal.openlayers.activeObjects[mapid].layers['openlayers_cck_vector'].features) {
+  		  if (Drupal.openlayers.activeObjects[mapid].layers['openlayers_cck_vector'].features[l].drupalField == $(this).attr('id')) {
+  		  	Drupal.openlayers.activeObjects[mapid].layers['openlayers_cck_vector'].features[l].destroy();
+  	    }
+  	  }
+  	    
+  	  //Repopulate with a new feature.
+      if ($(this).val() != ''){
+	      Drupal.openlayers.activeObjects[mapid].layers['openlayers_cck_vector'].addFeatures([newFeature]);
   		}
     });
   }
@@ -118,7 +119,7 @@ function openlayersCCKPopulateMap(mapid){
   
   // Add features to vector
   if (featuresToAdd.length != 0){
-    Drupal.openlayers.activeObjects[mapid].layers['default_vector'].addFeatures(featuresToAdd);
+    Drupal.openlayers.activeObjects[mapid].layers['openlayers_cck_vector'].addFeatures(featuresToAdd);
   }
 }
 
@@ -154,7 +155,7 @@ function openlayersCCKLoadFeatureFromTextarea(mapid, textarea){
  * When the layer is done loading, load in the values from the CCK text fields if it is the correct layer.
  */
 function openlayersCCKLoadValues(event){
-  if (event.layer.drupalId == "default_vector"){
+  if (event.layer.drupalId == "openlayers_cck_vector"){
     openlayersCCKPopulateMap(event.layer.map.mapid);
   }
 }
