@@ -112,6 +112,7 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
             'vector' => 'openlayers_cck_vector',
             'featureadded_handler' => array('openlayersCCKFeatureAdded'),
             'featuremodified_handler' => array('openlayersCCKFeatureModified'),
+            'featureremoved_handler' => array('openlayersCCKFeatureRemoved'),
           ),
         );
         break;
@@ -123,6 +124,7 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
             'vector' => 'openlayers_cck_vector',
             'featureadded_handler' => array('openlayersCCKFeatureAdded'),
             'featuremodified_handler' => array('openlayersCCKFeatureModified'),
+            'featureremoved_handler' => array('openlayersCCKFeatureRemoved'),
           ),
         );
         break;
@@ -134,6 +136,7 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
             'vector' => 'openlayers_cck_vector',
             'featureadded_handler' => array('openlayersCCKFeatureAdded'),
             'featuremodified_handler' => array('openlayersCCKFeatureModified'),
+            'featureremoved_handler' => array('openlayersCCKFeatureRemoved'),
           ),
         );
         break;
@@ -196,7 +199,7 @@ function openlayers_cck_geo_field_process($element, $edit, $form_state, $form) {
   $field = $form['#field_info'][$element['#field_name']];
   $delta = $element['#delta'];
   $field_data = content_fields($element['#field_name'], $element['#type_name']);
-  
+    
   // Define elements
   $element['wkt'] = array(
     '#type' => 'textarea',
@@ -205,6 +208,7 @@ function openlayers_cck_geo_field_process($element, $edit, $form_state, $form) {
     '#default_value' => isset($element['#value']['wkt']) ? $element['#value']['wkt'] : NULL,
     '#required' => $field['required'],
     '#description' => $field['widget']['description'],
+    '#attributes' => array('rel' => OPENLAYERS_CCK_MAP_ID_PREFIX ."-". $field['field_name']),
   );
   
   // Remove title and description for multiple
@@ -236,7 +240,7 @@ function theme_openlayers_cck_map($field, $mapid) {
       <div class="description">
         '. $field['widget']['description'] .'
       </div>
-      <div class="description">'.t('Click the tools in the upper right-hand corner of the map to switch between draw mode and zoom/pan mode. Draw your shape, double-clicking to finish. You may edit your shape using the control points. To delete a shape, select it and press the delete key.').'</div>
+      <div class="description">'.t('Click the tools in the upper right-hand corner of the map to switch between draw mode and zoom/pan mode. Draw your shape, double-clicking to finish. You may edit your shape using the control points. To delete a shape, select it and press the delete key. To delete a vertex hover over it and press the d key.').'</div>
       <div class="openlayers-cck-actions">
         <a href="#" id="'. $mapid .'-wkt-switcher" rel="'. $mapid .'">'. t('Show/Hide WKT Fields') .'</a>
       </div>

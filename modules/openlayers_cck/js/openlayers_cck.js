@@ -29,11 +29,8 @@ jQuery(document).ready(function() {
       return false;
     });
     
-    //Link each textarea to their map
-    $('#' + fieldContainer + ' textarea').attr('rel',mapid);
-    
     // Set-up onblur event so that when users change the raw WKT fields, the map gets updated in real time
-    // @@BUG: For some reason after adding another text field by drawing an extra feature (or clicking "add another item") this is no longer triggering
+    // @@BUG: After adding another text field by drawing an extra feature (or clicking "add another item") this is no longer triggering because the fields are being reloaded via ajax and so are loosing their attributes including this trigger attribute.
     $('#' + fieldContainer + ' textarea').blur(function() {
       var mapid = $(this).attr('rel');
       //Create the new feature
@@ -57,52 +54,8 @@ jQuery(document).ready(function() {
 });
 
 /**
- * OpenLayers CCK Feature Added Handler
+ * OpenLayers CCK Populate Map
  * 
- * This function is triggered when a feature is added by the user
- */
-function openlayersCCKFeatureAdded(event) {
-	//Get the feature we have just added out of the event object
-  var feature = event.feature;
-  
-  // Make some variables
-  var featureCount = feature.layer.features.length;
-  var featureNew = featureCount - 1;
-  var mapid = feature.layer.map.mapid;
-  
-  // Get field names
-  var fieldName;
-  for (var map in Drupal.settings.openlayers_cck.maps) {
-    if (map == mapid) {
-      fieldName = Drupal.settings.openlayers_cck.maps[map].field_name_js;
-    }
-  }
-  
-  // This is the id of the textfield we will be assigning this feature to.
-  var wktFieldNewID = 'edit-' + fieldName + '-' + featureNew + '-wkt';
-  // This is the "Add another item" button
-  var wktFieldAddID = 'edit-' + fieldName + '-' + fieldName + '-add-more';
-  
-  // Clone the geometry so we may safetly work on it without hurting the feature
-  var geometry = feature.geometry.clone();
-    
-  // Assign field to feature
-  feature.drupalField = wktFieldNewID;
-  
-  // @@TODO:  Transform the geometry if nessisary
-  // update CCK field with WKT values
-  var wkt = geometry.toString();
-  $('#' + wktFieldNewID).val(wkt);
-  
-  //Link the field to the map
-  $('#' + wktFieldNewID).attr('rel',feature.layer.map.mapid);
-    
-  // Add another field ..
-  // @@BUG:  When triggering this function it is reloading all of Drupal.settings.openlayers.  On the reload for some reason it is only reloading our current CCK-field, not all CCK-fields, and so is causing the error: Drupal.settings.openlayers.maps[parsedRel.mapid] is undefined
-  $('#' + wktFieldAddID).trigger('mousedown');
-}
-
-/**
  * Get Values From CCK and populate the map with shapes
  */
 function openlayersCCKPopulateMap(mapid){  
@@ -143,15 +96,14 @@ function openlayersCCKLoadFeatureFromTextarea(mapid, textarea){
     // Link the feature to the field.
     newFeature.drupalField = $(textarea).attr('id');
     
-    //Link the field to the map
-    $(textarea).attr('rel',mapid);
-    
 		return newFeature;
   }
 }
 
 
 /**
+ * OpenLayers CCK Load Values
+ * 
  * When the layer is done loading, load in the values from the CCK text fields if it is the correct layer.
  */
 function openlayersCCKLoadValues(event){
@@ -160,17 +112,74 @@ function openlayersCCKLoadValues(event){
   }
 }
 
+/**
+ * OpenLayers CCK Feature Added Handler
+ * 
+ * This function is triggered when a feature is added by the user
+ */
+function openlayersCCKFeatureAdded(event) {
+	//Get the feature we have just added out of the event object
+  var feature = event.feature;
+  var mapid = feature.layer.map.mapid;
+  
+  // Get field names
+  var fieldName;
+  for (var map in Drupal.settings.openlayers_cck.maps) {
+    if (map == mapid) {
+      fieldName = Drupal.settings.openlayers_cck.maps[map].field_name_js;
+    }
+  }
+  
+  // Get the index number of the newly added field
+  var featureNew = $('#' + fieldName + '-items textarea').size() -1;
+  
+  // This is the id of the textfield we will be assigning this feature to.
+  var wktFieldNewID = 'edit-' + fieldName + '-' + featureNew + '-wkt';
+  // This is the "Add another item" button
+  var wktFieldAddID = 'edit-' + fieldName + '-' + fieldName + '-add-more';
+  
+  // Clone the geometry so we may safetly work on it without hurting the feature
+  var geometry = feature.geometry.clone();
+    
+  // Assign field to feature
+  feature.drupalField = wktFieldNewID;
+  
+  // @@TODO:  Transform the geometry if nessisary
+  // update CCK field with WKT values
+  var wkt = geometry.toString();
+  $('#' + wktFieldNewID).val(wkt);
+  
+  //Link the field to the map
+  $('#' + wktFieldNewID).attr('rel',feature.layer.map.mapid);
+    
+  // Add another field ..
+  // @@BUG:  When triggering this function it is reloading all of Drupal.settings.openlayers.  On the reload for some reason it is only reloading our current CCK-field, not all CCK-fields, and so is causing the error: Drupal.settings.openlayers.maps[parsedRel.mapid] is undefined
+  $('#' + wktFieldAddID).trigger('mousedown');
+}
 
 /**
- * When the any feature on the layer is modified, fill in the WKT values into the text fields
+ * OpenLayers CCK Feaure Modified Handler
+ * 
+ * When the any feature on the layer is modified, fill in the WKT values into the text fields.
  */
 function openlayersCCKFeatureModified(event){
   var feature = event.feature;
-  
-  // If modified, update CCK fields
+    
+  // update CCK fields
   var wkt = feature.geometry.toString();
   $('#' + feature.drupalField).val(wkt);
-  
-  // @@TODO: If deleted, remove value form field
-  
 }
+
+/**
+ * OpenLayers CCK Feaure Removed Handler
+ * 
+ * When the any feature on the layer is deleted, strip out the WKT values from the CCK value fields.
+ */
+function openlayersCCKFeatureRemoved(event){
+  var feature = event.feature;
+  
+  // Empty the CCK field values.
+  $('#' + feature.drupalField).val('');
+}
+
+
