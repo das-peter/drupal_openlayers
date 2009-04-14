@@ -39,12 +39,31 @@ function openlayers_menu() {
 
   $items['admin/settings/openlayers'] = array(
     'title' => 'OpenLayers',
-    'description' => t('Set some defaults for OpenLayer maps.'),
+    'description' => t('OpenLayers administrative settings.'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_admin_settings'),
     'access arguments' => array('administer openlayers'),
     'file' => 'includes/openlayers.admin.inc',
-    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['admin/settings/openlayers/settings'] = array(
+    'title' => 'Settings',
+    'description' => t('Main settings for OpenLayers.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_admin_settings'),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -20,
+  );
+  $items['admin/settings/openlayers/defaults'] = array(
+    'title' => 'Defaults',
+    'description' => t('Configure defaults for OpenLayers maps.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_admin_default_settings'),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.defaults.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => -10,
   );
 
   return $items;
@@ -120,11 +139,13 @@ function openlayers_render_map($map = array()) {
     $map['id'] = _openlayers_create_map_id();
   }
   
-  // @@TODO: Merge with site defaults
+  // Merge with site defaults (saved values)
+  $saved_defaults = variable_get('openlayers_defaults', array());
+  $map = openlayers_merge_maps($saved_defaults, $map);
   
-  // Merge with module defaults
-  $map_default = _openlayers_get_map_defaults();
-  $map = _openlayers_merge_maps($map_default, $map);
+  // Merge with module/system defaults
+  $system_defaults = _openlayers_get_map_defaults();
+  $map = openlayers_merge_maps($system_defaults, $map);
   
   // Hook for handling layers
   // hook_openlayers_layers(&$layers = array(), $map = array())
@@ -145,6 +166,90 @@ function openlayers_render_map($map = array()) {
   drupal_add_js($openlayers, 'setting');
   
   return $map;
+}
+
+/**
+ * Get OpenLayers Form
+ *
+ * Get the form array to customize OpenLayers Maps
+ *
+ * @ingroup API
+ * @return
+ *   Array of form items
+ */
+function openlayers_map_form($defaults = array()) {
+  // Names of fields and fieldssets should correspond to the map array
+  $form = array();
+  
+  // Map general properties
+  $form['width'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Width'),
+    '#description' => t('Please use a CSS Width value.'),
+    '#default_value' => $defaults['width'],
+    '#maxlength' => 128,
+  );
+  $form['height'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Height'),
+    '#description' => t('Please use a CSS Height value.'),
+    '#default_value' => $defaults['height'],
+    '#maxlength' => 128,
+  );
+  
+  // Map center properties
+  $form['center'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Center'),
+    '#description' => t('Where the map will center itself initially.'),
+    '#tree' => TRUE,
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+  $form['center']['lat'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Latitude'),
+    '#description' => t('The latitude or X value for centering.'),
+    '#default_value' => $defaults['center']['lat'],
+    '#maxlength' => 128,
+  );
+  $form['center']['lon'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Longitude'),
+    '#description' => t('The longitude or Y value for centering.'),
+    '#default_value' => $defaults['center']['lon'],
+    '#maxlength' => 128,
+  );
+  $form['center']['zoom'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Zoom Level'),
+    '#description' => t('The zoom level for centering.'),
+    '#default_value' => $defaults['center']['zoom'],
+    '#maxlength' => 128,
+  );
+  
+  return $form;
+}
+
+/**
+ * Merge Maps
+ *
+ * Wrapper for merging map arrays
+ *
+ * @ingroup API
+ * @return
+ *   map array
+ */
+function openlayers_merge_maps($map1 = array(), $map2 = array()) {
+  $map_return = array();
+  
+  // Check maps
+  if (is_array($map1) && is_array($map2)) {
+    // @@TODO: Better merging
+    $map_return = array_merge($map1, $map2); 
+  }
+  
+  return $map_return;
 }
 
 /**
@@ -211,9 +316,9 @@ function _openlayers_get_map_defaults() {
     'width' => 'auto',
     'height' => '300px',
     'center' => array(
-      'lat' => 0,
-      'lon' => 0,
-      'zoom' => 2,
+      'lat' => '0',
+      'lon' => '0',
+      'zoom' => '2',
     ),
     'options' => array(
       'numZoomLevels' => 10,
@@ -243,26 +348,6 @@ function _openlayers_get_map_defaults() {
     ),
   );
   return $map_default;
-}
-
-/**
- * Merge Maps
- *
- * Wrapper for merging map arrays
- *
- * @return
- *   map array
- */
-function _openlayers_merge_maps($map1 = array(), $map2 = array()) {
-  $map_return = array();
-  
-  // Check maps
-  if (is_array($map1) && is_array($map2)) {
-    // @@TODO: Better merging
-    $map_return = array_merge($map1, $map2); 
-  }
-  
-  return $map_return;
 }
 
 /**
