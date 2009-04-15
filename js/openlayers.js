@@ -116,8 +116,8 @@ function openlayersCreateMapOptions(options, controls, mapid) {
  *
  * This is for marking vector layers as editable. 
  * This function will add standard functionality for adding and editing features.
- * This function does no *do* anything with the features other than allow them to be drawn and edited by the interface. 
- * Use featureadded_handler and featuremodified_handler if you wish to do something with the drawn/edited features.
+ * This function does no *do* anything with the features other than allow them to be drawn, edited and deleted by the interface. 
+ * Use featureadded_handler, featuremodified_handler and featureremoved_handler if you wish to do something with the drawn/edited/deleted features.
  */
 function openlayersProcessDrawFeatures(drawFeatures, mapid) {
   // Add Base Pan button
@@ -173,7 +173,7 @@ function openlayersProcessDrawFeatures(drawFeatures, mapid) {
         eval("layer.events.register('beforefeatureremoved',layer," + drawFeatures[dF].featureremoved_handler[ev] + ");");
       }
     
-	    //If a user presses the delete key, delete the currently selected polygon. This will in turn trigger the featuremodified_handler function. 
+	    //If a user presses the delete key, delete the currently selected polygon. This will in turn trigger the featureremoved_handler function. 
 	    document.onkeydown = function(event){
 	    	vKeyCode = event.keyCode;
 	    	// If it is the Mac delete key (63272), or regular delete key (46) delete all selected features for the active map.
@@ -184,6 +184,7 @@ function openlayersProcessDrawFeatures(drawFeatures, mapid) {
 	        			var vector = Drupal.settings.openlayers.maps[m].draw_features[dF].vector;
 	        			var featureToErase = Drupal.openlayers.activeObjects[m].layers[vector].selectedFeatures[0];
 	        			Drupal.openlayers.activeObjects[m].layers[vector].destroyFeatures([featureToErase]);
+	        			// Reload the modification control so we dont have ghost control points from the recently deceased feature
 	        		  Drupal.openlayers.activeObjects[m].controls['#modify-' + dF].deactivate();
 	        			Drupal.openlayers.activeObjects[m].controls['#modify-' + dF].activate();
 	        		}
