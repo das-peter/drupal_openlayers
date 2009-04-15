@@ -185,93 +185,73 @@ function openlayers_layers_get_info() {
   
   // Hook layer info ($map is not necessary)
   // hook_openlayers_layers_info($map = array())
-  $info = module_invoke_all('openlayers_layers_handler');
-  
+  $info = module_invoke_all('openlayers_layers_info');
+
   return $info;
 }
 
 /**
- * Get OpenLayers Form
+ * OpenLayers Form Wrapper
  *
- * Get the form array to customize OpenLayers Maps
+ * Get the form array to customize OpenLayers Maps.  This is wrapper
+ * for a function in another file.  This keeps the form from
+ * being parsed unnecesarily
  *
  * @ingroup API
+ * @param $defaults
+ *   Array of defaults
  * @return
  *   Array of form items
  */
 function openlayers_map_form($defaults = array()) {
-  // Names of fields and fieldssets should correspond to the map array
-  $form = array();
-  
-  // Map general properties
-  $form['width'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Width'),
-    '#description' => t('Please use a CSS Width value.'),
-    '#default_value' => $defaults['width'],
-    '#maxlength' => 128,
-  );
-  $form['height'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Height'),
-    '#description' => t('Please use a CSS Height value.'),
-    '#default_value' => $defaults['height'],
-    '#maxlength' => 128,
-  );
-  
-  // Map center properties
-  $form['center'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Center'),
-    '#description' => t('Where the map will center itself initially.'),
-    '#tree' => TRUE,
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-  );
-  $form['center']['lat'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Latitude'),
-    '#description' => t('The latitude or X value for centering.'),
-    '#default_value' => $defaults['center']['lat'],
-    '#maxlength' => 128,
-  );
-  $form['center']['lon'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Longitude'),
-    '#description' => t('The longitude or Y value for centering.'),
-    '#default_value' => $defaults['center']['lon'],
-    '#maxlength' => 128,
-  );
-  $form['center']['zoom'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Zoom Level'),
-    '#description' => t('The zoom level for centering.'),
-    '#default_value' => $defaults['center']['zoom'],
-    '#maxlength' => 128,
-  );
-  
-  return $form;
+  module_load_include('inc', 'openlayers', '/includes/openlayers.form');
+  return _openlayers_map_form($defaults);
+}
+
+/**
+ * OpenLayers Form to Map Wrapper
+ *
+ * Converst Form submission to map array.  This is wrapper
+ * for a function in another file.  This keeps the form from
+ * being parsed unnecesarily
+ *
+ * @ingroup API
+ * @param $values
+ *   Array of values to convert
+ * @return
+ *   Array of form items
+ */
+function openlayers_convert_form_to_map($values = array()) {
+  module_load_include('inc', 'openlayers', '/includes/openlayers.form');
+  return _openlayers_convert_form_to_map($values);
 }
 
 /**
  * Merge Maps
  *
- * Wrapper for merging map arrays
+ * Recursive function to merge maps.  PHP's array_merge_recursive
+ * creates unnecesary arrays ot values if keys are the same.  This
+ * function simply overwrites a value, even if the key is numeric.
  *
  * @ingroup API
  * @return
  *   map array
  */
 function openlayers_merge_maps($map1 = array(), $map2 = array()) {
-  $map_return = array();
-  
+
   // Check maps
   if (is_array($map1) && is_array($map2)) {
-    // @@TODO: Better merging
-    $map_return = array_merge($map1, $map2); 
+    foreach ($map2 as $k => $v) {
+      if (isset($map1[$k]) && is_array($v) && is_array($map1[$k])) {
+        $map1[$k] = openlayers_merge_maps($map1[$k], $v);
+      }
+      else {
+        $map1[$k] = $v;
+      }
+    }
   }
   
-  return $map_return;
+  return $map1;
 }
 
 /**
@@ -404,13 +384,6 @@ function _openlayers_get_map_defaults() {
         'params' => array(
           'layers' => 'basic',
         ),
-        'options' => array(),
-        'events' => array(),
-      ),
-      'default_vector' => array(
-        'id' => 'default_vector',
-        'type' => 'Vector',
-        'name' => t('Default Vector'),
         'options' => array(),
         'events' => array(),
       ),

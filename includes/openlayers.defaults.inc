@@ -49,15 +49,8 @@ function openlayers_admin_default_settings($form_state) {
 function openlayers_admin_default_settings_submit($form, &$form_state) {
   // Save into a system variable
   if ($form_state['values']['op'] == t('Save')) {
-    // Remove any unnecessary values
-    // @@TODO: Is this the best way to do this?
-    $save = array();
-    $throw = array('op', 'submit', 'form_build_id', 'form_token', 'form_id');
-    foreach ($form_state['values'] as $k => $v) {
-      if (!in_array($k, $throw)) {
-        $save[$k] = $v;
-      }
-    }
-    variable_set('openlayers_defaults', $save);
+    // Convert values to map array
+    $map = openlayers_convert_form_to_map($form_state['values']);
+    variable_set('openlayers_defaults', $map);
   }
 }

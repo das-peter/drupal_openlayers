@@ -1,0 +1,38 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * This file holds the main Drupal hook functions 
+ * and private functions for the openlayers_layers module.
+ */
+
+/**
+ * Implementation of hook_help
+ */
+function openlayers_layers_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#openlayers_layers':
+      $output = '<p>'. t('Provides CCK fields and widgets through an OpenLayers interface.') .'</p>';
+  }
+  
+  return $output;
+}
+
+/**
+ * Implementation of hook_openlayers_layers_info
+ */
+function openlayers_layers_openlayers_layers_info() {
+  $file = drupal_get_path('module', 'openlayers_layers') .'/includes/openlayers_layers.layers.inc';
+  $callback = 'openlayers_layers_process_layers';
+  $info = array();
+  
+  // Define info array
+  $info['openlayers_layers_jpl_nasa_wms'] = array(
+    'name' => t('NASA JPL Global Imagery Service'),
+    'file' => $file,
+    'callback' => $callback,
+  );
+  
+  return $info;
+}
