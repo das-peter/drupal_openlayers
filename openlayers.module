@@ -317,7 +317,7 @@ function _openlayers_layers_process($layers = array()) {
             // Call function and give it the layer name
             $result = call_user_func_array($info['callback'], $layer);
             // Check for result
-            if (isset($result) && is_array($reault)) {
+            if (isset($result) && is_array($result)) {
               $processed[$k] = $result;
             }
           }
