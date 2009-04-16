@@ -43,26 +43,13 @@ function openlayers_layers_openlayers_layers_info() {
 }
 
 /**
- * Implementation of hook_openlayers_layers_handler
+ * Implemnetation of hook_openlayers_layers_handler
  */
-function openlayers_layers_openlayers_layers_handler(&$layers = array(), $map = array()) {
-  $layers_return = (is_array($layers)) ? $layers : array();
-
-  // Add Layers JS
-  drupal_add_js(drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers_layers.js', 'module');
-  
-  // Go through array and add handler
-  foreach ($layers as $k => $layer) {
-    // switch by type
-    switch ($layer['type']) {
-      case 'XYZ':
-        $layers_return[$k]['layer_handler'] = 'openlayersLayerHandlerXYZ';
-        break;
-        
-      default:
-        break;
-    }
-  }
-  
-  return $layers_return;
+function openlayers_layers_openlayers_layers_handler_info($map = array()) {
+  return array(
+    'XYZ' => array(
+      'layer_handler' => 'openlayersLayerHandlerXYZ',
+      'js_file' => drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers_layers.js',
+    ),
+  );
 }

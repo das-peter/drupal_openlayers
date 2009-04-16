@@ -61,6 +61,6 @@ function openlayers_layers_process_layers($layer = NULL) {
     default:
       break;
   }
-  
+
   return $layer_data;
 }

@@ -125,11 +125,11 @@ function _openlayers_convert_form_to_map($values = array()) {
     }
   }
   
-  // Go through layers
+  // Go through layers (could be better way to do this)
   $layers = array();
-  $layers = $values['layers']['available_layers'];
-  if (!in_array($values['layers']['base_layer'], $values['layers']['available_layers'])) {
-    $layers[$values['layers']['base_layer']] = $values['layers']['base_layer'];
+  $layers = array_filter($values['layers']['available_layers']);
+  if (!in_array($values['layers']['default_layer'], $values['layers']['available_layers']) && ($values['layers']['default_layer'])) {
+    $layers[$values['layers']['default_layer']] = $values['layers']['default_layer'];
   }
   $processed['layers'] = $layers;
 

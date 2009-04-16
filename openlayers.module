@@ -148,11 +148,7 @@ function openlayers_render_map($map = array()) {
   $map = openlayers_merge_maps($system_defaults, $map);
   
   // Process layers
-  $map['layers'] = _openlayers_layers_process($map['layers']);
-  
-  // Hook for layer handlers
-  // hook_openlayers_layers(&$layers = array(), $map = array())
-  $map['layers'] = module_invoke_all('openlayers_layers_handler', $map['layers'], $map);
+  $map['layers'] = _openlayers_layers_process($map['layers'], $map);
 
   // Hook for one last alter
   // hook_openlayers_map_alter(&$map = array())
@@ -257,44 +253,32 @@ function openlayers_merge_maps($map1 = array(), $map2 = array()) {
 /**
  * Implemnetation of hook_openlayers_layers_handler
  */
-function openlayers_openlayers_layers_handler(&$layers = array(), $map = array()) {
-  $layers_return = (is_array($layers)) ? $layers : array();
-
-  // Add Layers JS
-  drupal_add_js(drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js', 'module');
-  
-  // Go through array and add handler
-  foreach ($layers as $k => $layer) {
-    // switch by type
-    switch ($layer['type']) {
-      case 'WMS':
-        $layers_return[$k]['layer_handler'] = 'openlayersLayerHandlerWMS';
-        break;
-        
-      case 'Vector':
-        $layers_return[$k]['layer_handler'] = 'openlayersLayerHandlerVector';
-        break;
-        
-      default:
-        break;
-    }
-  }
-  
-  return $layers_return;
+function openlayers_openlayers_layers_handler_info($map = array()) {
+  return array(
+    'WMS' => array(
+      'layer_handler' => 'openlayersLayerHandlerWMS',
+      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
+    ),
+    'Vector' => array(
+      'layer_handler' => 'openlayersLayerHandlerVector',
+      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
+    ),
+  );
 }
 
 /**
- * Create Map ID
+ * Process Layers
  *
- * Create a unique ID for any maps that are not assigned an ID
+ * Get full data for any layers and add handlers
  *
- * @note
- *   Technically someone can assign a map ID identical
- *   to the one that is created
+ * @param $layers
+ *   Array of layers to process
+ * @param $map
+ *   Map array
  * @return
- *   New map id
+ *   Array of processed layers
  */
-function _openlayers_layers_process($layers = array()) {
+function _openlayers_layers_process($layers = array(), $map = array()) {
   $processed = array();
   
   // Get layer info array
@@ -308,7 +292,7 @@ function _openlayers_layers_process($layers = array()) {
     }
     else {
       // If not array, we want to include the file and call the function
-      if (($info = $layer_info[$layer])&& is_array($layer_info[$layer])) {
+      if (($info = $layer_info[$layer]) && is_array($layer_info[$layer])) {
         // Check if file exists
         if (is_file('./'. $info['file'])) {
           require_once './'. $info['file'];
@@ -322,6 +306,20 @@ function _openlayers_layers_process($layers = array()) {
             }
           }
         }
+      }
+    }
+  }
+
+  // Add Handlers
+  $handlers = module_invoke_all('openlayers_layers_handler_info', $map);
+  // Go through processed
+  foreach ($processed as $k => $l) {
+    // Check for handler
+    if (is_string($handlers[$l['type']]['layer_handler'])) {
+      $processed[$k]['layer_handler'] = $handlers[$l['type']]['layer_handler'];
+      // Include JS file if there is one
+      if (is_string($handlers[$l['type']]['js_file'])) {
+        drupal_add_js($handlers[$l['type']]['js_file'], 'module');
       }
     }
   }
