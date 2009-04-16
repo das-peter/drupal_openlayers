@@ -55,11 +55,7 @@ Maps are built using an array that looks like this:
         'name' => t('Default Vector'),
         'options' => array(),
         'events' => array(
-        	'loadstart'=> array(),
-        	'loadend' => array(),
-        	'loadcancel' => array(),
-          'visibilitychanged' => array(),
-          'moveend' => array(),
+        	'loadstart'=> array('yourModulesJSFunction'),
         ),
       ),
     ),
@@ -67,17 +63,23 @@ Maps are built using an array that looks like this:
       'point' => array(
         'type' => 'Point',
         'vector' => 'default_vector',
-        'featureadded_handler' => 'openlayersDefaultFeatureHandler',
+        'featureadded_handler' => array('yourModulesJSFunction'),
+        'featuremodified_handler' => array('yourModulesJSFunction'),
+        'featureremoved_handler' => array('yourModulesJSFunction'),
       ),
       'path' => array(
         'type' => 'Path',
         'vector' => 'default_vector',
-        'featureadded_handler' => 'openlayersDefaultFeatureHandler',
+        'featureadded_handler' => array('yourModulesJSFunction'),
+        'featuremodified_handler' => array('yourModulesJSFunction'),
+        'featureremoved_handler' => array('yourModulesJSFunction'),
       ),
       'polygon' => array(
         'type' => 'Polygon',
         'vector' => 'default_vector',
-        'featureadded_handler' => 'openlayersDefaultFeatureHandler',
+        'featureadded_handler' => array('yourModulesJSFunction'),
+        'featuremodified_handler' => array('yourModulesJSFunction'),
+        'featureremoved_handler' => array('yourModulesJSFunction'),
       ),
     ),
     'events' => array(
@@ -85,7 +87,8 @@ Maps are built using an array that looks like this:
     ),
   );
   
- 
+ API: Events
+============
  Events are currently supported for both the map object, and layer objects.
  To define an event you would first modify the map or layer's PHP array like so:
   'default_vector' => array(
@@ -104,6 +107,53 @@ Maps are built using an array that looks like this:
     //Our user has panned or zoomed the map. Let's load some more data into this layer
     ....
   }
+  
+  Available Events:
+
+	Map Events:
+	------------
+	preaddlayer
+	addlayer
+	removelayer
+	changelayer
+	movestart
+	move
+	moveend
+	zoomend
+	popupopen
+	popupclose
+	addmarker
+	removemarker
+	clearmarkers
+	mouseover
+	mouseout
+	mousemove
+	dragstart
+	drag
+	dragend
+	changebaselayer
+	
+	Layer Events:
+	-------------
+	beforefeatureadded
+	beforefeaturesadded
+	featureadded
+	featuresadded
+	beforefeatureremoved
+	featureremoved
+	featuresremoved
+	beforefeatureselected
+	featureselected
+	featureunselected
+	beforefeaturemodified
+	featuremodified
+	afterfeaturemodified
+	refresh
+	loadstart
+	loadend
+	loadcancel
+	visibilitychanged
+	moveend
 
 
  Authors/Credits
