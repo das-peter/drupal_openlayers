@@ -20,6 +20,12 @@
 function _openlayers_map_form($defaults = array()) {
   // Names of fields and fieldssets should correspond to the map array
   $form = array();
+  // Get layers options
+  $layers = openlayers_layers_get_info();
+  // @@TODO: Best way
+  foreach ($layers as $k => $v) {
+    $layers[$k] = $v['name'];
+  }
   
   // Map general properties
   $form['width'] = array(
@@ -68,6 +74,31 @@ function _openlayers_map_form($defaults = array()) {
     '#maxlength' => 128,
   );
   
+  // Map center properties
+  $form['layers'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Layers'),
+    '#description' => t('Layer settings.'),
+    '#tree' => TRUE,
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+  $form['layers']['available_layers'] = array(
+    '#type' => 'select',
+    '#title' => t('Available Layers'),
+    '#description' => t('Available layers on the map.'),
+    '#options' => $layers,
+    '#multiple' => TRUE,
+    '#default_value' => $defaults['layers']['available_layers'],
+  );
+  $form['layers']['default_layer'] = array(
+    '#type' => 'select',
+    '#title' => t('Default Layer'),
+    '#description' => t('The default layer to use when rendering maps.  This will be included whether it is in the available layers or not.'),
+    '#options' => $layers,
+    '#default_value' => $defaults['layers']['available_layers'],
+  );
+  
   return $form;
 }
 
@@ -93,6 +124,14 @@ function _openlayers_convert_form_to_map($values = array()) {
       $processed[$k] = $v;
     }
   }
-    
+  
+  // Go through layers
+  $layers = array();
+  $layers = $values['layers']['available_layers'];
+  if (!in_array($values['layers']['base_layer'], $values['layers']['available_layers'])) {
+    $layers[$values['layers']['base_layer']] = $values['layers']['base_layer'];
+  }
+  $processed['layers'] = $layers;
+
   return $processed;
 }

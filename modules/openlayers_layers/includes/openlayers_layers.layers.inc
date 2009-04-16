@@ -31,20 +31,21 @@ function openlayers_layers_process_layers($layer = NULL) {
   
   // Determine what data to send back
   switch ($layer) {
-    case 'openlayers_layers_jpl_nasa_wms':
+    case 'openlayers_layers_nasa_global_mosaic':
       $layer_data = array(
         'id' => $layer,
-        'type' => $layer_info[$layer]['name'],
-        'url' => 'http://wms.jpl.nasa.gov/wms.cgi',
+        'type' => 'WMS',
+        'name' => $layer_info[$layer]['name'],
+        'url' => 'http://t1.hypercube.telascience.org/cgi-bin/landsat7',
         'params' => array(
-          'layers' => 'modis,global_mosaic',
+          'layers' => 'landsat7',
         ),
         'options' => array(),
         'events' => array(),
       );
-      break
+      break;
       
-    default
+    default:
       break;
   }
   

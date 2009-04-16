@@ -28,8 +28,8 @@ function openlayers_layers_openlayers_layers_info() {
   $info = array();
   
   // Define info array
-  $info['openlayers_layers_jpl_nasa_wms'] = array(
-    'name' => t('NASA JPL Global Imagery Service'),
+  $info['openlayers_layers_nasa_global_mosaic'] = array(
+    'name' => t('NASA Global Mosaic'),
     'file' => $file,
     'callback' => $callback,
   );

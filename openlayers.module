@@ -299,7 +299,7 @@ function _openlayers_layers_process($layers = array()) {
   
   // Get layer info array
   $layer_info = openlayers_layers_get_info();
-  
+
   // Go through layers
   foreach ($layers as $k => $layer) {
     // Check if array, if array, just pass on
@@ -308,7 +308,7 @@ function _openlayers_layers_process($layers = array()) {
     }
     else {
       // If not array, we want to include the file and call the function
-      if ($info = is_array($layer_info[$layer])) {
+      if (($info = $layer_info[$layer])&& is_array($layer_info[$layer])) {
         // Check if file exists
         if (is_file('./'. $info['file'])) {
           require_once './'. $info['file'];
@@ -325,7 +325,7 @@ function _openlayers_layers_process($layers = array()) {
       }
     }
   }
-  
+
   // Return processed
   return $processed;
 }

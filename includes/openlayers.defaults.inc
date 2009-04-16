@@ -12,14 +12,12 @@
  * @ingroup forms
  */
 function openlayers_admin_default_settings($form_state) {
-  // Get sensible module defaults
-  $module_defaults = _openlayers_get_map_defaults();
-  // Get saved defaults
-  $saved_defaults = variable_get('openlayers_defaults', array());
-  // Merge saved and sensible defaults
-  $defaults = openlayers_merge_maps($module_defaults, $saved_defaults);
+  // Get current default map
+  $map = openlayers_render_map(array());
+  $defaults = variable_get('openlayers_defaults_form', array());
 
-  // Get form
+  // Get form defaults
+  // @@TODO: find an easy way to get system map defaults into this array
   $form = openlayers_map_form($defaults);
   
   // Add submit button
@@ -28,8 +26,7 @@ function openlayers_admin_default_settings($form_state) {
     '#value' => t('Save')
   );
 
-  // We should display a map for reference
-  $map = openlayers_render_map(array());
+  // Display a map for reference
   $form['openlayers_map'] = array(
     '#type' => 'item',
     '#title' => t('Example Map'),
@@ -52,5 +49,7 @@ function openlayers_admin_default_settings_submit($form, &$form_state) {
     // Convert values to map array
     $map = openlayers_convert_form_to_map($form_state['values']);
     variable_set('openlayers_defaults', $map);
+    // Save values for easy defaults
+    variable_set('openlayers_defaults_form', $form_state['values']);
   }
 }
