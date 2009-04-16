@@ -7,10 +7,11 @@ jQuery(document).ready(function() {
   // Store rendered maps and other OpenLayer objects in Drupal.openlayers.activeObjects
   Drupal.openlayers = {}
   Drupal.openlayers.activeObjects = [];
+  Drupal.openlayers.mapDefs = Drupal.settings.openlayers.maps;
   
   // Go through array and make maps
-  for (var i in Drupal.settings.openlayers.maps) {
-    var map = Drupal.settings.openlayers.maps[i];
+  for (var i in Drupal.openlayers.mapDefs) {
+    var map = Drupal.openlayers.mapDefs[i];
     // Check to see if there is a div on the page ready for the map. If there is then proceed.
     if ($('#' + map.id).length > 0) {
       // Make div the right dimensions and add custom controls
@@ -27,7 +28,7 @@ jQuery(document).ready(function() {
       Drupal.openlayers.activeObjects[map.id].active = false;
 
       // Render Map
-      openlayersRenderMap(Drupal.settings.openlayers.maps[i]);
+      openlayersRenderMap(Drupal.openlayers.mapDefs[i]);
     }
   }
 });
@@ -180,8 +181,8 @@ function openlayersProcessDrawFeatures(drawFeatures, mapid) {
 	    	if ((vKeyCode == 63272) || vKeyCode == 46){
 	        for (var m in Drupal.openlayers.activeObjects){
 	        	if (Drupal.openlayers.activeObjects[m].active == true){
-	        		for (var dF in Drupal.settings.openlayers.maps[m].draw_features){
-	        			var vector = Drupal.settings.openlayers.maps[m].draw_features[dF].vector;
+	        		for (var dF in Drupal.openlayers.mapDefs[m].draw_features){
+	        			var vector = Drupal.openlayers.mapDefs[m].draw_features[dF].vector;
 	        			var featureToErase = Drupal.openlayers.activeObjects[m].layers[vector].selectedFeatures[0];
 	        			Drupal.openlayers.activeObjects[m].layers[vector].destroyFeatures([featureToErase]);
 	        			// Reload the modification control so we dont have ghost control points from the recently deceased feature
@@ -213,7 +214,7 @@ function openlayersProcessDrawFeatures(drawFeatures, mapid) {
       $(this).removeClass('openlayers-controls-draw-feature-link-off');
       
       // Cycle through the different possible types of controls (polygon, line, point, pan)
-      for (var f in Drupal.settings.openlayers.maps[parsedRel['mapid']].draw_features){
+      for (var f in Drupal.openlayers.mapDefs[parsedRel['mapid']].draw_features){
         var createControl = Drupal.openlayers.activeObjects[parsedRel['mapid']].controls['#create-' + f];
         var modifyControl = Drupal.openlayers.activeObjects[parsedRel['mapid']].controls['#modify-' + f];
         
@@ -255,7 +256,7 @@ function openlayersProcessLayers(layers, mapid) {
       for (var evtype in layers[layer].events){
         for (var ev in layers[layer].events[evtype]){ 
         	// @@TODO: Do this without eval. See http://drupal.org/node/172169 on why we should not use eval.
-          eval("new_layer.events.register(evtype,new_layer," + layers[layer].events[evtype][ev] + ");");
+          eval("newLayer.events.register(evtype,newLayer," + layers[layer].events[evtype][ev] + ");");
         }
       }
     }
