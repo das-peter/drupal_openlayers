@@ -96,7 +96,7 @@ function _openlayers_map_form($defaults = array()) {
     '#title' => t('Default Layer'),
     '#description' => t('The default layer to use when rendering maps.  This will be included whether it is in the available layers or not.'),
     '#options' => $layers,
-    '#default_value' => $defaults['layers']['available_layers'],
+    '#default_value' => $defaults['layers']['default_layer'],
   );
   
   return $form;

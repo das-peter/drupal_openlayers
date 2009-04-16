@@ -45,6 +45,19 @@ function openlayers_layers_process_layers($layer = NULL) {
       );
       break;
       
+    case 'openlayers_layers_open_aerial':
+      $layer_data = array(
+        'id' => $layer,
+        'type' => 'XYZ',
+        'name' => $layer_info[$layer]['name'],
+        'url' => 'http://tile.openaerialmap.org/tiles/1.0.0/openaerialmap-900913/${z}/${x}/${y}.png',
+        'options' => array(
+          'sphericalMercator' => TRUE,
+        ),
+        'events' => array(),
+      );
+      break;
+      
     default:
       break;
   }
