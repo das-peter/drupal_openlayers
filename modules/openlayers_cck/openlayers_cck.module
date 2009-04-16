@@ -100,7 +100,10 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
         'type' => 'Vector',
         'name' => $field['widget']['label'],
         'options' => array(),
-        'events' => array(),
+        'events' => array(
+          'featureselected' => array('openlayersCCKFeaturesSelected'),
+          'featureunselected' => array('openlayersCCKFeaturesUnselected'),
+        ),
       ),
     );
     
@@ -160,6 +163,10 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
     // Add JS
     drupal_add_js($openlayers_cck, 'setting');
     drupal_add_js(drupal_get_path('module', 'openlayers_cck') .'/js/openlayers_cck.js');
+    
+    //Add CSS
+    drupal_add_css(drupal_get_path('module', 'openlayers_cck') .'/openlayers_cck.css', 'module');
+    
     // Render Map
     openlayers_render_map($map);
     $included_field = $fieldname;
@@ -208,7 +215,7 @@ function openlayers_cck_geo_field_process($element, $edit, $form_state, $form) {
     '#default_value' => isset($element['#value']['wkt']) ? $element['#value']['wkt'] : NULL,
     '#required' => $field['required'],
     '#description' => $field['widget']['description'],
-    '#attributes' => array('rel' => OPENLAYERS_CCK_MAP_ID_PREFIX ."-". $field['field_name']),
+    '#attributes' => array('rel' => OPENLAYERS_CCK_MAP_ID_PREFIX ."-". $field['field_name'], 'onblur' => 'openlayersCCKAlterFeatureFromField(this);'),
   );
   
   // Remove title and description for multiple

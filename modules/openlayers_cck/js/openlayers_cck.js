@@ -13,42 +13,24 @@
  * Also set-up the click functionality for the Show/Hide WKT Fields
  */
 jQuery(document).ready(function() {
+	// Move our openlayers_cck map definitions so they will not be overwritten by Drupal AJAX / AHAH trigers.
+	Drupal.openlayers_cck = {};
+	Drupal.openlayers_cck.maps = Drupal.settings.openlayers_cck.maps;
+	
   // Go through CCK Fields and diplay map
   var fieldContainer = '';
-  for (var mapid in Drupal.settings.openlayers_cck.maps) {
-    fieldContainer = Drupal.settings.openlayers_cck.maps[mapid].field_container;
+  for (var mapid in Drupal.openlayers_cck.maps) {
+    fieldContainer = Drupal.openlayers_cck.maps[mapid].field_container;
     // Add Themed Map container
-    $('#' + fieldContainer).before(Drupal.settings.openlayers_cck.maps[mapid].field_map_themed);
+    $('#' + fieldContainer).before(Drupal.openlayers_cck.maps[mapid].field_map_themed);
     $('#' + fieldContainer).hide();
     
     // Define click actions for WKT Switcher
     $('#' + mapid + '-wkt-switcher').click(function() {
       var mapid = $(this).attr('rel');
-      var fieldContainer = Drupal.settings.openlayers_cck.maps[mapid].field_container;
+      var fieldContainer = Drupal.openlayers_cck.maps[mapid].field_container;
       $('#' + fieldContainer).toggle();
       return false;
-    });
-    
-    // Set-up onblur event so that when users change the raw WKT fields, the map gets updated in real time
-    // @@BUG: After adding another text field by drawing an extra feature (or clicking "add another item") this is no longer triggering because the fields are being reloaded via ajax and so are loosing their attributes including this trigger attribute.
-    $('#' + fieldContainer + ' textarea').blur(function() {
-      var mapid = $(this).attr('rel');
-      //Create the new feature
-      if ($(this).val() != ''){
-      	var newFeature = openlayersCCKLoadFeatureFromTextarea(mapid, this);
-      }
-      
-      //Delete the existing feature
-  		for (var l in Drupal.openlayers.activeObjects[mapid].layers['openlayers_cck_vector'].features) {
-  		  if (Drupal.openlayers.activeObjects[mapid].layers['openlayers_cck_vector'].features[l].drupalField == $(this).attr('id')) {
-  		  	Drupal.openlayers.activeObjects[mapid].layers['openlayers_cck_vector'].features[l].destroy();
-  	    }
-  	  }
-  	    
-  	  //Repopulate with a new feature.
-      if ($(this).val() != ''){
-	      Drupal.openlayers.activeObjects[mapid].layers['openlayers_cck_vector'].addFeatures([newFeature]);
-  		}
     });
   }
 });
@@ -60,7 +42,7 @@ jQuery(document).ready(function() {
  */
 function openlayersCCKPopulateMap(mapid){  
   var featuresToAdd = [];
-  var fieldContainer = Drupal.settings.openlayers_cck.maps[mapid].field_container;
+  var fieldContainer = Drupal.openlayers_cck.maps[mapid].field_container;
   
   // Cycle through the fieldContainer item and read WKT from all the textareas
   $('#' + fieldContainer + ' textarea').each(function(){
@@ -113,6 +95,60 @@ function openlayersCCKLoadValues(event){
 }
 
 /**
+ * OpenLayers CCK Feature Selected
+ * 
+ * When a feature is selected, make the WKT field light up so we know which field we are editing
+ */
+function openlayersCCKFeaturesSelected(event){
+ var feature = event.feature;
+ $("#" + feature.drupalField).addClass('openlayersCCKSelected');
+}
+
+
+/**
+ * OpenLayers CCK Feature Unselected
+ * 
+ * When a feature is selected, make the WKT field light up so we know which field we are editing
+ */
+function openlayersCCKFeaturesUnselected(event){
+ var feature = event.feature;
+ $("#" + feature.drupalField).removeClass('openlayersCCKSelected');
+}
+
+/**
+ * OpenLayers CCK Alter Feature from Field
+ * 
+ * This will generally be called by an onblur event so that when users change the raw WKT fields,
+ * the map gets updated in real time
+ */
+    
+function openlayersCCKAlterFeatureFromField(textarea){
+  var mapid = $(textarea).attr('rel');
+  var wkt = $(textarea).val();
+  
+  //Create the new feature
+  if ($(textarea).val() != ''){
+    var newFeature = openlayersCCKLoadFeatureFromTextarea(mapid, textarea);
+  }
+  
+  //Delete the existing feature
+  for (var l in Drupal.openlayers.activeObjects[mapid].layers['openlayers_cck_vector'].features) {
+	  if (Drupal.openlayers.activeObjects[mapid].layers['openlayers_cck_vector'].features[l].drupalField == $(textarea).attr('id')) {
+	    Drupal.openlayers.activeObjects[mapid].layers['openlayers_cck_vector'].features[l].destroy();
+    }
+  }
+    
+  //Repopulate with a new feature.
+   if (wkt != ''){
+    $(textarea).val(wkt);
+    if (newFeature != false) {
+      Drupal.openlayers.activeObjects[mapid].layers['openlayers_cck_vector'].addFeatures([newFeature]);
+    }
+	}
+}
+
+
+/**
  * OpenLayers CCK Feature Added Handler
  * 
  * This function is triggered when a feature is added by the user
@@ -124,17 +160,27 @@ function openlayersCCKFeatureAdded(event) {
   
   // Get field names
   var fieldName;
-  for (var map in Drupal.settings.openlayers_cck.maps) {
+  for (var map in Drupal.openlayers_cck.maps) {
     if (map == mapid) {
-      fieldName = Drupal.settings.openlayers_cck.maps[map].field_name_js;
+      fieldName = Drupal.openlayers_cck.maps[map].field_name_js;
     }
   }
   
   // Get the index number of the newly added field
-  var featureNew = $('#' + fieldName + '-items textarea').size() -1;
-  
+  // Check if we are creating a new node with 2 fresh fields open
+  if ($('#' + fieldName + '-items textarea').size() == 2 && $('#' + fieldName + '-items textarea:first').val() == ''){
+  	// We are creating a new node with two fresh fields open
+  	var newNode = true;
+  	var newFeatureID = 0;
+  }
+  else{
+  	// We are either not creating a new node, or there is already data filled in.
+  	var newNode = false;
+  	var newFeatureID = $('#' + fieldName + '-items textarea').size() -1;
+  }
+
   // This is the id of the textfield we will be assigning this feature to.
-  var wktFieldNewID = 'edit-' + fieldName + '-' + featureNew + '-wkt';
+  var wktFieldNewID = 'edit-' + fieldName + '-' + newFeatureID + '-wkt';
   // This is the "Add another item" button
   var wktFieldAddID = 'edit-' + fieldName + '-' + fieldName + '-add-more';
   
@@ -152,9 +198,8 @@ function openlayersCCKFeatureAdded(event) {
   //Link the field to the map
   $('#' + wktFieldNewID).attr('rel',feature.layer.map.mapid);
     
-  // Add another field ..
-  // @@BUG:  When triggering this function it is reloading all of Drupal.settings.openlayers.  On the reload for some reason it is only reloading our current CCK-field, not all CCK-fields, and so is causing the error: Drupal.settings.openlayers.maps[parsedRel.mapid] is undefined
-  $('#' + wktFieldAddID).trigger('mousedown');
+  // Add another field if we need to..
+  if (!newNode) $('#' + wktFieldAddID).trigger('mousedown');
 }
 
 /**
@@ -179,7 +224,6 @@ function openlayersCCKFeatureRemoved(event){
   var feature = event.feature;
   
   // Empty the CCK field values.
-  $('#' + feature.drupalField).val('');
+  $('#' + feature.drupalField).val('').removeClass('openlayersCCKSelected');
+  
 }
-
-
