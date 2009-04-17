@@ -115,19 +115,8 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
       'addlayer' => array('openlayersCCKLoadValues'),
     );
     
-    // Define our map layers.
+    // Define a vector layer for our features
     $map['layers'] = array(
-      'default_wms' => array(
-        'id' => 'default_wms',
-        'type' => 'WMS',
-        'name' => t('Default Open Layers WMS'),
-        'url' => 'http://labs.metacarta.com/wms/vmap0',
-        'params' => array(
-          'layers' => 'basic',
-        ),
-        'options' => array(),
-        'events' => array(),
-      ),
       'openlayers_cck_vector' => array(
         'id' => 'openlayers_cck_vector',
         'type' => 'Vector',
