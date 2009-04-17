@@ -174,11 +174,12 @@ function openlayersProcessDrawFeatures(drawFeatures, mapid) {
         eval("layer.events.register('beforefeatureremoved',layer," + drawFeatures[dF].featureremoved_handler[ev] + ");");
       }
     
-	    //If a user presses the delete key, delete the currently selected polygon. This will in turn trigger the featureremoved_handler function. 
-	    document.onkeydown = function(event){
-	    	vKeyCode = event.keyCode;
+	    // If a user presses the delete key, delete the currently selected polygon. 
+	    // This will in turn trigger the featureremoved_handler function. 
+	    $(document).keydown(function(event) {
+	      vKeyCode = event.keyCode;
 	    	// If it is the Mac delete key (63272), or regular delete key (46) delete all selected features for the active map.
-	    	if ((vKeyCode == 63272) || vKeyCode == 46){
+	    	if ((vKeyCode == 63272) || vKeyCode == 46) {
 	        for (var m in Drupal.openlayers.activeObjects){
 	        	if (Drupal.openlayers.activeObjects[m].active == true){
 	        		for (var dF in Drupal.openlayers.mapDefs[m].draw_features){
@@ -192,7 +193,7 @@ function openlayersProcessDrawFeatures(drawFeatures, mapid) {
 	        	}
 	        }
 	      }
-	    };
+	    });
     }
         
     // Add action link (button)
