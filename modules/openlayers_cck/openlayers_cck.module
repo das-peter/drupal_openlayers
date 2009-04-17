@@ -169,6 +169,12 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
     
     }
     
+    // Add JS
+    drupal_add_js(drupal_get_path('module', 'openlayers_cck') .'/js/openlayers_cck.js');
+    //Add CSS
+    drupal_add_css(drupal_get_path('module', 'openlayers_cck') .'/openlayers_cck.css', 'module');
+    // Render Map
+    $rendered_map = openlayers_render_map($map);
     // Put together array for JS
     $openlayers_cck = array(
       'openlayers_cck' => array(
@@ -177,20 +183,15 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
             'field_name' => $fieldname,
             'field_data' => $field,
             'field_name_js' => str_replace('_', '-', $fieldname), // Best way?
-            'field_map_themed' => theme('openlayers_cck_map', $field, $mapid),
+            'field_map_themed' => theme('openlayers_cck_map', $field, $rendered_map),
             'field_container' => str_replace('_', '-', $fieldname) .'-items',  // Best way??
             'field_items' => $items,
           ),
         ),
       ),
     );
-    // Add JS
+    // Add JS settings
     drupal_add_js($openlayers_cck, 'setting');
-    drupal_add_js(drupal_get_path('module', 'openlayers_cck') .'/js/openlayers_cck.js');
-    //Add CSS
-    drupal_add_css(drupal_get_path('module', 'openlayers_cck') .'/openlayers_cck.css', 'module');
-    // Render Map
-    $rendered_map = openlayers_render_map($map);
     // Change static variable
     $included_field = $fieldname;
   }
@@ -260,19 +261,17 @@ function theme_openlayers_cck_geo_field($element) {
 /**
  * Theme function for openlayers_cck_map
  */
-function theme_openlayers_cck_map($field, $mapid) {
-  $output = '';
-  
-  $output .= '
+function theme_openlayers_cck_map($field = array(), $map = array()) {
+  $output = '
     <div class="form-item openlayers-cck-widget-container">
-      <label for="'. $mapid .'">'. $field['widget']['label'] .'</label>
-      <div id="'. $mapid .'"></div>
-      <div class="description">
+      <label for="'. $map['id'] .'">'. $field['widget']['label'] .'</label>
+      '. $map['themed'] .'
+      <div class="description openlayers-cck-field-description">
         '. $field['widget']['description'] .'
       </div>
-      <div class="description">'.t('Click the tools in the upper right-hand corner of the map to switch between draw mode and zoom/pan mode. Draw your shape, double-clicking to finish. You may edit your shape using the control points. To delete a shape, select it and press the delete key. To delete a vertex hover over it and press the d key.').'</div>
+      <div class="description openlayers-cck-map-instructions">'.t('Click the tools in the upper right-hand corner of the map to switch between draw mode and zoom/pan mode. Draw your shape, double-clicking to finish. You may edit your shape using the control points. To delete a shape, select it and press the delete key. To delete a vertex hover over it and press the d key.').'</div>
       <div class="openlayers-cck-actions">
-        <a href="#" id="'. $mapid .'-wkt-switcher" rel="'. $mapid .'">'. t('Show/Hide WKT Fields') .'</a>
+        <a href="#" id="'. $map['id'] .'-wkt-switcher" rel="'. $map['id'] .'">'. t('Show/Hide WKT Fields') .'</a>
       </div>
     </div>
   ';

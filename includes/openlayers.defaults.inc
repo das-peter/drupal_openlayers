@@ -31,7 +31,7 @@ function openlayers_admin_default_settings($form_state) {
     '#type' => 'item',
     '#title' => t('Example Map'),
     '#description' => t('Save these settings to see an updated map.'),
-    '#value' => '<div id="'. $map['id'] .'"></div>',
+    '#value' => $map['themed'],
     '#weight' => -100,
   );
   

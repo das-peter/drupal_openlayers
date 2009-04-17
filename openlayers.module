@@ -32,6 +32,19 @@ function openlayers_perm() {
 }
 
 /**
+ * Implementation of hook_theme().
+ */
+function openlayers_theme() {
+  return array(
+    'openlayers_map' => array(
+      'arguments' => array(
+        'map' => array(),
+      ),
+    ),
+  );
+}
+
+/**
  * Implementation of hook_menu
  */
 function openlayers_menu() {
@@ -67,6 +80,16 @@ function openlayers_menu() {
   );
 
   return $items;
+}
+
+/**
+ * Theme function for openlayers_map
+ */
+function theme_openlayers_map($map = array()) {
+  $output = '
+    <div id="'. $map['id'] .'" class="openlayers-map"></div>
+  ';
+  return $output;
 }
 
 /**
@@ -163,6 +186,9 @@ function openlayers_render_map($map = array()) {
     ),
   );
   drupal_add_js($openlayers, 'setting');
+  
+  // Add themed HTML (no need for it to go to JS)
+  $map['themed'] = theme('openlayers_map', $map);
   
   return $map;
 }
