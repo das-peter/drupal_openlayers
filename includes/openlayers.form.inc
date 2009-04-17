@@ -27,6 +27,9 @@ function _openlayers_map_form($defaults = array()) {
     $layers[$k] = $v['name'];
   }
   
+  // Form Propertieis
+  $form['#tree'] = TRUE;
+  
   // Map general properties
   $form['width'] = array(
     '#type' => 'textfield',

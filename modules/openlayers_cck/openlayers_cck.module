@@ -30,7 +30,9 @@ function openlayers_cck_help($path, $arg) {
 function openlayers_cck_theme() {
   return array(
     'openlayers_cck_geo_field' => array(
-      'arguments' => array('element' => NULL),
+      'arguments' => array(
+        'element' => NULL
+      ),
     ),
     'openlayers_cck_map' => array(
       'arguments' => array(
@@ -52,7 +54,6 @@ function openlayers_cck_widget_info() {
     $info['openlayers_cck_geo_field'] = array(
       'label' => t('OpenLayers Map Widget'),
       'field types' => array('geo'),
-      // 'multiple values' => CONTENT_HANDLE_MODULE,
     );
   }
   
@@ -60,11 +61,40 @@ function openlayers_cck_widget_info() {
 }
 
 /**
+ * Implementation of hook_widget_settings().
+ */
+function openlayers_cck_widget_settings($op, $widget) {
+  switch ($op) {
+    case 'form':
+      // Get defaults
+      $defaults = variable_get('openlayers_defaults_form', array());
+      // Get map form
+      $map_form = openlayers_map_form($defaults);
+      // Put form into a collapsed fieldset, as this promotes good usability
+      // Most users will not want to edit these fields
+      $form['openlayers_cck'] = $map_form;
+      $form['openlayers_cck']['#type'] = 'fieldset';
+      $form['openlayers_cck']['#title'] = 'Map Settings';
+      $form['openlayers_cck']['#description'] = 'These are the settings that determine how the map will look.';
+      $form['openlayers_cck']['#collapsible'] = 'TRUE';
+      $form['openlayers_cck']['#collapsed'] = 'TRUE';
+
+      return $form;
+
+    case 'validate':
+      break;
+
+    case 'save':
+      return array();
+  }
+}
+
+/**
  * Implementation of hook_widget().
  */
 function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0) {
   // @@TODO: Put this outside the widget, but inside the field, so it is not rendered
-  // for each item in the field
+  // for each item in the field.  Not sure how this is done.
   
   $fieldname = $field['field_name'];
   // Only include map once per field
@@ -73,12 +103,11 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
     $mapid = OPENLAYERS_CCK_MAP_ID_PREFIX .'-'. $fieldname;
     // Create map
     $map['id'] = $mapid;
-    // Check for type
     
     // Add an event to the map. When a layer is added fire the JavaScript function openlayersCCKLoadValues.
     // openlayersCCKLoadValues takes care of loading data from the CCK fields into the map.
     $map['events'] = array(
-        'addlayer' => array('openlayersCCKLoadValues'),
+      'addlayer' => array('openlayersCCKLoadValues'),
     );
     
     // Define our map layers.
@@ -107,6 +136,7 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
       ),
     );
     
+    // Look at field type, and add respective control
     switch ($field['geo_type']) {
       case 'point':
         $map['draw_features'] = array(
@@ -145,7 +175,8 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
         break;
     
     }
-    // Send info to JS
+    
+    // Put together array for JS
     $openlayers_cck = array(
       'openlayers_cck' => array(
         'maps' => array(
@@ -163,16 +194,15 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
     // Add JS
     drupal_add_js($openlayers_cck, 'setting');
     drupal_add_js(drupal_get_path('module', 'openlayers_cck') .'/js/openlayers_cck.js');
-    
     //Add CSS
     drupal_add_css(drupal_get_path('module', 'openlayers_cck') .'/openlayers_cck.css', 'module');
-    
     // Render Map
-    openlayers_render_map($map);
+    $rendered_map = openlayers_render_map($map);
+    // Change static variable
     $included_field = $fieldname;
   }
 
-  // Return array
+  // Return widget array
   return array(
     '#type' => $field['widget']['type'],
     '#default_value' => isset($items[$delta]) ? $items[$delta] : '',
@@ -241,7 +271,7 @@ function theme_openlayers_cck_map($field, $mapid) {
   $output = '';
   
   $output .= '
-    <div class="form-item">
+    <div class="form-item openlayers-cck-widget-container">
       <label for="'. $mapid .'">'. $field['widget']['label'] .'</label>
       <div id="'. $mapid .'"></div>
       <div class="description">
