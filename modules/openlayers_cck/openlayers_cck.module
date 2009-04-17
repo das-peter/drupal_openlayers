@@ -85,6 +85,9 @@ function openlayers_cck_widget_settings($op, $widget) {
       break;
 
     case 'save':
+      // @@TODO: Figure out a way to save this form in an easy way.
+      // Ideally we just want to save the map array.
+      // We could create a DB table to save this information.
       return array();
   }
 }
@@ -100,9 +103,11 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
   // Only include map once per field
   static $included_field = '';
   if ($included_field != $fieldname) {
-    $mapid = OPENLAYERS_CCK_MAP_ID_PREFIX .'-'. $fieldname;
     // Create map
+    $mapid = OPENLAYERS_CCK_MAP_ID_PREFIX .'-'. $fieldname;
     $map['id'] = $mapid;
+    
+    // @@TODO: Use widget settings form to create base map array
     
     // Add an event to the map. When a layer is added fire the JavaScript function openlayersCCKLoadValues.
     // openlayersCCKLoadValues takes care of loading data from the CCK fields into the map.
@@ -111,7 +116,6 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
     );
     
     // Define our map layers.
-    // @@TODO: Let the user define the basemap.
     $map['layers'] = array(
       'default_wms' => array(
         'id' => 'default_wms',
