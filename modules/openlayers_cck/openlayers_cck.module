@@ -249,7 +249,7 @@ function openlayers_cck_geo_field_process($element, $edit, $form_state, $form) {
     '#default_value' => isset($element['#value']['wkt']) ? $element['#value']['wkt'] : NULL,
     '#required' => $field['required'],
     '#description' => $field['widget']['description'],
-    '#attributes' => array('rel' => OPENLAYERS_CCK_MAP_ID_PREFIX ."-". $field['field_name'], 'onblur' => 'openlayersCCKAlterFeatureFromField(this);'),
+    '#attributes' => array('rel' => OPENLAYERS_CCK_MAP_ID_PREFIX .'-'. $field['field_name']),
   );
   
   // Remove title and description for multiple

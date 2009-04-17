@@ -1,22 +1,16 @@
 // $Id$
 
 /**
- * @notes
- *
- *
- */
-
-/**
  * When document is ready for JS
  * 
  * Add the themed map container (HTML) to the document. 
  * Also set-up the click functionality for the Show/Hide WKT Fields
  */
 jQuery(document).ready(function() {
-	// Move our openlayers_cck map definitions so they will not be overwritten by Drupal AJAX / AHAH trigers.
-	Drupal.openlayers_cck = {};
-	Drupal.openlayers_cck.maps = Drupal.settings.openlayers_cck.maps;
-	
+  // Move our openlayers_cck map definitions so they will not be overwritten by Drupal AJAX / AHAH trigers.
+  Drupal.openlayers_cck = {};
+  Drupal.openlayers_cck.maps = Drupal.settings.openlayers_cck.maps;
+  
   // Go through CCK Fields and diplay map
   var fieldContainer = '';
   for (var mapid in Drupal.openlayers_cck.maps) {
@@ -31,6 +25,11 @@ jQuery(document).ready(function() {
       var fieldContainer = Drupal.openlayers_cck.maps[mapid].field_container;
       $('#' + fieldContainer).toggle();
       return false;
+    });
+    
+    // Add onblur events to fields
+    $('textarea[rel=' + mapid + ']').blur(function() {
+      openlayersCCKAlterFeatureFromField($(this));
     });
   }
 });
@@ -82,7 +81,6 @@ function openlayersCCKLoadFeatureFromTextarea(mapid, textarea){
   }
 }
 
-
 /**
  * OpenLayers CCK Load Values
  * 
@@ -104,7 +102,6 @@ function openlayersCCKFeaturesSelected(event){
  $("#" + feature.drupalField).addClass('openlayersCCKSelected');
 }
 
-
 /**
  * OpenLayers CCK Feature Unselected
  * 
@@ -121,7 +118,6 @@ function openlayersCCKFeaturesUnselected(event){
  * This will generally be called by an onblur event so that when users change the raw WKT fields,
  * the map gets updated in real time
  */
-    
 function openlayersCCKAlterFeatureFromField(textarea){
   var mapid = $(textarea).attr('rel');
   var wkt = $(textarea).val();
@@ -146,7 +142,6 @@ function openlayersCCKAlterFeatureFromField(textarea){
     }
 	}
 }
-
 
 /**
  * OpenLayers CCK Feature Added Handler
@@ -225,5 +220,4 @@ function openlayersCCKFeatureRemoved(event){
   
   // Empty the CCK field values.
   $('#' + feature.drupalField).val('').removeClass('openlayersCCKSelected');
-  
 }
