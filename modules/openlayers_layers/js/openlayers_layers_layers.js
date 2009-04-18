@@ -24,7 +24,12 @@ function openlayersLayerHandlerGoogle(layerOptions, mapid) {
     mapType = G_PHYSICAL_MAP;
   }
   
-  var mapOptions = {'type': mapType, 'sphericalMercator': true};
+  var mapOptions = {
+    type: mapType,
+    sphericalMercator: true,
+    maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34)
+  };
+  
   jQuery.extend(mapOptions, layerOptions.options);
   
   var googleLayer = new OpenLayers.Layer.Google(
@@ -50,7 +55,12 @@ function openlayersLayerHandlerYahoo(layerOptions, mapid) {
     mapType = YAHOO_MAP_HYB;
   }
   
-  var mapOptions = {'type': mapType, 'sphericalMercator': true};
+  var mapOptions = {
+    type: mapType,
+    sphericalMercator: true,
+    maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34)
+  };
+  
   jQuery.extend(mapOptions, layerOptions.options);
   
   var yahooLayer = new OpenLayers.Layer.Yahoo(
@@ -76,7 +86,12 @@ function openlayersLayerHandlerVirtualEarth(layerOptions, mapid) {
     mapType = VEMapStyle.Hybrid;
   }
   
-  var mapOptions = {'type': mapType, 'sphericalMercator': true};
+  var mapOptions = {
+    type: mapType,
+    sphericalMercator: true,
+    maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34)
+  };
+  
   jQuery.extend(mapOptions, layerOptions.options);
   
   var virtualEarthLayer = new OpenLayers.Layer.VirtualEarth(
@@ -84,4 +99,26 @@ function openlayersLayerHandlerVirtualEarth(layerOptions, mapid) {
     mapOptions
   );
   return virtualEarthLayer;
+}
+
+
+/**
+ * Process OSM
+ */
+function openlayersLayerHandlerOSM(layerOptions, mapid) {
+  
+   var mapOptions = {
+    sphericalMercator: true,
+    maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34)
+  };
+  
+  jQuery.extend(mapOptions, layerOptions.options);
+  
+  var OSMLayer = new OpenLayers.Layer.OSM(
+                layerOptions.name,
+                layerOptions.url + "/${z}/${x}/${y}.png",
+                mapOptions
+  );
+
+  return OSMLayer;
 }

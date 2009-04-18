@@ -277,26 +277,6 @@ function openlayers_merge_maps($map1 = array(), $map2 = array()) {
 }
 
 /**
- * Implemnetation of hook_openlayers_layers_handler
- */
-function openlayers_openlayers_layers_handler_info($map = array()) {
-  return array(
-    'WMS' => array(
-      'layer_handler' => 'openlayersLayerHandlerWMS',
-      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
-    ),
-    'Vector' => array(
-      'layer_handler' => 'openlayersLayerHandlerVector',
-      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
-    ),
-    'XYZ' => array(
-      'layer_handler' => 'openlayersLayerHandlerXYZ',
-      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
-    ),
-  );
-}
-
-/**
  * Process Layers
  *
  * Get full data for any layers and add handlers
@@ -395,7 +375,7 @@ function _openlayers_get_map_defaults() {
     'center' => array(
       'lat' => '0',
       'lon' => '0',
-      'zoom' => '2',
+      'zoom' => 2,
     ),
     'options' => array(
       'projection' => "EPSG:4326",
@@ -405,18 +385,55 @@ function _openlayers_get_map_defaults() {
       'LayerSwitcher' => TRUE,
     ),
     'layers' => array(
-      'default_wms' => array(
-        'id' => 'default_wms',
-        'type' => 'WMS',
-        'name' => t('Default Open Layers WMS'),
-        'url' => 'http://labs.metacarta.com/wms/vmap0',
-        'params' => array(
-          'layers' => 'basic',
-        ),
-        'options' => array(),
-        'events' => array(),
-      ),
+      'openlayers_default_wms'
     ),
   );
   return $map_default;
+}
+
+/**
+ * SECTION: Hooking to provide default layer types and layer instances
+ */
+
+/**
+ * Implemnetation of hook_openlayers_layers_handler
+ * 
+ * @ingroup Default Layer Types and Instances
+ */
+function openlayers_openlayers_layers_handler_info($map = array()) {
+  return array(
+    'WMS' => array(
+      'layer_handler' => 'openlayersLayerHandlerWMS',
+      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
+    ),
+    'Vector' => array(
+      'layer_handler' => 'openlayersLayerHandlerVector',
+      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
+    ),
+    'XYZ' => array(
+      'layer_handler' => 'openlayersLayerHandlerXYZ',
+      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
+    ),
+  );
+}
+
+
+/**
+ * Implementation of hook_openlayers_layers_info
+ *
+ * @ingroup Default Layer Types and Instances
+ */
+function openlayers_openlayers_layers_info() {
+  $file = drupal_get_path('module', 'openlayers') .'/includes/openlayers.layers.inc';
+  $callback = 'openlayers_process_layers';
+  $info = array();
+  
+  // Define info array
+  $info['openlayers_default_wms'] = array(
+    'name' => t('Default OpenLayers WMS'),
+    'file' => $file,
+    'callback' => $callback,
+  );
+  
+  return $info;
 }

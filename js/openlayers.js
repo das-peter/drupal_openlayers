@@ -57,9 +57,9 @@ function openlayersRenderMap(map) {
   
   //On MouseOver mark the map as "active".
   $('#' + map.id).mouseover(function(){
-  	Drupal.openlayers.activeObjects[$(this).attr('id')].active = true;
+    Drupal.openlayers.activeObjects[$(this).attr('id')].active = true;
   }).mouseout(function(){
-  	Drupal.openlayers.activeObjects[$(this).attr('id')].active = false;
+    Drupal.openlayers.activeObjects[$(this).attr('id')].active = false;
   });
   
   // We set up all our layers
@@ -84,8 +84,12 @@ function openlayersRenderMap(map) {
   }
                
   // Zoom to Center
-  var center = new OpenLayers.LonLat(map.center.lon, map.center.lat);
-  Drupal.openlayers.activeObjects[map.id].map.setCenter(center,map.center.zoom);
+  // @@TODO: When we figure out how we want to handle projections, this should change.
+  var proj = new OpenLayers.Projection("EPSG:4326");
+  var point = new OpenLayers.LonLat(map.center.lon, map.center.lon);
+  var mapProj = Drupal.openlayers.activeObjects[map.id].map.getProjectionObject()
+  Drupal.openlayers.activeObjects[map.id].map.setCenter(point.transform(proj, mapProj));
+  Drupal.openlayers.activeObjects[map.id].map.zoomTo(map.center.zoom);
 }
 
 /**
@@ -114,15 +118,10 @@ function openlayersCreateMapOptions(options, controls, mapid) {
   }
   
   returnOptions.controls = [
+    new OpenLayers.Control.Navigation(),
     new OpenLayers.Control.PanZoomBar(),
-    new OpenLayers.Control.MouseToolbar(),
     new OpenLayers.Control.LayerSwitcher({'ascending':false}),
-    new OpenLayers.Control.Permalink(),
-    new OpenLayers.Control.ScaleLine(),
-    new OpenLayers.Control.Permalink('permalink'),
-    new OpenLayers.Control.MousePosition(),
-    new OpenLayers.Control.OverviewMap(),
-    new OpenLayers.Control.KeyboardDefaults()
+    new OpenLayers.Control.MousePosition()
   ];
 
   return returnOptions;
@@ -143,7 +142,7 @@ function openlayersProcessDrawFeatures(drawFeatures, mapid) {
   
   // Go through each type of feature (point, path, polygon) that is specified and build functionality
   for (var dF in drawFeatures) {
-  	// Get the OpenLayers layer object that will be editable.
+    // Get the OpenLayers layer object that will be editable.
     var layer = Drupal.openlayers.activeObjects[mapid].layers[drawFeatures[dF].vector];
     var typeLower = drawFeatures[dF].type.toLowerCase();
     
@@ -172,44 +171,44 @@ function openlayersProcessDrawFeatures(drawFeatures, mapid) {
     // Add special event handlers to controls
     if (drawFeatures[dF].featureadded_handler) {
       for (var ev in drawFeatures[dF].featureadded_handler){
-      	  // @@TODO: Do this without eval. See http://drupal.org/node/172169 on why we should not use eval.
+          // @@TODO: Do this without eval. See http://drupal.org/node/172169 on why we should not use eval.
           eval("createControl.events.register('featureadded',createControl," + drawFeatures[dF].featureadded_handler[ev] + ");");
       }
     }
        
     if (drawFeatures[dF].featuremodified_handler) {
-    	for (var ev in drawFeatures[dF].featuremodified_handler){ 
-    		// @@TODO: Do this without eval.
+      for (var ev in drawFeatures[dF].featuremodified_handler){ 
+        // @@TODO: Do this without eval.
         eval("layer.events.register('afterfeaturemodified',layer," + drawFeatures[dF].featuremodified_handler[ev] + ");");
       }
     }
     
     if (drawFeatures[dF].featureremoved_handler) {
-    	for (var ev in drawFeatures[dF].featureremoved_handler){ 
-    		// @@TODO: Do this without eval.
+      for (var ev in drawFeatures[dF].featureremoved_handler){ 
+        // @@TODO: Do this without eval.
         eval("layer.events.register('beforefeatureremoved',layer," + drawFeatures[dF].featureremoved_handler[ev] + ");");
       }
     
-	    // If a user presses the delete key, delete the currently selected polygon. 
-	    // This will in turn trigger the featureremoved_handler function. 
-	    $(document).keydown(function(event) {
-	      vKeyCode = event.keyCode;
-	    	// If it is the Mac delete key (63272), or regular delete key (46) delete all selected features for the active map.
-	    	if ((vKeyCode == 63272) || vKeyCode == 46) {
-	        for (var m in Drupal.openlayers.activeObjects){
-	        	if (Drupal.openlayers.activeObjects[m].active == true){
-	        		for (var dF in Drupal.openlayers.mapDefs[m].draw_features){
-	        			var vector = Drupal.openlayers.mapDefs[m].draw_features[dF].vector;
-	        			var featureToErase = Drupal.openlayers.activeObjects[m].layers[vector].selectedFeatures[0];
-	        			Drupal.openlayers.activeObjects[m].layers[vector].destroyFeatures([featureToErase]);
-	        			// Reload the modification control so we dont have ghost control points from the recently deceased feature
-	        		  Drupal.openlayers.activeObjects[m].controls['#modify-' + dF].deactivate();
-	        			Drupal.openlayers.activeObjects[m].controls['#modify-' + dF].activate();
-	        		}
-	        	}
-	        }
-	      }
-	    });
+      // If a user presses the delete key, delete the currently selected polygon. 
+      // This will in turn trigger the featureremoved_handler function. 
+      $(document).keydown(function(event) {
+        vKeyCode = event.keyCode;
+        // If it is the Mac delete key (63272), or regular delete key (46) delete all selected features for the active map.
+        if ((vKeyCode == 63272) || vKeyCode == 46) {
+          for (var m in Drupal.openlayers.activeObjects){
+            if (Drupal.openlayers.activeObjects[m].active == true){
+              for (var dF in Drupal.openlayers.mapDefs[m].draw_features){
+                var vector = Drupal.openlayers.mapDefs[m].draw_features[dF].vector;
+                var featureToErase = Drupal.openlayers.activeObjects[m].layers[vector].selectedFeatures[0];
+                Drupal.openlayers.activeObjects[m].layers[vector].destroyFeatures([featureToErase]);
+                // Reload the modification control so we dont have ghost control points from the recently deceased feature
+                Drupal.openlayers.activeObjects[m].controls['#modify-' + dF].deactivate();
+                Drupal.openlayers.activeObjects[m].controls['#modify-' + dF].activate();
+              }
+            }
+          }
+        }
+      });
     }
         
     // Add action link (button)
@@ -221,7 +220,7 @@ function openlayersProcessDrawFeatures(drawFeatures, mapid) {
   // Add click event to the action link (button)
   $('.openlayers-controls-draw-feature-link').click(
     function() {
-    	// Grab the mapid and the type from the rel attribute.
+      // Grab the mapid and the type from the rel attribute.
       var parsedRel = openlayersParseRel($(this).attr('rel'));
       
       // Change the look of the action link
@@ -272,7 +271,7 @@ function openlayersProcessLayers(layers, mapid) {
       // Add events
       for (var evtype in layers[layer].events){
         for (var ev in layers[layer].events[evtype]){ 
-        	// @@TODO: Do this without eval. See http://drupal.org/node/172169 on why we should not use eval.
+          // @@TODO: Do this without eval. See http://drupal.org/node/172169 on why we should not use eval.
           eval("newLayer.events.register(evtype,newLayer," + layers[layer].events[evtype][ev] + ");");
         }
       }

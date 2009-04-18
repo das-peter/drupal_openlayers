@@ -59,6 +59,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         'events' => array(),
       );
       break;
+    
     case 'openlayers_layers_google_street':
       $layer_data = array(
         'id' => $layer,
@@ -69,6 +70,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         )
       );
       break;
+    
     case 'openlayers_layers_google_satellite':
       $layer_data = array(
         'id' => $layer,
@@ -79,6 +81,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         )
       );
       break;
+    
     case 'openlayers_layers_google_hybrid':
       $layer_data = array(
         'id' => $layer,
@@ -89,6 +92,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         )
       );
       break;
+    
     case 'openlayers_layers_google_physical':
       $layer_data = array(
         'id' => $layer,
@@ -99,6 +103,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         )
       );
       break;
+    
     case 'openlayers_layers_yahoo_street':
       $layer_data = array(
         'id' => $layer,
@@ -109,6 +114,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         )
       );
       break;
+    
     case 'openlayers_layers_yahoo_satellite':
       $layer_data = array(
         'id' => $layer,
@@ -119,6 +125,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         )
       );
       break;
+    
     case 'openlayers_layers_yahoo_hybrid':
       $layer_data = array(
         'id' => $layer,
@@ -129,6 +136,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         )
       );
       break;
+    
     case 'openlayers_layers_virtual_earth_street':
       $layer_data = array(
         'id' => $layer,
@@ -139,6 +147,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         )
       );
       break;
+    
     case 'openlayers_layers_virtual_earth_satellite':
       $layer_data = array(
         'id' => $layer,
@@ -149,6 +158,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         )
       );
       break;
+    
     case 'openlayers_layers_virtual_earth_hybrid':
       $layer_data = array(
         'id' => $layer,
@@ -157,6 +167,33 @@ function openlayers_layers_process_layers($layer = NULL) {
         'params' => array(
           'type' => 'hybrid'
         )
+      );
+      break;
+    
+    case 'openlayers_layers_osm_mapnik':
+      $layer_data = array(
+        'id' => $layer,
+        'type' => 'OSM',
+        'name' => $layer_info[$layer]['name'],
+        'url' => 'http://tile.openstreetmap.org'
+      );
+      break;
+    
+    case 'openlayers_layers_osm_tah':
+      $layer_data = array(
+        'id' => $layer,
+        'type' => 'OSM',
+        'name' => $layer_info[$layer]['name'],
+        'url' => 'http://tah.openstreetmap.org/Tiles/tile'
+      );
+      break;
+    
+    case 'openlayers_layers_osm_cycle':
+      $layer_data = array(
+        'id' => $layer,
+        'type' => 'OSM',
+        'name' => $layer_info[$layer]['name'],
+        'url' => 'http://andy.sandbox.cloudmade.com/tiles/cycle'
       );
       break;
      

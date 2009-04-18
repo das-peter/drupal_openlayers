@@ -38,6 +38,10 @@ function openlayers_layers_openlayers_layers_handler_info($map = array()) {
       'layer_handler' => 'openlayersLayerHandlerYahoo',
       'js_file' => drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers_layers.js',
     ),
+    'OSM' => array(
+      'layer_handler' => 'openlayersLayerHandlerOSM',
+      'js_file' => drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers_layers.js',
+    ),
   );
 }
 
@@ -108,6 +112,21 @@ function openlayers_layers_openlayers_layers_info() {
   );
   $info['openlayers_layers_virtual_earth_hybrid'] = array(
     'name' => t('Virtual Earth Hybrid'),
+    'file' => $file,
+    'callback' => 'openlayers_layers_process_layers',
+  );
+  $info['openlayers_layers_osm_mapnik'] = array(
+    'name' => t('OSM Mapnik'),
+    'file' => $file,
+    'callback' => 'openlayers_layers_process_layers',
+  );
+  $info['openlayers_layers_osm_tah'] = array(
+    'name' => t('OSM Tiles@Home'),
+    'file' => $file,
+    'callback' => 'openlayers_layers_process_layers',
+  );
+  $info['openlayers_layers_osm_cycle'] = array(
+    'name' => t('OSM Cycling Map'),
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
   );
