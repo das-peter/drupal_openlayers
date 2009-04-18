@@ -87,12 +87,12 @@ function openlayers_layers_openlayers_layers_info() {
     'callback' => 'openlayers_layers_process_layers',
   );
   $info['openlayers_layers_yahoo_satellite'] = array(
-    'name' => t('Yahoo Street'),
+    'name' => t('Yahoo Satellite'),
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
   );
   $info['openlayers_layers_yahoo_hybrid'] = array(
-    'name' => t('Yahoo Street'),
+    'name' => t('Yahoo Hybrid'),
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
   );
@@ -102,7 +102,7 @@ function openlayers_layers_openlayers_layers_info() {
     'callback' => 'openlayers_layers_process_layers',
   );
   $info['openlayers_layers_virtual_earth_satellite'] = array(
-    'name' => t('Virtual Earth Street'),
+    'name' => t('Virtual Earth Satellite'),
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
   );
