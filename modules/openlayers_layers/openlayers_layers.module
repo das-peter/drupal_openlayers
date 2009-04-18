@@ -13,11 +13,34 @@
 function openlayers_layers_help($path, $arg) {
   switch ($path) {
     case 'admin/help#openlayers_layers':
-      $output = '<p>'. t('Provides CCK fields and widgets through an OpenLayers interface.') .'</p>';
+      $output = '<p>'. t('Provides a wide variety of freely available layers.') .'</p>';
   }
-  
   return $output;
 }
+
+/**
+ * Implemnetation of hook_openlayers_layers_handler
+ *
+ * Define Layer Types that won't be used outside of this module such as Google Maps, Yahoo Maps, and MS Virtual Earth
+ */
+function openlayers_layers_openlayers_layers_handler_info($map = array()) {
+  
+  return array(
+    'Google' => array(
+      'layer_handler' => 'openlayersLayerHandlerGoogle',
+      'js_file' => drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers_layers.js',
+    ),
+    'VirtualEarth' => array(
+      'layer_handler' => 'openlayersLayerHandlerVirtualEarth',
+      'js_file' => drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers_layers.js',
+    ),
+    'Yahoo' => array(
+      'layer_handler' => 'openlayersLayerHandlerYahoo',
+      'js_file' => drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers_layers.js',
+    ),
+  );
+}
+
 
 /**
  * Implementation of hook_openlayers_layers_info
@@ -38,18 +61,82 @@ function openlayers_layers_openlayers_layers_info() {
     'file' => $file,
     'callback' => $callback,
   );
+  $info['openlayers_layers_google_street'] = array(
+    'name' => t('Google Street'),
+    'file' => $file,
+    'callback' => 'openlayers_layers_process_layers',
+  );
+  $info['openlayers_layers_google_satellite'] = array(
+    'name' => t('Google Satellite'),
+    'file' => $file,
+    'callback' => 'openlayers_layers_process_layers',
+  );
+  $info['openlayers_layers_google_hybrid'] = array(
+    'name' => t('Google Hybrid'),
+    'file' => $file,
+    'callback' => 'openlayers_layers_process_layers',
+  );
+  $info['openlayers_layers_google_physical'] = array(
+    'name' => t('Google Physical'),
+    'file' => $file,
+    'callback' => 'openlayers_layers_process_layers',
+  );
+  $info['openlayers_layers_yahoo_street'] = array(
+    'name' => t('Yahoo Street'),
+    'file' => $file,
+    'callback' => 'openlayers_layers_process_layers',
+  );
+  $info['openlayers_layers_yahoo_satellite'] = array(
+    'name' => t('Yahoo Street'),
+    'file' => $file,
+    'callback' => 'openlayers_layers_process_layers',
+  );
+  $info['openlayers_layers_yahoo_hybrid'] = array(
+    'name' => t('Yahoo Street'),
+    'file' => $file,
+    'callback' => 'openlayers_layers_process_layers',
+  );
+  $info['openlayers_layers_virtual_earth_street'] = array(
+    'name' => t('Virtual Earth Street'),
+    'file' => $file,
+    'callback' => 'openlayers_layers_process_layers',
+  );
+  $info['openlayers_layers_virtual_earth_satellite'] = array(
+    'name' => t('Virtual Earth Street'),
+    'file' => $file,
+    'callback' => 'openlayers_layers_process_layers',
+  );
+  $info['openlayers_layers_virtual_earth_hybrid'] = array(
+    'name' => t('Virtual Earth Hybrid'),
+    'file' => $file,
+    'callback' => 'openlayers_layers_process_layers',
+  );
   
   return $info;
 }
 
 /**
- * Implemnetation of hook_openlayers_layers_handler
+ * Implementation of hook_openlayers_map_alter
+ * 
+ * This checks to see if we are using Google Maps, Yahoo Maps, or MS Virtual Earth
+ * and if we are then include the API JS files.
+ * @@TODO: Is this the best place to put this???
  */
-function openlayers_layers_openlayers_layers_handler_info($map = array()) {
-  return array(
-    'XYZ' => array(
-      'layer_handler' => 'openlayersLayerHandlerXYZ',
-      'js_file' => drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers_layers.js',
-    ),
-  );
+ 
+ function openlayers_layers_openlayers_map_alter($map){
+  
+  $include_google = false;
+  $include_yahoo = false;
+  $include_virtual_earth = false;
+  
+  foreach ($map['layers'] as $layer){
+    if ($layer['type'] == "Google") $include_google = true;
+    if ($layer['type'] == "Yahoo") $include_yahoo = true;
+    if ($layer['type'] == "VirtualEarth") $include_virtual_earth = true;
+  }
+  
+  if ($include_google) drupal_set_html_head('<script src="'. check_url("http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true_or_false&amp;key=abc123xyz") .'" type="text/javascript"></script>');
+  if ($include_yahoo) drupal_set_html_head('<script src="'. check_url("http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=abc123xyz") .'" type="text/javascript"></script>');
+  if ($include_virtual_earth) drupal_set_html_head('<script src="'. check_url("http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.1") .'" type="text/javascript"></script>');
+  
 }

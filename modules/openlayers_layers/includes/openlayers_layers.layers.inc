@@ -15,6 +15,8 @@
  *
  * @param $layer
  *   String ID for the layer
+ * @param $map
+ *   Map array
  * @return
  *   Array formated for an OpenLayers map layer
  */
@@ -57,10 +59,110 @@ function openlayers_layers_process_layers($layer = NULL) {
         'events' => array(),
       );
       break;
-      
+    case 'openlayers_layers_google_street':
+      $layer_data = array(
+        'id' => $layer,
+        'type' => 'Google',
+        'name' => $layer_info[$layer]['name'],
+        'params' => array(
+          'type' => 'street'
+        )
+      );
+      break;
+    case 'openlayers_layers_google_satellite':
+      $layer_data = array(
+        'id' => $layer,
+        'type' => 'Google',
+        'name' => $layer_info[$layer]['name'],
+        'params' => array(
+          'type' => 'satellite'
+        )
+      );
+      break;
+    case 'openlayers_layers_google_hybrid':
+      $layer_data = array(
+        'id' => $layer,
+        'type' => 'Google',
+        'name' => $layer_info[$layer]['name'],
+        'params' => array(
+          'type' => 'hybrid'
+        )
+      );
+      break;
+    case 'openlayers_layers_google_physical':
+      $layer_data = array(
+        'id' => $layer,
+        'type' => 'Google',
+        'name' => $layer_info[$layer]['name'],
+        'params' => array(
+          'type' => 'physical'
+        )
+      );
+      break;
+    case 'openlayers_layers_yahoo_street':
+      $layer_data = array(
+        'id' => $layer,
+        'type' => 'Yahoo',
+        'name' => $layer_info[$layer]['name'],
+        'params' => array(
+          'type' => 'street'
+        )
+      );
+      break;
+    case 'openlayers_layers_yahoo_satellite':
+      $layer_data = array(
+        'id' => $layer,
+        'type' => 'Yahoo',
+        'name' => $layer_info[$layer]['name'],
+        'params' => array(
+          'type' => 'satellite'
+        )
+      );
+      break;
+    case 'openlayers_layers_yahoo_hybrid':
+      $layer_data = array(
+        'id' => $layer,
+        'type' => 'Yahoo',
+        'name' => $layer_info[$layer]['name'],
+        'params' => array(
+          'type' => 'hybrid'
+        )
+      );
+      break;
+    case 'openlayers_layers_virtual_earth_street':
+      $layer_data = array(
+        'id' => $layer,
+        'type' => 'VirtualEarth',
+        'name' => $layer_info[$layer]['name'],
+        'params' => array(
+          'type' => 'street'
+        )
+      );
+      break;
+    case 'openlayers_layers_virtual_earth_satellite':
+      $layer_data = array(
+        'id' => $layer,
+        'type' => 'VirtualEarth',
+        'name' => $layer_info[$layer]['name'],
+        'params' => array(
+          'type' => 'satellite'
+        )
+      );
+      break;
+    case 'openlayers_layers_virtual_earth_hybrid':
+      $layer_data = array(
+        'id' => $layer,
+        'type' => 'VirtualEarth',
+        'name' => $layer_info[$layer]['name'],
+        'params' => array(
+          'type' => 'hybrid'
+        )
+      );
+      break;
+     
     default:
       break;
   }
-
+  
   return $layer_data;
 }

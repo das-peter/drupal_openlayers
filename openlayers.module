@@ -289,6 +289,10 @@ function openlayers_openlayers_layers_handler_info($map = array()) {
       'layer_handler' => 'openlayersLayerHandlerVector',
       'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
     ),
+    'XYZ' => array(
+      'layer_handler' => 'openlayersLayerHandlerXYZ',
+      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
+    ),
   );
 }
 
@@ -394,7 +398,8 @@ function _openlayers_get_map_defaults() {
       'zoom' => '2',
     ),
     'options' => array(
-      'numZoomLevels' => 10,
+      'projection' => "EPSG:4326",
+      'displayProjection' => "EPSG:4326",
     ),
     'controls' => array(
       'LayerSwitcher' => TRUE,

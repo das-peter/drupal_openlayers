@@ -2,7 +2,7 @@
 
 /**
  * @file
- *   JS functions to handle different kinds of layers
+ *   JS functions to handle different types of layers
  */
 
 /**
@@ -15,6 +15,7 @@ function openlayersLayerHandlerWMS(layerOptions, mapid) {
   var returnWMS = new OpenLayers.Layer.WMS(layerOptions.name, layerOptions.url, wmsOptions);
   return returnWMS;
 }
+
 
 /**
  * Process Vector Layers
@@ -46,4 +47,13 @@ function openlayersLayerHandlerVector(layerOptions, mapid) {
     
   var returnVector = new OpenLayers.Layer.Vector(layerOptions.name, {styleMap: myStyles});
   return returnVector;
+}
+
+
+/**
+ * Process XYZ Layers
+ */
+function openlayersLayerHandlerXYZ(layerOptions, mapid) {
+  var returnXYZ = new OpenLayers.Layer.XYZ(layerOptions.name, layerOptions.url, layerOptions.options);
+  return returnXYZ;
 }

@@ -94,21 +94,37 @@ function openlayersRenderMap(map) {
 function openlayersCreateMapOptions(options, controls, mapid) {
   // @@TODO: Dynamically put in controls and options
   
-  var returnOptions = {
-    numZoomLevels: options.numZoomLevels,
-    controls: [
-      new OpenLayers.Control.PanZoomBar(),
-      new OpenLayers.Control.MouseToolbar(),
-      new OpenLayers.Control.LayerSwitcher({'ascending':false}),
-      new OpenLayers.Control.Permalink(),
-      new OpenLayers.Control.ScaleLine(),
-      new OpenLayers.Control.Permalink('permalink'),
-      new OpenLayers.Control.MousePosition(),
-      new OpenLayers.Control.OverviewMap(),
-      new OpenLayers.Control.KeyboardDefaults(),
-      // new OpenLayers.Control.EditingToolbar()
-    ],
+  var returnOptions = {};
+  
+  // These parameters are set in the default map array, so they will always be defined
+  returnOptions.numZoomLevels = options.numZoomLevels;
+  returnOptions.projection = new OpenLayers.Projection(options.projection);
+  returnOptions.displayProjection = new OpenLayers.Projection(options.displayProjection);
+  
+  // These parameters may or may not be defined by the map array, so we must check. 
+  if (typeof(options.maxResolution) != "undefined") returnOptions.maxResolution = options.maxResolution;
+  
+  if (typeof(options.maxExtent) != "undefined") {
+    returnOptions.maxExtent =  new OpenLayers.Bounds(
+      options.maxExtent.left,
+      options.maxExtent.bottom,
+      options.maxExtent.right,
+      options.maxExtent.top
+    );
   }
+  
+  returnOptions.controls = [
+    new OpenLayers.Control.PanZoomBar(),
+    new OpenLayers.Control.MouseToolbar(),
+    new OpenLayers.Control.LayerSwitcher({'ascending':false}),
+    new OpenLayers.Control.Permalink(),
+    new OpenLayers.Control.ScaleLine(),
+    new OpenLayers.Control.Permalink('permalink'),
+    new OpenLayers.Control.MousePosition(),
+    new OpenLayers.Control.OverviewMap(),
+    new OpenLayers.Control.KeyboardDefaults()
+  ];
+
   return returnOptions;
 }
 
