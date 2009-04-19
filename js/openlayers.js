@@ -37,6 +37,10 @@ jQuery(document).ready(function() {
  * Render OpenLayers Map
  */
 function openlayersRenderMap(map) {
+  // Create Projection objects
+  Drupal.openlayers.activeObjects[map.id].projection = new OpenLayers.Projection(map.options.projection);
+  Drupal.openlayers.activeObjects[map.id].externalProjection = new OpenLayers.Projection(map.options.displayProjection);
+  
   // Create base map options
   var options = openlayersCreateMapOptions(map.options, map.controls, map.id);
   
@@ -84,12 +88,8 @@ function openlayersRenderMap(map) {
   }
                
   // Zoom to Center
-  // @@TODO: When we figure out how we want to handle projections, this should change.
-  var proj = new OpenLayers.Projection("EPSG:4326");
-  var point = new OpenLayers.LonLat(map.center.lon, map.center.lon);
-  var mapProj = Drupal.openlayers.activeObjects[map.id].map.getProjectionObject()
-  Drupal.openlayers.activeObjects[map.id].map.setCenter(point.transform(proj, mapProj));
-  Drupal.openlayers.activeObjects[map.id].map.zoomTo(map.center.zoom);
+  var center = new OpenLayers.LonLat(map.center.lon, map.center.lon);
+  Drupal.openlayers.activeObjects[map.id].map.setCenter(center, map.center.zoom);
 }
 
 /**
@@ -101,9 +101,8 @@ function openlayersCreateMapOptions(options, controls, mapid) {
   var returnOptions = {};
   
   // These parameters are set in the default map array, so they will always be defined
-  returnOptions.numZoomLevels = options.numZoomLevels;
-  returnOptions.projection = new OpenLayers.Projection(options.projection);
-  returnOptions.displayProjection = new OpenLayers.Projection(options.displayProjection);
+  returnOptions.projection = Drupal.openlayers.activeObjects[mapid].projection;
+  returnOptions.displayProjection = Drupal.openlayers.activeObjects[mapid].displayProjection;
   
   // These parameters may or may not be defined by the map array, so we must check. 
   if (typeof(options.maxResolution) != "undefined") returnOptions.maxResolution = options.maxResolution;

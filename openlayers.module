@@ -410,6 +410,10 @@ function openlayers_openlayers_layers_handler_info($map = array()) {
       'layer_handler' => 'openlayersLayerHandlerVector',
       'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
     ),
+    'KML' => array(
+      'layer_handler' => 'openlayersLayerHandlerKML',
+      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
+    ),
     'XYZ' => array(
       'layer_handler' => 'openlayersLayerHandlerXYZ',
       'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',

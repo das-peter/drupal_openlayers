@@ -47,6 +47,36 @@ function openlayers_layers_process_layers($layer = NULL) {
       );
       break;
       
+    case 'openlayers_layers_nasa_daily_planet':
+      $layer_data = array(
+        'id' => $layer,
+        'type' => 'WMS',
+        'name' => $layer_info[$layer]['name'],
+        'url' => 'http://wms.jpl.nasa.gov/wms.cgi?',
+        'params' => array(
+          'layers' => 'daily_planet',
+          'format' => 'image/png'
+        ),
+        'options' => array(),
+        'events' => array(),
+      );
+      break;
+    
+    case 'openlayers_layers_nasa_blue_marble':
+      $layer_data = array(
+        'id' => $layer,
+        'type' => 'WMS',
+        'name' => $layer_info[$layer]['name'],
+        'url' => 'http://wms.jpl.nasa.gov/wms.cgi?',
+        'params' => array(
+          'layers' => 'BMNG',
+          'format' => 'image/png'
+        ),
+        'options' => array(),
+        'events' => array(),
+      );
+      break;
+    
     case 'openlayers_layers_open_aerial':
       $layer_data = array(
         'id' => $layer,
@@ -194,6 +224,15 @@ function openlayers_layers_process_layers($layer = NULL) {
         'type' => 'OSM',
         'name' => $layer_info[$layer]['name'],
         'url' => 'http://andy.sandbox.cloudmade.com/tiles/cycle'
+      );
+      break;
+   
+   case 'openlayers_layers_local_kml':
+      $layer_data = array(
+        'id' => $layer,
+        'type' => 'KML',
+        'name' => $layer_info[$layer]['name'],
+        'url' => url('kml/node'),
       );
       break;
      

@@ -60,76 +60,111 @@ function openlayers_layers_openlayers_layers_info() {
     'file' => $file,
     'callback' => $callback,
   );
+  
+  $info['openlayers_layers_nasa_daily_planet'] = array(
+    'name' => t('NASA Daily Planet'),
+    'file' => $file,
+    'callback' => $callback,
+  );
+  
+  $info['openlayers_layers_nasa_blue_marble'] = array(
+    'name' => t('NASA Blue Marbel'),
+    'file' => $file,
+    'callback' => $callback,
+  );
+  
   $info['openlayers_layers_open_aerial'] = array(
     'name' => t('Open Aerial (2.8+) (do not use)'),
     'file' => $file,
     'callback' => $callback,
   );
+  
   $info['openlayers_layers_google_street'] = array(
     'name' => t('Google Street'),
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
   );
+  
   $info['openlayers_layers_google_satellite'] = array(
     'name' => t('Google Satellite'),
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
   );
+  
   $info['openlayers_layers_google_hybrid'] = array(
     'name' => t('Google Hybrid'),
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
   );
+  
   $info['openlayers_layers_google_physical'] = array(
     'name' => t('Google Physical'),
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
   );
+  
   $info['openlayers_layers_yahoo_street'] = array(
     'name' => t('Yahoo Street'),
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
   );
+  
   $info['openlayers_layers_yahoo_satellite'] = array(
     'name' => t('Yahoo Satellite'),
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
   );
+  
   $info['openlayers_layers_yahoo_hybrid'] = array(
     'name' => t('Yahoo Hybrid'),
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
   );
+  
   $info['openlayers_layers_virtual_earth_street'] = array(
     'name' => t('Virtual Earth Street'),
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
   );
+  
   $info['openlayers_layers_virtual_earth_satellite'] = array(
     'name' => t('Virtual Earth Satellite'),
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
   );
+  
   $info['openlayers_layers_virtual_earth_hybrid'] = array(
     'name' => t('Virtual Earth Hybrid'),
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
   );
+  
   $info['openlayers_layers_osm_mapnik'] = array(
     'name' => t('OSM Mapnik'),
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
   );
+  
   $info['openlayers_layers_osm_tah'] = array(
     'name' => t('OSM Tiles@Home'),
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
   );
+  
   $info['openlayers_layers_osm_cycle'] = array(
     'name' => t('OSM Cycling Map'),
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
   );
+  
+  // Module Dependant Layer Instances
+  if (module_exists('kml')){
+    $info['openlayers_layers_local_kml'] = array(
+      'name' => t('Local KML Feed'),
+      'file' => $file,
+      'callback' => 'openlayers_layers_process_layers',
+    );
+  }
   
   return $info;
 }
