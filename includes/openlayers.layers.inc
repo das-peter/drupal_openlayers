@@ -2,7 +2,7 @@
 
 /**
  * @file
- * This file contains layer instances for the default openalers WMS
+ * This file contains layer instances for the default openlayers WMS
  *
  */
 

@@ -26,6 +26,14 @@ function openlayers_layers_help($path, $arg) {
 function openlayers_layers_openlayers_layers_handler_info($map = array()) {
   
   return array(
+    'KML' => array(
+      'layer_handler' => 'openlayersLayerHandlerKML',
+      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
+    ),
+    'XYZ' => array(
+      'layer_handler' => 'openlayersLayerHandlerXYZ',
+      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
+    ),
     'Google' => array(
       'layer_handler' => 'openlayersLayerHandlerGoogle',
       'js_file' => drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers_layers.js',

@@ -2,9 +2,18 @@
 // $Id$
 
 /**
+ * @defgroup openlayers OpenLayers: Provides an API and Modules to interface with OpenLayers
+ *
+ * Provides an API and Modules to interface with OpenLayers.  Needs work...
+ */
+
+/**
  * @file
+ *
  * This file holds the main Drupal hook functions 
  * and private functions for the openlayers module.
+ *
+ * @ingroup openlayers
  */
 
 /**
@@ -378,8 +387,8 @@ function _openlayers_get_map_defaults() {
       'zoom' => 2,
     ),
     'options' => array(
-      'projection' => "EPSG:4326",
-      'displayProjection' => "EPSG:4326",
+      'projection' => 'EPSG:4326',
+      'displayProjection' => 'EPSG:4326',
     ),
     'controls' => array(
       'LayerSwitcher' => TRUE,
@@ -390,10 +399,6 @@ function _openlayers_get_map_defaults() {
   );
   return $map_default;
 }
-
-/**
- * SECTION: Hooking to provide default layer types and layer instances
- */
 
 /**
  * Implemnetation of hook_openlayers_layers_handler
@@ -410,14 +415,6 @@ function openlayers_openlayers_layers_handler_info($map = array()) {
       'layer_handler' => 'openlayersLayerHandlerVector',
       'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
     ),
-    'KML' => array(
-      'layer_handler' => 'openlayersLayerHandlerKML',
-      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
-    ),
-    'XYZ' => array(
-      'layer_handler' => 'openlayersLayerHandlerXYZ',
-      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
-    ),
   );
 }
 
@@ -428,15 +425,11 @@ function openlayers_openlayers_layers_handler_info($map = array()) {
  * @ingroup Default Layer Types and Instances
  */
 function openlayers_openlayers_layers_info() {
-  $file = drupal_get_path('module', 'openlayers') .'/includes/openlayers.layers.inc';
-  $callback = 'openlayers_process_layers';
-  $info = array();
-  
   // Define info array
   $info['openlayers_default_wms'] = array(
     'name' => t('Default OpenLayers WMS'),
-    'file' => $file,
-    'callback' => $callback,
+    'file' => drupal_get_path('module', 'openlayers') .'/includes/openlayers.layers.inc',
+    'callback' => 'openlayers_process_layers',
   );
   
   return $info;
