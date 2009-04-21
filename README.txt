@@ -157,6 +157,92 @@ Maps are built using an array that looks like this:
 	moveend
 
 
+
+API: Adding Features
+===============
+
+Although there are many paths to getting features onto maps via events, the API provides a standard way of adding features via the map array.
+To do so built a feature of the Vector type and add geometry, style, and attribute information like so:
+
+  'feature_example' => array(
+    'id' => 'feature_example',
+    'type' => 'Vector',
+    'name' => t('Default Vector'),
+    'options' => array(),
+    'events' => array(),
+    'features' => array(
+      'feature_1' => array(
+        'wkt' => 'POLYGON((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2))',
+        'attributes' => array(
+          'name' => 'A Polygon with a hole in it',
+          'date' => 'December 24, 2004',
+          'author' => 'Santa Claus',
+        ),
+        'style' => array(
+          'fillColor' => '#aa4400',
+          'fillOpacity' => '0.7',
+        ),
+      ),
+      'feature_2' => array(
+        'lat' => '40.123',
+        'lon' => '-20.123',
+        'attributes' => array(
+          'name' => 'A point',
+          'date' => 'December 24, 2004',
+          'author' => 'Rudolf',
+        ),
+        'style' => array(
+          'externalGraphic' => 'http://openlayers.org/dev/img/marker.png',
+          'graphicWidth' => 21,
+          'graphicHeight' => 25,
+          'graphicXOffset' => 10,
+          'graphicYOffset' => 10,
+        ),
+      ),
+    ),
+  ),
+
+
+Default style properties
+
+    * fillColor: “#ee9900”,
+    * fillOpacity: 0.4,
+    * hoverFillColor: “white”,
+    * hoverFillOpacity: 0.8,
+    * strokeColor: “#ee9900”,
+    * strokeOpacity: 1,
+    * strokeWidth: 1,
+    * strokeLinecap: “round”, [butt | round | square]
+    * strokeDashstyle: “solid”, [dot | dash | dashdot | longdash | longdashdot | solid]
+    * hoverStrokeColor: “red”,
+    * hoverStrokeOpacity: 1,
+    * hoverStrokeWidth: 0.2,
+    * pointRadius: 6,
+    * hoverPointRadius: 1,
+    * hoverPointUnit: “%”,
+    * pointerEvents: “visiblePainted”
+    * cursor: “”
+
+Other style properties that have no default values
+
+    * externalGraphic,
+    * graphicWidth,
+    * graphicHeight,
+    * graphicOpacity,
+    * graphicXOffset,
+    * graphicYOffset,
+    * graphicName,
+    * display
+
+
+
+
+
+
+
+
+
+
  Authors/Credits
 =================
 ...
