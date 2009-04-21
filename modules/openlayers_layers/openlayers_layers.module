@@ -28,11 +28,11 @@ function openlayers_layers_openlayers_layers_handler_info($map = array()) {
   return array(
     'KML' => array(
       'layer_handler' => 'openlayersLayerHandlerKML',
-      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
+      'js_file' => drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers_layers.js',
     ),
     'XYZ' => array(
       'layer_handler' => 'openlayersLayerHandlerXYZ',
-      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
+      'js_file' => drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers_layers.js',
     ),
     'Google' => array(
       'layer_handler' => 'openlayersLayerHandlerGoogle',
@@ -65,24 +65,28 @@ function openlayers_layers_openlayers_layers_info() {
   // Define info array
   $info['openlayers_layers_nasa_global_mosaic'] = array(
     'name' => t('NASA Global Mosaic'),
+    'description' => t('A high resolution global image mosaic of the earth, produced from 1999-2003 Landsat7 scenes. The highest resolution has a resolution of 15 meters.'),
     'file' => $file,
     'callback' => $callback,
   );
   
   $info['openlayers_layers_nasa_daily_planet'] = array(
     'name' => t('NASA Daily Planet'),
+    'description' => t('This layer is the most current, near-global image of the earth available. It is a countinuously updating image from the MODIS TERRA satellite'),
     'file' => $file,
     'callback' => $callback,
   );
   
   $info['openlayers_layers_nasa_blue_marble'] = array(
     'name' => t('NASA Blue Marbel'),
+    'description' => t('Blue Marble Next Generation, A MODIS-derived 500m true color earth dataset showing seasonal dynamics. This version of the BMNG was updated June 2007'),
     'file' => $file,
     'callback' => $callback,
   );
   
   $info['openlayers_layers_open_aerial'] = array(
     'name' => t('Open Aerial (2.8+) (do not use)'),
+    'description' => t('OpenAerialMap is an open collection of aerial photographs, collected into a single coherent view of the world.'),
     'file' => $file,
     'callback' => $callback,
   );
@@ -161,6 +165,13 @@ function openlayers_layers_openlayers_layers_info() {
   
   $info['openlayers_layers_osm_cycle'] = array(
     'name' => t('OSM Cycling Map'),
+    'file' => $file,
+    'callback' => 'openlayers_layers_process_layers',
+  );
+
+  $info['openlayers_layers_osm_4326_hybrid'] = array(
+    'name' => t('OSM Overlay'),
+    'description' => t('Semi-transparent hybrid overlay. Projectd into WSG84 for use on non spherical-mercator maps.'),
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
   );

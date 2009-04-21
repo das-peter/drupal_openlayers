@@ -9,11 +9,12 @@
  * Process WMS Layers
  */
 function openlayersLayerHandlerWMS(layerOptions, mapid) {
-  var wmsOptions = {
-    layers: layerOptions.params.layers,
-    format: "image/png"
-  };
-  var returnWMS = new OpenLayers.Layer.WMS(layerOptions.name, layerOptions.url, wmsOptions);
+    
+  if (typeof(layerOptions.params.format) == "undefined"){
+    layerOptions.params.format = "image/png";
+  }
+
+  var returnWMS = new OpenLayers.Layer.WMS(layerOptions.name, layerOptions.url, layerOptions.params, layerOptions.options);
   return returnWMS;
 }
 
@@ -48,34 +49,4 @@ function openlayersLayerHandlerVector(layerOptions, mapid) {
     
   var returnVector = new OpenLayers.Layer.Vector(layerOptions.name, {styleMap: myStyles});
   return returnVector;
-}
-
-/**
- * Process KML Layers
- */
-function openlayersLayerHandlerKML(layerOptions, mapid) {
-  
-  var mapOptions = {
-    projection: new OpenLayers.Projection("EPSG:4326"),
-    format: OpenLayers.Format.KML,
-    formatOptions: {extractStyles: true, extractAttributes: true}
-  };
-  
-  jQuery.extend(mapOptions, layerOptions.options);
-  
-  var returnKML = new OpenLayers.Layer.GML(
-    layerOptions.name, 
-    layerOptions.url, 
-    mapOptions
-  );
-  
-  return returnKML;
-}
-
-/**
- * Process XYZ Layers
- */
-function openlayersLayerHandlerXYZ(layerOptions, mapid) {
-  var returnXYZ = new OpenLayers.Layer.XYZ(layerOptions.name, layerOptions.url, layerOptions.options);
-  return returnXYZ;
 }

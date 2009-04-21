@@ -41,6 +41,7 @@ function openlayers_process_layers($layer = NULL) {
         'params' => array(
           'layers' => 'basic',
         ),
+        'projection' => array(4326, 900913, 4269),
         'options' => array(),
         'events' => array(),
       );

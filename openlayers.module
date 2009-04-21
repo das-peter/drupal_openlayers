@@ -181,10 +181,13 @@ function openlayers_render_map($map = array()) {
   
   // Process layers
   $map['layers'] = _openlayers_layers_process($map['layers'], $map);
-
+  
   // Hook for one last alter
   // hook_openlayers_map_alter(&$map = array())
   drupal_alter('openlayers_map', &$map);
+
+  // Check our map for errors
+  _openlayers_error_check_map($map);
 
   // Add map container to drupal JS settings
   $openlayers = array(
@@ -387,8 +390,8 @@ function _openlayers_get_map_defaults() {
       'zoom' => 2,
     ),
     'options' => array(
-      'projection' => 'EPSG:4326',
-      'displayProjection' => 'EPSG:4326',
+      'projection' => 4326,
+      'displayProjection' => 4326,
     ),
     'controls' => array(
       'LayerSwitcher' => TRUE,
@@ -399,6 +402,31 @@ function _openlayers_get_map_defaults() {
   );
   return $map_default;
 }
+
+/**
+ * Check map array for incompatibilities or errors
+ *
+ * @return
+ *   TRUE or FALSE depending on errors found
+ */
+
+function _openlayers_error_check_map($map){
+  // @TODO: Should this be a hook?
+  $pass = TRUE;
+  
+  // Check layer projections
+  foreach ($map['layers'] as $layer){
+    if ($layer['projection']){
+      if (!in_array($map['options']['projection'],$layer['projection'])){
+        drupal_set_message("The layer ". $layer['name'] ." cannot work with the map projection: EPSG:". $map['options']['projection'] .". Please change the map projection or remove the layer. ". $layer['name'] ." is compatable with the following projections: ". implode(", ",$layer['projection']), "warning");
+        $pass = FALSE;
+      }
+    }
+  }
+  
+  return $pass;
+}
+
 
 /**
  * Implemnetation of hook_openlayers_layers_handler

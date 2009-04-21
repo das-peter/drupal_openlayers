@@ -122,3 +122,33 @@ function openlayersLayerHandlerOSM(layerOptions, mapid) {
 
   return OSMLayer;
 }
+
+/**
+ * Process KML Layers
+ */
+function openlayersLayerHandlerKML(layerOptions, mapid) {
+  
+  var mapOptions = {
+    projection: new OpenLayers.Projection("EPSG:4326"),
+    format: OpenLayers.Format.KML,
+    formatOptions: {extractStyles: true, extractAttributes: true}
+  };
+  
+  jQuery.extend(mapOptions, layerOptions.options);
+  
+  var returnKML = new OpenLayers.Layer.GML(
+    layerOptions.name, 
+    layerOptions.url, 
+    mapOptions
+  );
+  
+  return returnKML;
+}
+
+/**
+ * Process XYZ Layers
+ */
+function openlayersLayerHandlerXYZ(layerOptions, mapid) {
+  var returnXYZ = new OpenLayers.Layer.XYZ(layerOptions.name, layerOptions.url, layerOptions.options);
+  return returnXYZ;
+}

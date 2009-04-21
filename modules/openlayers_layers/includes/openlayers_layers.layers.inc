@@ -42,6 +42,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         'params' => array(
           'layers' => 'landsat7',
         ),
+        'projection' => array(4326),
         'options' => array(),
         'events' => array(),
       );
@@ -57,6 +58,7 @@ function openlayers_layers_process_layers($layer = NULL) {
           'layers' => 'daily_planet',
           'format' => 'image/png'
         ),
+        'projection' => array(4326),
         'options' => array(),
         'events' => array(),
       );
@@ -72,6 +74,7 @@ function openlayers_layers_process_layers($layer = NULL) {
           'layers' => 'BMNG',
           'format' => 'image/png'
         ),
+        'projection' => array(4326),
         'options' => array(),
         'events' => array(),
       );
@@ -86,6 +89,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         'options' => array(
           'sphericalMercator' => TRUE,
         ),
+        'projection' => array(900913, 3785),
         'events' => array(),
       );
       break;
@@ -97,7 +101,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'name' => $layer_info[$layer]['name'],
         'params' => array(
           'type' => 'street'
-        )
+        ),
+        'projection' => array(900913, 3785),
       );
       break;
     
@@ -108,7 +113,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'name' => $layer_info[$layer]['name'],
         'params' => array(
           'type' => 'satellite'
-        )
+        ),
+        'projection' => array(900913, 3785),
       );
       break;
     
@@ -119,7 +125,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'name' => $layer_info[$layer]['name'],
         'params' => array(
           'type' => 'hybrid'
-        )
+        ),
+        'projection' => array(900913, 3785),
       );
       break;
     
@@ -130,7 +137,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'name' => $layer_info[$layer]['name'],
         'params' => array(
           'type' => 'physical'
-        )
+        ),
+        'projection' => array(900913, 3785),
       );
       break;
     
@@ -141,7 +149,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'name' => $layer_info[$layer]['name'],
         'params' => array(
           'type' => 'street'
-        )
+        ),
+        'projection' => array(900913, 3785),
       );
       break;
     
@@ -152,7 +161,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'name' => $layer_info[$layer]['name'],
         'params' => array(
           'type' => 'satellite'
-        )
+        ),
+        'projection' => array(900913, 3785),
       );
       break;
     
@@ -163,7 +173,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'name' => $layer_info[$layer]['name'],
         'params' => array(
           'type' => 'hybrid'
-        )
+        ),
+        'projection' => array(900913, 3785),
       );
       break;
     
@@ -174,7 +185,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'name' => $layer_info[$layer]['name'],
         'params' => array(
           'type' => 'street'
-        )
+        ),
+        'projection' => array(900913, 3785),
       );
       break;
     
@@ -185,7 +197,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'name' => $layer_info[$layer]['name'],
         'params' => array(
           'type' => 'satellite'
-        )
+        ),
+        'projection' => array(900913, 3785),
       );
       break;
     
@@ -196,7 +209,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'name' => $layer_info[$layer]['name'],
         'params' => array(
           'type' => 'hybrid'
-        )
+        ),
+        'projection' => array(900913, 3785),
       );
       break;
     
@@ -205,7 +219,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'id' => $layer,
         'type' => 'OSM',
         'name' => $layer_info[$layer]['name'],
-        'url' => 'http://tile.openstreetmap.org'
+        'url' => 'http://tile.openstreetmap.org',
+        'projection' => array(900913, 3785),
       );
       break;
     
@@ -214,7 +229,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'id' => $layer,
         'type' => 'OSM',
         'name' => $layer_info[$layer]['name'],
-        'url' => 'http://tah.openstreetmap.org/Tiles/tile'
+        'url' => 'http://tah.openstreetmap.org/Tiles/tile',
+        'projection' => array(900913, 3785),
       );
       break;
     
@@ -223,7 +239,25 @@ function openlayers_layers_process_layers($layer = NULL) {
         'id' => $layer,
         'type' => 'OSM',
         'name' => $layer_info[$layer]['name'],
-        'url' => 'http://andy.sandbox.cloudmade.com/tiles/cycle'
+        'url' => 'http://andy.sandbox.cloudmade.com/tiles/cycle',
+        'projection' => array(900913, 3785),
+      );
+      break;
+
+    case 'openlayers_layers_osm_4326_hybrid':
+      $layer_data = array(
+        'id' => $layer,
+        'type' => 'WMS',
+        'name' => $layer_info[$layer]['name'],
+        'url' => 'http://oam.hypercube.telascience.org/tiles',
+        'params' => array(
+          'layers' => 'osm-4326-hybrid',
+        ),
+        'options' => array(
+          'isBaseLayer' => false,
+          'buffer' => 1,
+        ),
+        'projection' => array(4326),
       );
       break;
    
