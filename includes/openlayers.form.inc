@@ -94,12 +94,12 @@ function _openlayers_map_form($defaults = array()) {
     '#multiple' => TRUE,
     '#default_value' => $defaults['layers']['available_layers'],
   );
-  $form['layers']['default_layer'] = array(
+  $form['default_layer'] = array(
     '#type' => 'select',
-    '#title' => t('Default Layer'),
+    '#title' => t('Default Base Layer'),
     '#description' => t('The default layer to use when rendering maps.  This will be included whether it is in the available layers or not.'),
     '#options' => $layers,
-    '#default_value' => $defaults['layers']['default_layer'],
+    '#default_value' => $defaults['default_layer'],
   );
   
   return $form;
@@ -129,10 +129,11 @@ function _openlayers_convert_form_to_map($values = array()) {
   }
   
   // Go through layers (could be better way to do this)
+  // @@BUG: This shouldn't be here, it should be in openlayers_map_render. It currently will include the default layer even if a different "default_layer" is defined in the downstream map array.
   $layers = array();
   $layers = array_filter($values['layers']['available_layers']);
-  if (!in_array($values['layers']['default_layer'], $values['layers']['available_layers']) && ($values['layers']['default_layer'])) {
-    $layers[$values['layers']['default_layer']] = $values['layers']['default_layer'];
+  if (!in_array($values['default_layer'], $values['layers']['available_layers']) && ($values['default_layer'])) {
+    $layers[$values['default_layer']] = $values['default_layer'];
   }
   $processed['layers'] = $layers;
 

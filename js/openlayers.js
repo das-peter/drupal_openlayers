@@ -48,7 +48,6 @@ function openlayersRenderMap(map) {
   Drupal.openlayers.activeObjects[map.id].map = new OpenLayers.Map(map.id, options);
     
   // Add ID to map.
-  // @@TODO: Properly namespace this.
   Drupal.openlayers.activeObjects[map.id].map.mapid = map.id;
   
   // Add events to the map 
@@ -90,6 +89,10 @@ function openlayersRenderMap(map) {
   // Zoom to Center
   var center = new OpenLayers.LonLat(map.center.lon, map.center.lon);
   Drupal.openlayers.activeObjects[map.id].map.setCenter(center, map.center.zoom);
+  
+  // Set our default base layer
+  Drupal.openlayers.activeObjects[map.id].map.setBaseLayer(Drupal.openlayers.activeObjects[map.id].layers[map.default_layer]);
+  
 }
 
 /**

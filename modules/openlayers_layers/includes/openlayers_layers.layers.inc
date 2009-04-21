@@ -95,6 +95,7 @@ function openlayers_layers_process_layers($layer = NULL) {
       break;
     
     case 'openlayers_layers_google_street':
+      openlayers_layers_include_google_map_api();
       $layer_data = array(
         'id' => $layer,
         'type' => 'Google',
@@ -107,6 +108,7 @@ function openlayers_layers_process_layers($layer = NULL) {
       break;
     
     case 'openlayers_layers_google_satellite':
+      openlayers_layers_include_google_map_api();
       $layer_data = array(
         'id' => $layer,
         'type' => 'Google',
@@ -119,6 +121,7 @@ function openlayers_layers_process_layers($layer = NULL) {
       break;
     
     case 'openlayers_layers_google_hybrid':
+      openlayers_layers_include_google_map_api();
       $layer_data = array(
         'id' => $layer,
         'type' => 'Google',
@@ -131,6 +134,7 @@ function openlayers_layers_process_layers($layer = NULL) {
       break;
     
     case 'openlayers_layers_google_physical':
+      openlayers_layers_include_google_map_api();
       $layer_data = array(
         'id' => $layer,
         'type' => 'Google',
@@ -143,6 +147,7 @@ function openlayers_layers_process_layers($layer = NULL) {
       break;
     
     case 'openlayers_layers_yahoo_street':
+      openlayers_layers_include_yahoo_api();
       $layer_data = array(
         'id' => $layer,
         'type' => 'Yahoo',
@@ -155,6 +160,7 @@ function openlayers_layers_process_layers($layer = NULL) {
       break;
     
     case 'openlayers_layers_yahoo_satellite':
+      openlayers_layers_include_yahoo_api();
       $layer_data = array(
         'id' => $layer,
         'type' => 'Yahoo',
@@ -167,6 +173,7 @@ function openlayers_layers_process_layers($layer = NULL) {
       break;
     
     case 'openlayers_layers_yahoo_hybrid':
+      openlayers_layers_include_yahoo_api();
       $layer_data = array(
         'id' => $layer,
         'type' => 'Yahoo',
@@ -179,6 +186,7 @@ function openlayers_layers_process_layers($layer = NULL) {
       break;
     
     case 'openlayers_layers_virtual_earth_street':
+      openlayers_layers_include_virtual_earth_api();
       $layer_data = array(
         'id' => $layer,
         'type' => 'VirtualEarth',
@@ -191,6 +199,7 @@ function openlayers_layers_process_layers($layer = NULL) {
       break;
     
     case 'openlayers_layers_virtual_earth_satellite':
+      openlayers_layers_include_virtual_earth_api();
       $layer_data = array(
         'id' => $layer,
         'type' => 'VirtualEarth',
@@ -203,6 +212,7 @@ function openlayers_layers_process_layers($layer = NULL) {
       break;
     
     case 'openlayers_layers_virtual_earth_hybrid':
+      openlayers_layers_include_virtual_earth_api();
       $layer_data = array(
         'id' => $layer,
         'type' => 'VirtualEarth',
@@ -217,9 +227,9 @@ function openlayers_layers_process_layers($layer = NULL) {
     case 'openlayers_layers_osm_mapnik':
       $layer_data = array(
         'id' => $layer,
-        'type' => 'OSM',
+        'type' => 'XYZ',
         'name' => $layer_info[$layer]['name'],
-        'url' => 'http://tile.openstreetmap.org',
+        'url' => 'http://tile.openstreetmap.org/${z}/${x}/${y}.png',
         'projection' => array(900913, 3785),
       );
       break;
@@ -227,9 +237,9 @@ function openlayers_layers_process_layers($layer = NULL) {
     case 'openlayers_layers_osm_tah':
       $layer_data = array(
         'id' => $layer,
-        'type' => 'OSM',
+        'type' => 'XYZ',
         'name' => $layer_info[$layer]['name'],
-        'url' => 'http://tah.openstreetmap.org/Tiles/tile',
+        'url' => 'http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png',
         'projection' => array(900913, 3785),
       );
       break;
@@ -237,9 +247,9 @@ function openlayers_layers_process_layers($layer = NULL) {
     case 'openlayers_layers_osm_cycle':
       $layer_data = array(
         'id' => $layer,
-        'type' => 'OSM',
+        'type' => 'XYZ',
         'name' => $layer_info[$layer]['name'],
-        'url' => 'http://andy.sandbox.cloudmade.com/tiles/cycle',
+        'url' => 'http://andy.sandbox.cloudmade.com/tiles/cycle/${z}/${x}/${y}.png',
         'projection' => array(900913, 3785),
       );
       break;

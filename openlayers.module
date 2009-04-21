@@ -179,6 +179,12 @@ function openlayers_render_map($map = array()) {
   $system_defaults = _openlayers_get_map_defaults();
   $map = openlayers_merge_maps($system_defaults, $map);
   
+  //Add the defauly base layer if no layers are defined
+  if (!$map['layers']){
+    $map['layers'] = array('openlayers_default_wms');
+    $map['default_layer'] = 'openlayers_default_wms';
+  }
+  
   // Process layers
   $map['layers'] = _openlayers_layers_process($map['layers'], $map);
   
@@ -324,7 +330,7 @@ function _openlayers_layers_process($layers = array(), $map = array()) {
             $result = call_user_func_array($info['callback'], $layer);
             // Check for result
             if (isset($result) && is_array($result)) {
-              $processed[$k] = $result;
+              $processed[$layer] = $result;
             }
           }
         }
@@ -345,7 +351,7 @@ function _openlayers_layers_process($layers = array(), $map = array()) {
       }
     }
   }
-
+  
   // Return processed
   return $processed;
 }
@@ -387,7 +393,7 @@ function _openlayers_get_map_defaults() {
     'center' => array(
       'lat' => '0',
       'lon' => '0',
-      'zoom' => 2,
+      'zoom' => '4',
     ),
     'options' => array(
       'projection' => 4326,
@@ -395,9 +401,6 @@ function _openlayers_get_map_defaults() {
     ),
     'controls' => array(
       'LayerSwitcher' => TRUE,
-    ),
-    'layers' => array(
-      'openlayers_default_wms'
     ),
   );
   return $map_default;

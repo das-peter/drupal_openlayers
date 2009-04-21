@@ -101,28 +101,6 @@ function openlayersLayerHandlerVirtualEarth(layerOptions, mapid) {
   return virtualEarthLayer;
 }
 
-
-/**
- * Process OSM
- */
-function openlayersLayerHandlerOSM(layerOptions, mapid) {
-  
-   var mapOptions = {
-    sphericalMercator: true,
-    maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34)
-  };
-  
-  jQuery.extend(mapOptions, layerOptions.options);
-  
-  var OSMLayer = new OpenLayers.Layer.OSM(
-                layerOptions.name,
-                layerOptions.url + "/${z}/${x}/${y}.png",
-                mapOptions
-  );
-
-  return OSMLayer;
-}
-
 /**
  * Process KML Layers
  */
@@ -149,6 +127,13 @@ function openlayersLayerHandlerKML(layerOptions, mapid) {
  * Process XYZ Layers
  */
 function openlayersLayerHandlerXYZ(layerOptions, mapid) {
-  var returnXYZ = new OpenLayers.Layer.XYZ(layerOptions.name, layerOptions.url, layerOptions.options);
+  var mapOptions = {
+    sphericalMercator: true,
+    maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34)
+  };
+  
+  jQuery.extend(mapOptions, layerOptions.options);
+  
+  var returnXYZ = new OpenLayers.Layer.XYZ(layerOptions.name, layerOptions.url, mapOptions);
   return returnXYZ;
 }
