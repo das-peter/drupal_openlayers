@@ -396,8 +396,8 @@ function _openlayers_get_map_defaults() {
       'zoom' => '4',
     ),
     'options' => array(
-      'projection' => 4326,
-      'displayProjection' => 4326,
+      'projection' => '4326',
+      'displayProjection' => '4326',
     ),
     'controls' => array(
       'LayerSwitcher' => TRUE,

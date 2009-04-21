@@ -31,6 +31,7 @@ Maps are built using an array that looks like this:
     'controls' => array(
       'LayerSwitcher' => TRUE,
     ),
+    'default_layer' => 'default_wms',
     'layers' => array(
       'default_wms' => array(
         'id' => 'default_wms',
