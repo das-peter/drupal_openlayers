@@ -5,6 +5,8 @@
  * @file
  * This file holds the main Drupal hook functions 
  * and private functions for the openlayers module.
+ *
+ * @ingroup openlayers
  */
  
 /**
@@ -285,4 +287,32 @@ function openlayers_layers_process_layers($layer = NULL) {
   }
   
   return $layer_data;
+}
+
+/**
+ * The following functions are more temporary and used for including libraries for certain layers
+ */
+function openlayers_layers_include_google_map_api() {
+  static $included = FALSE;
+  if (!$included) {
+    // Include Google Map API JS (maybe getting key from GMap)
+    drupal_set_html_head('<script src="'. check_url("http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true_or_false&amp;key=abc123xyz") .'" type="text/javascript"></script>');
+    $included = TRUE;
+  }
+}
+
+function openlayers_layers_include_yahoo_api() {
+  static $included = FALSE;
+  if (!$included) {
+    drupal_set_html_head('<script src="'. check_url("http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=abc123xyz") .'" type="text/javascript"></script>');
+    $included = TRUE;
+  }
+}
+
+function openlayers_layers_include_virtual_earth_api() {
+  static $included = FALSE;
+  if (!$included) {
+    drupal_set_html_head('<script src="'. check_url("http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.1") .'" type="text/javascript"></script>');
+    $included = TRUE;
+  }
 }

@@ -1,6 +1,13 @@
 // $Id$
 
 /**
+ * @file
+ * Main JS file for open_layers_cck
+ *
+ * @ingroup openlayers
+ */
+
+/**
  * When document is ready for JS
  * 
  * Add the themed map container (HTML) to the document. 
@@ -99,7 +106,7 @@ function openlayersCCKLoadValues(event){
  */
 function openlayersCCKFeaturesSelected(event){
  var feature = event.feature;
- $("#" + feature.drupalField).addClass('openlayersCCKSelected');
+ $("#" + feature.drupalField).addClass('openlayers-cck-feature-selected');
 }
 
 /**
@@ -109,7 +116,7 @@ function openlayersCCKFeaturesSelected(event){
  */
 function openlayersCCKFeaturesUnselected(event){
  var feature = event.feature;
- $("#" + feature.drupalField).removeClass('openlayersCCKSelected');
+ $("#" + feature.drupalField).removeClass('openlayers-cck-feature-selected');
 }
 
 /**
@@ -219,5 +226,5 @@ function openlayersCCKFeatureRemoved(event){
   var feature = event.feature;
   
   // Empty the CCK field values.
-  $('#' + feature.drupalField).val('').removeClass('openlayersCCKSelected');
+  $('#' + feature.drupalField).val('').removeClass('openlayers-cck-feature-selected');
 }

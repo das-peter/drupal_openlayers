@@ -5,6 +5,8 @@
  * @file
  * This file holds the functions for the installing
  * and enabling of the openlayers_cck module.
+ *
+ * @ingroup openlayers
  */
  
 /**

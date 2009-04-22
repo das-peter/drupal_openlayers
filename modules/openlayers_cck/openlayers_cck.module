@@ -5,6 +5,8 @@
  * @file
  * This file holds the main Drupal hook functions 
  * and private functions for the openlayers_cck module.
+ *
+ * @ingroup openlayers
  */
 
 /**

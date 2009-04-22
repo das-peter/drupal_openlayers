@@ -2,9 +2,10 @@
 
 /**
  * @file
- *   JS functions to handle different kinds of layers
+ * JS functions to handle different kinds of layers
+ *
+ * @ingroup openlayers
  */
-
 
 /**
  * Process Google Layers
@@ -39,7 +40,6 @@ function openlayersLayerHandlerGoogle(layerOptions, mapid) {
   return googleLayer;
 }
 
-
 /**
  * Process Yahoo Layers
  */
@@ -69,7 +69,6 @@ function openlayersLayerHandlerYahoo(layerOptions, mapid) {
   );
   return yahooLayer;
 }
-
 
 /**
  * Process MS Virtual Earth Layers
