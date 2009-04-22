@@ -2,61 +2,63 @@
 
 /**
  * @file
- *   JS functions to handle different types of layers
+ * JS functions to handle different types of layers for core OpenLayers modules
+ *
+ * @ingroup openlayers
  */
 
 /**
  * Process WMS Layers
  */
 function openlayersLayerHandlerWMS(layerOptions, mapid) {
-    
+  // Check if there is a defined format
   if (typeof(layerOptions.params.format) == "undefined"){
     layerOptions.params.format = "image/png";
   }
 
-  var returnWMS = new OpenLayers.Layer.WMS(layerOptions.name, layerOptions.url, layerOptions.params, layerOptions.options);
-  return returnWMS;
+  // Return Layer object
+  return new OpenLayers.Layer.WMS(layerOptions.name, layerOptions.url, layerOptions.params, layerOptions.options);
 }
-
 
 /**
  * Process Vector Layers
  */
 function openlayersLayerHandlerVector(layerOptions, mapid) {
+  // Get styles
   var stylesAll = [];
-    if (layerOptions.options.styles) {
-      var stylesAdded = [];
-      for (var styleName in layerOptions.options.styles) {
-        stylesAdded[styleName] = new OpenLayers.Style(layerOptions.options.styles[styleName].options);
-      }
-      stylesAll = new OpenLayers.StyleMap(stylesAdded);
-    };
+  if (layerOptions.options.styles) {
+    var stylesAdded = [];
+    for (var styleName in layerOptions.options.styles) {
+      stylesAdded[styleName] = new OpenLayers.Style(layerOptions.options.styles[styleName].options);
+    }
+    stylesAll = new OpenLayers.StyleMap(stylesAdded);
+  };
   
   // @@TODO: not be hard-coded
   var myStyles = new OpenLayers.StyleMap({
-                "default": new OpenLayers.Style({
-                    pointRadius: 5, // sized according to type attribute
-                    fillColor: "#ffcc66",
-                    strokeColor: "#ff9933",
-                    strokeWidth: 4,
-                    fillOpacity:0.5
-                }),
-                "select": new OpenLayers.Style({
-                    fillColor: "#66ccff",
-                    strokeColor: "#3399ff"
-                })
-    });
-    
+    "default": new OpenLayers.Style({
+      pointRadius: 5, // sized according to type attribute
+      fillColor: "#ffcc66",
+      strokeColor: "#ff9933",
+      strokeWidth: 4,
+      fillOpacity:0.5
+    }),
+    "select": new OpenLayers.Style({
+      fillColor: "#66ccff",
+      strokeColor: "#3399ff"
+    })
+  });
+  
+  // Define layer object
   var returnVector = new OpenLayers.Layer.Vector(layerOptions.name, {styleMap: myStyles});
   
-  
   // Add features if they are defined
-  if (typeof(layerOptions.features) != "undefined"){
+  if (typeof(layerOptions.features) != "undefined") {
     var wktFormat = new OpenLayers.Format.WKT();
     var newFeatures = [];
     
+    // Go through features
     for (var feat in layerOptions.features) {
-      
       // Extract geometry either from wkt property or lon/lat properties
       if (typeof(layerOptions.features[feat].wkt) != "undefined"){
         var newFeature = wktFormat.read(layerOptions.features[feat].wkt);

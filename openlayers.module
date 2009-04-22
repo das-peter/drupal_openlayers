@@ -295,6 +295,40 @@ function openlayers_merge_maps($map1 = array(), $map2 = array()) {
 }
 
 /**
+ * Implemnetation of hook_openlayers_layers_handler
+ * 
+ * @ingroup Default Layer Types and Instances
+ */
+function openlayers_openlayers_layers_handler_info($map = array()) {
+  return array(
+    'WMS' => array(
+      'layer_handler' => 'openlayersLayerHandlerWMS',
+      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
+    ),
+    'Vector' => array(
+      'layer_handler' => 'openlayersLayerHandlerVector',
+      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_openlayers_layers_info
+ *
+ * @ingroup Default Layer Types and Instances
+ */
+function openlayers_openlayers_layers_info() {
+  // Define info array
+  $info['openlayers_default_wms'] = array(
+    'name' => t('Default OpenLayers WMS'),
+    'file' => drupal_get_path('module', 'openlayers') .'/includes/openlayers.layers.inc',
+    'callback' => 'openlayers_process_layers',
+  );
+  
+  return $info;
+}
+
+/**
  * Process Layers
  *
  * Get full data for any layers and add handlers
@@ -382,6 +416,10 @@ function _openlayers_create_map_id() {
 /**
  * Get Map Defaults
  *
+ * This is the "system defaults" that come with the module.
+ * The goal of these defaults is so that a map can be rendered
+ * simply by installing the OL API module.
+ *
  * @return
  *   map array
  */
@@ -419,8 +457,10 @@ function _openlayers_error_check_map($map){
   
   // Check layer projections
   foreach ($map['layers'] as $layer){
-    if ($layer['projection']){
-      if (!in_array($map['options']['projection'],$layer['projection'])){
+    if ($layer['projection']) {
+      if (!in_array($map['options']['projection'],$layer['projection'])) {
+        // @@TODO: A message will confuse the user
+        // See: http://drupal.org/node/432642#comment-1500314
         drupal_set_message("The layer ". $layer['name'] ." cannot work with the map projection: EPSG:". $map['options']['projection'] .". Please change the map projection or remove the layer. ". $layer['name'] ." is compatable with the following projections: ". implode(", ",$layer['projection']), "warning");
         $pass = FALSE;
       }
@@ -428,40 +468,4 @@ function _openlayers_error_check_map($map){
   }
   
   return $pass;
-}
-
-
-/**
- * Implemnetation of hook_openlayers_layers_handler
- * 
- * @ingroup Default Layer Types and Instances
- */
-function openlayers_openlayers_layers_handler_info($map = array()) {
-  return array(
-    'WMS' => array(
-      'layer_handler' => 'openlayersLayerHandlerWMS',
-      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
-    ),
-    'Vector' => array(
-      'layer_handler' => 'openlayersLayerHandlerVector',
-      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
-    ),
-  );
-}
-
-
-/**
- * Implementation of hook_openlayers_layers_info
- *
- * @ingroup Default Layer Types and Instances
- */
-function openlayers_openlayers_layers_info() {
-  // Define info array
-  $info['openlayers_default_wms'] = array(
-    'name' => t('Default OpenLayers WMS'),
-    'file' => drupal_get_path('module', 'openlayers') .'/includes/openlayers.layers.inc',
-    'callback' => 'openlayers_process_layers',
-  );
-  
-  return $info;
 }
