@@ -68,10 +68,21 @@ function openlayers_cck_widget_info() {
 function openlayers_cck_widget_settings($op, $widget) {
   switch ($op) {
     case 'form':
-      // Get defaults
-      $defaults = variable_get('openlayers_defaults_form', array());
+      // Get defaults, check if there are already defaults
+      // @@TODO: What if the global defaults have not been created in the interface
+      if (isset($widget['openlayers_cck'])) {
+        $defaults = $widget['openlayers_cck'];
+      }
+      else {
+        $defaults = variable_get('openlayers_defaults_form', array());
+      }
+      
       // Get map form
       $map_form = openlayers_map_form($defaults);
+      
+      // @@TODO (BUG): $map_form is created successfully with defaults, 
+      // but it does not translate to outputted form??
+      
       // Put form into a collapsed fieldset, as this promotes good usability
       // Most users will not want to edit these fields
       $form['openlayers_cck'] = $map_form;
@@ -109,7 +120,9 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
     $mapid = OPENLAYERS_CCK_MAP_ID_PREFIX .'-'. $fieldname;
     $map['id'] = $mapid;
     
-    // @@TODO: Use widget settings form to create base map array
+    // Use widget settings form to create base map array
+    $widget_map = $field['widget']['openlayers_cck'];
+    $map = openlayers_merge_maps($widget_map, $map);
     
     // Add an event to the map. When a layer is added fire the JavaScript function openlayersCCKLoadValues.
     // openlayersCCKLoadValues takes care of loading data from the CCK fields into the map.

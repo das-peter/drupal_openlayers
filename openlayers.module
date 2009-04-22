@@ -274,11 +274,14 @@ function openlayers_convert_form_to_map($values = array()) {
  * function simply overwrites a value, even if the key is numeric.
  *
  * @ingroup API
+ * @param $map1
+ *   Map array that holds values that are not preferred
+ * @param $map2
+ *   Map array that holds values that are preferred
  * @return
  *   map array
  */
 function openlayers_merge_maps($map1 = array(), $map2 = array()) {
-
   // Check maps
   if (is_array($map1) && is_array($map2)) {
     foreach ($map2 as $k => $v) {
