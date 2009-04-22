@@ -80,7 +80,7 @@ function openlayers_cck_widget_settings($op, $widget) {
       $form['openlayers_cck']['#description'] = 'These are the settings that determine how the map will look.';
       $form['openlayers_cck']['#collapsible'] = 'TRUE';
       $form['openlayers_cck']['#collapsed'] = 'TRUE';
-
+      // Return form
       return $form;
 
     case 'validate':
@@ -90,7 +90,7 @@ function openlayers_cck_widget_settings($op, $widget) {
       // @@TODO: Figure out a way to save this form in an easy way.
       // Ideally we just want to save the map array.
       // We could create a DB table to save this information.
-      return array();
+      return array('openlayers_cck');
   }
 }
 
@@ -192,6 +192,7 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
         ),
       ),
     );
+
     // Add JS settings
     drupal_add_js($openlayers_cck, 'setting');
     // Change static variable

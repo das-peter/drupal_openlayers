@@ -433,6 +433,9 @@ function _openlayers_get_map_defaults() {
       'lon' => '0',
       'zoom' => '4',
     ),
+    'layers' => array(
+      'openlayers_default_wms',
+    ),
     'options' => array(
       'projection' => '4326',
       'displayProjection' => '4326',
