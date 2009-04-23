@@ -72,7 +72,7 @@ function openlayersRenderMap(map) {
   if (map.draw_features) {
     openlayersProcessDrawFeatures(map.draw_features, map.id);
   }
-  
+    
   // Add layers to map
   for (var l in Drupal.openlayers.activeObjects[map.id].layers) {
     var layer =  Drupal.openlayers.activeObjects[map.id].layers[l];
@@ -85,7 +85,7 @@ function openlayersRenderMap(map) {
     Drupal.openlayers.activeObjects[map.id].map.addControl(control);
     if (control.activeByDefault) control.activate();
   }
-               
+      
   // Zoom to Center
   var center = new OpenLayers.LonLat(map.center.lon, map.center.lon);
   Drupal.openlayers.activeObjects[map.id].map.setCenter(center, map.center.zoom);

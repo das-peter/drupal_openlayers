@@ -72,14 +72,17 @@ function openlayersCCKPopulateMap(mapid){
 function openlayersCCKLoadFeatureFromTextarea(mapid, textarea){
 	var wktFormat = new OpenLayers.Format.WKT();
 	
-	//read the wkt values into an OpenLayers geometry object
+	// read the wkt values into an OpenLayers geometry object
   var newFeature = wktFormat.read($(textarea).val());
   if (typeof(newFeature) == "undefined"){
     alert(Drupal.t('WKT is not valid'));
     return false;
   }
   else{
-  	// @@TODO: project the geometry if our map has a different geospatial projection as our CCK geo data.
+  	// Project the geometry if our map has a different geospatial projection as our CCK geo data.
+    if (Drupal.openlayers.mapDefs[mapid].options.projection != Drupal.openlayers.mapDefs[mapid].options.displayProjection){
+      newFeature.geometry.transform(Drupal.openlayers.activeObjects[mapid].displayProjection, Drupal.openlayers.activeObjects[mapid].projection);
+    }
     
     // Link the feature to the field.
     newFeature.drupalField = $(textarea).attr('id');
@@ -192,7 +195,11 @@ function openlayersCCKFeatureAdded(event) {
   // Assign field to feature
   feature.drupalField = wktFieldNewID;
   
-  // @@TODO:  Transform the geometry if nessisary
+  // Project the geometry if our map has a different geospatial projection as our CCK geo data.
+  if (Drupal.openlayers.mapDefs[mapid].options.projection != Drupal.openlayers.mapDefs[mapid].options.displayProjection){
+    geometry.transform(Drupal.openlayers.activeObjects[mapid].projection, Drupal.openlayers.activeObjects[mapid].displayProjection);
+  }
+  
   // update CCK field with WKT values
   var wkt = geometry.toString();
   $('#' + wktFieldNewID).val(wkt);
@@ -211,9 +218,17 @@ function openlayersCCKFeatureAdded(event) {
  */
 function openlayersCCKFeatureModified(event){
   var feature = event.feature;
-    
+  
+  // Clone the geometry so we may safetly work on it without hurting the feature
+  var geometry = feature.geometry.clone();
+  
+  // Project the geometry if our map has a different geospatial projection as our CCK geo data.
+  if (Drupal.openlayers.mapDefs[mapid].options.projection != Drupal.openlayers.mapDefs[mapid].options.displayProjection){
+    geometry.transform(Drupal.openlayers.activeObjects[mapid].projection, Drupal.openlayers.activeObjects[mapid].displayProjection);
+  }
+  
   // update CCK fields
-  var wkt = feature.geometry.toString();
+  var wkt = geometry.toString();
   $('#' + feature.drupalField).val(wkt);
 }
 

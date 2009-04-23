@@ -473,5 +473,15 @@ function _openlayers_error_check_map($map){
     }
   }
   
+  // If we are using a web spherical mercador projection and maxResolution and maxExtent are not set the map will not function. 
+  if ($map['options']['projection'] == '900913' || $map['options']['projection'] == '3785') {
+    if (!$map['options']['maxExtent'] || !$map['options']['maxResolution']){
+        // @@TODO: A message will confuse the user
+        // See: http://drupal.org/node/432642#comment-1500314
+        drupal_set_message("You are using a spherical mercador projection. However you have not set maxExtent or maxResolution. Please correct this.", "warning");
+        $pass = FALSE;
+      }
+    }
+  
   return $pass;
 }
