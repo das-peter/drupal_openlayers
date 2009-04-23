@@ -80,7 +80,7 @@ function openlayersCCKLoadFeatureFromTextarea(mapid, textarea){
   }
   else{
   	// Project the geometry if our map has a different geospatial projection as our CCK geo data.
-    if (Drupal.openlayers.mapDefs[mapid].options.projection != Drupal.openlayers.mapDefs[mapid].options.displayProjection){
+    if (Drupal.openlayers.mapDefs[mapid].projection != Drupal.openlayers.mapDefs[mapid].options.displayProjection){
       newFeature.geometry.transform(Drupal.openlayers.activeObjects[mapid].displayProjection, Drupal.openlayers.activeObjects[mapid].projection);
     }
     
@@ -196,7 +196,7 @@ function openlayersCCKFeatureAdded(event) {
   feature.drupalField = wktFieldNewID;
   
   // Project the geometry if our map has a different geospatial projection as our CCK geo data.
-  if (Drupal.openlayers.mapDefs[mapid].options.projection != Drupal.openlayers.mapDefs[mapid].options.displayProjection){
+  if (Drupal.openlayers.mapDefs[mapid].projection != Drupal.openlayers.mapDefs[mapid].options.displayProjection){
     geometry.transform(Drupal.openlayers.activeObjects[mapid].projection, Drupal.openlayers.activeObjects[mapid].displayProjection);
   }
   
@@ -223,7 +223,7 @@ function openlayersCCKFeatureModified(event){
   var geometry = feature.geometry.clone();
   
   // Project the geometry if our map has a different geospatial projection as our CCK geo data.
-  if (Drupal.openlayers.mapDefs[mapid].options.projection != Drupal.openlayers.mapDefs[mapid].options.displayProjection){
+  if (Drupal.openlayers.mapDefs[mapid].projection != Drupal.openlayers.mapDefs[mapid].options.displayProjection){
     geometry.transform(Drupal.openlayers.activeObjects[mapid].projection, Drupal.openlayers.activeObjects[mapid].displayProjection);
   }
   

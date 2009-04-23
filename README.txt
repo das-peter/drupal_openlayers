@@ -26,7 +26,15 @@ Maps are built using an array that looks like this:
       'zoom' => 5,
     ),
     'options' => array(
-      'numZoomLevels' => 10,
+      'projection' => "900913",
+      'displayProjection' => "4326",
+      'maxResolution' => 156543.0339,
+      'maxExtent' => array(
+        'left' => -20037508.34,
+        'bottom' => -20037508.34,
+        'right' => 20037508.34,
+        'top' => 20037508.34,
+      ),
     ),
     'controls' => array(
       'LayerSwitcher' => TRUE,

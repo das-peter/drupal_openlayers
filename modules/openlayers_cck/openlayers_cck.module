@@ -132,7 +132,6 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
     }
     $map['options'] = array(
       'displayProjection' => $field['db_storage'],
-      'projection' => '900913',
     );
     
     // Define a vector layer for our features

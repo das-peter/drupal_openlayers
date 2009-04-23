@@ -44,7 +44,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         'params' => array(
           'layers' => 'landsat7',
         ),
-        'projection' => array(4326),
+        'projection' => array('4326'),
         'options' => array(),
         'events' => array(),
       );
@@ -60,7 +60,7 @@ function openlayers_layers_process_layers($layer = NULL) {
           'layers' => 'daily_planet',
           'format' => 'image/png'
         ),
-        'projection' => array(4326),
+        'projection' => array('4326'),
         'options' => array(),
         'events' => array(),
       );
@@ -76,7 +76,7 @@ function openlayers_layers_process_layers($layer = NULL) {
           'layers' => 'BMNG',
           'format' => 'image/png'
         ),
-        'projection' => array(4326),
+        'projection' => array('4326'),
         'options' => array(),
         'events' => array(),
       );
@@ -91,7 +91,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         'options' => array(
           'sphericalMercator' => TRUE,
         ),
-        'projection' => array(900913, 3785),
+        'projection' => array('900913', '3785'),
         'events' => array(),
       );
       break;
@@ -105,7 +105,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         'params' => array(
           'type' => 'street'
         ),
-        'projection' => array(900913, 3785),
+        'projection' => array('900913', '3785'),
       );
       break;
     
@@ -118,7 +118,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         'params' => array(
           'type' => 'satellite'
         ),
-        'projection' => array(900913, 3785),
+        'projection' => array('900913', '3785'),
       );
       break;
     
@@ -131,7 +131,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         'params' => array(
           'type' => 'hybrid'
         ),
-        'projection' => array(900913, 3785),
+        'projection' => array('900913', '3785'),
       );
       break;
     
@@ -144,7 +144,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         'params' => array(
           'type' => 'physical'
         ),
-        'projection' => array(900913, 3785),
+        'projection' => array('900913', '3785'),
       );
       break;
     
@@ -157,7 +157,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         'params' => array(
           'type' => 'street'
         ),
-        'projection' => array(900913, 3785),
+        'projection' => array('900913', '3785'),
       );
       break;
     
@@ -170,7 +170,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         'params' => array(
           'type' => 'satellite'
         ),
-        'projection' => array(900913, 3785),
+        'projection' => array('900913', '3785'),
       );
       break;
     
@@ -183,7 +183,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         'params' => array(
           'type' => 'hybrid'
         ),
-        'projection' => array(900913, 3785),
+        'projection' => array('900913', '3785'),
       );
       break;
     
@@ -196,7 +196,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         'params' => array(
           'type' => 'street'
         ),
-        'projection' => array(900913, 3785),
+        'projection' => array('900913', '3785'),
       );
       break;
     
@@ -209,7 +209,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         'params' => array(
           'type' => 'satellite'
         ),
-        'projection' => array(900913, 3785),
+        'projection' => array('900913', '3785'),
       );
       break;
     
@@ -222,7 +222,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         'params' => array(
           'type' => 'hybrid'
         ),
-        'projection' => array(900913, 3785),
+        'projection' => array('900913', '3785'),
       );
       break;
     
@@ -232,7 +232,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         'type' => 'XYZ',
         'name' => $layer_info[$layer]['name'],
         'url' => 'http://tile.openstreetmap.org/${z}/${x}/${y}.png',
-        'projection' => array(900913, 3785),
+        'projection' => array('900913', '3785'),
       );
       break;
     
@@ -242,7 +242,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         'type' => 'XYZ',
         'name' => $layer_info[$layer]['name'],
         'url' => 'http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png',
-        'projection' => array(900913, 3785),
+        'projection' => array('900913', '3785'),
       );
       break;
     
@@ -252,7 +252,7 @@ function openlayers_layers_process_layers($layer = NULL) {
         'type' => 'XYZ',
         'name' => $layer_info[$layer]['name'],
         'url' => 'http://andy.sandbox.cloudmade.com/tiles/cycle/${z}/${x}/${y}.png',
-        'projection' => array(900913, 3785),
+        'projection' => array('900913', '3785'),
       );
       break;
 
@@ -269,7 +269,7 @@ function openlayers_layers_process_layers($layer = NULL) {
           'isBaseLayer' => false,
           'buffer' => 1,
         ),
-        'projection' => array(4326),
+        'projection' => array('4326'),
       );
       break;
    

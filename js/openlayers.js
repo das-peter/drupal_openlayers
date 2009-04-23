@@ -38,7 +38,7 @@ jQuery(document).ready(function() {
  */
 function openlayersRenderMap(map) {
   // Create Projection objects
-  Drupal.openlayers.activeObjects[map.id].projection = new OpenLayers.Projection("EPSG:" + map.options.projection);
+  Drupal.openlayers.activeObjects[map.id].projection = new OpenLayers.Projection("EPSG:" + map.projection);
   Drupal.openlayers.activeObjects[map.id].displayProjection = new OpenLayers.Projection("EPSG:" + map.options.displayProjection);
   
   // Create base map options

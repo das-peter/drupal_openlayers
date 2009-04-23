@@ -193,22 +193,23 @@ function openlayers_render_map($map = array()) {
   drupal_alter('openlayers_map', &$map);
 
   // Check our map for errors
-  _openlayers_error_check_map($map);
+  if (_openlayers_error_check_map($map)){
 
-  // Add map container to drupal JS settings
-  $openlayers = array(
-    'openlayers' => array(
-      'maps' => array(
-        $map['id'] => $map,
+    // Add map container to drupal JS settings
+    $openlayers = array(
+      'openlayers' => array(
+        'maps' => array(
+          $map['id'] => $map,
+        ),
       ),
-    ),
-  );
-  drupal_add_js($openlayers, 'setting');
-  
-  // Add themed HTML (no need for it to go to JS)
-  $map['themed'] = theme('openlayers_map', $map);
-  
-  return $map;
+    );
+    drupal_add_js($openlayers, 'setting');
+    
+    // Add themed HTML (no need for it to go to JS)
+    $map['themed'] = theme('openlayers_map', $map);
+    
+    return $map;
+  }
 }
 
 /**
@@ -429,6 +430,7 @@ function _openlayers_create_map_id() {
 function _openlayers_get_map_defaults() {
   $map_default = array(
     'id' => _openlayers_create_map_id(),
+    'projection' => '4326',
     'width' => 'auto',
     'height' => '300px',
     'center' => array(
@@ -440,7 +442,6 @@ function _openlayers_get_map_defaults() {
       'openlayers_default_wms',
     ),
     'options' => array(
-      'projection' => '4326',
       'displayProjection' => '4326',
     ),
     'controls' => array(
@@ -464,21 +465,21 @@ function _openlayers_error_check_map($map){
   // Check layer projections
   foreach ($map['layers'] as $layer){
     if ($layer['projection']) {
-      if (!in_array($map['options']['projection'],$layer['projection'])) {
+      if (!in_array($map['projection'],$layer['projection'])) {
         // @@TODO: A message will confuse the user
         // See: http://drupal.org/node/432642#comment-1500314
-        drupal_set_message("The layer ". $layer['name'] ." cannot work with the map projection: EPSG:". $map['options']['projection'] .". Please change the map projection or remove the layer. ". $layer['name'] ." is compatable with the following projections: ". implode(", ",$layer['projection']), "warning");
+        drupal_set_message("The layer ". $layer['name'] ." cannot work with the map projection: EPSG:". $map['projection'] .". Please change the map projection or remove the layer. ". $layer['name'] ." is compatable with the following projections: ". implode(", ",$layer['projection']), "error");
         $pass = FALSE;
       }
     }
   }
   
   // If we are using a web spherical mercador projection and maxResolution and maxExtent are not set the map will not function. 
-  if ($map['options']['projection'] == '900913' || $map['options']['projection'] == '3785') {
+  if ($map['projection'] == '900913' || $map['projection'] == '3785') {
     if (!$map['options']['maxExtent'] || !$map['options']['maxResolution']){
         // @@TODO: A message will confuse the user
         // See: http://drupal.org/node/432642#comment-1500314
-        drupal_set_message("You are using a spherical mercador projection. However you have not set maxExtent or maxResolution. Please correct this.", "warning");
+        drupal_set_message("You are using a spherical mercador projection. However you have not set maxExtent or maxResolution. Please correct this.", "error");
         $pass = FALSE;
       }
     }
