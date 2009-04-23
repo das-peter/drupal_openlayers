@@ -325,8 +325,11 @@ function openlayers_openlayers_layers_info() {
   // Define info array
   $info['openlayers_default_wms'] = array(
     'name' => t('Default OpenLayers WMS'),
+    'description' => t('A simple basemap to get you started'),
     'file' => drupal_get_path('module', 'openlayers') .'/includes/openlayers.layers.inc',
     'callback' => 'openlayers_process_layers',
+    'projection' => array('4326', '900913', '4269'),
+    'baselayer' => TRUE,
   );
   
   return $info;

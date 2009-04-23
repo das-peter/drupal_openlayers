@@ -38,11 +38,13 @@ function openlayers_process_layers($layer = NULL) {
         'id' => $layer,
         'type' => 'WMS',
         'name' => $layer_info[$layer]['name'],
+        'description' => $layer_info[$layer]['description'],
+        'projection' => $layer_info[$layer]['projection'],
+        'baselayer' => $layer_info[$layer]['baselayer'],
         'url' => 'http://labs.metacarta.com/wms/vmap0',
         'params' => array(
           'layers' => 'basic',
         ),
-        'projection' => array(4326, 900913, 4269),
         'options' => array(),
         'events' => array(),
       );

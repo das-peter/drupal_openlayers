@@ -40,11 +40,12 @@ function openlayers_layers_process_layers($layer = NULL) {
         'id' => $layer,
         'type' => 'WMS',
         'name' => $layer_info[$layer]['name'],
+        'projection' => $layer_info[$layer]['projection'],
+        'baselayer' => $layer_info[$layer]['baselayer'],
         'url' => 'http://t1.hypercube.telascience.org/cgi-bin/landsat7',
         'params' => array(
           'layers' => 'landsat7',
         ),
-        'projection' => array('4326'),
         'options' => array(),
         'events' => array(),
       );
@@ -55,12 +56,13 @@ function openlayers_layers_process_layers($layer = NULL) {
         'id' => $layer,
         'type' => 'WMS',
         'name' => $layer_info[$layer]['name'],
+        'projection' => $layer_info[$layer]['projection'],
+        'baselayer' => $layer_info[$layer]['baselayer'],
         'url' => 'http://wms.jpl.nasa.gov/wms.cgi?',
         'params' => array(
           'layers' => 'daily_planet',
           'format' => 'image/png'
         ),
-        'projection' => array('4326'),
         'options' => array(),
         'events' => array(),
       );
@@ -71,12 +73,13 @@ function openlayers_layers_process_layers($layer = NULL) {
         'id' => $layer,
         'type' => 'WMS',
         'name' => $layer_info[$layer]['name'],
+        'projection' => $layer_info[$layer]['projection'],
+        'baselayer' => $layer_info[$layer]['baselayer'],
         'url' => 'http://wms.jpl.nasa.gov/wms.cgi?',
         'params' => array(
           'layers' => 'BMNG',
           'format' => 'image/png'
         ),
-        'projection' => array('4326'),
         'options' => array(),
         'events' => array(),
       );
@@ -87,6 +90,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'id' => $layer,
         'type' => 'XYZ',
         'name' => $layer_info[$layer]['name'],
+        'projection' => $layer_info[$layer]['projection'],
+        'baselayer' => $layer_info[$layer]['baselayer'],
         'url' => 'http://tile.openaerialmap.org/tiles/1.0.0/openaerialmap-900913/${z}/${x}/${y}.png',
         'options' => array(
           'sphericalMercator' => TRUE,
@@ -102,6 +107,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'id' => $layer,
         'type' => 'Google',
         'name' => $layer_info[$layer]['name'],
+        'projection' => $layer_info[$layer]['projection'],
+        'baselayer' => $layer_info[$layer]['baselayer'],
         'params' => array(
           'type' => 'street'
         ),
@@ -115,6 +122,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'id' => $layer,
         'type' => 'Google',
         'name' => $layer_info[$layer]['name'],
+        'projection' => $layer_info[$layer]['projection'],
+        'baselayer' => $layer_info[$layer]['baselayer'],
         'params' => array(
           'type' => 'satellite'
         ),
@@ -128,6 +137,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'id' => $layer,
         'type' => 'Google',
         'name' => $layer_info[$layer]['name'],
+        'projection' => $layer_info[$layer]['projection'],
+        'baselayer' => $layer_info[$layer]['baselayer'],
         'params' => array(
           'type' => 'hybrid'
         ),
@@ -141,6 +152,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'id' => $layer,
         'type' => 'Google',
         'name' => $layer_info[$layer]['name'],
+        'projection' => $layer_info[$layer]['projection'],
+        'baselayer' => $layer_info[$layer]['baselayer'],
         'params' => array(
           'type' => 'physical'
         ),
@@ -153,6 +166,8 @@ function openlayers_layers_process_layers($layer = NULL) {
       $layer_data = array(
         'id' => $layer,
         'type' => 'Yahoo',
+        'projection' => $layer_info[$layer]['projection'],
+        'baselayer' => $layer_info[$layer]['baselayer'],
         'name' => $layer_info[$layer]['name'],
         'params' => array(
           'type' => 'street'
@@ -167,6 +182,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'id' => $layer,
         'type' => 'Yahoo',
         'name' => $layer_info[$layer]['name'],
+        'projection' => $layer_info[$layer]['projection'],
+        'baselayer' => $layer_info[$layer]['baselayer'],
         'params' => array(
           'type' => 'satellite'
         ),
@@ -180,6 +197,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'id' => $layer,
         'type' => 'Yahoo',
         'name' => $layer_info[$layer]['name'],
+        'projection' => $layer_info[$layer]['projection'],
+        'baselayer' => $layer_info[$layer]['baselayer'],
         'params' => array(
           'type' => 'hybrid'
         ),
@@ -193,6 +212,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'id' => $layer,
         'type' => 'VirtualEarth',
         'name' => $layer_info[$layer]['name'],
+        'projection' => $layer_info[$layer]['projection'],
+        'baselayer' => $layer_info[$layer]['baselayer'],
         'params' => array(
           'type' => 'street'
         ),
@@ -206,6 +227,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'id' => $layer,
         'type' => 'VirtualEarth',
         'name' => $layer_info[$layer]['name'],
+        'projection' => $layer_info[$layer]['projection'],
+        'baselayer' => $layer_info[$layer]['baselayer'],
         'params' => array(
           'type' => 'satellite'
         ),
@@ -219,6 +242,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'id' => $layer,
         'type' => 'VirtualEarth',
         'name' => $layer_info[$layer]['name'],
+        'projection' => $layer_info[$layer]['projection'],
+        'baselayer' => $layer_info[$layer]['baselayer'],
         'params' => array(
           'type' => 'hybrid'
         ),
@@ -231,6 +256,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'id' => $layer,
         'type' => 'XYZ',
         'name' => $layer_info[$layer]['name'],
+        'projection' => $layer_info[$layer]['projection'],
+        'baselayer' => $layer_info[$layer]['baselayer'],
         'url' => 'http://tile.openstreetmap.org/${z}/${x}/${y}.png',
         'projection' => array('900913', '3785'),
       );
@@ -241,6 +268,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'id' => $layer,
         'type' => 'XYZ',
         'name' => $layer_info[$layer]['name'],
+        'projection' => $layer_info[$layer]['projection'],
+        'baselayer' => $layer_info[$layer]['baselayer'],
         'url' => 'http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png',
         'projection' => array('900913', '3785'),
       );
@@ -251,6 +280,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'id' => $layer,
         'type' => 'XYZ',
         'name' => $layer_info[$layer]['name'],
+        'projection' => $layer_info[$layer]['projection'],
+        'baselayer' => $layer_info[$layer]['baselayer'],
         'url' => 'http://andy.sandbox.cloudmade.com/tiles/cycle/${z}/${x}/${y}.png',
         'projection' => array('900913', '3785'),
       );
@@ -261,6 +292,8 @@ function openlayers_layers_process_layers($layer = NULL) {
         'id' => $layer,
         'type' => 'WMS',
         'name' => $layer_info[$layer]['name'],
+        'projection' => $layer_info[$layer]['projection'],
+        'baselayer' => $layer_info[$layer]['baselayer'],
         'url' => 'http://oam.hypercube.telascience.org/tiles',
         'params' => array(
           'layers' => 'osm-4326-hybrid',
