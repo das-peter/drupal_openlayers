@@ -1,7 +1,5 @@
 // $Id$
 
-var selectControl;
-
 /**
  * When document is ready for JS
  */
@@ -94,24 +92,6 @@ function openlayersRenderMap(map) {
   
   // Set our default base layer
   Drupal.openlayers.activeObjects[map.id].map.setBaseLayer(Drupal.openlayers.activeObjects[map.id].layers[map.default_layer]);
-  
-  
-              var highlightCtrl = new OpenLayers.Control.SelectFeature(Drupal.openlayers.activeObjects[map.id].layers['feature_example'], {
-                hover: true,
-                highlightOnly: true,
-                renderIntent: "temporary"
-            });
-
-            var selectCtrl = new OpenLayers.Control.SelectFeature(Drupal.openlayers.activeObjects[map.id].layers['feature_example'],
-                {clickout: true}
-            );
-
-            Drupal.openlayers.activeObjects[map.id].map.addControl(highlightCtrl);
-            Drupal.openlayers.activeObjects[map.id].map.addControl(selectCtrl);
-
-            highlightCtrl.activate();
-            selectCtrl.activate();
-
 }
 
 /**
