@@ -205,23 +205,16 @@ To do so built a feature of the Vector type and add geometry, style, and attribu
 
 Default style properties
 
-    * fillColor: “#ee9900”,
+    * fillColor: "#ee9900",
     * fillOpacity: 0.4,
-    * hoverFillColor: “white”,
-    * hoverFillOpacity: 0.8,
-    * strokeColor: “#ee9900”,
+    * strokeColor: "#ee9900",
     * strokeOpacity: 1,
     * strokeWidth: 1,
-    * strokeLinecap: “round”, [butt | round | square]
-    * strokeDashstyle: “solid”, [dot | dash | dashdot | longdash | longdashdot | solid]
-    * hoverStrokeColor: “red”,
-    * hoverStrokeOpacity: 1,
-    * hoverStrokeWidth: 0.2,
+    * strokeLinecap: "round", [butt | round | square]
+    * strokeDashstyle: "solid", [dot | dash | dashdot | longdash | longdashdot | solid]
     * pointRadius: 6,
-    * hoverPointRadius: 1,
-    * hoverPointUnit: “%”,
-    * pointerEvents: “visiblePainted”
-    * cursor: “”
+    * pointerEvents: "visiblePainted”"
+    * cursor: ""
 
 Other style properties that have no default values
 
