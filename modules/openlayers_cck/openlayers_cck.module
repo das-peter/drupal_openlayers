@@ -120,10 +120,6 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
     $mapid = OPENLAYERS_CCK_MAP_ID_PREFIX .'-'. $fieldname;
     $map['id'] = $mapid;
     
-    // Use widget settings form to create base map array
-    $widget_map = $field['widget']['openlayers_cck'];
-    $map = openlayers_merge_maps($widget_map, $map);
-    
     // Add an event to the map. When a layer is added fire the JavaScript function openlayersCCKLoadValues.
     // openlayersCCKLoadValues takes care of loading data from the CCK fields into the map.
     $map['events'] = array(
@@ -184,12 +180,19 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
     
     }
     
+    // Use widget settings form to create base map array
+    $widget_map = openlayers_convert_form_to_map($field['widget']['openlayers_cck']);
+    
+    $map = openlayers_merge_maps($widget_map, $map);
+    
     // Add JS
     drupal_add_js(drupal_get_path('module', 'openlayers_cck') .'/js/openlayers_cck.js');
     //Add CSS
     drupal_add_css(drupal_get_path('module', 'openlayers_cck') .'/openlayers_cck.css', 'module');
+    
     // Render Map
     $rendered_map = openlayers_render_map($map);
+    
     // Put together array for JS
     $openlayers_cck = array(
       'openlayers_cck' => array(
