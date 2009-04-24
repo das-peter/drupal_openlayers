@@ -42,6 +42,10 @@ function openlayers_cck_theme() {
         'mapid' => NULL,
       ),
     ),
+    'openlayers_cck_formatter_openlayersmapformatter_grouped' => array(
+      'arguments' => array('element' => NULL),
+    ),
+
   );
 }
 
@@ -303,4 +307,69 @@ function theme_openlayers_cck_map($field = array(), $map = array()) {
     </div>
   ';
   return $output;
+}
+
+
+/**
+ * Implementation of hook_field_formatter_info(),.
+ */
+function openlayers_cck_field_formatter_info() {
+  return array(
+    'openlayersmapformatter_grouped' => array(
+      'label' => t('OpenLayers Map - all fields on one map'),
+      'field types' => array('geo'),
+      'multiple values' => CONTENT_HANDLE_MODULE,
+    ),
+  );
+}
+
+/**
+ * Theme a group of fields using just one map. Each field is given one layer.
+ *
+ * @ingroup themeable
+ */
+function theme_openlayers_cck_formatter_openlayersmapformatter_grouped($element) {
+  // Since we are grouping all fields, we only ever want to process this function once.
+  static $processed = FALSE;
+  if (!$processed){
+    $node = $element['#node'];
+    
+    $mapid = "openlayers-cck-field-". $node->nid ."-grouped";
+    
+    // @@TODO: Put in a map form somewhere to configure the rest of the map properties.
+    
+    $layers = array();
+    foreach ($node->geo_fields as $geofield_key){
+      $field_info = $node->content[$geofield_key]['field'];
+      $layers[$geofield_key] = array(
+        'id' => $geofield_key,
+        'type' => 'Vector',
+        'name' => $field_info['#title'],
+      );
+      
+      $layers[$geofield_key]['features'] = array();
+      foreach ($node->$geofield_key as $feature){
+        $layers[$geofield_key]['features'][] = array(
+          'wkt' => $feature['wkt'],
+          'projection' => $feature[$geofield_key."_srid"],
+          'attributes' => array('name' => $field_info['#title'])
+        );
+      }
+    }
+    
+    $map_def = array(
+      'id' => $mapid,
+      'layers' => $layers,
+    );
+    
+    $map = openlayers_render_map($map_def);
+    
+    $processed = TRUE;
+    return $map['themed'];
+    //return var_dump($node);
+    //return true;
+  }
+  else{
+    return false;
+  }
 }

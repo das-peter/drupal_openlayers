@@ -26,13 +26,17 @@ function openlayersLayerHandlerWMS(layerOptions, mapid) {
 function openlayersLayerHandlerVector(layerOptions, mapid) {
   // Get styles
   var stylesAll = [];
-  if (layerOptions.options.styles) {
-    var stylesAdded = [];
-    for (var styleName in layerOptions.options.styles) {
-      stylesAdded[styleName] = new OpenLayers.Style(layerOptions.options.styles[styleName].options);
-    }
-    stylesAll = new OpenLayers.StyleMap(stylesAdded);
-  };
+  // Process Options
+  if (typeof(layerOptions.options) != "undefined"){
+    // Process Styles
+    if (typeof(layerOptions.options.styles) != "undefined") {
+      var stylesAdded = [];
+      for (var styleName in layerOptions.options.styles) {
+        stylesAdded[styleName] = new OpenLayers.Style(layerOptions.options.styles[styleName].options);
+      }
+      stylesAll = new OpenLayers.StyleMap(stylesAdded);
+    };  
+ }
   
   // @@TODO: not be hard-coded
   var myStyles = new OpenLayers.StyleMap({
@@ -69,6 +73,8 @@ function openlayersLayerHandlerVector(layerOptions, mapid) {
       
       // If we have successfully extracted geometry add additional properties and queue it for addition to the layer
       if (typeof(newFeature) != 'undefined'){
+        
+        // @@TODO: transform feature is "projection" attribute is set.
         
         // Add attribute data
         if (typeof(layerOptions.features[feat].attributes) != "undefined"){
