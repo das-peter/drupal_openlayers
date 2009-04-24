@@ -44,3 +44,9 @@ background: url("images/draw_polygon_on.png") top left no-repeat;
 .openlayers-controls-draw-feature-link-polygon.openlayers-controls-draw-feature-link-off {
 background: url("images/draw_polygon_off.png") top left no-repeat;
 }
+
+/* openlayers map form */
+.openlayers-form-proj-layer-list{
+  font-size: smaller;
+  font-style: italic;
+}

@@ -23,17 +23,53 @@ function _openlayers_map_form($defaults = array()) {
   // Get layers options
   $layers = openlayers_layers_get_info();
   // @@TODO: Best way
-  foreach ($layers as $k => $v) {
-    $layers[$k] = $v['name'];
+  
+  $baselayers = array();
+  $overlays = array();
+  
+  // Determine which layer is a baselayer, and which is an overlay.
+  foreach ($layers as $layer_key => $layer) {
+    if ($layer['baselayer']) $baselayers[$layer_key] = $layer['name'];
+    else $overlays[$layer_key] = $layer['name'];
   }
+  
+  // Set up our easy projection selector options
+  $easy_projections = array();
+  $all_projections = array();
+  foreach ($layers as $layer_key => $layer) {
+    if ($layer['projection']){
+      foreach ($layer['projection'] as $projection){
+        if (!array_key_exists($projection, $easy_projections)){
+          $easy_projections[$projection] = $projection. " - <span class='openlayers-form-proj-layer-list'>". $layer['name'] ."</span>";
+        }
+        else{
+          $easy_projections[$projection] .= "<span class='openlayers-form-proj-layer-list'>, ". $layer['name'] ."</span>";
+        }
+      }
+    }
+    else{
+      $all_projections[] = $layer['name'];
+    }
+  }
+  $easy_projections['other'] = t("Other");
   
   // Form Propertieis
   $form['#tree'] = TRUE;
+
+  $form['easy_projection'] = array(
+    '#type' => 'radios',
+    '#title' => t('Projection'),
+    '#description' => t('Slect the EPSG code of the '.l('geographical projection', 'http://en.wikipedia.org/wiki/Map_projection').' for your map. The list next to each projection is the layers that support this projection. Layers that support all projections are: '. implode(', ', $all_projections)."."),
+    '#options' => $easy_projections,
+    '#attributes' => array('class' => 'openlayers-form-easy-projection'), 
+    '#default_value' => $defaults['layers']['projection'],
+  );
   
   $form['projection'] = array(
     '#type' => 'textfield',
     '#title' => t('Projection'),
-    '#description' => t('The EPSG code of the '.l('geographical projection', 'http://en.wikipedia.org/wiki/Map_projection').' for your map. You will most likely want to use either 4326 for lat/lon coordinates, or 900913 to use Google and other web service provider base layers.'),
+    '#description' => t('The EPSG code of the geographical projection for your map.'),
+    '#attributes' => array('class' => 'openlayers-form-projection'), 
     '#default_value' => $defaults['projection'],
     '#maxlength' => 6
   );
@@ -145,21 +181,35 @@ function _openlayers_map_form($defaults = array()) {
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
   );
-  $form['layers']['available_layers'] = array(
+  $form['layers']['baselayers'] = array(
     '#type' => 'select',
-    '#title' => t('Available Layers'),
-    '#description' => t('Available layers on the map. This list is determined by the projection you select for your map.'),
-    '#options' => $layers,
+    '#title' => t('Base Layers'),
+    '#description' => t('Select the base layers to make available for your map. This list is determined by the projection you select for your map.'),
+    '#options' => $baselayers,
+    '#attributes' => array('class' => 'openlayers-form-baselayers'), 
     '#multiple' => TRUE,
-    '#default_value' => $defaults['layers']['available_layers'],
+    '#default_value' => $defaults['layers']['baselayers'],
   );
   $form['layers']['default_layer'] = array(
     '#type' => 'select',
     '#title' => t('Default Base Layer'),
-    '#description' => t('The default layer to use when rendering maps.  This will be included whether it is in the available layers or not.'),
-    '#options' => $layers,
+    '#description' => t('The default base layer to use when rendering maps.  This will be included whether it is in the base layers or not.'),
+    '#options' => $baselayers,
+    '#attributes' => array('class' => 'openlayers-form-default-layer'), 
     '#default_value' => $defaults['layers']['default_layer'],
   );
+  $form['layers']['overlays'] = array(
+    '#type' => 'select',
+    '#title' => t('Overlay Layers'),
+    '#description' => t('Select the overlay layers to make available for your map.'),
+    '#options' => $overlays,
+    '#attributes' => array('class' => 'openlayers-form-overlays'), 
+    '#multiple' => TRUE,
+    '#default_value' => $defaults['layers']['overlays'],
+  );
+  
+  // Add JavaScript
+  drupal_add_js(drupal_get_path('module', 'openlayers') .'/js/openlayers.form.js', 'module');
   
   return $form;
 }
@@ -180,7 +230,7 @@ function _openlayers_convert_form_to_map($values = array()) {
   
   // Take out form values
   // @@TODO: Is this the best way to do this?
-  $throw = array('op', 'submit', 'form_build_id', 'form_token', 'form_id');
+  $throw = array('op', 'submit', 'form_build_id', 'form_token', 'form_id', 'easy_projection');
   foreach ($values as $k => $v) {
     if (!in_array($k, $throw)) {
       $processed[$k] = $v;
