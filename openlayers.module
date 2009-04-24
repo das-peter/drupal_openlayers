@@ -193,8 +193,9 @@ function openlayers_render_map($map = array()) {
   drupal_alter('openlayers_map', &$map);
 
   // Check our map for errors
-  if (_openlayers_error_check_map($map)){
-
+  $errors = openlayers_error_check_map($map);
+  
+  if (!$errors){
     // Add map container to drupal JS settings
     $openlayers = array(
       'openlayers' => array(
@@ -271,7 +272,7 @@ function openlayers_convert_form_to_map($values = array()) {
  * Merge Maps
  *
  * Recursive function to merge maps.  PHP's array_merge_recursive
- * creates unnecesary arrays ot values if keys are the same.  This
+ * creates unnecesary arrays to values if keys are the same.  This
  * function simply overwrites a value, even if the key is numeric.
  *
  * @ingroup API
@@ -352,7 +353,12 @@ function _openlayers_layers_process($layers = array(), $map = array()) {
   
   // Get layer info array
   $layer_info = openlayers_layers_get_info();
-
+  
+  // Check to make sure our default layer is present, if it isn't then add it.
+  if (!array_key_exists($map['default_layer'], $layers) && ($map['default_layer'])) {
+    $layers[$map['default_layer']] = $map['default_layer'];
+  }
+  
   // Go through layers
   foreach ($layers as $k => $layer) {
     // Check if array, if array, just pass on
@@ -458,21 +464,18 @@ function _openlayers_get_map_defaults() {
  * Check map array for incompatibilities or errors
  *
  * @return
- *   TRUE or FALSE depending on errors found
+ *   FALSE if passed. String with error message if error.
  */
 
-function _openlayers_error_check_map($map){
+function openlayers_error_check_map($map, $log_errors = TRUE){
   // @TODO: Should this be a hook?
-  $pass = TRUE;
+  $error = FALSE;
   
   // Check layer projections
   foreach ($map['layers'] as $layer){
     if ($layer['projection']) {
       if (!in_array($map['projection'],$layer['projection'])) {
-        // @@TODO: A message will confuse the user
-        // See: http://drupal.org/node/432642#comment-1500314
-        drupal_set_message("The layer ". $layer['name'] ." cannot work with the map projection: EPSG:". $map['projection'] .". Please change the map projection or remove the layer. ". $layer['name'] ." is compatable with the following projections: ". implode(", ",$layer['projection']), "error");
-        $pass = FALSE;
+        $error .= t("The layer ". $layer['name'] ." cannot work with the map projection: EPSG:". $map['projection'] ." ");
       }
     }
   }
@@ -480,12 +483,13 @@ function _openlayers_error_check_map($map){
   // If we are using a web spherical mercador projection and maxResolution and maxExtent are not set the map will not function. 
   if ($map['projection'] == '900913' || $map['projection'] == '3785') {
     if (!$map['options']['maxExtent'] || !$map['options']['maxResolution']){
-        // @@TODO: A message will confuse the user
-        // See: http://drupal.org/node/432642#comment-1500314
-        drupal_set_message("You are using a spherical mercador projection. However you have not set maxExtent or maxResolution. Please correct this.", "error");
-        $pass = FALSE;
-      }
+      $error .= t("You are using a web spherical mercador projection. However maxExtent or maxResolution are not set. ");
     }
+  }
   
-  return $pass;
+  if ($error && $log_errors){
+    // Log the Error(s)
+    watchdog('openlayers', $error, array(), WATCHDOG_ERROR);
+  }
+  return $error;
 }

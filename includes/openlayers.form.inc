@@ -230,21 +230,47 @@ function _openlayers_convert_form_to_map($values = array()) {
   
   // Take out form values
   // @@TODO: Is this the best way to do this?
-  $throw = array('op', 'submit', 'form_build_id', 'form_token', 'form_id', 'easy_projection');
+  $throw = array('op', 'submit', 'form_build_id', 'form_token', 'form_id', 'easy_projection','layers');
   foreach ($values as $k => $v) {
     if (!in_array($k, $throw)) {
       $processed[$k] = $v;
     }
   }
   
-  // Go through layers (could be better way to do this)
-  $layers = array();
-  $layers = array_filter($values['layers']['available_layers']);
-  // @@BUG: This shouldn't be here, it should be in openlayers_map_render. It currently will include the default layer even if a different "default_layer" is defined in the downstream map array.
-  if (!in_array($values['layers']['default_layer'], $values['layers']['available_layers']) && ($values['layers']['default_layer'])) {
-    $layers[$values['layers']['default_layer']] = $values['layers']['default_layer'];
-  }
-  $processed['layers'] = $layers;
-
+  // Put the default layer in the right place.
+  $processed['default_layer'] = $values['layers']['default_layer'];
+  
+  // Merge our different layer sections together
+  $baselayers = array_filter($values['layers']['baselayers']);
+  $overlays = array_filter($values['layers']['overlays']);
+  $processed['layers'] = array_merge($baselayers, $overlays);
+  
+  // Recursively unset any empty values
+  $processed = openlayers_recursively_unset_empty_values($processed);
+  
   return $processed;
+}
+
+function openlayers_recursively_unset_empty_values($array){
+ foreach($array as $key => $value) {
+  // If it is an array then recursively check it
+  if (is_array($value)){
+    $array[$key] = openlayers_recursively_unset_empty_values($value);
+  }
+  
+  // If it is an array then check if it is empty. We don't use $value so that if it
+  // is emptied by the previous check then it will still unset.
+  if (is_array($array[$key])){
+    if (empty($array[$key])){
+      unset($array[$key]);
+    }
+  }
+  
+  // If it is an empty string then unset it
+  if ($value == "") {
+    unset($array[$key]);
+  }
+
+ }
+ return $array;
 }
