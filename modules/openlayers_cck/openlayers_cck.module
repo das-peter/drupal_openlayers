@@ -319,12 +319,12 @@ function theme_openlayers_cck_map($field = array(), $map = array()) {
 function openlayers_cck_field_formatter_info() {
   return array(
     'openlayersmapformatter_grouped' => array(
-      'label' => t('OpenLayers Map - all fields on one map'),
+      'label' => t('OpenLayers Grouped Map'),
       'field types' => array('geo'),
       'multiple values' => CONTENT_HANDLE_MODULE,
     ),
     'openlayersmapformatter_single' => array(
-      'label' => t('OpenLayers Map - each field to a map'),
+      'label' => t('OpenLayers Single Map'),
       'field types' => array('geo'),
       'multiple values' => CONTENT_HANDLE_MODULE,
     ),

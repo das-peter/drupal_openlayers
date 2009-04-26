@@ -110,14 +110,21 @@ class openlayers_views_style_map extends views_plugin_style {
    */
   function map_features($rows = array()) {
     $features = array();
-    $wkt_field = '';
+    $wkb_fields = array();
     
-    // Look for wkb fields
-    foreach ($rows as $id => $row) {
-      foreach ($row as $fid => $field) {
-        if (stripos($fid, '_wkb') !== FALSE) {
-          $wkt_field = $field;
+    // Check if views want to read geo data
+    if ($this->options['read_geo']) {
+      // Look for wkb fields
+      foreach ($rows as $id => $row) {
+        foreach ($row as $fid => $field) {
+          if (stripos($fid, '_wkb') !== FALSE) {
+            $wkb_fields[] = $fid;
+          }
         }
+      }
+      // Check if any fields found, include files
+      if (count($wkb_fields) > 0) {
+        module_load_include('inc', 'geo', 'includes/geo.wkb');
       }
     }
 
@@ -128,16 +135,17 @@ class openlayers_views_style_map extends views_plugin_style {
         'attributes' => array(
           'name' => t('Default Title'),
         ),
-        'style' => array(
-          'fillColor' => '#AA4400',
-          'fillOpacity' => '0.7',
-        ),
       );
       
-      // TODO: How to get WKT data from the WKB data that geo is giving us.
-      // Check for wkb field
-      if ($wkt_field) {
-        $wkt = db_result(db_query("SELECT PolygonFromWKB(%b)", $row->$wkt_field));
+      // Check to see if read geo data
+      if ($this->options['read_geo'] && (count($wkb_fields) > 0)) {
+        // Go through fields
+        foreach ($wkb_fields as $wkb_field) {
+          // Read WKB format
+          // NOTE: The following geo function is not possible without including the file above
+          $wkb_data = geo('wkb_get_data', $row->$wkb_field, 'wkt');
+          $feature['wkt'] = $wkb_data['value'];
+        }
       }
         
       // Go through fields
@@ -161,8 +169,7 @@ class openlayers_views_style_map extends views_plugin_style {
       
       $features[] = $feature;
     }
-    
-    return $feature;
+    return $features;
   }
   
   /**
