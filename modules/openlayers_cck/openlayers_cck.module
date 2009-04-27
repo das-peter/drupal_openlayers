@@ -344,28 +344,32 @@ function theme_openlayers_cck_formatter_openlayersmapformatter_grouped($element)
     $mapid = "openlayers-cck-field-". $node->nid ."-grouped";
     
     // @@TODO: Put in a map form somewhere to configure the rest of the map properties.
-    // @@TODO: Only includes fields that are using the formatter: openlayersmapformatter_grouped
-    
-    
+    // @@TODO: Should we be using the hook_nodeapi for this?  Given that it is currently displaying under the header of the first field?
+
     // Go through the layers. Each field get it's own layer.
     $layers = array();
     foreach ($node->geo_fields as $geofield_key){
-      // Add basic information to the layer in the map array
-      $field_info = $node->content[$geofield_key]['field'];
-      $layers[$geofield_key] = array(
-        'id' => $geofield_key,
-        'type' => 'Vector',
-        'name' => $field_info['#title'],
-      );
-      
-      // Add features to the map
-      $layers[$geofield_key]['features'] = array();
-      foreach ($node->$geofield_key as $feature){
-        $layers[$geofield_key]['features'][] = array(
-          'wkt' => $feature['wkt'],
-          'projection' => $feature[$geofield_key."_srid"],
-          'attributes' => array('name' => $field_info['#title'])
+      // Check to make sure this field is using the grouped formatter
+      $formatter = $node->content[$geofield_key]['field']['items']['#formatter'];
+      if ($formatter == 'openlayersmapformatter_grouped'){
+        
+        // Add basic information to the layer in the map array
+        $field_info = $node->content[$geofield_key]['field'];
+        $layers[$geofield_key] = array(
+          'id' => $geofield_key,
+          'type' => 'Vector',
+          'name' => $field_info['#title'],
         );
+        
+        // Add features to the map
+        $layers[$geofield_key]['features'] = array();
+        foreach ($node->$geofield_key as $feature){
+          $layers[$geofield_key]['features'][] = array(
+            'wkt' => $feature['wkt'],
+            'projection' => $feature[$geofield_key."_srid"],
+            'attributes' => array('name' => $field_info['#title'])
+          );
+        }
       }
     }
     
@@ -422,7 +426,5 @@ function theme_openlayers_cck_formatter_openlayersmapformatter_single($element) 
   );
   
   $map = openlayers_render_map($map_def);
-  
-  $processed = TRUE;
   return $map['themed'];
 }
