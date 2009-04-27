@@ -4,6 +4,9 @@
  * When document is ready for JS
  */
 jQuery(document).ready(function() {
+  
+  OpenLayers.ProxyHost = "http://raider/proxy/?proxy_url=";
+  
   // Store rendered maps and other OpenLayer objects in Drupal.openlayers.activeObjects
   Drupal.openlayers = {}
   Drupal.openlayers.activeObjects = [];
@@ -87,7 +90,7 @@ function openlayersRenderMap(map) {
   }
       
   // Zoom to Center
-  var center = new OpenLayers.LonLat(map.center.lon, map.center.lon);
+  var center = new OpenLayers.LonLat(map.center.lon, map.center.lat);
   Drupal.openlayers.activeObjects[map.id].map.setCenter(center, map.center.zoom);
   
   // Set our default base layer
