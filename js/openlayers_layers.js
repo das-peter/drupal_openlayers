@@ -74,7 +74,14 @@ function openlayersLayerHandlerVector(layerOptions, mapid) {
       // If we have successfully extracted geometry add additional properties and queue it for addition to the layer
       if (typeof(newFeature) != 'undefined'){
         
-        // @@TODO: transform feature is "projection" attribute is set.
+        // Transform the geometry if the 'projection' property is different from the map projection
+        if (typeof(layerOptions.features[feat].projection) != 'undefined'){
+          if (layerOptions.features[feat].projection != Drupal.openlayers.mapDefs[mapid].projection){
+            var featureProjection = new OpenLayers.Projection("EPSG:" + layerOptions.features[feat].projection);
+            var mapProjection = Drupal.openlayers.activeObjects[mapid].projection;
+            newFeature.geometry.transform(featureProjection,mapProjection);
+          }
+        }
         
         // Add attribute data
         if (typeof(layerOptions.features[feat].attributes) != "undefined"){
