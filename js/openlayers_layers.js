@@ -65,39 +65,68 @@ function openlayersLayerHandlerVector(layerOptions, mapid) {
     for (var feat in layerOptions.features) {
       // Extract geometry either from wkt property or lon/lat properties
       if (typeof(layerOptions.features[feat].wkt) != "undefined"){
-        var newFeature = wktFormat.read(layerOptions.features[feat].wkt);
+        
+        var wkt;
+        
+        // Check to see if it is a string of wkt, or an array for a multipart feature.
+        if (typeof(layerOptions.features[feat].wkt) == "string"){
+          wkt = layerOptions.features[feat].wkt;
+        }
+        if (typeof(layerOptions.features[feat].wkt) == "object" && layerOptions.features[feat].wkt.length != 0){
+          wkt = "GEOMETRYCOLLECTION(" + layerOptions.features[feat].wkt.join(',') + ")";
+        }
+        
+        var newFeatureObject = wktFormat.read(wkt);
+        
       }
       else if (typeof(layerOptions.features[feat].lon) != "undefined"){
-        var newFeature = wktFormat.read("POINT(" + layerOptions.features[feat].lon + " " + layerOptions.features[feat].lat + ")");
+        var newFeatureObject = wktFormat.read("POINT(" + layerOptions.features[feat].lon + " " + layerOptions.features[feat].lat + ")");    
       }
       
       // If we have successfully extracted geometry add additional properties and queue it for addition to the layer
-      if (typeof(newFeature) != 'undefined'){
+      if (typeof(newFeatureObject) != 'undefined'){
         
-        // Transform the geometry if the 'projection' property is different from the map projection
-        if (typeof(layerOptions.features[feat].projection) != 'undefined'){
-          if (layerOptions.features[feat].projection != Drupal.openlayers.mapDefs[mapid].projection){
-            var featureProjection = new OpenLayers.Projection("EPSG:" + layerOptions.features[feat].projection);
-            var mapProjection = Drupal.openlayers.activeObjects[mapid].projection;
-            newFeature.geometry.transform(featureProjection,mapProjection);
+        var newFeatureSet = [];
+        
+        // Check to see if it is a new feature, or an array of new features.
+        if (typeof(newFeatureObject[0]) == 'undefined'){
+          // It's an actual OpenLayers feature object.
+          newFeatureSet[0] = newFeatureObject;
+        }
+        else{
+          // It's an array of OpenLayers objects
+          newFeatureSet = newFeatureObject;
+        }
+        
+        for (var i in newFeatureSet){
+          
+          var newFeature = newFeatureSet[i];
+          
+          // Transform the geometry if the 'projection' property is different from the map projection
+          if (typeof(layerOptions.features[feat].projection) != 'undefined'){
+            if (layerOptions.features[feat].projection != Drupal.openlayers.mapDefs[mapid].projection){
+              var featureProjection = new OpenLayers.Projection("EPSG:" + layerOptions.features[feat].projection);
+              var mapProjection = Drupal.openlayers.activeObjects[mapid].projection;
+              newFeature.geometry.transform(featureProjection,mapProjection);
+            }
           }
+          
+          // Add attribute data
+          if (typeof(layerOptions.features[feat].attributes) != "undefined"){
+            newFeature.attributes = layerOptions.features[feat].attributes;
+            newFeature.data = layerOptions.features[feat].attributes;
+          }
+          
+          // Add style information
+          if (typeof(layerOptions.features[feat].style) != "undefined"){
+            // Merge with defaults
+            var featureStyle = jQuery.extend({}, OpenLayers.Feature.Vector.style['default'], layerOptions.features[feat].style);
+            // Add style to feature
+            newFeature.style = featureStyle;
+          }
+          
+          newFeatures.push(newFeature);
         }
-        
-        // Add attribute data
-        if (typeof(layerOptions.features[feat].attributes) != "undefined"){
-          newFeature.attributes = layerOptions.features[feat].attributes;
-          newFeature.data = layerOptions.features[feat].attributes;
-        }
-        
-        // Add style information
-        if (typeof(layerOptions.features[feat].style) != "undefined"){
-          // Merge with defaults
-          var featureStyle = jQuery.extend({}, OpenLayers.Feature.Vector.style['default'], layerOptions.features[feat].style);
-          // Add style to feature
-          newFeature.style = featureStyle;
-        }
-        
-        newFeatures.push(newFeature);
       }
     }
     

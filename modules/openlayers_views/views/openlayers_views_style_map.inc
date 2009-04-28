@@ -88,7 +88,7 @@ class openlayers_views_style_map extends views_plugin_style {
     }
     */
   }
-   
+  
   /**
    * Options form submit
    */
@@ -109,6 +109,8 @@ class openlayers_views_style_map extends views_plugin_style {
    * Map features
    */
   function map_features($rows = array()) {
+    // @@TODO: If we have multiple geometries per row, create a multi-geometry feaure. This will likely take some work in the Vector layer definition.
+    
     $features = array();
     $wkb_fields = array();
     
@@ -117,8 +119,10 @@ class openlayers_views_style_map extends views_plugin_style {
       // Look for wkb fields
       foreach ($rows as $id => $row) {
         foreach ($row as $fid => $field) {
-          if (stripos($fid, '_wkb') !== FALSE) {
-            $wkb_fields[] = $fid;
+          if (substr($fid, -4) == '_wkb') {
+            if (!in_array($fid, $wkb_fields)){
+              $wkb_fields[] = $fid;
+            }
           }
         }
       }
@@ -127,9 +131,10 @@ class openlayers_views_style_map extends views_plugin_style {
         module_load_include('inc', 'geo', 'includes/geo.wkb');
       }
     }
-
+    
     // Build feature
     foreach ($rows as $id => $row) {
+      
       // Set up feature      
       $feature = array(
         'attributes' => array(
@@ -138,16 +143,30 @@ class openlayers_views_style_map extends views_plugin_style {
       );
       
       // Check to see if read geo data
-      if ($this->options['read_geo'] && (count($wkb_fields) > 0)) {
+      $num_wkb_fields = count($wkb_fields);
+      if ($num_wkb_fields > 1) $feature['wkt'] = array();
+      if ($this->options['read_geo'] && ($num_wkb_fields > 0)) {
         // Go through fields
         foreach ($wkb_fields as $wkb_field) {
           // Read WKB format
           // NOTE: The following geo function is not possible without including the file above
-          $wkb_data = geo('wkb_get_data', $row->$wkb_field, 'wkt');
-          $feature['wkt'] = $wkb_data['value'];
+          
+          // If there is anything in the wkb field then read it and populate the wkt value(s) of the feature
+          if ($row->$wkb_field){
+            // Extract wkt from wkb
+            $wkb_data = geo('wkb_get_data', $row->$wkb_field, 'wkt');
+            
+            // Populate wkt value(s)
+            if ($num_wkb_fields == 1){
+              $feature['wkt'] = $wkb_data['value'];
+            }
+            else {
+              $feature['wkt'][] = $wkb_data['value'];
+            }
+          }
         }
       }
-        
+      
       // Go through fields
       foreach ($this->view->field as $key => $field) {
         if ($key == $this->options['fields']['title']) {
@@ -163,12 +182,14 @@ class openlayers_views_style_map extends views_plugin_style {
           $feature['attributes']['class'] = strip_tags(strtolower($field->theme($row)));
         }
         else {
-          // $feature['attributes']['content'] .= $field->theme($row);
+          // Add all other field data to the attribute table.
+          $feature['attributes'][$key] = $field->theme($row);
         }
       }
       
       $features[] = $feature;
     }
+    
     return $features;
   }
   
@@ -176,6 +197,7 @@ class openlayers_views_style_map extends views_plugin_style {
    * Renders views (map)
    */
   function render() {
+    
     // Check for live preview.
     if (isset($this->view->live_preview) && $this->view->live_preview) {
       return t('OpenLayers views are not compatible with live preview.');
@@ -189,7 +211,7 @@ class openlayers_views_style_map extends views_plugin_style {
 
     // Group the rows according to the grouping field, if specified.
     $sets = $this->render_grouping($this->view->result, $this->options['grouping']);
-
+    
     // Render each group separately and concatenate.  Plugins may override this
     // method if they wish some other way of handling grouping.
     $output = '';
@@ -211,16 +233,16 @@ class openlayers_views_style_map extends views_plugin_style {
       
       // Define ID
       $map['id'] = OPENLAYERS_VIEWS_MAP_ID_PREFIX .'-'. $this->view->name;
-    
+      
       // Get features
       $features = $this->map_features($rows);
-    
+      
       // Define a layer for the features
       $map['layers'] = array(
-        'openlayers_views_layer' => array(
+        'openlayers_views_layer'. $this->view->name => array(
           'id' => 'openlayers_views_layer_'. $this->view->name,
           'type' => 'Vector',
-          'name' => $this->view->description,
+          'name' => $this->display->display_title,
           'options' => array(),
           'events' => array(),
           'features' => $features,
