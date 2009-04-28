@@ -378,9 +378,10 @@ function theme_openlayers_cck_formatter_openlayersmapformatter_grouped($element)
       'id' => $mapid,
       'layers' => $layers,
     );
+
     
     $map = openlayers_render_map($map_def);
-    
+        
     $processed = TRUE;
     return $map['themed'];
   }
@@ -395,8 +396,7 @@ function theme_openlayers_cck_formatter_openlayersmapformatter_grouped($element)
 function theme_openlayers_cck_formatter_openlayersmapformatter_single($element) {
   $node = $element['#node'];
   $geofield_key = $element['#field_name'];
-  $field_info = $node->content[$geofield_key]['field'];
-  
+    
   $mapid = "openlayers-cck-field-". $node->nid ."-single-". $geofield_key;
   
   // @@TODO: Put in a map form somewhere to configure the rest of the map properties.
@@ -406,25 +406,32 @@ function theme_openlayers_cck_formatter_openlayersmapformatter_single($element) 
   $layers[$geofield_key] = array(
     'id' => $geofield_key,
     'type' => 'Vector',
-    'name' => $field_info['#title'],
+    'name' => $node->node_title,
   );
   
-  // Add features to the map
+  // Add features to the map definition
   $layers[$geofield_key]['features'] = array();
-  foreach ($node->$geofield_key as $feature){
-    $layers[$geofield_key]['features'][] = array(
-      'wkt' => $feature['wkt'],
-      'projection' => $feature[$geofield_key."_srid"],
-      'attributes' => array('name' => $field_info['#title'])
-    );
+  foreach ($element  as $key => $feature){
+    if (is_numeric($key)){
+      $srid_key = "node_data_".$geofield_key."_".$geofield_key."_srid";
+      $layers[$geofield_key]['features'][] = array(
+        'wkt' => $feature['#item']['wkt'],
+        'projection' => $node->$srid_key,
+        'attributes' => array('name' => $node->node_title)
+      );
+    }
   }
   
-  // Build our map array
-  $map_def = array(
-    'id' => $mapid,
-    'layers' => $layers,
-  );
-  
-  $map = openlayers_render_map($map_def);
-  return $map['themed'];
+  // If there are any features to display, then display the map
+  if (count($layers[$geofield_key]['features'])){
+    // Build our map array
+    $map_def = array(
+      'id' => $mapid,
+      'layers' => $layers,
+    );
+    
+    $map = openlayers_render_map($map_def);
+    
+    return $map['themed'];
+  }
 }
