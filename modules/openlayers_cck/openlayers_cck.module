@@ -427,10 +427,10 @@ function theme_openlayers_cck_formatter_openlayersmapformatter_single($element) 
   $layers[$geofield_key]['features'] = array();
   foreach ($element  as $key => $feature){
     if (is_numeric($key)){
-      $srid_key = "node_data_".$geofield_key."_".$geofield_key."_srid";
+      $srid_key = $geofield_key."_srid";
       $layers[$geofield_key]['features'][] = array(
         'wkt' => $feature['#item']['wkt'],
-        'projection' => $node->$srid_key,
+        'projection' => $feature['#item'][$srid_key],
         'attributes' => array(
           'name' => $feature_name, 
           'nid' => $node->nid, 
