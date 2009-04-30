@@ -137,58 +137,53 @@ class openlayers_views_style_map extends views_plugin_style {
       
       // Set up feature      
       $feature = array(
-        'attributes' => array(
-          'name' => t('Default Title'),
-        ),
+        'attributes' => array(),
       );
       
       // Check to see if read geo data
       $num_wkb_fields = count($wkb_fields);
       if ($num_wkb_fields > 1) $feature['wkt'] = array();
       if ($this->options['read_geo'] && ($num_wkb_fields > 0)) {
-        // Go through fields
+        // Go through fields and create a feature for each geo field of each row
         foreach ($wkb_fields as $wkb_field) {
           // Read WKB format
           // NOTE: The following geo function is not possible without including the file above
           
-          // If there is anything in the wkb field then read it and populate the wkt value(s) of the feature
+          // If there is anything in the wkb field then read it and populate the wkt value of the feature
           if ($row->$wkb_field){
             // Extract wkt from wkb
             $wkb_data = geo('wkb_get_data', $row->$wkb_field, 'wkt');
             
-            // Populate wkt value(s)
-            if ($num_wkb_fields == 1){
-              $feature['wkt'] = $wkb_data['value'];
+            // Populate wkt value
+            $feature['wkt'] = $wkb_data['value'];
+            
+            // Go through fields
+            foreach ($this->view->field as $key => $field) {
+              if ($key == $this->options['fields']['title']) {
+                $feature['attributes']['name'] = $field->theme($row);
+              }
+              elseif ($key == $this->options['fields']['latitude']) {
+                $feature['lat'] = $field->theme($row);
+              }
+              elseif ($key == $this->options['fields']['longitude']) {
+                $feature['lon'] = $field->theme($row);
+              }
+              elseif ($key == $this->options['fields']['class']) {
+                $feature['attributes']['class'] = strip_tags(strtolower($field->theme($row)));
+              }
+              else {
+                // Add all other field data to the attribute table.
+                $feature['attributes'][$key] = $field->theme($row);
+              }
             }
-            else {
-              $feature['wkt'][] = $wkb_data['value'];
-            }
+            
+            $features[] = $feature;
           }
         }
       }
-      
-      // Go through fields
-      foreach ($this->view->field as $key => $field) {
-        if ($key == $this->options['fields']['title']) {
-          $feature['attributes']['name'] = $field->theme($row);
-        }
-        elseif ($key == $this->options['fields']['latitude']) {
-          $feature['lat'] = $field->theme($row);
-        }
-        elseif ($key == $this->options['fields']['longitude']) {
-          $feature['lon'] = $field->theme($row);
-        }
-        elseif ($key == $this->options['fields']['class']) {
-          $feature['attributes']['class'] = strip_tags(strtolower($field->theme($row)));
-        }
-        else {
-          // Add all other field data to the attribute table.
-          $feature['attributes'][$key] = $field->theme($row);
-        }
-      }
-      
-      $features[] = $feature;
     }
+    
+    var_dump($features);
     
     return $features;
   }
