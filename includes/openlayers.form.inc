@@ -53,6 +53,26 @@ function _openlayers_map_form($defaults = array()) {
   }
   $easy_projections['other'] = t("Other");
   
+  // Set up our map to help set center lat, lon and zoom
+  $centermap_def = array(
+    'projection' => '4326',
+    'width' => '350px',
+    'height' => '300px',
+    'center' => array(
+      'lat' => $defaults['center']['lat'],
+      'lon' => $defaults['center']['lon'],
+      'zoom' => $defaults['center']['zoom'],
+    ),
+    'layers' => array(
+      'openlayers_default_wms',
+    ),
+    'options' => array(
+      'displayProjection' => $defaults['projection'],
+    )
+  );
+  
+  $centermap = openlayers_render_map($centermap_def);
+  
   // Form Propertieis
   $form['#tree'] = TRUE;
 
@@ -94,31 +114,36 @@ function _openlayers_map_form($defaults = array()) {
   $form['center'] = array(
     '#type' => 'fieldset',
     '#title' => t('Center'),
-    '#description' => t('Where the map will center itself initially.'),
+    '#description' => t('Where the map will center itself initially. You may use the small map to help you set your center and zoom'),
     '#tree' => TRUE,
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
   );
+  
+  $form['center']['helpmap'] = array(
+    '#value' => '<div class="openlayers-center-helpmap" style="float:right;">'.$centermap['themed'].'</div>'
+  );
+  
   $form['center']['lat'] = array(
     '#type' => 'textfield',
     '#title' => t('Latitude'),
-    '#description' => t('The latitude or X value for centering.'),
+    '#description' => t('Latitude or X value for centering.'),
     '#default_value' => $defaults['center']['lat'],
-    '#maxlength' => 128,
+    '#size' => 30,
   );
   $form['center']['lon'] = array(
     '#type' => 'textfield',
     '#title' => t('Longitude'),
-    '#description' => t('The longitude or Y value for centering.'),
+    '#description' => t('Longitude or Y value for centering.'),
     '#default_value' => $defaults['center']['lon'],
-    '#maxlength' => 128,
+    '#size' => 30,
   );
   $form['center']['zoom'] = array(
     '#type' => 'textfield',
     '#title' => t('Zoom Level'),
-    '#description' => t('The zoom level for centering.'),
+    '#description' => t('Zoom level for centering.'),
     '#default_value' => $defaults['center']['zoom'],
-    '#maxlength' => 128,
+    '#size' => 30,
   );
   
   // Map options properties
@@ -226,6 +251,11 @@ function _openlayers_map_form($defaults = array()) {
  *   Array of form items
  */
 function _openlayers_convert_form_to_map($values = array()) {
+  // If the form values are empty then we have nothing to return.
+  if (empty($values)){
+    return array();
+  }
+  
   $processed = array();
   
   // Take out form values
@@ -251,6 +281,18 @@ function _openlayers_convert_form_to_map($values = array()) {
   return $processed;
 }
 
+
+/**
+ * Recursively unset empty values
+ *
+ * Go through an array recursively and unset empty strings and arrays
+ *
+ * @ingroup API
+ * @param $values
+ *   Array
+ * @return
+ *   Array with empty values unset
+ */
 function openlayers_recursively_unset_empty_values($array){
  foreach($array as $key => $value) {
   // If it is an array then recursively check it

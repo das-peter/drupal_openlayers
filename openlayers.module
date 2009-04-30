@@ -191,7 +191,7 @@ function openlayers_render_map($map = array()) {
   // Hook for one last alter
   // hook_openlayers_map_alter(&$map = array())
   drupal_alter('openlayers_map', &$map);
-
+  
   // Check our map for errors
   $errors = openlayers_error_check_map($map);
   

@@ -87,9 +87,6 @@ function openlayers_cck_widget_settings($op, $widget) {
       // Get map form
       $map_form = openlayers_map_form($defaults);
       
-      // @@TODO (BUG): $map_form is created successfully with defaults, 
-      // but it does not translate to outputted form??
-      
       // Put form into a collapsed fieldset, as this promotes good usability
       // Most users will not want to edit these fields
       $form['openlayers_cck'] = $map_form;
