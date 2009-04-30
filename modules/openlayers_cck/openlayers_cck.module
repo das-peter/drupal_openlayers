@@ -318,11 +318,12 @@ function theme_openlayers_cck_map($field = array(), $map = array()) {
  */
 function openlayers_cck_field_formatter_info() {
   return array(
-    'openlayersmapformatter_grouped' => array(
-      'label' => t('OpenLayers Grouped Map'),
-      'field types' => array('geo'),
-      'multiple values' => CONTENT_HANDLE_MODULE,
-    ),
+    // @@TOOD: Implement Grouped Formatter.
+    //'openlayersmapformatter_grouped' => array(
+    //  'label' => t('OpenLayers Grouped Map'),
+    //  'field types' => array('geo'),
+    //  'multiple values' => CONTENT_HANDLE_MODULE,
+    //),
     'openlayersmapformatter_single' => array(
       'label' => t('OpenLayers Single Map'),
       'field types' => array('geo'),
@@ -336,7 +337,9 @@ function openlayers_cck_field_formatter_info() {
  * 
  */
 function theme_openlayers_cck_formatter_openlayersmapformatter_grouped($element) {
+  // @@TODO: We may want to use nodeapi to do this instead of using a field formatter
   // Since we are grouping all fields, we only ever want to process this function once.
+  // 
   static $processed = FALSE;
   if (!$processed){
     $node = $element['#node'];
