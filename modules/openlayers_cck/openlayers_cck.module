@@ -339,7 +339,7 @@ function openlayers_cck_field_formatter_info() {
 function theme_openlayers_cck_formatter_openlayersmapformatter_grouped($element) {
   // @@TODO: We may want to use nodeapi to do this instead of using a field formatter
   // Since we are grouping all fields, we only ever want to process this function once.
-  // 
+  
   static $processed = FALSE;
   if (!$processed){
     $node = $element['#node'];
@@ -401,9 +401,8 @@ function theme_openlayers_cck_formatter_openlayersmapformatter_grouped($element)
  */
 function theme_openlayers_cck_formatter_openlayersmapformatter_single($element) { 
   // @@TODO: Put in a map form somewhere to configure the rest of the map properties.
-  // @@TODO: The $element array is formed totally different depending on the context: page view, multi-values grouped in a view, and multi-values seperate in a view. 
-  //         Currently it only works in node pages, and multi-value grouped views. We need to get it working in "one value per row" views.
-  // @@BUG:  When in a view, infinite recursion if more than one value exists per field per node.
+  // @@BUG:  When in a view, infinite recursion if more than one value exists per field per node and "each value in it's own row" is set to false in view field settings.
+  // @@BUG:  When in a view, and the multivalue option is set to "each value in it's own row" then the element is formed as a single, and SRID (projection) is nowhere to be found in $element. This is most likely a bug in geo - but i'm not sure.
   
   // Define some common variables
   $node = $element['#node'];
@@ -413,8 +412,8 @@ function theme_openlayers_cck_formatter_openlayersmapformatter_single($element) 
   
   // Name our feature. If we are in a view, name the feature by the node name.
   // If we are in a page, name the feature by the field name. 
-  if ($node->content[$geofield_key]['field']['#title']){
-    $feature_name = $node->content[$geofield_key]['field']['#title'];
+  if ($elemement){
+    $feature_name = $elemement['#title'];
   }
   else {
     $feature_name = $node->node_title;
@@ -431,31 +430,17 @@ function theme_openlayers_cck_formatter_openlayersmapformatter_single($element) 
   $layers[$geofield_key]['features'] = array();
   
   // Add features to the map definition
-  if ($element[0]){
-    // We are theming a multi-value group of features.
-    foreach ($element  as $key => $feature){
-      if (is_numeric($key)){
-        $layers[$geofield_key]['features'][] = array(
-          'wkt' => $feature['#item']['wkt'],
-          'projection' => $feature['#item'][$srid_key],
-          'attributes' => array(
-            'name' => $feature_name, 
-            'nid' => $node->nid, 
-          ),
-        );
-      }
+  foreach ($element  as $key => $feature){
+    if (is_numeric($key)){
+      $layers[$geofield_key]['features'][] = array(
+        'wkt' => $feature['#item']['wkt'],
+        'projection' => $feature['#item'][$srid_key],
+        'attributes' => array(
+          'name' => $feature_name, 
+          'nid' => $node->nid, 
+        ),
+      );
     }
-  }
-  else {
-    // We are theming just a single feature
-    $layers[$geofield_key]['features'][] = array(
-      'wkt' => $element['#item']['wkt'],
-      'projection' => $element['#item'][$srid_key],
-      'attributes' => array(
-        'name' => $feature_name, 
-        'nid' => $node->nid, 
-      ),
-    );
   }
   
   // If there are any features to display, then display the map
