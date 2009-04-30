@@ -405,10 +405,14 @@ function theme_openlayers_cck_formatter_openlayersmapformatter_single($element) 
   //         Currently it only works in node pages, and multi-value grouped views. We need to get it working in "one value per row" views.
   // @@BUG:  When in a view, infinite recursion if more than one value exists per field per node.
   
+  // Define some common variables
   $node = $element['#node'];
   $geofield_key = $element['#field_name'];
+  $srid_key = $geofield_key."_srid";
+  $mapid = "openlayers-cck-field-". $node->nid ."-single-". $geofield_key;
   
-  // Depending on the circumstances (theming for a view or a page, different information is available in $element). 
+  // Name our feature. If we are in a view, name the feature by the node name.
+  // If we are in a page, name the feature by the field name. 
   if ($node->content[$geofield_key]['field']['#title']){
     $feature_name = $node->content[$geofield_key]['field']['#title'];
   }
@@ -416,8 +420,7 @@ function theme_openlayers_cck_formatter_openlayersmapformatter_single($element) 
     $feature_name = $node->node_title;
   }
   
-  $mapid = "openlayers-cck-field-". $node->nid ."-single-". $geofield_key;
-  
+  // Prepare our layers array.
   $layers = array();
   // Add basic information to the layer in the map array
   $layers[$geofield_key] = array(
@@ -425,21 +428,34 @@ function theme_openlayers_cck_formatter_openlayersmapformatter_single($element) 
     'type' => 'Vector',
     'name' => $feature_name, 
   );
+  $layers[$geofield_key]['features'] = array();
   
   // Add features to the map definition
-  $layers[$geofield_key]['features'] = array();
-  foreach ($element  as $key => $feature){
-    if (is_numeric($key)){
-      $srid_key = $geofield_key."_srid";
-      $layers[$geofield_key]['features'][] = array(
-        'wkt' => $feature['#item']['wkt'],
-        'projection' => $feature['#item'][$srid_key],
-        'attributes' => array(
-          'name' => $feature_name, 
-          'nid' => $node->nid, 
-        ),
-      );
+  if ($element[0]){
+    // We are theming a multi-value group of features.
+    foreach ($element  as $key => $feature){
+      if (is_numeric($key)){
+        $layers[$geofield_key]['features'][] = array(
+          'wkt' => $feature['#item']['wkt'],
+          'projection' => $feature['#item'][$srid_key],
+          'attributes' => array(
+            'name' => $feature_name, 
+            'nid' => $node->nid, 
+          ),
+        );
+      }
     }
+  }
+  else {
+    // We are theming just a single feature
+    $layers[$geofield_key]['features'][] = array(
+      'wkt' => $element['#item']['wkt'],
+      'projection' => $element['#item'][$srid_key],
+      'attributes' => array(
+        'name' => $feature_name, 
+        'nid' => $node->nid, 
+      ),
+    );
   }
   
   // If there are any features to display, then display the map
