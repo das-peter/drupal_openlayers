@@ -23,6 +23,12 @@ $(document).ready(function(){
       }
     });
   });
+  
+  // Center and zoom for zoom / center helper
+  $('#edit-center-lat').change(openlayersUpdateHelpmapCenter);
+  $('#edit-center-lon').change(openlayersUpdateHelpmapCenter);
+  $('#edit-center-zoom').change(openlayersUpdateHelpmapCenter);
+  openlayersUpdateHelpmapCenter();
 });
 
 function openlayersWebSpericalMercadorAutoSettings(){
@@ -36,4 +42,33 @@ function openlayersUpdateSelectableLayers(projection){
   // @@TODO: Update our selectable layers list based on the map projection
 
 
+}
+
+
+function openlayersUpdateHelpmapCenter() {
+  var projection = $('#edit-projection').val();
+  var zoom = $('#edit-center-zoom').val();
+  var lat = $('#edit-center-lat').val();
+  var lon = $('#edit-center-lon').val();
+  
+  var center = new OpenLayers.LonLat(lon, lat);
+  center.transform(new OpenLayers.Projection('EPSG:' + projection), new OpenLayers.Projection('EPSG:4326'));
+  
+  Drupal.openlayers.activeObjects['openlayers-center-helpmap'].map.setCenter(center, zoom);
+}
+
+function openlayersUpdateCenterFormValues() {
+  var helpmap = Drupal.openlayers.activeObjects['openlayers-center-helpmap'].map;
+  var projection = $('#edit-projection').val();
+  var zoom = helpmap.getZoom();
+  
+  var center = helpmap.getCenter();
+  center.transform(new OpenLayers.Projection('EPSG:4326'),new OpenLayers.Projection('EPSG:' + projection));
+  
+  var lat = center.lat;
+  var lon = center.lon;
+  
+  $('#edit-center-zoom').val(zoom);
+  $('#edit-center-lat').val(lat);
+  $('#edit-center-lon').val(lon);
 }

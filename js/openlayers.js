@@ -53,14 +53,6 @@ function openlayersRenderMap(map) {
   // Add ID to map.
   Drupal.openlayers.activeObjects[map.id].map.mapid = map.id;
   
-  // Add events to the map 
-  for (var evtype in map.events){
-    for (var ev in map.events[evtype]){ 
-      //@@TODO: Do this without eval. See http://drupal.org/node/172169 on why we should not use eval.
-      eval("Drupal.openlayers.activeObjects[map.id].map.events.register(evtype,Drupal.openlayers.activeObjects[map.id].map," +  map.events[evtype][ev] + ");");
-    }
-  }
-  
   //On MouseOver mark the map as "active".
   $('#' + map.id).mouseover(function(){
     Drupal.openlayers.activeObjects[$(this).attr('id')].active = true;
@@ -91,10 +83,18 @@ function openlayersRenderMap(map) {
       
   // Zoom to Center
   var center = new OpenLayers.LonLat(map.center.lon, map.center.lat);
-  Drupal.openlayers.activeObjects[map.id].map.setCenter(center, map.center.zoom);
+  Drupal.openlayers.activeObjects[map.id].map.setCenter(center, map.center.zoom, false, false);
   
   // Set our default base layer
   Drupal.openlayers.activeObjects[map.id].map.setBaseLayer(Drupal.openlayers.activeObjects[map.id].layers[map.default_layer]);
+  
+  // Add events to the map 
+  for (var evtype in map.events){
+    for (var ev in map.events[evtype]){ 
+      //@@TODO: Do this without eval. See http://drupal.org/node/172169 on why we should not use eval.
+      eval("Drupal.openlayers.activeObjects[map.id].map.events.register(evtype,Drupal.openlayers.activeObjects[map.id].map," +  map.events[evtype][ev] + ");");
+    }
+  }
 }
 
 /**

@@ -54,21 +54,28 @@ function _openlayers_map_form($defaults = array()) {
   $easy_projections['other'] = t("Other");
   
   // Set up our map to help set center lat, lon and zoom
+  // This map will always be projected as 4326 and use just the basic layer so that
+  // even if the user is using screwed up map settings, this map will still function.
   $centermap_def = array(
+    'id' => 'openlayers-center-helpmap',
     'projection' => '4326',
-    'width' => '350px',
+    'width' => '400px',
     'height' => '300px',
     'center' => array(
-      'lat' => $defaults['center']['lat'],
-      'lon' => $defaults['center']['lon'],
-      'zoom' => $defaults['center']['zoom'],
+      'lat' => 0,
+      'lon' => 0,
+      'zoom' => 0,
     ),
     'layers' => array(
       'openlayers_default_wms',
     ),
     'options' => array(
       'displayProjection' => $defaults['projection'],
-    )
+    ),
+    'events' => array(
+      'moveend' => array('openlayersUpdateCenterFormValues'),
+      'zoomend' => array('openlayersUpdateCenterFormValues'),
+    ),
   );
   
   $centermap = openlayers_render_map($centermap_def);
@@ -121,7 +128,7 @@ function _openlayers_map_form($defaults = array()) {
   );
   
   $form['center']['helpmap'] = array(
-    '#value' => '<div class="openlayers-center-helpmap" style="float:right;">'.$centermap['themed'].'</div>'
+    '#value' => '<div class="openlayers-center-helpmap">'.$centermap['themed'].'</div>'
   );
   
   $form['center']['lat'] = array(
@@ -129,21 +136,21 @@ function _openlayers_map_form($defaults = array()) {
     '#title' => t('Latitude'),
     '#description' => t('Latitude or X value for centering.'),
     '#default_value' => $defaults['center']['lat'],
-    '#size' => 30,
+    '#size' => 25,
   );
   $form['center']['lon'] = array(
     '#type' => 'textfield',
     '#title' => t('Longitude'),
     '#description' => t('Longitude or Y value for centering.'),
     '#default_value' => $defaults['center']['lon'],
-    '#size' => 30,
+    '#size' => 25,
   );
   $form['center']['zoom'] = array(
     '#type' => 'textfield',
     '#title' => t('Zoom Level'),
     '#description' => t('Zoom level for centering.'),
     '#default_value' => $defaults['center']['zoom'],
-    '#size' => 30,
+    '#size' => 25,
   );
   
   // Map options properties

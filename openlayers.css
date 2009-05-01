@@ -50,3 +50,6 @@ background: url("images/draw_polygon_off.png") top left no-repeat;
   font-size: smaller;
   font-style: italic;
 }
+.openlayers-center-helpmap{
+  float: right;
+}
