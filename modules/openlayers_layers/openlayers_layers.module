@@ -95,7 +95,7 @@ function openlayers_layers_openlayers_layers_info() {
   $info['openlayers_layers_open_aerial'] = array(
     'name' => t('Open Aerial (2.8+) (do not use)'),
     'description' => t('OpenAerialMap is an open collection of aerial photographs, collected into a single coherent view of the world.'),
-    'projection' => array('900913', '3785'),
+    'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
     'callback' => $callback,
@@ -103,7 +103,7 @@ function openlayers_layers_openlayers_layers_info() {
   
   $info['openlayers_layers_google_street'] = array(
     'name' => t('Google Street'),
-    'projection' => array('900913', '3785'),
+    'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
@@ -111,7 +111,7 @@ function openlayers_layers_openlayers_layers_info() {
   
   $info['openlayers_layers_google_satellite'] = array(
     'name' => t('Google Satellite'),
-    'projection' => array('900913', '3785'),
+    'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
@@ -119,7 +119,7 @@ function openlayers_layers_openlayers_layers_info() {
   
   $info['openlayers_layers_google_hybrid'] = array(
     'name' => t('Google Hybrid'),
-    'projection' => array('900913', '3785'),
+    'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
@@ -127,7 +127,7 @@ function openlayers_layers_openlayers_layers_info() {
   
   $info['openlayers_layers_google_physical'] = array(
     'name' => t('Google Physical'),
-    'projection' => array('900913', '3785'),
+    'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
@@ -135,7 +135,7 @@ function openlayers_layers_openlayers_layers_info() {
   
   $info['openlayers_layers_yahoo_street'] = array(
     'name' => t('Yahoo Street'),
-    'projection' => array('900913', '3785'),
+    'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
@@ -143,7 +143,7 @@ function openlayers_layers_openlayers_layers_info() {
   
   $info['openlayers_layers_yahoo_satellite'] = array(
     'name' => t('Yahoo Satellite'),
-    'projection' => array('900913', '3785'),
+    'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
@@ -151,7 +151,7 @@ function openlayers_layers_openlayers_layers_info() {
   
   $info['openlayers_layers_yahoo_hybrid'] = array(
     'name' => t('Yahoo Hybrid'),
-    'projection' => array('900913', '3785'),
+    'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
@@ -159,7 +159,7 @@ function openlayers_layers_openlayers_layers_info() {
   
   $info['openlayers_layers_virtual_earth_street'] = array(
     'name' => t('Virtual Earth Street'),
-    'projection' => array('900913', '3785'),
+    'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
@@ -167,7 +167,7 @@ function openlayers_layers_openlayers_layers_info() {
   
   $info['openlayers_layers_virtual_earth_satellite'] = array(
     'name' => t('Virtual Earth Satellite'),
-    'projection' => array('900913', '3785'),
+    'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
@@ -175,7 +175,7 @@ function openlayers_layers_openlayers_layers_info() {
   
   $info['openlayers_layers_virtual_earth_hybrid'] = array(
     'name' => t('Virtual Earth Hybrid'),
-    'projection' => array('900913', '3785'),
+    'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
@@ -183,7 +183,7 @@ function openlayers_layers_openlayers_layers_info() {
   
   $info['openlayers_layers_osm_mapnik'] = array(
     'name' => t('OSM Mapnik'),
-    'projection' => array('900913', '3785'),
+    'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
@@ -191,7 +191,7 @@ function openlayers_layers_openlayers_layers_info() {
   
   $info['openlayers_layers_osm_tah'] = array(
     'name' => t('OSM Tiles@Home'),
-    'projection' => array('900913', '3785'),
+    'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
@@ -199,7 +199,7 @@ function openlayers_layers_openlayers_layers_info() {
   
   $info['openlayers_layers_osm_cycle'] = array(
     'name' => t('OSM Cycling Map'),
-    'projection' => array('900913', '3785'),
+    'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
     'callback' => 'openlayers_layers_process_layers',
