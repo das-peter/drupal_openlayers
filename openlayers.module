@@ -173,17 +173,17 @@ function openlayers_render_map($map = array()) {
   
   // Merge with site defaults (saved values)
   $saved_defaults = variable_get('openlayers_defaults', array());
+  
+  // If the map specifies that it does not to merge in the default layers, then unset them
+  if ($map['only_these_layers'] == TRUE){
+    unset($saved_defaults['layers']);
+  }
+  
   $map = openlayers_merge_maps($saved_defaults, $map);
   
   // Merge with module/system defaults
   $system_defaults = _openlayers_get_map_defaults();
   $map = openlayers_merge_maps($system_defaults, $map);
-  
-  //Add the defauly base layer if no layers are defined
-  if (!$map['layers']){
-    $map['layers'] = array('openlayers_default_wms');
-    $map['default_layer'] = 'openlayers_default_wms';
-  }
   
   // Process layers
   $map['layers'] = _openlayers_layers_process($map['layers'], $map);
@@ -441,14 +441,13 @@ function _openlayers_get_map_defaults() {
     'id' => _openlayers_create_map_id(),
     'projection' => '4326',
     'width' => 'auto',
+    'default_layer' => 'openlayers_default_wms',
+    'only_these_layers' => FALSE,
     'height' => '300px',
     'center' => array(
       'lat' => '0',
       'lon' => '0',
       'zoom' => '4',
-    ),
-    'layers' => array(
-      'openlayers_default_wms',
     ),
     'options' => array(
       'displayProjection' => '4326',

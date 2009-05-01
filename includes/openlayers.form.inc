@@ -59,6 +59,7 @@ function _openlayers_map_form($defaults = array()) {
   $centermap_def = array(
     'id' => 'openlayers-center-helpmap',
     'projection' => '4326',
+    'default_layer' => 'openlayers_default_wms',
     'width' => '400px',
     'height' => '300px',
     'center' => array(
@@ -66,11 +67,19 @@ function _openlayers_map_form($defaults = array()) {
       'lon' => 0,
       'zoom' => 0,
     ),
+    'only_these_layers' => TRUE,
     'layers' => array(
       'openlayers_default_wms',
     ),
     'options' => array(
       'displayProjection' => $defaults['projection'],
+      'maxResolution' => '1.40625',
+      'maxExtent' => array(
+        'top' => 90,
+        'bottom' => -90,
+        'left' => -180,
+        'right' => 180
+      ),
     ),
     'events' => array(
       'moveend' => array('openlayersUpdateCenterFormValues'),
