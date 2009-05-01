@@ -188,10 +188,13 @@ function openlayersUpdateHelpmapCenter() {
   var lat = $('.openlayers-form-lat').val();
   var lon = $('.openlayers-form-lon').val();
   
-  var center = new OpenLayers.LonLat(lon, lat);
-  center.transform(new OpenLayers.Projection('EPSG:' + projection), new OpenLayers.Projection('EPSG:4326'));
+  if (lat != '' && lon != ''){
+    var center = new OpenLayers.LonLat(lon, lat);
+    center.transform(new OpenLayers.Projection('EPSG:' + projection), new OpenLayers.Projection('EPSG:4326'));
+    
+    Drupal.openlayers.activeObjects['openlayers-center-helpmap'].map.setCenter(center, zoom);  
+  }
   
-  Drupal.openlayers.activeObjects['openlayers-center-helpmap'].map.setCenter(center, zoom);
 }
 
 function openlayersUpdateCenterFormValues() {
