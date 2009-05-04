@@ -340,6 +340,20 @@ function _openlayers_convert_form_to_map($values = array()) {
   return $processed;
 }
 
+function _openlayers_map_form_validate($map_form){
+  $map = _openlayers_convert_form_to_map($map_form);
+  $map = openlayers_prepare_map($map);
+  
+  // @@TODO: Invoke map alter?  It's possible that outside modules may detect and fix errors. 
+  
+  $error = openlayers_error_check_map($map, FALSE);
+  
+  if ($error){
+    form_set_error('openlayers', "OpenLayers Map Error: ".$error);
+  }
+}
+
+
 
 /**
  * Recursively unset empty values

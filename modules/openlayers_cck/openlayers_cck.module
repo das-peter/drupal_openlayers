@@ -99,6 +99,7 @@ function openlayers_cck_widget_settings($op, $widget) {
       return $form;
 
     case 'validate':
+      openlayers_map_form_validate($widget['openlayers_cck']);
       break;
 
     case 'save':
