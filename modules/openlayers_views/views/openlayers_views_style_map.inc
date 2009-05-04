@@ -45,12 +45,14 @@ class openlayers_views_style_map extends views_plugin_style {
     }
     
     // Read Geo Data
+    // @@TODO: The user selects which field to read geo data from. It could be a geo field, or a location field.
     $form['read_geo'] = array(
       '#type' => 'checkbox',
       '#title' => t('Read Geo Data'),
       '#description' => t('If this is checked, the map will attempt to read any geo fields included in the view.'),
       '#default_value' => $this->options['read_geo'], 
     );
+    
     
     // Create the custom field options.
     /*
@@ -93,7 +95,7 @@ class openlayers_views_style_map extends views_plugin_style {
    * Options form submit
    */
   function options_submit($form, &$form_state) {
-    // TODO: ??
+    // @@TODO: ??
   }
    
   /**
@@ -109,8 +111,6 @@ class openlayers_views_style_map extends views_plugin_style {
    * Map features
    */
   function map_features($rows = array()) {
-    // @@TODO: If we have multiple geometries per row, create a multi-geometry feaure. This will likely take some work in the Vector layer definition.
-    
     $features = array();
     $wkb_fields = array();
     
@@ -157,6 +157,10 @@ class openlayers_views_style_map extends views_plugin_style {
             // Populate wkt value
             $feature['wkt'] = $wkb_data['value'];
             
+            // Get the projection.
+            $projection_field = substr($wkb_field,0,-3).'srid';
+            $feature['projection'] = $row->$projection_field;
+            
             // Go through fields
             foreach ($this->view->field as $key => $field) {
               if ($key == $this->options['fields']['title']) {
@@ -182,8 +186,6 @@ class openlayers_views_style_map extends views_plugin_style {
         }
       }
     }
-    
-    var_dump($features);
     
     return $features;
   }
@@ -244,8 +246,7 @@ class openlayers_views_style_map extends views_plugin_style {
         ),
       );
       
-      // Add settings from plugin options
-      // @@TODO;
+      // @@TODO Add settings from plugin options
       
       // Render map
       $map = openlayers_render_map($map);
