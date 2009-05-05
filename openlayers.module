@@ -525,7 +525,12 @@ function openlayers_error_check_map($map, $log_errors = TRUE){
 
   // If we are using a degree based projection, then check to make sure our bounds are not over 180/90 degrees
   if ($map['projection'] == '4326' || $map['projection'] == '4269') {
-    if ($map['options']['maxExtent']['top'] > 90 || $map['options']['maxExtent']['bottom'] < -90 || $map['options']['maxExtent']['left'] < -180 || $map['options']['maxExtent']['right'] > 180 || $map['options']['maxResoluton'] > 180){
+    if (     ($map['options']['maxExtent']['top']     && $map['options']['maxExtent']['top']    > 90)
+          || ($map['options']['maxExtent']['bottom']  && $map['options']['maxExtent']['bottom'] < -90 )
+          || ($map['options']['maxExtent']['left']    && $map['options']['maxExtent']['left']   < -180 )
+          || ($map['options']['maxExtent']['right']   && $map['options']['maxExtent']['right']  > 180 )
+          || ($map['options']['maxResoluton']         && $map['options']['maxResoluton']        > 180 )
+    ){
       $error .= t("Your Maximum Extents are set greater than 180/90 degrees. Try Maximum Extent of: -180,180,-90,90 and a Maximum Resolution of 1.40625");
     }
   }
