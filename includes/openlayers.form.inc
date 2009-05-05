@@ -18,6 +18,23 @@
  *   Array of form items
  */
 function _openlayers_map_form($defaults = array()) {
+  // @@TODO: Lock-in system default layers so the user cannot unselect them. Disallow selection of projection that is not compatible with default layers.
+  // @@TODO: This is a very long function. Can we split up the sections into functions?
+  $system_defaults = variable_get('openlayers_defaults_form', array());
+  
+  // @@TODO: Is there a better way to do this. Ideally we could use form id, but I don't see how.
+  if($_GET['q'] == 'admin/settings/openlayers/defaults'){
+    $system_form = TRUE;
+  }
+  else{
+    $system_form = FALSE;
+  }
+  
+  // If defaults in not set, then load defaults from the system default
+  if (!$defaults || empty($defaults)){
+    $defaults = $system_defaults;
+  }
+  
   // Names of fields and fieldssets should correspond to the map array
   $form = array();
   // Get layers options
@@ -127,7 +144,11 @@ function _openlayers_map_form($defaults = array()) {
   
   // Form Properties
   $form['#tree'] = TRUE;
-
+  
+  $form['openlayers-form-proj-msg']= array(
+   '#value' =>'<div id="openlayers-form-proj-msg" class="messages status"></div>',
+  );
+  
   $form['easy_projection'] = array(
     '#type' => 'radios',
     '#title' => t('Projection'),
@@ -272,7 +293,7 @@ function _openlayers_map_form($defaults = array()) {
     '#options' => $baselayers,
     '#attributes' => array('class' => 'openlayers-form-baselayers'), 
     '#multiple' => TRUE,
-    '#default_value' => $defaults['layers']['baselayers'],
+    '#default_value' => $defaults['layers']['baselayers'] ? $defaults['layers']['baselayers'] : array(),
   );
   $form['layers']['default_layer'] = array(
     '#type' => 'radios',
@@ -289,8 +310,51 @@ function _openlayers_map_form($defaults = array()) {
     '#options' => $overlays,
     '#attributes' => array('class' => 'openlayers-form-overlays'), 
     '#multiple' => TRUE,
-    '#default_value' => $defaults['layers']['overlays'],
+    '#default_value' => $defaults['layers']['overlays'] ? $defaults['layers']['overlays'] : array(),
   );
+  
+  // If this is not the system settings page, then append some default values to the descriptions of various settings
+  // @@TODO: This is quite repetative, it can likely be put into a function.
+  if (!$system_form){
+    if ($system_defaults['projection']){
+      $form['projection']['#description'] .= ' If this is left blank then a default value of '. $system_defaults['projection'] .' will be used.';
+    }
+    if ($system_defaults['width']){
+      $form['width']['#description'] .= ' If this is left blank then a default value of '. $system_defaults['width'] .' will be used.';
+    }
+    if ($system_defaults['height']){
+      $form['height']['#description'] .= ' If this is left blank then a default value of '. $system_defaults['height'] .' will be used.';
+    }
+    if ($system_defaults['center']['lat']){
+      $form['center']['lat']['#description'] .= ' If this is left blank then a default value of '. $system_defaults['center']['lat'] .' will be used.';
+    }
+    if ($system_defaults['center']['lon']){
+      $form['center']['lon']['#description'] .= ' If this is left blank then a default value of '. $system_defaults['center']['lon'] .' will be used.';
+    }
+    if ($system_defaults['center']['zoom']){
+      $form['center']['zoom']['#description'] .= ' If this is left blank then a default value of '. $system_defaults['center']['zoom'] .' will be used.';
+    }
+    if ($system_defaults['options']['displayProjection']){
+      $form['options']['displayProjection']['#description'] .= ' If this is left blank then a default value of '. $system_defaults['options']['displayProjection'] .' will be used.';
+    }
+    if ($system_defaults['options']['maxResolution']){
+      $form['options']['maxResolution']['#description'] .= ' If this is left blank then a default value of '. $system_defaults['options']['maxResolution'] .' will be used.';
+    }
+    if ($system_defaults['options']['maxExtent']['top']){
+      $form['options']['maxExtent']['top']['#description'] .= ' If this is left blank then a default value of '. $system_defaults['options']['maxExtent']['top'] .' will be used.';
+    }
+    if ($system_defaults['options']['maxExtent']['bottom']){
+      $form['options']['maxExtent']['bottom']['#description'] .= ' If this is left blank then a default value of '. $system_defaults['options']['maxExtent']['bottom'] .' will be used.';
+    }
+    if ($system_defaults['options']['maxExtent']['left']){
+      $form['options']['maxExtent']['left']['#description'] .= ' If this is left blank then a default value of '. $system_defaults['options']['maxExtent']['left'] .' will be used.';
+    }
+    if ($system_defaults['options']['maxExtent']['right']){
+      $form['options']['maxExtent']['right']['#description'] .= ' If this is left blank then a default value of '. $system_defaults['options']['maxExtent']['right'] .' will be used.';
+    }
+  }
+  
+  
   
   // Add JavaScript
   drupal_add_js(drupal_get_path('module', 'openlayers') .'/js/openlayers.form.js', 'module');

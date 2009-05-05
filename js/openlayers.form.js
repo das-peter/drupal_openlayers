@@ -103,13 +103,16 @@ function openlayersWebSpericalMercadorAutoSettings(){
     
     // Letting the user know we did some automatic changes
     if (maxResolutionSet && maxExtentSet){
-      alert("Maximum Resolution and Maximum Extent have automatically been set for this projection.");
+      $('#openlayers-form-proj-msg').html("Maximum Resolution and Maximum Extent have automatically been set for this projection.").show("slow");
+      setTimeout("$('#openlayers-form-proj-msg').hide('fast');",3000);
     }
     if (maxResolutionSet && !maxExtentSet){
-      alert("Maximum Resolution has automatically been set for this projection.");
+      $('#openlayers-form-proj-msg').html("Maximum Resolution has automatically been set for this projection.").show("slow");
+      setTimeout("$('#openlayers-form-proj-msg').hide('fast');",3000);
     }
     if (!maxResolutionSet && maxExtentSet){
-      alert("Maximum Extent has automatically been set for this projection.");
+      $('#openlayers-form-proj-msg').html("Maximum Extent has automatically been set for this projection.").show("slow");
+      setTimeout("$('#openlayers-form-proj-msg').hide('fast');",3000);
     }
   }
   
@@ -135,13 +138,16 @@ function openlayersWebSpericalMercadorAutoSettings(){
     
     // Letting the user know we did some automatic changes
     if (maxResolutionUnset && maxExtentUnset){
-      alert("Maximum Resolution and Maximum Extent have automatically been unset.");
+      $('#openlayers-form-proj-msg').html("Maximum Resolution and Maximum Extent have automatically been unset.").show("slow");
+      setTimeout("$('#openlayers-form-proj-msg').hide('fast');",3000);
     }
     if (maxResolutionUnset && !maxExtentUnset){
-      alert("Maximum Resolution has automatically been unset.");
+      $('#openlayers-form-proj-msg').html("Maximum Resolution has automatically been unset.").show("slow");
+      setTimeout("$('#openlayers-form-proj-msg').hide('fast');",3000);
     }
     if (!maxResolutionUnset && maxExtentUnset){
-      alert("Maximum Extent has automatically been unset.");
+      $('#openlayers-form-proj-msg').html("Maximum Extent has automatically been unset.").show("slow");
+      setTimeout("$('#openlayers-form-proj-msg').hide('fast');",3000);
     }
   }
   

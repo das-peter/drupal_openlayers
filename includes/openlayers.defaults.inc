@@ -15,7 +15,7 @@ function openlayers_admin_default_settings($form_state) {
   // Get current default map
   $map = openlayers_render_map(array());
   $defaults = variable_get('openlayers_defaults_form', array());
-
+  
   // Get form defaults
   // @@TODO: find an easy way to get system map defaults into this array
   $form = openlayers_map_form($defaults);

@@ -53,3 +53,7 @@ background: url("images/draw_polygon_off.png") top left no-repeat;
 .openlayers-center-helpmap{
   float: right;
 }
+
+#openlayers-form-proj-msg{
+  display:none;
+}

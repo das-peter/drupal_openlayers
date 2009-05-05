@@ -385,6 +385,10 @@ function openlayers_openlayers_layers_info() {
  *   Array of processed layers
  */
 function _openlayers_layers_process($layers = array(), $map = array()) {
+  if (!$layers){
+    $layers = array();
+  }
+  
   $processed = array();
   
   // Get layer info array
@@ -483,7 +487,7 @@ function _openlayers_get_map_defaults() {
     'center' => array(
       'lat' => '0',
       'lon' => '0',
-      'zoom' => '4',
+      'zoom' => '2',
     ),
     'options' => array(
       'displayProjection' => '4326',
