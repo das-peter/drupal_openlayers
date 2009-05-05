@@ -22,13 +22,9 @@ function _openlayers_map_form($defaults = array()) {
   // @@TODO: This is a very long function. Can we split up the sections into functions?
   $system_defaults = variable_get('openlayers_defaults_form', array());
   
-  // @@TODO: Is there a better way to do this. Ideally we could use form id, but I don't see how.
-  if($_GET['q'] == 'admin/settings/openlayers/defaults'){
-    $system_form = TRUE;
-  }
-  else{
-    $system_form = FALSE;
-  }
+  // @@TODO: Is there a better way to do this? Ideally we could use form id, but I don't see how.
+  if($_GET['q'] == 'admin/settings/openlayers/defaults') $system_form = TRUE;
+  else $system_form = FALSE;
   
   // If defaults in not set, then load defaults from the system default
   if (!$defaults || empty($defaults)){
