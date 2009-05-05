@@ -9,6 +9,15 @@
 
 /**
  * Process WMS Layers
+ * 
+ * Process a WMS definition into a OpenLayers WMS Object
+ * 
+ * @param layerOptions
+ *   The WMS layer part of the map definition array.
+ * @param mapid
+ *   Map ID.
+ * @return
+ *  OpenLayers WMS layer object.
  */
 function openlayersLayerHandlerWMS(layerOptions, mapid) {
   // Check if there is a defined format
@@ -22,6 +31,15 @@ function openlayersLayerHandlerWMS(layerOptions, mapid) {
 
 /**
  * Process Vector Layers
+ * 
+ * Process a Vector layer definition into a OpenLayers Vector Object
+ * 
+ * @param layerOptions
+ *   The Vector layer part of the map definition array.
+ * @param mapid
+ *   Map ID.
+ * @return
+ *  OpenLayers Vector layer object.
  */
 function openlayersLayerHandlerVector(layerOptions, mapid) {
   // Get styles

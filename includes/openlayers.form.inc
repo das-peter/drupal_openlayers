@@ -125,7 +125,7 @@ function _openlayers_map_form($defaults = array()) {
   drupal_add_js($passvalues, 'setting');
   
   
-  // Form Propertieis
+  // Form Properties
   $form['#tree'] = TRUE;
 
   $form['easy_projection'] = array(
@@ -340,6 +340,17 @@ function _openlayers_convert_form_to_map($values = array()) {
   return $processed;
 }
 
+/**
+ * OpenLayers Form Validate
+ *
+ * Validates a form submission. This is a private
+ * function for openlayers_map_form_validate
+ *
+ * @param $map_form
+ *   Array of values to validate
+ * @return
+ *   Does not return anything. Uses form_set_error() to communicate errors.
+ */
 function _openlayers_map_form_validate($map_form){
   $map = _openlayers_convert_form_to_map($map_form);
   $map = openlayers_prepare_map($map);
@@ -352,8 +363,6 @@ function _openlayers_map_form_validate($map_form){
     form_set_error('openlayers', "OpenLayers Map Error: ".$error);
   }
 }
-
-
 
 /**
  * Recursively unset empty values

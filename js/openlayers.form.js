@@ -1,3 +1,11 @@
+/**
+ * @file
+ * This file holds the javascript functions for the settings forms.
+ */
+ 
+/**
+ * When document is ready for JS
+ */
 $(document).ready(function(){
   // @@TODO: Namespace this using the form ID
   // @@BUG:  Maps will not display inside fieldsets that are collapsed by default
@@ -62,9 +70,16 @@ $(document).ready(function(){
   
 });
 
-function openlayersWebSpericalMercadorAutoSettings(){
-  
-  
+
+/**
+ * Auto Set parameters for web spherical mercador
+ *
+ * Web spherical mercador (projection 900913 used for Google, Yahoo etc.)
+ * require very specific Max Extent and Max Resolution. We auto set and
+ * unset these parameters here.
+ *
+ */
+function openlayersWebSpericalMercadorAutoSettings(){  
   // If the projection matches, we should potentially set max extent and max resolution.
   var projection = $('.openlayers-form-projection').val();
   if (projection == '900913' || projection == '3785') {
@@ -132,7 +147,17 @@ function openlayersWebSpericalMercadorAutoSettings(){
   
 }
 
-
+/**
+ * Update the layers that are presented to the user
+ *
+ * Only certain layers and compatable with certain projections.
+ * When the user selects a projection, this function is fired
+ * and the layer list is filtered.
+ *
+ * @param projection
+ *   Projection to filter on.
+ *
+ */
 function openlayersUpdateSelectableLayers(projection){
   if (projection){
     $('input.openlayers-form-baselayers').each(function(){
@@ -163,6 +188,19 @@ function openlayersUpdateSelectableLayers(projection){
   }
 }
 
+/**
+ * Check projection for a given radio and checkbox.
+ *
+ * Given a projection and a DOM Element, look up the projection
+ * and see if the element's value (layer ID) is listed as compatable
+ * for that projection.
+ *
+ * @param projection
+ *   Projection to filter on.
+ * @param domInputObject
+ *   Checkbox or radio DOM element to check.
+ *
+ */
 function openlayersLayerCheckProjection(projection, domInputObject){
   $(domInputObject).parent().parent().css('display','none');
  
@@ -181,7 +219,13 @@ function openlayersLayerCheckProjection(projection, domInputObject){
   }
 }
 
-
+/**
+ * Update the center of the helpmap using the values from the form
+ *
+ * Take the center lat, lon and zoom values from the form and update
+ * the helper map.
+ *
+ */
 function openlayersUpdateHelpmapCenter() {
   var projection = $('.openlayers-form-projection').val();
   var zoom = $('.openlayers-form-zoom').val();
@@ -194,9 +238,14 @@ function openlayersUpdateHelpmapCenter() {
     
     Drupal.openlayers.activeObjects['openlayers-center-helpmap'].map.setCenter(center, zoom);  
   }
-  
 }
 
+/**
+ * Update the values from the form using center of the helpmap.
+ *
+ * When a user pans and zooms our helper map, update the form values.
+ *
+ */
 function openlayersUpdateCenterFormValues() {
   var helpmap = Drupal.openlayers.activeObjects['openlayers-center-helpmap'].map;
   var projection = $('.openlayers-form-projection').val();

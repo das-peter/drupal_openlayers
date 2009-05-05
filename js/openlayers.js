@@ -1,6 +1,11 @@
 // $Id$
 
 /**
+ * @file
+ * This file holds the main javascript API for OpenLayers. It is responsable for loading and displaying the map.
+ */
+
+/**
  * When document is ready for JS
  */
 jQuery(document).ready(function() {
@@ -38,6 +43,11 @@ jQuery(document).ready(function() {
 
 /**
  * Render OpenLayers Map
+ * 
+ * The main function to go through all the steps nessisary for rendering a map.
+ * 
+ * @param map
+ *   The map definition array.
  */
 function openlayersRenderMap(map) {
   // Create Projection objects
@@ -255,6 +265,13 @@ function openlayersProcessDrawFeatures(drawFeatures, mapid) {
 
 /**
  * Process Layers
+ *
+ * Process the layers part of the map definition into OpenLayers layer objects
+ * 
+ * @param layers
+ *   The layers section of the map definition array.
+ * @param mapid
+ *   The id of the map to which we will eventually add these layers.
  */
 function openlayersProcessLayers(layers, mapid) {
   
@@ -285,6 +302,11 @@ function openlayersProcessLayers(layers, mapid) {
 
 /**
  * Parse out key / value pairs out of a string that looks like "key:value;key2:value2"
+ * 
+ * @param rel
+ *   The string to parse. Usually the rel attribute of a html tag.
+ * @return
+ *   Array of key:value pairs
  */
 function openlayersParseRel(rel){
   var outputArray = [];
@@ -309,6 +331,15 @@ function openlayersParseRel(rel){
 
 /**
  * Dump Variables -- This is a JS developer tool
+ * 
+ * @param element
+ *   The element to dump
+ * @param limit
+ *   The depth we should go to.
+ * @param depth
+ *   The depth we should start at.
+ * @return
+ *   Nothing. Displaying in a pop-up.
  */
 function openlayersVarDump(element, limit, depth) {
   limit = limit ? limit : 1;

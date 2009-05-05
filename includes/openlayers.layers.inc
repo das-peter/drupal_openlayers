@@ -15,8 +15,6 @@
  *
  * @param $layer
  *   String ID for the layer
- * @param $map
- *   Map array
  * @return
  *   Array formated for an OpenLayers map layer
  */
