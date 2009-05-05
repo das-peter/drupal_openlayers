@@ -101,8 +101,7 @@ function openlayersRenderMap(map) {
   // Add events to the map 
   for (var evtype in map.events){
     for (var ev in map.events[evtype]){ 
-      //@@TODO: Do this without eval. See http://drupal.org/node/172169 on why we should not use eval.
-      eval("Drupal.openlayers.activeObjects[map.id].map.events.register(evtype,Drupal.openlayers.activeObjects[map.id].map," +  map.events[evtype][ev] + ");");
+      Drupal.openlayers.activeObjects[map.id].map.events.register(evtype,Drupal.openlayers.activeObjects[map.id].map,window[map.events[evtype][ev]]);
     }
   }
 }
@@ -185,22 +184,19 @@ function openlayersProcessDrawFeatures(drawFeatures, mapid) {
     // Add special event handlers to controls
     if (drawFeatures[dF].featureadded_handler) {
       for (var ev in drawFeatures[dF].featureadded_handler){
-          // @@TODO: Do this without eval. See http://drupal.org/node/172169 on why we should not use eval.
-          eval("createControl.events.register('featureadded',createControl," + drawFeatures[dF].featureadded_handler[ev] + ");");
+        createControl.events.register('featureadded',createControl,window[drawFeatures[dF].featureadded_handler[ev]]);
       }
     }
        
     if (drawFeatures[dF].featuremodified_handler) {
       for (var ev in drawFeatures[dF].featuremodified_handler){ 
-        // @@TODO: Do this without eval.
-        eval("layer.events.register('afterfeaturemodified',layer," + drawFeatures[dF].featuremodified_handler[ev] + ");");
+        layer.events.register('afterfeaturemodified',layer,window[drawFeatures[dF].featuremodified_handler[ev]]);
       }
     }
     
     if (drawFeatures[dF].featureremoved_handler) {
       for (var ev in drawFeatures[dF].featureremoved_handler){ 
-        // @@TODO: Do this without eval.
-        eval("layer.events.register('beforefeatureremoved',layer," + drawFeatures[dF].featureremoved_handler[ev] + ");");
+        layer.events.register('beforefeatureremoved',layer,window[drawFeatures[dF].featureremoved_handler[ev]]);
       }
     
       // If a user presses the delete key, delete the currently selected polygon. 
@@ -281,8 +277,7 @@ function openlayersProcessLayers(layers, mapid) {
   if (layers) {
     for (var layer in layers) {
       // Process layer
-      // @@TODO: Do this without eval. See http://drupal.org/node/172169 on why we should not use eval.
-      eval("var newLayer = " + layers[layer].layer_handler + "(layers[layer], mapid);");
+      var newLayer = window[layers[layer].layer_handler](layers[layer], mapid);
       Drupal.openlayers.activeObjects[mapid].layers[layer] = newLayer;
 
       // Add our Drupal data to the layer
@@ -292,8 +287,7 @@ function openlayersProcessLayers(layers, mapid) {
       // Add events
       for (var evtype in layers[layer].events){
         for (var ev in layers[layer].events[evtype]){ 
-          // @@TODO: Do this without eval. See http://drupal.org/node/172169 on why we should not use eval.
-          eval("newLayer.events.register(evtype,newLayer," + layers[layer].events[evtype][ev] + ");");
+          newLayer.events.register(evtype,newLayer,window[layers[layer].events[evtype][ev]]);
         }
       }
     }
