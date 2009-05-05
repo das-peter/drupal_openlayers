@@ -408,10 +408,14 @@ function theme_openlayers_cck_formatter_openlayersmapformatter_single($element) 
   $srid_key = $geofield_key."_srid";
   $mapid = "openlayers-cck-field-". $node->nid ."-single-". $geofield_key;
   
-  // Name our feature. If we are in a view, name the feature by the node name.
-  // If we are in a page, name the feature by the field name. 
-  if ($elemement){
-    $feature_name = $elemement['#title'];
+  // Name our features. If we are in a view, name the feature by the node name.
+  // If we are in a page, name the feature by the field name. This is necessary
+  // because the tricky $element changes it's form depending on context.
+  if ($element['#title']){
+    $feature_name = $element['#title'];
+  }
+  elseif ($node->content[$geofield_key]['field']['#title']){
+    $feature_name = $node->content[$geofield_key]['field']['#title'];
   }
   else {
     $feature_name = $node->node_title;
