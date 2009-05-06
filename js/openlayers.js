@@ -22,14 +22,9 @@ jQuery(document).ready(function() {
   for (var i in Drupal.openlayers.mapDefs) {
     var map = Drupal.openlayers.mapDefs[i];
     
-    // Trigger documentReady event
-    if (openlayersIsSet(map.events) && openlayersIsSet(map.events.documentReady)){
-      var event = {};
-      event.mapDef = map;
-      for (var ev in map.events.documentReady){
-        window[map.events.documentReady[ev]](event);
-      }
-    }
+    // Trigger beforeEverything event
+    var event = { 'mapDef': map};
+    openlayersTiggerCustomEvent(map, 'beforeEverything', event);
     
     // Check to see if there is a div on the page ready for the map. If there is then proceed.
     if ($('#' + map.id).length > 0) {
@@ -80,7 +75,11 @@ function openlayersRenderMap(map) {
   }).mouseout(function(){
     Drupal.openlayers.activeObjects[$(this).attr('id')].active = false;
   });
-    
+
+  // Trigger beforeLayers event
+  var event = { 'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
+  openlayersTiggerCustomEvent(map, 'beforeLayers', event);
+  
   // We set up all our layers
   openlayersProcessLayers(map.layers, map.id);
   
@@ -94,7 +93,11 @@ function openlayersRenderMap(map) {
     var layer =  Drupal.openlayers.activeObjects[map.id].layers[l];
     Drupal.openlayers.activeObjects[map.id].map.addLayer(layer);
   }
-      
+  
+  // Trigger beforeCenter event
+  var event = { 'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
+  openlayersTiggerCustomEvent(map, 'beforeCenter', event);
+  
   // Zoom to Center
   // @@TODO: Do this in the map options -- As isthis will result in a bug in the zoom map helper in the map form
   var center = new OpenLayers.LonLat(map.center.lon, map.center.lat);
@@ -102,6 +105,10 @@ function openlayersRenderMap(map) {
   
   // Set our default base layer
   Drupal.openlayers.activeObjects[map.id].map.setBaseLayer(Drupal.openlayers.activeObjects[map.id].layers[map.default_layer]);
+
+  // Trigger beforeControls event
+  var event = { 'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
+  openlayersTiggerCustomEvent(map, 'beforeControls', event);
   
   // Add controls to map
   for (var c in Drupal.openlayers.activeObjects[map.id].controls) {
@@ -109,9 +116,17 @@ function openlayersRenderMap(map) {
     Drupal.openlayers.activeObjects[map.id].map.addControl(control);
     if (control.activeByDefault) control.activate();
   }
+
+  // Trigger beforeEvents event
+  var event = { 'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
+  openlayersTiggerCustomEvent(map, 'beforeEvents', event);
   
   // Add events to the map 
   openlayersProcessEvents(map.events, map.id); 
+
+  // Trigger beforeBehaviors event
+  var event = { 'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
+  openlayersTiggerCustomEvent(map, 'beforeBehaviors', event);
   
   // Add behaviors to map
   for (var b in Drupal.openlayers.mapDefs[map.id].behaviors) {
@@ -123,14 +138,8 @@ function openlayersRenderMap(map) {
   }
   
   // Trigger mapReady event
-  if (openlayersIsSet(map.events) && openlayersIsSet(map.events.mapReady)){
-    var event = {};
-    event.mapDef = map;
-    event.map = Drupal.openlayers.activeObjects[map.id].map;
-    for (var ev in map.events.mapReady){
-      window[map.events.mapReady[ev]](event);
-    }
-  }
+  var event = { 'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
+  openlayersTiggerCustomEvent(map, 'mapReady',event);
   
 }
 
@@ -412,6 +421,14 @@ function openlayersVarDump(element, limit, depth) {
     winpop.document.close();
   }
   return returnString;
+}
+
+function openlayersTiggerCustomEvent(map, eventname,event){
+  if (openlayersIsSet(map.events) && openlayersIsSet(map.events[eventname])){
+    for (var ev in map.events[eventname]){
+      window[map.events[eventname][ev]](event);
+    }
+  }
 }
 
 // @@TODO: Replace all typeof with this (it's shorter - do we even need to namespace it? ideally it would be isset() or defined() )

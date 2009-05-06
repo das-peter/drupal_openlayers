@@ -142,6 +142,19 @@ Maps are built using an array that looks like this:
 	dragend
 	changebaselayer
 	
+	One-Time Map Events:
+	These events are triggered during the map building process, letting you
+	execute javascript at various points while the map is being built.
+	--------------------
+	beforeEverything  -- Executed as soon as possible for each map. The OpenLayers map object is not yet built.
+	beforeLayers      -- After the map object is built, but before layers are created and added.
+	beforeCenter      -- Before the map is zoomed and centered.
+	beforeControls    -- Before controls are added to the map
+	beforeEvents      -- Before events are added to the map
+	beforeBehaviors   -- Before behaviors are triggered
+	mapReady          -- Last call
+	
+	
 	Layer Events:
 	-------------
 	beforefeatureadded
