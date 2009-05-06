@@ -517,7 +517,8 @@ function _openlayers_behaviors_process($behaviors = array(), &$map) {
         $result = call_user_func_array($info['callback'], array($behavior, &$map));
         // Check for result
         if (isset($result) && is_array($result)) {
-          $processed[$bkey] = $behavior;
+          $result['js_callback'] = $info['js_callback'];
+          $processed[$bkey] = $result;
         }
       }
       // Include JavaScript

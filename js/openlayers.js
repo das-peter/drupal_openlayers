@@ -10,6 +10,7 @@
  */
 jQuery(document).ready(function() {
   
+  // @@TODO: Implement proxy
   OpenLayers.ProxyHost = "http://raider/proxy/?proxy_url=";
   
   // Store rendered maps and other OpenLayer objects in Drupal.openlayers.activeObjects
@@ -20,6 +21,16 @@ jQuery(document).ready(function() {
   // Go through array and make maps
   for (var i in Drupal.openlayers.mapDefs) {
     var map = Drupal.openlayers.mapDefs[i];
+    
+    // Trigger documentReady event
+    if (openlayersIsSet(map.events) && openlayersIsSet(map.events.documentReady)){
+      var event = {};
+      event.mapDef = map;
+      for (var ev in map.events.documentReady){
+        window[map.events.documentReady[ev]](event);
+      }
+    }
+    
     // Check to see if there is a div on the page ready for the map. If there is then proceed.
     if ($('#' + map.id).length > 0) {
       // Make div the right dimensions and add custom controls
@@ -69,9 +80,6 @@ function openlayersRenderMap(map) {
   }).mouseout(function(){
     Drupal.openlayers.activeObjects[$(this).attr('id')].active = false;
   });
-
-  // Add events to the map 
-  openlayersProcessEvents(map.events, map.id);
     
   // We set up all our layers
   openlayersProcessLayers(map.layers, map.id);
@@ -86,13 +94,6 @@ function openlayersRenderMap(map) {
     var layer =  Drupal.openlayers.activeObjects[map.id].layers[l];
     Drupal.openlayers.activeObjects[map.id].map.addLayer(layer);
   }
-  
-  // Add controls to map
-  for (var c in Drupal.openlayers.activeObjects[map.id].controls) {
-    var control = Drupal.openlayers.activeObjects[map.id].controls[c];
-    Drupal.openlayers.activeObjects[map.id].map.addControl(control);
-    if (control.activeByDefault) control.activate();
-  }
       
   // Zoom to Center
   // @@TODO: Do this in the map options -- As isthis will result in a bug in the zoom map helper in the map form
@@ -101,6 +102,35 @@ function openlayersRenderMap(map) {
   
   // Set our default base layer
   Drupal.openlayers.activeObjects[map.id].map.setBaseLayer(Drupal.openlayers.activeObjects[map.id].layers[map.default_layer]);
+  
+  // Add controls to map
+  for (var c in Drupal.openlayers.activeObjects[map.id].controls) {
+    var control = Drupal.openlayers.activeObjects[map.id].controls[c];
+    Drupal.openlayers.activeObjects[map.id].map.addControl(control);
+    if (control.activeByDefault) control.activate();
+  }
+  
+  // Add events to the map 
+  openlayersProcessEvents(map.events, map.id); 
+  
+  // Add behaviors to map
+  for (var b in Drupal.openlayers.mapDefs[map.id].behaviors) {
+    var event = {};
+    event.mapDef = map;
+    event.map = Drupal.openlayers.activeObjects[map.id].map;
+    event.behavior = Drupal.openlayers.mapDefs[map.id].behaviors[b];
+    window[Drupal.openlayers.mapDefs[map.id].behaviors[b].js_callback](event);
+  }
+  
+  // Trigger mapReady event
+  if (openlayersIsSet(map.events) && openlayersIsSet(map.events.mapReady)){
+    var event = {};
+    event.mapDef = map;
+    event.map = Drupal.openlayers.activeObjects[map.id].map;
+    for (var ev in map.events.mapReady){
+      window[map.events.mapReady[ev]](event);
+    }
+  }
   
 }
 
@@ -117,7 +147,7 @@ function openlayersCreateMapOptions(options, controls, mapid) {
   returnOptions.displayProjection = Drupal.openlayers.activeObjects[mapid].displayProjection;
   
   // These parameters may or may not be defined by the map array, so we must check. 
-  if (typeof(options.maxResolution) != "undefined") returnOptions.maxResolution = options.maxResolution;
+  if (openlayersIsSet(options.maxResolution)) returnOptions.maxResolution = options.maxResolution;
   
   if (typeof(options.maxExtent) != "undefined") {
     returnOptions.maxExtent =  new OpenLayers.Bounds(
@@ -304,21 +334,12 @@ function openlayersProcessLayers(layers, mapid) {
  *   The id of the map to which we will add these events.
  */
 function openlayersProcessEvents(events, mapid) {
-  
-  var map = Drupal.openlayers.mapDefs[mapid];
-  
-  // Immediately execute 'initialize' events
-  if (typeof(map.events['initialize']) != 'undefined'){
-    for (var ev in map.events['initialize']){
-      window[map.events['initialize'][ev]](mapid);
-    }
-    delete map.events['initialize'];
-  }
-  
   // Go through events
-  for (var evtype in map.events){
-    for (var ev in map.events[evtype]){ 
-      Drupal.openlayers.activeObjects[map.id].map.events.register(evtype,Drupal.openlayers.activeObjects[map.id].map,window[map.events[evtype][ev]]);
+  for (var evtype in events){
+    if (evtype != 'documentReady' && evtype != 'mapReady'){
+      for (var ev in events[evtype]){ 
+        Drupal.openlayers.activeObjects[mapid].map.events.register(evtype,Drupal.openlayers.activeObjects[mapid].map,window[events[evtype][ev]]);
+      }
     }
   }
 }
@@ -391,4 +412,10 @@ function openlayersVarDump(element, limit, depth) {
     winpop.document.close();
   }
   return returnString;
+}
+
+// @@TODO: Replace all typeof with this (it's shorter - do we even need to namespace it? ideally it would be isset() or defined() )
+function openlayersIsSet(variable){
+  if (typeof(variable) == 'undefined') return false;
+  else return true;
 }

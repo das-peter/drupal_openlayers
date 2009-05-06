@@ -97,9 +97,7 @@ function openlayersCCKLoadFeatureFromTextarea(mapid, textarea){
  * When the layer is done loading, load in the values from the CCK text fields if it is the correct layer.
  */
 function openlayersCCKLoadValues(event){
-  if (event.layer.drupalId == "openlayers_cck_vector"){
-    openlayersCCKPopulateMap(event.layer.map.mapid);
-  }
+  openlayersCCKPopulateMap(event.mapDef.id);
 }
 
 /**

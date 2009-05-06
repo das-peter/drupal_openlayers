@@ -128,7 +128,7 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
     // Add an event to the map. When a layer is added fire the JavaScript function openlayersCCKLoadValues.
     // openlayersCCKLoadValues takes care of loading data from the CCK fields into the map.
     $map['events'] = array(
-      'addlayer' => array('openlayersCCKLoadValues'),
+      'mapReady' => array('openlayersCCKLoadValues'),
     );
     
     // Make sure that our display projection matches the database projection
