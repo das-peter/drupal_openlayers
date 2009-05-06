@@ -451,6 +451,13 @@ function theme_openlayers_cck_formatter_openlayersmapformatter_single($element) 
     $map_def = array(
       'id' => $mapid,
       'layers' => $layers,
+      'behaviors' => array(
+        'openlayers_cck_zoom_to_layer' => array(
+          'id' => 'openlayers_cck_zoom_to_layer',
+          'type' => 'openlayers_behaviors_zoom_to_layer',
+          'layer' => $geofield_key,
+        ),
+      )
     );
     
     $map = openlayers_render_map($map_def);

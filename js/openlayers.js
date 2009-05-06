@@ -69,7 +69,10 @@ function openlayersRenderMap(map) {
   }).mouseout(function(){
     Drupal.openlayers.activeObjects[$(this).attr('id')].active = false;
   });
-  
+
+  // Add events to the map 
+  openlayersProcessEvents(map.events, map.id);
+    
   // We set up all our layers
   openlayersProcessLayers(map.layers, map.id);
   
@@ -92,18 +95,13 @@ function openlayersRenderMap(map) {
   }
       
   // Zoom to Center
+  // @@TODO: Do this in the map options -- As isthis will result in a bug in the zoom map helper in the map form
   var center = new OpenLayers.LonLat(map.center.lon, map.center.lat);
   Drupal.openlayers.activeObjects[map.id].map.setCenter(center, map.center.zoom, false, false);
   
   // Set our default base layer
   Drupal.openlayers.activeObjects[map.id].map.setBaseLayer(Drupal.openlayers.activeObjects[map.id].layers[map.default_layer]);
   
-  // Add events to the map 
-  for (var evtype in map.events){
-    for (var ev in map.events[evtype]){ 
-      Drupal.openlayers.activeObjects[map.id].map.events.register(evtype,Drupal.openlayers.activeObjects[map.id].map,window[map.events[evtype][ev]]);
-    }
-  }
 }
 
 /**
@@ -293,6 +291,38 @@ function openlayersProcessLayers(layers, mapid) {
     }
   }
 }
+
+
+/**
+ * Process Events
+ *
+ * Process the layers part of the map definition into OpenLayers layer objects
+ * 
+ * @param events
+ *   The events section of the map definition array.
+ * @param mapid
+ *   The id of the map to which we will add these events.
+ */
+function openlayersProcessEvents(events, mapid) {
+  
+  var map = Drupal.openlayers.mapDefs[mapid];
+  
+  // Immediately execute 'initialize' events
+  if (typeof(map.events['initialize']) != 'undefined'){
+    for (var ev in map.events['initialize']){
+      window[map.events['initialize'][ev]](mapid);
+    }
+    delete map.events['initialize'];
+  }
+  
+  // Go through events
+  for (var evtype in map.events){
+    for (var ev in map.events[evtype]){ 
+      Drupal.openlayers.activeObjects[map.id].map.events.register(evtype,Drupal.openlayers.activeObjects[map.id].map,window[map.events[evtype][ev]]);
+    }
+  }
+}
+
 
 /**
  * Parse out key / value pairs out of a string that looks like "key:value;key2:value2"
