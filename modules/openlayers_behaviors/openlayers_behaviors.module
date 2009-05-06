@@ -1,0 +1,58 @@
+<?php
+
+/**
+ * @file
+ * This file holds the main Drupal hook functions 
+ * and private functions for the openlayers_behaviors module.
+ *
+ * @ingroup openlayers
+ */
+
+/**
+ * Implementation of hook_help
+ */
+function openlayers_behaviors_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#openlayers_behaviors':
+      $output = '<p>'. t('Provides a wide range of map \'behaviors\' - pluggable map interactivities such as pop-ups, tooltips, and feature editing.') .'</p>';
+  }
+  return $output;
+}
+
+/**
+ * Implementation of hook_openlayers_behaviors_info
+ */
+function openlayers_behaviors_openlayers_behaviors_info() {
+  $file = drupal_get_path('module', 'openlayers_behaviors') .'/includes/openlayers_behaviors.behaviors.inc';
+  $info = array();
+  
+  // Define info array
+  $info['openlayers_behaviors_zoom_to_layer'] = array(
+    'name' => t('Zoom to Layer'),
+    'description' => t('When the map is finished loading, zoom to the features contained within the given layer'),
+    'file' => $file,
+    'callback' => 'openlayers_behaviors_process_zoom_to_layer',
+    'js_file' => drupal_get_path('module', 'openlayers_behaviors') .'/js/openlayers_behaviors.behaviors.js',
+    'js_callback' => 'openlayersBehaviorsZoomToLayer',
+  );
+  
+  $info['openlayers_behaviors_tooltip'] = array(
+    'name' => t('Tooltip'),
+    'description' => t('When the user hover over a feature, provide a tooltip'),
+    'file' => $file,
+    'callback' => 'openlayers_behaviors_process_tooltip',
+    'js_file' => drupal_get_path('module', 'openlayers_behaviors') .'/js/openlayers_behaviors.behaviors.js',
+    'js_callback' => 'openlayersBehaviorsTooltip',
+  );
+
+  $info['openlayers_behaviors_feature_highlight'] = array(
+    'name' => t('Feaure Highlight'),
+    'description' => t('When the user hover over a feature, highlight it'),
+    'file' => $file,
+    'callback' => 'openlayers_behaviors_process_feature_highlight',
+    'js_file' => drupal_get_path('module', 'openlayers_behaviors') .'/js/openlayers_behaviors.behaviors.js',
+    'js_callback' => 'openlayersBehaviorsFeatureHighlight',
+  );
+  
+  return $info;
+}

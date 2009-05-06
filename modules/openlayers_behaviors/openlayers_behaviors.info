@@ -1,0 +1,5 @@
+name = OpenLayers Behaviors
+description = Provides a wide range of map 'behaviors' - pluggable map interactivities such as pop-ups, tooltips, and feature editing.
+core = 6.x
+package = GIS
+dependencies[] = openlayers
