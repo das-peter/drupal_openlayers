@@ -349,7 +349,7 @@ function openlayersProcessEvents(events, mapid) {
   // Go through events
   for (var evtype in events){
     // Exclude One-Time map events. 
-    if (evtype != 'beforeEverything' && evtype != 'beforeLayers' && evtype != 'beforeCenter' && evtype != 'beforeControls' && evtype != 'beforeEvents' && evtype != 'beforeBehaviors' && != 'mapReady'){
+    if (evtype != 'beforeEverything' && evtype != 'beforeLayers' && evtype != 'beforeCenter' && evtype != 'beforeControls' && evtype != 'beforeEvents' && evtype != 'beforeBehaviors' && evtype != 'mapReady'){
       for (var ev in events[evtype]){ 
         Drupal.openlayers.activeObjects[mapid].map.events.register(evtype,Drupal.openlayers.activeObjects[mapid].map,window[events[evtype][ev]]);
       }
