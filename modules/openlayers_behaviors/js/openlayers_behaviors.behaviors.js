@@ -12,21 +12,42 @@ function openlayersBehaviorsTooltip(event){
   var map = event.map;
   var behavior = event.behavior;
   
+  
+  // Set up the hover triggers
   var layer = Drupal.openlayers.activeObjects[mapid].layers[behavior.layer];
+  layer.drupalData.tooltipAttribute = behavior.attribute;
   Drupal.openlayers.activeObjects[mapid].controls[behavior.id] = new OpenLayers.Control.SelectFeature(
     layer,
       {hover: true, onSelect: openlayersBehaviorsTooltipOver, onUnselect: openlayersBehaviorsTooltipOut}
   );
   map.addControl(Drupal.openlayers.activeObjects[mapid].controls[behavior.id]);
   Drupal.openlayers.activeObjects[mapid].controls[behavior.id].activate();
+  
+  // Set up the HTML div
+  $("#"+mapid).after('<div id="'+ mapid +'-tooltip" class="openlayers-behaviors-tooltip"><img class="openlayers-behaviors-pointy" src="'+ Drupal.settings.basePath + behavior.pointy_path +'" alt="pointy" /><span id="'+ mapid +'-tooltip-text"></span></div>');
+  
 }
 
-function openlayersBehaviorsTooltipOver(event){
-  // Do something
+function openlayersBehaviorsTooltipOver(feature){ 
+  var tooltipText = feature.attributes[feature.layer.drupalData.tooltipAttribute];
+  $('#'+ feature.layer.map.mapid + "-tooltip-text").html(tooltipText);
+  
+  // Set the tooltip location
+  var centroid = feature.geometry.getCentroid();
+  var centroidLonLat = new OpenLayers.LonLat(centroid.x, centroid.y);
+  var centroidPixel = feature.layer.map.getPixelFromLonLat(centroidLonLat);
+  var mapDivOffset = $('#'+feature.layer.map.mapid).offset();
+  var scrollTop = $(window).scrollTop();
+  var scrollLeft = $(window).scrollLeft();
+  
+  // @@TODO: Can this -12 and -30 put in openlayers_behavior.css and then be read out and into this script? This would allow easier styling
+  var absoluteTop = centroidPixel.y + mapDivOffset.top - scrollTop -30;
+  var absoluteLeft = centroidPixel.x + mapDivOffset.left - scrollLeft -12;
+  $('#'+ feature.layer.map.mapid + "-tooltip").css('top',absoluteTop).css('left',absoluteLeft).css('display','block');
 }
 
-function openlayersBehaviorsTooltipOut(event){
-  // Do something
+function openlayersBehaviorsTooltipOut(feature){
+  $('#'+ feature.layer.map.mapid + "-tooltip").css('display','none');
 }
 
 
@@ -61,8 +82,4 @@ function openlayersBehaviorsZoomToLayer(event){
     }
   }
 
-}
-
-function openlayersBehaviorsFeatureHighlight(event){
-  // Do Something
 }

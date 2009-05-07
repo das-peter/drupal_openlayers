@@ -1,0 +1,17 @@
+.openlayers-behaviors-tooltip {
+  display:none;
+  position:fixed;
+  top:0px;
+  left:0px;
+  height: 20px;
+  border: 1px solid #006699;
+  background-color: white;
+  z-index:1001;
+  padding:2px 3px 2px 3px;
+}
+
+.openlayers-behaviors-pointy {
+  position: absolute;
+  top: 24px;
+  left: 5px;
+}

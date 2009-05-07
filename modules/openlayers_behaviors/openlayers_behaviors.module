@@ -44,15 +44,6 @@ function openlayers_behaviors_openlayers_behaviors_info() {
     'js_file' => drupal_get_path('module', 'openlayers_behaviors') .'/js/openlayers_behaviors.behaviors.js',
     'js_callback' => 'openlayersBehaviorsTooltip',
   );
-
-  $info['openlayers_behaviors_feature_highlight'] = array(
-    'name' => t('Feaure Highlight'),
-    'description' => t('When the user hover over a feature, highlight it'),
-    'file' => $file,
-    'callback' => 'openlayers_behaviors_process_feature_highlight',
-    'js_file' => drupal_get_path('module', 'openlayers_behaviors') .'/js/openlayers_behaviors.behaviors.js',
-    'js_callback' => 'openlayersBehaviorsFeatureHighlight',
-  );
   
   return $info;
 }

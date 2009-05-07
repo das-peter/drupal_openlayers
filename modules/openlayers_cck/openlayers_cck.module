@@ -465,6 +465,12 @@ function theme_openlayers_cck_formatter_openlayersmapformatter_single($element) 
           'type' => 'openlayers_behaviors_zoom_to_layer',
           'layer' => $geofield_key,
         ),
+        'openlayers_cck_tooltip' => array(
+          'id' => 'openlayers_cck_tooltip',
+          'type' => 'openlayers_behaviors_tooltip',
+          'layer' => $geofield_key,
+          'attribute' => 'name',
+        ),
       )
     );
     
