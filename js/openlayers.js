@@ -9,7 +9,10 @@
  * When document is ready for JS
  */
 jQuery(document).ready(function() {
-  
+  openlayersLoadMaps();
+});
+
+function openlayersLoadMaps(){
   // @@TODO: Implement proxy
   OpenLayers.ProxyHost = "http://raider/proxy/?proxy_url=";
   
@@ -45,7 +48,7 @@ jQuery(document).ready(function() {
       openlayersRenderMap(Drupal.openlayers.mapDefs[i]);
     }
   }
-});
+};
 
 /**
  * Render OpenLayers Map
@@ -345,7 +348,8 @@ function openlayersProcessLayers(layers, mapid) {
 function openlayersProcessEvents(events, mapid) {
   // Go through events
   for (var evtype in events){
-    if (evtype != 'documentReady' && evtype != 'mapReady'){
+    // Exclude One-Time map events. 
+    if (evtype != 'beforeEverything' && evtype != 'beforeLayers' && evtype != 'beforeCenter' && evtype != 'beforeControls' && evtype != 'beforeEvents' && evtype != 'beforeBehaviors' && != 'mapReady'){
       for (var ev in events[evtype]){ 
         Drupal.openlayers.activeObjects[mapid].map.events.register(evtype,Drupal.openlayers.activeObjects[mapid].map,window[events[evtype][ev]]);
       }
