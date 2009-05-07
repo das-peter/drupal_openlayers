@@ -33,13 +33,18 @@ jQuery(document).ready(function() {
       $('#' + fieldContainer).toggle();
       return false;
     });
-    
+  }
+});
+
+Drupal.behaviors.openlayers_cck = function(context){
+  for (var mapid in Drupal.settings.openlayers_cck.maps) {
     // Add onblur events to fields
     $('textarea[rel=' + mapid + ']').blur(function() {
       openlayersCCKAlterFeatureFromField($(this));
     });
   }
-});
+};
+
 
 /**
  * OpenLayers CCK Populate Map
@@ -216,6 +221,7 @@ function openlayersCCKFeatureAdded(event) {
  */
 function openlayersCCKFeatureModified(event){
   var feature = event.feature;
+  var mapid = feature.layer.map.mapid;
   
   // Clone the geometry so we may safetly work on it without hurting the feature
   var geometry = feature.geometry.clone();
