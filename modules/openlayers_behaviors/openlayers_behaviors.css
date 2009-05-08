@@ -3,7 +3,6 @@
   position:fixed;
   top:0px;
   left:0px;
-  height: 20px;
   border: 1px solid #006699;
   background-color: white;
   z-index:1001;
@@ -12,6 +11,6 @@
 
 .openlayers-behaviors-pointy {
   position: absolute;
-  top: 24px;
+  bottom: -7px;
   left: 5px;
 }
