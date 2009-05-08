@@ -32,10 +32,10 @@ function openlayersBehaviorsTooltipOver(feature){
   var tooltipText = feature.attributes[feature.layer.drupalData.tooltipAttribute];
   $('#'+ feature.layer.map.mapid + "-tooltip-text").html(tooltipText);
   
+  
   // Set the tooltip location
-  var centroid = feature.geometry.getCentroid();
-  var centroidLonLat = new OpenLayers.LonLat(centroid.x, centroid.y);
-  var centroidPixel = feature.layer.map.getPixelFromLonLat(centroidLonLat);
+  var centroid = openlayersBehaviorsTooltipGetCentroid(feature.geometry.clone());
+  var centroidPixel = feature.layer.map.getPixelFromLonLat(centroid);
   var mapDivOffset = $('#'+feature.layer.map.mapid).offset();
   var scrollTop = $(window).scrollTop();
   var scrollLeft = $(window).scrollLeft();
@@ -48,6 +48,39 @@ function openlayersBehaviorsTooltipOver(feature){
 
 function openlayersBehaviorsTooltipOut(feature){
   $('#'+ feature.layer.map.mapid + "-tooltip").css('display','none');
+}
+
+function openlayersBehaviorsTooltipGetCentroid(geometry){
+  if (geometry.CLASS_NAME == 'OpenLayers.Geometry.Polygon'){
+    var firstCentroid = geometry.getCentroid();
+    if (geometry.containsPoint(firstCentroid)){
+      // The polygon contains it's centroid, easy!
+      var baseCentroid = firstCentroid;
+    }else{    
+      // The polygon is a funny shape and does not contain it's own centroid. Find the closest vertex to the centroid.
+      var vertices = geometry.getVertices();
+      var minDistance;
+      for (var v in vertices){
+        var distance = vertices[v].distanceTo(firstCentroid);
+        if (distance < minDistance || v == 0){
+          minDistance = distance;
+          var closestVertices = vertices[v];
+        }
+      }
+     var baseCentroid = closestVertices;
+    }
+
+  }
+  else if (geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString'){
+    // Simply use the middle vertices as the centroid. One day we may want to take into account the lengths of the different segments
+    var vertices = geometry.getVertices();
+    var midVerticesIndex = Math.round((vertices.length -1) / 2);
+    var baseCentroid = vertices[midVerticesIndex];
+  }
+  else if (geometry.CLASS_NAME == 'OpenLayers.Geometry.Point'){
+    var baseCentroid = geometry.getCentroid();
+  }
+  return new OpenLayers.LonLat(baseCentroid.x, baseCentroid.y);
 }
 
 

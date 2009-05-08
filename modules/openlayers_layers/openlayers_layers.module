@@ -93,7 +93,7 @@ function openlayers_layers_openlayers_layers_info() {
   );
   
   $info['openlayers_layers_open_aerial'] = array(
-    'name' => t('Open Aerial (2.8+) (do not use)'),
+    'name' => t('Open Aerial (2.8 - do not use)'),
     'description' => t('OpenAerialMap is an open collection of aerial photographs, collected into a single coherent view of the world.'),
     'projection' => array('900913'),
     'baselayer' => TRUE,
@@ -182,7 +182,7 @@ function openlayers_layers_openlayers_layers_info() {
   );
   
   $info['openlayers_layers_osm_mapnik'] = array(
-    'name' => t('OSM Mapnik'),
+    'name' => t('OSM Mapnik (2.8 - do not use)'),
     'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
@@ -190,7 +190,7 @@ function openlayers_layers_openlayers_layers_info() {
   );
   
   $info['openlayers_layers_osm_tah'] = array(
-    'name' => t('OSM Tiles@Home'),
+    'name' => t('OSM Tiles@Home (2.8 - do not use)'),
     'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
@@ -198,7 +198,7 @@ function openlayers_layers_openlayers_layers_info() {
   );
   
   $info['openlayers_layers_osm_cycle'] = array(
-    'name' => t('OSM Cycling Map'),
+    'name' => t('OSM Cycling Map (2.8 - do not use)'),
     'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
