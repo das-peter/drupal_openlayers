@@ -32,7 +32,6 @@ function openlayersBehaviorsTooltipOver(feature){
   var tooltipText = feature.attributes[feature.layer.drupalData.tooltipAttribute];
   $('#'+ feature.layer.map.mapid + "-tooltip-text").html(tooltipText);
   
-  
   // Set the tooltip location
   var centroid = openlayersBehaviorsTooltipGetCentroid(feature.geometry.clone());
   var centroidPixel = feature.layer.map.getPixelFromLonLat(centroid);
@@ -115,4 +114,135 @@ function openlayersBehaviorsZoomToLayer(event){
     }
   }
 
+}
+
+/**
+ * Process Draw Features. 
+ *
+ * This is for marking vector layers as editable. 
+ * This function will add standard functionality for adding and editing features.
+ * This function does no *do* anything with the features other than allow them to be drawn, edited and deleted by the interface. 
+ * Use featureadded_handler, featuremodified_handler and featureremoved_handler if you wish to do something with the drawn/edited/deleted features.
+ */
+function openlayersBehaviorsDrawFeatures(event) {
+  var mapDef = event.mapDef;
+  var mapid = mapDef.id;
+  var behavior = event.behavior;  
+  
+  // Add Base Pan button
+  // @@TODO: Make this out put a themed item in PHP
+  $('#openlayers-controls-' + mapid).append('<a href="#" id="openlayers-controls-pan-' + mapid + '" class="openlayers-controls-draw-feature-link openlayers-controls-draw-feature-link-pan openlayers-controls-draw-feature-link-on" rel="type:pan;mapid:' + mapid + '"></a>');
+  
+  // Get the OpenLayers layer object that will be editable.
+  var layer = Drupal.openlayers.activeObjects[mapid].layers[behavior.layer];
+    
+  // Determine what handler we need to use.
+  if (behavior.feature_type == 'point')       var handler = OpenLayers.Handler.Point;
+  if (behavior.feature_type == 'path')        var handler = OpenLayers.Handler.Path;
+  if (behavior.feature_type == 'polygon')     var handler = OpenLayers.Handler.Polygon;
+  
+  // Create our conrols and attach them to our layer.
+  var createControl = new OpenLayers.Control.DrawFeature(layer, handler);  
+  var modifyControl = new OpenLayers.Control.ModifyFeature(layer, {deleteCodes:[68]});
+  
+  Drupal.openlayers.activeObjects[mapid].map.addControl(createControl);
+  Drupal.openlayers.activeObjects[mapid].map.addControl(modifyControl);
+
+  //Disable the active mode by default.  This could be changed if we wanted people to draw on the map immediately.
+  createControl.activeByDefault = false;
+  modifyControl.activeByDefault = false;
+  
+  //Mark on the control what it is for drawing (point, path, or polygon)
+  createControl.drupalDrawType = behavior.feature_type;
+  modifyControl.drupalDrawType = behavior.feature_type;
+  
+  // Add our create and modify controls to the controls object.
+  // Use a # prefix since these are special controls created by drawFeatures.
+  Drupal.openlayers.activeObjects[mapid].controls['#create-' + behavior.feature_type] = createControl;
+  Drupal.openlayers.activeObjects[mapid].controls['#modify-' + behavior.feature_type] = modifyControl;
+  
+  // Add special event handlers to controls
+  if (behavior.featureadded_handler) {
+    for (var ev in behavior.featureadded_handler){
+      createControl.events.register('featureadded',createControl,window[behavior.featureadded_handler[ev]]);
+    }
+  }
+     
+  if (behavior.featuremodified_handler) {
+    for (var ev in behavior.featuremodified_handler){ 
+      layer.events.register('afterfeaturemodified',layer,window[behavior.featuremodified_handler[ev]]);
+    }
+  }
+  
+  if (behavior.featureremoved_handler) {
+    for (var ev in behavior.featureremoved_handler){ 
+      layer.events.register('beforefeatureremoved',layer,window[behavior.featureremoved_handler[ev]]);
+    }
+    
+    // If a user presses the delete key, delete the currently selected polygon. 
+    // This will in turn trigger the featureremoved_handler function. 
+    $(document).keydown(function(event) {
+      vKeyCode = event.keyCode;
+      // If it is the Mac delete key (63272), or regular delete key (46) delete all selected features for the active map.
+      if ((vKeyCode == 63272) || vKeyCode == 46) {
+        for (var m in Drupal.openlayers.activeObjects){
+          if (Drupal.openlayers.activeObjects[m].active == true){
+            for (var b in Drupal.openlayers.mapDefs[m].behaviors){
+              var behavior = Drupal.openlayers.mapDefs[m].behaviors[b];
+              if (behavior.type == 'openlayers_behaviors_draw_features'){
+                var featureToErase = Drupal.openlayers.activeObjects[m].layers[behavior.layer].selectedFeatures[0];
+                Drupal.openlayers.activeObjects[m].layers[behavior.layer].destroyFeatures([featureToErase]);
+                // Reload the modification control so we dont have ghost control points from the recently deceased feature
+                Drupal.openlayers.activeObjects[m].controls['#modify-' + behavior.feature_type].deactivate();
+                Drupal.openlayers.activeObjects[m].controls['#modify-' + behavior.feature_type].activate();
+              }
+            }
+          }
+        }
+      }
+    });
+    
+  }
+      
+  // Add action link (button)
+  // We store the type and associated mapid in the rel attribute.
+  // @@TODO: Make this out put a themed item in PHP, might need a placeholder for dF
+  $('#openlayers-controls-' + mapid).append('<a href="#" id="openlayers-controls-draw-' + behavior.feature_type + '-' + mapid + '" class="openlayers-controls-draw-feature-link openlayers-controls-draw-feature-link-' + behavior.feature_type + ' openlayers-controls-draw-feature-link-off" rel="type:' + behavior.feature_type + ';mapid:' + mapid + ';behaviorid:' + behavior.id + '"></a>');
+}
+
+function openlayersBehaviorsDrawFeaturesMapReady(event){
+  // Add click event to the action link (button)
+  $('.openlayers-controls-draw-feature-link').click(
+    function() {
+      // Grab the mapid and the type from the rel attribute.
+      var parsedRel = openlayersParseRel($(this).attr('rel'));
+      
+      // Change the look of the action link
+      $('.openlayers-controls-draw-feature-link').removeClass('openlayers-controls-draw-feature-link-on');
+      $('.openlayers-controls-draw-feature-link').addClass('openlayers-controls-draw-feature-link-off');
+      $(this).addClass('openlayers-controls-draw-feature-link-on');
+      $(this).removeClass('openlayers-controls-draw-feature-link-off');
+      
+      // Cycle through the different possible types of controls (polygon, line, point, pan)
+      for (var b in Drupal.openlayers.mapDefs[parsedRel['mapid']].behaviors){
+        var behavior  = Drupal.openlayers.mapDefs[parsedRel['mapid']].behaviors[b];
+        if (behavior.type == 'openlayers_behaviors_draw_features'){
+                    
+          var createControl = Drupal.openlayers.activeObjects[parsedRel['mapid']].controls['#create-' + behavior.feature_type];
+          var modifyControl = Drupal.openlayers.activeObjects[parsedRel['mapid']].controls['#modify-' + behavior.feature_type];
+          
+          // Deactivate everything
+          createControl.deactivate();
+          modifyControl.deactivate();
+            
+          // Activate it if it matches
+          if (parsedRel['type'] == behavior.feature_type){
+            createControl.activate();
+            modifyControl.activate();
+          }
+        }
+      }
+      return false;
+    }
+  );
 }

@@ -45,5 +45,14 @@ function openlayers_behaviors_openlayers_behaviors_info() {
     'js_callback' => 'openlayersBehaviorsTooltip',
   );
   
+  $info['openlayers_behaviors_draw_features'] = array(
+    'name' => t('Draw and Edit Features'),
+    'description' => t('Allows creation, editing, and deleting of features in an interactive way.'),
+    'file' => $file,
+    'callback' => 'openlayers_behaviors_process_draw_features',
+    'js_file' => drupal_get_path('module', 'openlayers_behaviors') .'/js/openlayers_behaviors.behaviors.js',
+    'js_callback' => 'openlayersBehaviorsDrawFeatures',
+  );
+  
   return $info;
 }

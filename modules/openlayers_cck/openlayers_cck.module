@@ -131,12 +131,11 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
       'beforeBehaviors' => array('openlayersCCKLoadValues'),
     );
     
-    $map['behaviors'] = array(
-      'openlayers_cck_zoom_to_layer' => array(
-        'id' => 'openlayers_cck_zoom_to_layer',
-        'type' => 'openlayers_behaviors_zoom_to_layer',
-        'layer' => 'openlayers_cck_vector',
-      ),
+    $map['behaviors'] = array();
+    $map['behaviors']['openlayers_cck_zoom_to_layer'] = array(
+      'id' => 'openlayers_cck_zoom_to_layer',
+      'type' => 'openlayers_behaviors_zoom_to_layer',
+      'layer' => 'openlayers_cck_vector',
     );
     
     // Make sure that our display projection matches the database projection
@@ -161,41 +160,41 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
       ),
     );
     
-    // Look at field type, and add respective control
+    // Look at field type, and add respective behavior
     switch ($field['geo_type']) {
       case 'point':
-        $map['draw_features'] = array(
-          'point' => array(
-            'type' => 'Point',
-            'vector' => 'openlayers_cck_vector',
+        $map['behaviors']['openlayers_cck_edit_point'] = array(
+            'id' => 'openlayers_cck_edit_point',
+            'type' => 'openlayers_behaviors_draw_features',
+            'feature_type' => 'point',
+            'layer' => 'openlayers_cck_vector',
             'featureadded_handler' => array('openlayersCCKFeatureAdded'),
             'featuremodified_handler' => array('openlayersCCKFeatureModified'),
             'featureremoved_handler' => array('openlayersCCKFeatureRemoved'),
-          ),
         );
         break;
-        
+      
       case 'linestring':
-        $map['draw_features'] = array(
-          'path' => array(
-            'type' => 'Path',
-            'vector' => 'openlayers_cck_vector',
+        $map['behaviors']['openlayers_cck_edit_linestring'] = array(
+            'id' => 'openlayers_cck_edit_linestring',
+            'type' => 'openlayers_behaviors_draw_features',
+            'feature_type' => 'path',
+            'layer' => 'openlayers_cck_vector',
             'featureadded_handler' => array('openlayersCCKFeatureAdded'),
             'featuremodified_handler' => array('openlayersCCKFeatureModified'),
             'featureremoved_handler' => array('openlayersCCKFeatureRemoved'),
-          ),
         );
         break;
         
       case 'polygon':
-        $map['draw_features'] = array(
-          'polygon' => array(
-            'type' => 'Polygon',
-            'vector' => 'openlayers_cck_vector',
+        $map['behaviors']['openlayers_cck_edit_polygon'] = array(
+            'id' => 'openlayers_cck_edit_polygon',
+            'type' => 'openlayers_behaviors_draw_features',
+            'feature_type' => 'polygon',
+            'layer' => 'openlayers_cck_vector',
             'featureadded_handler' => array('openlayersCCKFeatureAdded'),
             'featuremodified_handler' => array('openlayersCCKFeatureModified'),
             'featureremoved_handler' => array('openlayersCCKFeatureRemoved'),
-          ),
         );
         break;
     

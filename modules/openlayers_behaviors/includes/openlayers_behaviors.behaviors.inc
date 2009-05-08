@@ -19,3 +19,15 @@ function openlayers_behaviors_process_tooltip($behavior, &$map){
     return $behavior;
   }
 }
+
+function openlayers_behaviors_process_draw_features($behavior, &$map){
+  // Check to make sure the layer attribute is properly set.
+  if ($behavior['layer'] && $map['layers'][$behavior['layer']]){
+    // Add mapReady Event
+    if (!$map['events']) $map['events'] = array();
+    if (!$map['events']['mapReady']) $map['events']['mapReady'] = array();
+    $map['events']['mapReady'][] = 'openlayersBehaviorsDrawFeaturesMapReady';
+    
+    return $behavior;
+  }
+}
