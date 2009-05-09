@@ -48,10 +48,6 @@ function openlayers_layers_openlayers_layers_handler_info($map = array()) {
       'layer_handler' => 'openlayersLayerHandlerYahoo',
       'js_file' => drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers_layers.js',
     ),
-    'OSM' => array(
-      'layer_handler' => 'openlayersLayerHandlerOSM',
-      'js_file' => drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers_layers.js',
-    ),
   );
 }
 
