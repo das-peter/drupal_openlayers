@@ -8,7 +8,9 @@ This module tries to bring the great OpenLayers to Drupal.
  Installation
 ==============
 1) Normal Drupal module installation
-2) ...
+2) Want to use those 2.8 layers?  Set your OpenLayers Source to: http://openlayers.org/dev/OpenLayers.js
+3) Proxy server for KML + WFS
+4) ...
 
 
  API
@@ -68,27 +70,20 @@ Maps are built using an array that looks like this:
         ),
       ),
     ),
-    'draw_features' => array(
-      'point' => array(
-        'type' => 'Point',
-        'vector' => 'default_vector',
-        'featureadded_handler' => array('yourModulesJSFunction'),
-        'featuremodified_handler' => array('yourModulesJSFunction'),
-        'featureremoved_handler' => array('yourModulesJSFunction'),
+    'behaviors' => array(
+      'behavior_id' => array(
+        'id' => 'behavior_id',
+        'type' => 'openlayers_behaviors_draw_features',
+        'feature_type' => 'point',
+        'layer' => 'default_vector',
+        'featureadded_handler' => array('openlayersCCKFeatureAdded'),
+        'featuremodified_handler' => array('openlayersCCKFeatureModified'),
+        'featureremoved_handler' => array('openlayersCCKFeatureRemoved'),
       ),
-      'path' => array(
-        'type' => 'Path',
-        'vector' => 'default_vector',
-        'featureadded_handler' => array('yourModulesJSFunction'),
-        'featuremodified_handler' => array('yourModulesJSFunction'),
-        'featureremoved_handler' => array('yourModulesJSFunction'),
-      ),
-      'polygon' => array(
-        'type' => 'Polygon',
-        'vector' => 'default_vector',
-        'featureadded_handler' => array('yourModulesJSFunction'),
-        'featuremodified_handler' => array('yourModulesJSFunction'),
-        'featureremoved_handler' => array('yourModulesJSFunction'),
+      'zoom_to_layer' => array(
+        'id' => 'zoom_to_layer',
+        'type' => 'openlayers_behaviors_zoom_to_layer',
+        'layer' => 'default_vector',
       ),
     ),
     'events' => array(
@@ -116,147 +111,250 @@ Maps are built using an array that looks like this:
     //Our user has panned or zoomed the map. Let's load some more data into this layer
     ....
   }
-  
-  Available Events:
 
-	Map Events:
-	------------
-	preaddlayer
-	addlayer
-	removelayer
-	changelayer
-	movestart
-	move
-	moveend
-	zoomend
-	popupopen
-	popupclose
-	addmarker
-	removemarker
-	clearmarkers
-	mouseover
-	mouseout
-	mousemove
-	dragstart
-	drag
-	dragend
-	changebaselayer
-	
-	One-Time Map Events:
-	These events are triggered during the map building process, letting you
-	execute javascript at various points while the map is being built.
-	--------------------
-	beforeEverything  -- Executed as soon as possible for each map. The OpenLayers map object is not yet built.
-	beforeLayers      -- After the map object is built, but before layers are created and added.
-	beforeCenter      -- Before the map is zoomed and centered.
-	beforeControls    -- Before controls are added to the map
-	beforeEvents      -- Before events are added to the map
-	beforeBehaviors   -- Before behaviors are triggered
-	mapReady          -- Last call
-	
-	
-	Layer Events:
-	-------------
-	beforefeatureadded
-	beforefeaturesadded
-	featureadded
-	featuresadded
-	beforefeatureremoved
-	featureremoved
-	featuresremoved
-	beforefeatureselected
-	featureselected
-	featureunselected
-	beforefeaturemodified
-	featuremodified
-	afterfeaturemodified
-	refresh
-	loadstart
-	loadend
-	loadcancel
-	visibilitychanged
-	moveend
+  Map Events
+  ------------
+  preaddlayer
+  addlayer
+  removelayer
+  changelayer
+  movestart
+  move
+  moveend
+  zoomend
+  popupopen
+  popupclose
+  addmarker
+  removemarker
+  clearmarkers
+  mouseover
+  mouseout
+  mousemove
+  dragstart
+  drag
+  dragend
+  changebaselayer
+  
+  One-Time Map Events
+    These events are triggered during the map building process, letting you
+    execute javascript at various points while the map is being built.
+  --------------------
+  beforeEverything  -- Executed as soon as possible for each map. The OpenLayers map object is not yet built.
+  beforeLayers      -- After the map object is built, but before layers are created and added.
+  beforeCenter      -- Before the map is zoomed and centered.
+  beforeControls    -- Before controls are added to the map
+  beforeEvents      -- Before events are added to the map
+  beforeBehaviors   -- Before behaviors are triggered
+  mapReady          -- Last call
+  
+  
+  Layer Events
+  -------------
+  beforefeatureadded
+  beforefeaturesadded
+  featureadded
+  featuresadded
+  beforefeatureremoved
+  featureremoved
+  featuresremoved
+  beforefeatureselected
+  featureselected
+  featureunselected
+  beforefeaturemodified
+  featuremodified
+  afterfeaturemodified
+  refresh
+  loadstart
+  loadend
+  loadcancel
+  visibilitychanged
+  moveend
 
 
 
 API: Adding Features
-===============
+====================
 
-Although there are many paths to getting features onto maps via events, the API provides a standard way of adding features via the map array.
-To do so built a feature of the Vector type and add geometry, style, and attribute information like so:
+  Although there are many paths to getting features onto maps via events, the API provides a standard way of adding features via the map array.
+  To do so built a feature of the Vector type and add geometry, style, and attribute information like so:
 
-  'feature_example' => array(
-    'id' => 'feature_example',
-    'type' => 'Vector',
-    'name' => t('Default Vector'),
-    'options' => array(),
-    'events' => array(),
-    'features' => array(
-      'feature_1' => array(
-        'wkt' => 'POLYGON((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2))',
-        'attributes' => array(
-          'name' => 'A Polygon with a hole in it',
-          'date' => 'December 24, 2004',
-          'author' => 'Santa Claus',
+    'feature_example' => array(
+      'id' => 'feature_example',
+      'type' => 'Vector',
+      'name' => t('Default Vector'),
+      'options' => array(),
+      'events' => array(),
+      'features' => array(
+        'feature_1' => array(
+          'wkt' => 'POLYGON((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2))',
+          'attributes' => array(
+            'name' => 'A Polygon with a hole in it',
+            'date' => 'December 24, 2004',
+            'author' => 'Santa Claus',
+          ),
+          'style' => array(
+            'fillColor' => '#aa4400',
+            'fillOpacity' => '0.7',
+          ),
         ),
-        'style' => array(
-          'fillColor' => '#aa4400',
-          'fillOpacity' => '0.7',
-        ),
-      ),
-      'feature_2' => array(
-        'lat' => '40.123',
-        'lon' => '-20.123',
-        'attributes' => array(
-          'name' => 'A point',
-          'date' => 'December 24, 2004',
-          'author' => 'Rudolf',
-        ),
-        'style' => array(
-          'externalGraphic' => 'http://openlayers.org/dev/img/marker.png',
-          'graphicWidth' => 21,
-          'graphicHeight' => 25,
-          'graphicXOffset' => 10,
-          'graphicYOffset' => 10,
+        'feature_2' => array(
+          'lat' => '40.123',
+          'lon' => '-20.123',
+          'attributes' => array(
+            'name' => 'A point',
+            'date' => 'December 24, 2004',
+            'author' => 'Rudolf',
+          ),
+          'style' => array(
+            'externalGraphic' => 'http://openlayers.org/dev/img/marker.png',
+            'graphicWidth' => 21,
+            'graphicHeight' => 25,
+            'graphicXOffset' => 10,
+            'graphicYOffset' => 10,
+          ),
         ),
       ),
     ),
-  ),
 
 
-Default style properties
+  Default style properties
+  ------------------------
+  fillColor: "#ee9900"
+  fillOpacity: 0.4
+  strokeColor: "#ee9900"
+  strokeOpacity: 1
+  strokeWidth: 1
+  strokeLinecap: "round" [butt | round | square]
+  strokeDashstyle: "solid" [dot | dash | dashdot | longdash | longdashdot | solid]
+  pointRadius: 6
+  pointerEvents: "visiblePainted"
+  cursor: ""
 
-    * fillColor: "#ee9900",
-    * fillOpacity: 0.4,
-    * strokeColor: "#ee9900",
-    * strokeOpacity: 1,
-    * strokeWidth: 1,
-    * strokeLinecap: "round", [butt | round | square]
-    * strokeDashstyle: "solid", [dot | dash | dashdot | longdash | longdashdot | solid]
-    * pointRadius: 6,
-    * pointerEvents: "visiblePainted”"
-    * cursor: ""
-
-Other style properties that have no default values
-
-    * externalGraphic,
-    * graphicWidth,
-    * graphicHeight,
-    * graphicOpacity,
-    * graphicXOffset,
-    * graphicYOffset,
-    * graphicName,
-    * display
-
-
+  Other style properties that have no default values
+  --------------------------------------------------
+  externalGraphic,
+  graphicWidth,
+  graphicHeight,
+  graphicOpacity,
+  graphicXOffset,
+  graphicYOffset,
+  graphicName,
+  display
 
 
+API: Behaviors
+==============
 
-
-
+  Behaviors add interactivity to maps. 
 
 
 
+API: Layers
+===========
+
+  How to add layers to maps.
+ 
+ Adding pre-defined layers
+ -------------------------
+ 
+ Example: NASA Layers
+ 
+ $map['layers'] = array (
+   'openlayers_layers_nasa_global_mosaic',
+   'openlayers_layers_nasa_daily_planet',
+   'openlayers_layers_nasa_blue_marble',
+ );
+ 
+ Adding layers the long way
+ --------------------------
+ 
+  Example: NASA Layers
+ 
+  $map['layers'] = array (
+    'openlayers_layers_nasa_global_mosaic' => array(
+      'id' => openlayers_layers_nasa_global_mosaic,
+      'type' => 'WMS',
+      'name' => 'NASA Global Mosaic!',
+      'projection' => array('4326'),
+      'baselayer' => true,
+      'url' => 'http://t1.hypercube.telascience.org/cgi-bin/landsat7',
+      'params' => array(
+        'layers' => 'landsat7',
+      ),
+     );
+    )
+    'openlayers_layers_nasa_daily_planet',
+    'openlayers_layers_nasa_blue_marble',
+  );  
+ 
+ Some of those parameters are used across all layer types, and some are specific to the 'WMS' layer type.
+  id         -- Unique ID of the layer. This should be the same as the array key
+  type       -- Layer type. This defines which handler is repsonsible for processing this layer. Examples include WMS, WFS, Vector, KML.
+  name       -- The name of the layer presented to the user
+  projection -- An array with a list of compatible projections. If projection is not specified, then it is assumed that this layer is compatible with all projections.
+  baselayer  -- Should this be considered a baselayer or an overlay? If baselayer is not speficied, then baselayer may be true of false depending on the layer type.
+  url        -- WMS SPECIFIC - defines the WMS URL
+  params     -- WMS SPECIFIC - associative array of parameters to pass to the WMS query
+  
+  
+  
+API: Defining New Reusable Layers
+=================================
+  
+  
+  
+  
+API: Defining New Reusable Layer Types
+======================================
+  
+  
+  
+  
+API: Defining New Reusable Behaviors
+====================================
+  
+  
+  
+  
+  
+  
+API: predefined Layer Types and how to use them
+======================================================
+  Vector
+  ------
+  This is the most fundemental layer type and is used for most overlays.
+
+  WMS
+  ---
+  http://en.wikipedia.org/wiki/Web_Map_Service
+  
+
+  WFS
+  ---
+  http://en.wikipedia.org/wiki/Web_Feature_Service
+  
+  KML
+  ---
+  http://en.wikipedia.org/wiki/KML
+  
+  XYZ
+  ---
+  
+  Google, VirtualEarth, and Yahoo
+  --------------------------------
+  These layer types have a very limited way that they can be reused. I beleive all those ways are already implemented. So don't use these, use the implemented layer definitions!
+  
+  
+  
+  
+  
+API: predefined Behaviors and how to use them
+======================================================
+  
+  
+  
+  
+  
  Authors/Credits
 =================
 ...
