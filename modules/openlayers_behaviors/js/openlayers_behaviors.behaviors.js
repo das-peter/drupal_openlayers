@@ -247,3 +247,21 @@ function openlayersBehaviorsDrawFeaturesMapReady(event){
     }
   );
 }
+
+
+function openlayersBehaviorsFullscreen(event){
+  var mapDef = event.mapDef;
+  var mapid = mapDef.id;
+  
+  $('#openlayers-controls-' + mapid).append('<div id="openlayers-controls-draw-fullscreen-' + mapid + '" class="openlayers-controls-fullscreen"></div>');
+  
+  $('#openlayers-controls-draw-fullscreen-' + mapid).click(function(){
+    // @@TODO: Make it so you can go back!  Record top, left, width, height, z-index before settings. and then reset. 
+    
+    $('#' + mapid).css('position','fixed').css('top','0px').css('left','0px').css('width','100%').css('height','100%').css('z-index','999');
+    event.map.updateSize();
+    $('#openlayers-controls-' + mapid).css('position','fixed').css('top','0px').css('right','0px').css('bottom','');
+  });
+  
+
+}

@@ -53,6 +53,15 @@ function openlayers_behaviors_openlayers_behaviors_info() {
     'js_file' => drupal_get_path('module', 'openlayers_behaviors') .'/js/openlayers_behaviors.behaviors.js',
     'js_callback' => 'openlayersBehaviorsDrawFeatures',
   );
+
+  $info['openlayers_behaviors_fullscreen'] = array(
+    'name' => t('Add a fullscreen button'),
+    'description' => t('View map fullscreen'),
+    'file' => $file,
+    'callback' => 'openlayers_behaviors_process_fullscreen',
+    'js_file' => drupal_get_path('module', 'openlayers_behaviors') .'/js/openlayers_behaviors.behaviors.js',
+    'js_callback' => 'openlayersBehaviorsFullscreen',
+  );
   
   return $info;
 }
