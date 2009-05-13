@@ -120,7 +120,7 @@ function openlayers_intialize() {
   // We need to check if it a local path or URL, but really only need to do it once.
   static $included = FALSE;
   if ($included == FALSE) {
-    $path = check_plain(variable_get('openlayers_source', 'http://openlayers.org/api/OpenLayers.js'));
+    $path = check_plain(variable_get('openlayers_source', 'http://openlayers.org/dev/OpenLayers.js'));
     // Check for full URL
     if (valid_url($path, TRUE)) {
       // If URL, we have to manually include it in Drupal
