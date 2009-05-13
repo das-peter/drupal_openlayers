@@ -307,6 +307,46 @@ function openlayers_layers_process_layers($layer = NULL) {
   return $layer_data;
 }
 
+
+function openlayers_layers_process_geo_data_layers($layer = NULL) {
+  $table_desc = geo('table_desc', $layer);
+  $attribute_cols = array();
+  foreach ($table_desc as $cname => $cinfo){
+    if ($cinfo['type'] == 'geometry'){
+      $geometry_col = $cname;
+      $srid = $cinfo['srid'];
+    }
+    else $attribute_cols[] = $cname;
+  }
+  
+  $res = db_query("SELECT asText($geometry_col) as $geometry_col, ".implode(',',$attribute_cols)." from {$layer}");
+  $features = array();
+  while ($row = db_fetch_array($res)){
+    $attributes = array();
+    foreach ($attribute_cols as $attr_name){
+      $attr_val = $row[$attr_name];
+      $attributes[$attr_name] = $attr_val;
+    }
+    
+    $features[] = array(
+      'wkt' => $row[$geometry_col],
+      'attributes' => $attributes,
+      'projection' => $srid,
+    );
+  }
+  
+  $layer_data = array(
+    'id' => $layer,
+    'type' => 'Vector',
+    // @@TODO: Actually have a real name
+    'name' => $layer,
+    'features' => $features,
+  );
+  
+  return $layer_data;
+}
+
+
 /**
  * The following functions are more temporary and used for including libraries for certain layers
  */
