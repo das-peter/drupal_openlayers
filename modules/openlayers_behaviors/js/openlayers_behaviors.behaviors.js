@@ -18,7 +18,7 @@ function openlayersBehaviorsTooltip(event){
   layer.drupalData.tooltipAttribute = behavior.attribute;
   Drupal.openlayers.activeObjects[mapid].controls[behavior.id] = new OpenLayers.Control.SelectFeature(
     layer,
-      {hover: true, onSelect: openlayersBehaviorsTooltipOver, onUnselect: openlayersBehaviorsTooltipOut}
+      {hover: true, highlightOnly: true, renderIntent: "temporary", eventListeners: {featurehighlighted: openlayersBehaviorsTooltipOver, featureunhighlighted: openlayersBehaviorsTooltipOut}}
   );
   map.addControl(Drupal.openlayers.activeObjects[mapid].controls[behavior.id]);
   Drupal.openlayers.activeObjects[mapid].controls[behavior.id].activate();
@@ -28,7 +28,8 @@ function openlayersBehaviorsTooltip(event){
   
 }
 
-function openlayersBehaviorsTooltipOver(feature){ 
+function openlayersBehaviorsTooltipOver(event){ 
+  var feature = event.feature;
   var tooltipText = feature.attributes[feature.layer.drupalData.tooltipAttribute];
   $('#'+ feature.layer.map.mapid + "-tooltip-text").html(tooltipText);
   
@@ -45,8 +46,8 @@ function openlayersBehaviorsTooltipOver(feature){
   $('#'+ feature.layer.map.mapid + "-tooltip").css('top',absoluteTop).css('left',absoluteLeft).css('display','block');
 }
 
-function openlayersBehaviorsTooltipOut(feature){
-  $('#'+ feature.layer.map.mapid + "-tooltip").css('display','none');
+function openlayersBehaviorsTooltipOut(event){
+  $('#'+ event.feature.layer.map.mapid + "-tooltip").css('display','none');
 }
 
 function openlayersBehaviorsTooltipGetCentroid(geometry){
