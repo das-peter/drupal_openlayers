@@ -374,7 +374,7 @@ function theme_openlayers_cck_formatter_openlayersmapformatter_grouped($element)
         foreach ($node->$geofield_key as $feature){
           $layers[$geofield_key]['features'][] = array(
             'wkt' => $feature['wkt'],
-            'projection' => $feature[$geofield_key."_srid"],
+            'projection' => $feature[$geofield_key."_srid"] ? $feature[$geofield_key."_srid"] : '4326',
             'attributes' => array(
               'name' => $node->node_title, 
               'nid' => $node->nid, 
@@ -443,7 +443,7 @@ function theme_openlayers_cck_formatter_openlayersmapformatter_single($element) 
     if (is_numeric($key)){
       $layers[$geofield_key]['features'][] = array(
         'wkt' => $feature['#item']['wkt'],
-        'projection' => $feature['#item'][$srid_key],
+        'projection' => $feature['#item'][$srid_key] ? $feature['#item'][$srid_key] : '4326',
         'attributes' => array(
           'name' => $feature_name, 
           'nid' => $node->nid, 
