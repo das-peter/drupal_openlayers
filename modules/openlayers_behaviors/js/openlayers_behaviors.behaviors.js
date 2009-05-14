@@ -25,7 +25,6 @@ function openlayersBehaviorsTooltip(event){
   
   // Set up the HTML div
   $("#"+mapid).after('<div id="'+ mapid +'-tooltip" class="openlayers-behaviors-tooltip"><img class="openlayers-behaviors-pointy" src="'+ Drupal.settings.basePath + behavior.pointy_path +'" alt="pointy" /><span id="'+ mapid +'-tooltip-text"></span></div>');
-  
 }
 
 function openlayersBehaviorsTooltipOver(event){ 
@@ -253,14 +252,57 @@ function openlayersBehaviorsFullscreen(event){
   var mapDef = event.mapDef;
   var mapid = mapDef.id;
   
-  $('#openlayers-controls-' + mapid).append('<div id="openlayers-controls-draw-fullscreen-' + mapid + '" class="openlayers-controls-fullscreen"></div>');
+  $('#openlayers-controls-' + mapid).append('<div id="openlayers-controls-fullscreen-' + mapid + '" class="openlayers-controls-fullscreen"></div>');
   
-  $('#openlayers-controls-draw-fullscreen-' + mapid).click(function(){
-    // @@TODO: Make it so you can go back!  Record top, left, width, height, z-index before settings. and then reset. 
+  $('#openlayers-controls-fullscreen-' + mapid).click(function(){
+    if (!openlayersIsSet(Drupal.openlayersFullscreen)){
+      Drupal.openlayersFullscreen = [];
+    }
+    if (!openlayersIsSet(Drupal.openlayersFullscreen[mapid])){
+      Drupal.openlayersFullscreen[mapid] = {};
+      Drupal.openlayersFullscreen[mapid].fullscreen = false;
+      Drupal.openlayersFullscreen[mapid].mapstyle = [];
+      Drupal.openlayersFullscreen[mapid].controlsstyle = [];
+    }
     
-    $('#' + mapid).css('position','fixed').css('top','0px').css('left','0px').css('width','100%').css('height','100%').css('z-index','999');
-    event.map.updateSize();
-    $('#openlayers-controls-' + mapid).css('position','fixed').css('top','0px').css('right','0px').css('bottom','');
+    if (!Drupal.openlayersFullscreen[mapid].fullscreen){
+      Drupal.openlayersFullscreen[mapid].fullscreen = true;
+      
+      // Store old css values
+      var mapStylesToStore = ['position','top','left','width','height','z-index'];
+      var controlStylesToStore = ['position','top','right'];
+      for (var ms in mapStylesToStore){
+        Drupal.openlayersFullscreen[mapid].mapstyle[mapStylesToStore[ms]] = $('#' + mapid).css(mapStylesToStore[ms]);
+      }
+      for (var cs in controlStylesToStore){
+        Drupal.openlayersFullscreen[mapid].controlsstyle[controlStylesToStore[cs]] = $('#openlayers-controls-' + mapid).css(controlStylesToStore[cs]);
+      }
+      
+      // Resize the map.
+      $('#' + mapid).css('position','fixed').css('top','0px').css('left','0px').css('width','100%').css('height','100%').css('z-index','999');
+      $('#openlayers-controls-' + mapid).css('position','fixed').css('top','0px').css('right','0px');
+      
+      $('#openlayers-controls-fullscreen-' + mapid).removeClass('openlayers-controls-fullscreen').addClass('openlayers-controls-unfullscreen');
+      
+      event.map.updateSize();
+      
+    } else{
+      // Restore styles, resizing the map.
+      for (var ms in Drupal.openlayersFullscreen[mapid].mapstyle){
+        $('#' + mapid).css(ms,Drupal.openlayersFullscreen[mapid].mapstyle[ms]);
+      };
+      for (var cs in Drupal.openlayersFullscreen[mapid].controlsstyle){
+        $('#openlayers-controls-' + mapid).css(cs,Drupal.openlayersFullscreen[mapid].controlsstyle[cs]);
+      };
+      
+      $('#openlayers-controls-fullscreen-' + mapid).removeClass('openlayers-controls-unfullscreen').addClass('openlayers-controls-fullscreen');
+
+      Drupal.openlayersFullscreen[mapid].fullscreen = false;
+      event.map.updateSize();
+    }
+    
+    
+    
   });
   
 

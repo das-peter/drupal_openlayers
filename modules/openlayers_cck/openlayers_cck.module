@@ -470,6 +470,10 @@ function theme_openlayers_cck_formatter_openlayersmapformatter_single($element) 
           'layer' => $geofield_key,
           'attribute' => 'name',
         ),
+        'openlayers_cck_fullscreen' => array(
+          'id' => 'openlayers_cck_fullscreen',
+          'type' => 'openlayers_behaviors_fullscreen',
+        ),
       )
     );
     

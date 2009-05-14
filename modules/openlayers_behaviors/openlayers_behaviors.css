@@ -15,6 +15,16 @@
   left: 5px;
 }
 
+/* general link */
+.openlayers-controls-draw-feature-link {
+  display: block;
+  width: 24px;
+  height: 22px;
+  z-index: 1000;
+  margin:2px;
+  float: right;
+}
+
 /* pan */
 .openlayers-controls-draw-feature-link-pan.openlayers-controls-draw-feature-link-on {
 background: url("images/pan_on.png") top left no-repeat;
@@ -51,6 +61,14 @@ background: url("images/draw_polygon_off.png") top left no-repeat;
   width: 16px;
   height: 16px;
   background: url("images/view-fullscreen.png") top left no-repeat;
+  float: right;
+  cursor: pointer;
+}
+
+.openlayers-controls-unfullscreen {
+  width: 16px;
+  height: 16px;
+  background: url("images/unview-fullscreen.png") top left no-repeat;
   float: right;
   cursor: pointer;
 }

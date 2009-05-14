@@ -583,6 +583,9 @@ function _openlayers_get_map_defaults() {
     ),
     'controls' => array(
       'LayerSwitcher' => TRUE,
+      'Navigation' => TRUE,
+      'PanZoomBar' => TRUE,
+      'MousePosition' => TRUE,
     ),
   );
   return $map_default;
