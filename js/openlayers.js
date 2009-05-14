@@ -34,7 +34,7 @@ function openlayersLoadMaps(){
       // Make div the right dimensions and add custom controls
       $('#' + map.id).css('width', map.width).css('height', map.height);
       $('#' + map.id).after('<div class="openlayers-controls" id="openlayers-controls-' + map.id + '"></div>');
-      $('#openlayers-controls-' + map.id).css("position","relative").css("bottom",map.height);
+      $('#openlayers-controls-' + map.id).css("position","relative").css("top","-" + map.height);
       
       // Set-up our registry of active OpenLayers javascript objects for this particular map.
       Drupal.openlayers.activeObjects[map.id] = {};
@@ -68,7 +68,7 @@ function openlayersRenderMap(map) {
   
   // Store map in our registry of active OpenLayers objects
   Drupal.openlayers.activeObjects[map.id].map = new OpenLayers.Map(map.id, options);
-    
+  
   // Add ID to map.
   Drupal.openlayers.activeObjects[map.id].map.mapid = map.id;
   
@@ -165,12 +165,17 @@ function openlayersCreateMapOptions(options, controls, mapid) {
     );
   }
   
-  returnOptions.controls = [
-    new OpenLayers.Control.Navigation(),
-    new OpenLayers.Control.PanZoomBar(),
-    new OpenLayers.Control.LayerSwitcher({'ascending':false}),
-    new OpenLayers.Control.MousePosition()
-  ];
+  returnOptions.controls = [];
+  if (controls.LayerSwitcher)   returnOptions.controls.push( new OpenLayers.Control.LayerSwitcher({'ascending':false}) );
+  if (controls.Navigation)      returnOptions.controls.push( new OpenLayers.Control.Navigation() );
+  if (controls.PanZoomBar)      returnOptions.controls.push( new OpenLayers.Control.PanZoomBar() );
+  if (controls.MousePosition)   returnOptions.controls.push( new OpenLayers.Control.MousePosition() );
+  if (controls.Permalink)       returnOptions.controls.push( new OpenLayers.Control.Permalink() );
+  if (controls.ScaleLine)       returnOptions.controls.push( new OpenLayers.Control.ScaleLine() );
+  if (controls.OverviewMap)     returnOptions.controls.push( new OpenLayers.Control.OverviewMap() );
+  if (controls.KeyboardDefaults)returnOptions.controls.push( new OpenLayers.Control.KeyboardDefaults() );
+  if (controls.ZoomBox)         returnOptions.controls.push( new OpenLayers.Control.ZoomBox() );
+  if (controls.ZoomToMaxExtent) returnOptions.controls.push( new OpenLayers.Control.ZoomToMaxExtent() );
 
   return returnOptions;
 }
