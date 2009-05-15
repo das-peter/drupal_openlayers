@@ -27,6 +27,8 @@ function openlayers_behaviors_process_tooltip($behavior, &$map){
 function openlayers_behaviors_process_draw_features($behavior, &$map){
   // Check to make sure the layer attribute is properly set.
   if ($behavior['layer'] && $map['layers'][$behavior['layer']]){
+    drupal_add_css(drupal_get_path('module', 'openlayers_behaviors') .'/openlayers_behaviors.css', 'module');
+    
     // Add mapReady Event
     if (!$map['events']) $map['events'] = array();
     if (!$map['events']['mapReady']) $map['events']['mapReady'] = array();
