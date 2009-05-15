@@ -354,7 +354,7 @@ function openlayers_layers_include_google_map_api() {
   static $included = FALSE;
   if (!$included) {
     // Include Google Map API JS (maybe getting key from GMap)
-    drupal_set_html_head('<script src="'. check_url("http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true_or_false&amp;key=abc123xyz") .'" type="text/javascript"></script>');
+    drupal_set_html_head('<script src="'. check_url("http://maps.google.com/maps?file=api&v=2&sensor=false&key=".variable_get('openlayers_layers_google_api', variable_get('googlemap_api_key', ''))) .'" type="text/javascript"></script>');
     $included = TRUE;
   }
 }
@@ -362,7 +362,7 @@ function openlayers_layers_include_google_map_api() {
 function openlayers_layers_include_yahoo_api() {
   static $included = FALSE;
   if (!$included) {
-    drupal_set_html_head('<script src="'. check_url("http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=abc123xyz") .'" type="text/javascript"></script>');
+    drupal_set_html_head('<script src="'. check_url("http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=".variable_get('openlayers_layers_yahoo_api','')) .'" type="text/javascript"></script>');
     $included = TRUE;
   }
 }
