@@ -117,8 +117,7 @@ class openlayers_views_style_map extends views_plugin_style {
             if ($content_fields[$geo_field]['type'] == 'geo'){
               $wkt_field = $geo_field.'_wkt';
               $feature['wkt'] = $row->$wkt_field;
-              // @@TODO: Get SRID -- for now we just hardcode it to 4326.
-              $feature['projection'] = '4326';
+              $feature['projection'] = $content_fields[$geo_field]['srid'] ? $content_fields[$geo_field]['srid'] : '4326';
             }
             
             if ($content_fields[$geo_field]['type'] == 'location'){
