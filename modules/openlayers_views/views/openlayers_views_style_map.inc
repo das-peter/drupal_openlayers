@@ -30,65 +30,43 @@ class openlayers_views_style_map extends views_plugin_style {
     
     // @@TODO: Include Map settings form
     
-    // Check for fields
-    $handlers = $this->display->handler->get_handlers('field');
-    if (empty($handlers)) {
+    $read_geo_options = array();
+    
+    if (module_exists('content')){
+      // Get all fields.
+      $content_fields = content_fields();
+      
+      foreach ($content_fields as $field){
+        if ($field['type'] == 'geo' || $field['type'] == 'location'){
+          $read_geo_options[$field['field_name']] = $field['widget']['label'];
+        }
+      }
+    }
+    
+    if (module_exists('location_node')){
+      $read_geo_options['node_locations'] = "Node Locations";
+    }
+    
+    if (empty($read_geo_options)){
+      
       $form['error_markup'] = array(
-        '#value' => t('You need at least one field before you can configure your field settings'),
+        '#value' => t('You need at least one geo or location field before you can configure your field settings'),
         '#prefix' => '<div class="error form-item description">',
         '#suffix' => '</div>',
       );
       
-      // Get parent form
       parent::options_form($form, $form_state);
-      return;
+      return; 
     }
     
     // Read Geo Data
-    // @@TODO: The user selects which field to read geo data from. It could be a geo field, or a location field.
     $form['read_geo'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Read Geo Data'),
-      '#description' => t('If this is checked, the map will attempt to read any geo fields included in the view.'),
+      '#type' => 'checkboxes',
+      '#title' => t('Which fields would you like to extract geo data from?'),
+      '#options' => $read_geo_options,
       '#default_value' => $this->options['read_geo'], 
     );
     
-    
-    // Create the custom field options.
-    /*
-    // Get field names
-    $field_names[$field] = array('' => '--');
-    foreach ($handlers as $field => $handler) {
-      if ($label = $handler->label()) {
-        $field_names[$field] = $label;
-      }
-      else {
-        $field_names[$field] = $handler->ui_name();
-      }
-    }
-    // Define what options are for the fields
-    $field_options = array(
-      'title' => t('Title'),
-      'latitude' => t('Latitude'),
-      'longitude' => t('Longitude'),
-      'class' => t('Class'),
-    );
-    $form['custom_fields'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('Custom Fields'),
-      '#description' => t('Select the fields that contain the latitude, longitude and title of each point. If selected, the class field will be used to apply a class to each point. Remaining fields will be available in the hidden "content" region of the point.'),
-    );
-    // Create a field association form item
-    foreach ($field_options as $k => $v) {
-      $form['custom_fields'][$k] = array(
-        '#type' => 'select',
-        '#title' => $v,
-        '#options' => $field_names,
-        '#default_value' => $this->options['fields'][$k],
-        '#required' => ($k == 'class' ? FALSE : TRUE),
-      );
-    }
-    */
   }
   
   /**
@@ -112,82 +90,83 @@ class openlayers_views_style_map extends views_plugin_style {
    */
   function map_features($rows = array()) {
     $features = array();
-    $wkb_fields = array();
+    $content_fields = content_fields();
+    $read_geo = $this->options['read_geo'];
     
-    // Check if views want to read geo data
-    if ($this->options['read_geo']) {
-      // Look for wkb fields
-      foreach ($rows as $id => $row) {
-        foreach ($row as $fid => $field) {
-          if (substr($fid, -4) == '_wkb') {
-            if (!in_array($fid, $wkb_fields)){
-              $wkb_fields[] = $fid;
-            }
-          }
-        }
-      }
-      // Check if any fields found, include files
-      if (count($wkb_fields) > 0) {
-        module_load_include('inc', 'geo', 'includes/geo.wkb');
-      }
-    }
+    // Clean read_geo of non-selected fields.
+    $read_geo = array_values(array_filter($read_geo));
     
-    // Build feature
+    // Build feature. We create one feature per field per row.
     foreach ($rows as $id => $row) {
-      
-      // Set up feature      
-      $feature = array(
-        'attributes' => array(),
-      );
-      
-      // Check to see if read geo data
-      $num_wkb_fields = count($wkb_fields);
-      if ($num_wkb_fields > 1) $feature['wkt'] = array();
-      if ($this->options['read_geo'] && ($num_wkb_fields > 0)) {
-        // Go through fields and create a feature for each geo field of each row
-        foreach ($wkb_fields as $wkb_field) {
-          // Read WKB format
-          // NOTE: The following geo function is not possible without including the file above
+      foreach ($read_geo as $geo_field){
+        if ($geo_field){
           
-          // If there is anything in the wkb field then read it and populate the wkt value of the feature
-          if ($row->$wkb_field){
-            // Extract wkt from wkb
-            $wkb_data = geo('wkb_get_data', $row->$wkb_field, 'wkt');
-            
-            // Populate wkt value
-            $feature['wkt'] = $wkb_data['value'];
-            
-            // Get the projection.
-            $projection_field = substr($wkb_field,0,-3).'srid';
-            $feature['projection'] = $row->$projection_field;
-            
-            // Go through fields
-            foreach ($this->view->field as $key => $field) {
-              if ($key == $this->options['fields']['title']) {
-                $feature['attributes']['name'] = $field->theme($row);
-              }
-              elseif ($key == $this->options['fields']['latitude']) {
-                $feature['lat'] = $field->theme($row);
-              }
-              elseif ($key == $this->options['fields']['longitude']) {
-                $feature['lon'] = $field->theme($row);
-              }
-              elseif ($key == $this->options['fields']['class']) {
-                $feature['attributes']['class'] = strip_tags(strtolower($field->theme($row)));
-              }
-              else {
-                // Add all other field data to the attribute table.
-                $feature['attributes'][$key] = $field->theme($row);
-              }
+         // Set up feature      
+         $feature = array(
+           'attributes' => array(),
+         );
+          
+         // Extract geometry / location information
+         if ($geo_field == 'node_locations'){
+            $wkt_string = 'POINT('.$row->openlayers_node_locations_lon.' '.$row->openlayers_node_locations_lat.')';
+            $feature['wkt'] = $wkt_string;
+            $feature['projection'] = '4326';
+          }
+          else{
+            // It's a cck field
+            if ($content_fields[$geo_field]['type'] == 'geo'){
+              $wkt_field = $geo_field.'_wkt';
+              $feature['wkt'] = $row->$wkt_field;
+              // @@TODO: Get SRID -- for now we just hardcode it to 4326.
+              $feature['projection'] = '4326';
             }
             
-            $features[] = $feature;
+            if ($content_fields[$geo_field]['type'] == 'location'){
+              // @@TODO
+            }
           }
+          
+          // Fill in all attributes
+          foreach ($row as $fid => $field){
+            $feature['attributes'][$fid] = $field;
+          }
+          
+          $features[] = $feature;
+          
         }
       }
+      
     }
     
     return $features;
+  }
+  
+  function query() {
+    $read_geo = $this->options['read_geo'];
+    
+    // Get all fields.
+    $content_fields = content_fields();
+    
+    // Load data from Node Locations
+    if ($read_geo['node_locations']) {
+      $table = $this->view->query->ensure_table('location');
+      $this->view->query->add_field($table, 'latitude', 'openlayers_node_locations_lat');
+      $this->view->query->add_field($table, 'longitude', 'openlayers_node_locations_lon');
+    }
+    
+    // Load data from cck fields
+    foreach ($content_fields as $content_field){
+      if ($read_geo[$content_field['field_name']]){
+        $field_name = $content_field['field_name'];
+        $content_table = $this->view->query->ensure_table('node_data_'.$field_name);
+        if ($content_field['type'] == 'geo'){
+          $this->view->query->add_field($wkt_table, $field_name.'_wkt');
+        }
+        if ($content_field['type'] == 'location'){
+          // @@TODO: I don't know how to handle this.
+        }
+      }
+    }
   }
   
   /**
@@ -205,7 +184,7 @@ class openlayers_views_style_map extends views_plugin_style {
       vpr('views_plugin_style_default: Missing row plugin');
       return;
     }
-
+    
     // Group the rows according to the grouping field, if specified.
     $sets = $this->render_grouping($this->view->result, $this->options['grouping']);
     
@@ -230,6 +209,8 @@ class openlayers_views_style_map extends views_plugin_style {
       
       // Define ID
       $map['id'] = OPENLAYERS_VIEWS_MAP_ID_PREFIX .'-'. $this->view->name;
+      
+      // @@TODO: Reduce and sort duplicates
       
       // Get features
       $features = $this->map_features($rows);
