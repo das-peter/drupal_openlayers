@@ -257,7 +257,6 @@ function openlayers_behaviors_get_info() {
   return $info;
 }
 
-
 /**
  * OpenLayers Form Wrapper
  *
@@ -292,11 +291,10 @@ function openlayers_map_form_validate($map_form = array()) {
   return _openlayers_map_form_validate($map_form);
 }
 
-
 /**
- * OpenLayers Form to Map Wrapper
+ * OpenLayers Form to Map
  *
- * Converst Form submission to map array.  This is wrapper
+ * Converts Form submission to map array.  This is wrapper
  * for a function in another file.  This keeps the form from
  * being parsed unnecesarily
  *
@@ -304,11 +302,29 @@ function openlayers_map_form_validate($map_form = array()) {
  * @param $values
  *   Array of values to convert
  * @return
- *   Array of form items
+ *   Array of map
  */
 function openlayers_convert_form_to_map($values = array()) {
   module_load_include('inc', 'openlayers', '/includes/openlayers.form');
   return _openlayers_convert_form_to_map($values);
+}
+
+/**
+ * OpenLayers Convert Map to Form
+ *
+ * Converst map array to form defualts.  This is wrapper
+ * for a function in another file.  This keeps the form from
+ * being parsed unnecesarily
+ *
+ * @ingroup openlayers_api
+ * @param $map
+ *   Array of map values to convert
+ * @return
+ *   Array of form items
+ */
+function openlayers_convert_map_to_form($map = array()) {
+  module_load_include('inc', 'openlayers', '/includes/openlayers.form');
+  return _openlayers_convert_map_to_form($map);
 }
 
 /**

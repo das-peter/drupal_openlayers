@@ -7,18 +7,25 @@
  */
 
 /**
- * Menu callback; displays the openlayers module default settings page.
- *
- * @ingroup forms
+ * Menu callback; Displays the openlayers module default settings page.
  */
 function openlayers_admin_default_settings($form_state) {
   // Get current default map
   $map = openlayers_render_map(array());
-  $defaults = variable_get('openlayers_defaults_form', array());
+  // Get system default maps
+  $map_defaults = variable_get('openlayers_defaults', array());
+  $map_system = _openlayers_get_map_defaults();
+  $map_merged = openlayers_merge_maps($map_system, $map_defaults);
+  // Convert to form defaults
+  dpm($map_merged);
+  $defaults = openlayers_convert_map_to_form($map_merged);
+  dpm($defaults);
   
-  // Get form defaults
-  // @@TODO: find an easy way to get system map defaults into this array
+  // Get default form
   $form = openlayers_map_form($defaults);
+  
+  dpm(openlayers_map_form());
+  dpm($form);
   
   // Add submit button
   $form['submit'] = array(
@@ -39,9 +46,7 @@ function openlayers_admin_default_settings($form_state) {
 }
 
 /**
- * Menu callback; displays the openlayers module default settings page.
- *
- * @ingroup forms
+ * Form submit for openlayers_admin_default_settings form
  */
 function openlayers_admin_default_settings_submit($form, &$form_state) {
   // Save into a system variable
@@ -49,7 +54,5 @@ function openlayers_admin_default_settings_submit($form, &$form_state) {
     // Convert values to map array
     $map = openlayers_convert_form_to_map($form_state['values']);
     variable_set('openlayers_defaults', $map);
-    // Save values for easy defaults
-    variable_set('openlayers_defaults_form', $form_state['values']);
   }
 }

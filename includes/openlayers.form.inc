@@ -10,32 +10,24 @@
  * Get OpenLayers Form
  *
  * Get the form array to customize OpenLayers Maps.  This is a private
- * function for openlayers_map_form
+ * function for openlayers_map_form.  It is the responsibility
+ * of the process calling this function to define defaults
  *
  * @param $defaults
- *   Array of defaults
+ *   Array of defaults.
  * @return
  *   Array of form items
  */
 function _openlayers_map_form($defaults = array()) {
   // @@TODO: Lock-in system default layers so the user cannot unselect them. Disallow selection of projection that is not compatible with default layers.
   // @@TODO: This is a very long function. Can we split up the sections into functions?
-  $system_defaults = variable_get('openlayers_defaults_form', array());
   
   // @@TODO: Is there a better way to do this? Ideally we could use form id, but I don't see how.
   $system_form = ($_GET['q'] == 'admin/settings/openlayers/defaults') ? TRUE : FALSE;
   
-  // If defaults in not set, then load defaults from the system default
-  if (!$defaults || empty($defaults)){
-    $defaults = $system_defaults;
-  }
-  
-  // Names of fields and fieldssets should correspond to the map array
+  // Initialize variables
   $form = array();
-  // Get layers options
   $layers = openlayers_layers_get_info();
-  // @@TODO: Best way
-  
   $baselayers = array();
   $overlays = array();
   
@@ -360,7 +352,6 @@ function _openlayers_map_form($defaults = array()) {
  *
  * Converst Form submission to map array.
  *
- * @ingroup API
  * @param $values
  *   Array of values to convert
  * @return
@@ -368,14 +359,12 @@ function _openlayers_map_form($defaults = array()) {
  */
 function _openlayers_convert_form_to_map($values = array()) {
   // If the form values are empty then we have nothing to return.
-  if (empty($values)){
+  if (empty($values)) {
     return array();
   }
-  
   $processed = array();
   
   // Take out form values
-  // @@TODO: Is this the best way to do this?
   $throw = array('op', 'submit', 'form_build_id', 'form_token', 'form_id', 'easy_projection','layers');
   foreach ($values as $k => $v) {
     if (!in_array($k, $throw)) {
@@ -392,7 +381,33 @@ function _openlayers_convert_form_to_map($values = array()) {
   $processed['layers'] = array_merge($baselayers, $overlays);
   
   // Recursively unset any empty values
-  $processed = openlayers_recursively_unset_empty_values($processed);
+  $processed = _openlayers_unset_empty_values($processed);
+  return $processed;
+}
+
+/**
+ * OpenLayers Map to Form
+ *
+ * Converts Map array to form defaults array.
+ *
+ * @param $map
+ *   Array of map values to convert
+ * @return
+ *   Array of default form values
+ */
+function _openlayers_convert_map_to_form($map = array()) {
+  $processed = array();
+  // Check input
+  if (!is_array($map) || empty($map)) {
+    return $processed;
+  }
+  $processed = $map;
+  
+  // Manual changes
+  $processed['layers']['default_layer'] = $map['default_layer'];
+  
+  
+  // Return processed
   return $processed;
 }
 
@@ -407,13 +422,13 @@ function _openlayers_convert_form_to_map($values = array()) {
  * @return
  *   Does not return anything. Uses form_set_error() to communicate errors.
  */
-function _openlayers_map_form_validate($map_form) {
+function _openlayers_map_form_validate($form) {
   // Convert form to map array
-  $map = _openlayers_convert_form_to_map($map_form);
+  $map = _openlayers_convert_form_to_map($form);
   // Attempt to render map to find any errors
   $map = openlayers_render_map($map, FALSE);
   // Check if any errors found
-  if (is_array($map['errors']) && count($map['errors']) > 0){
+  if (is_array($map['errors']) && count($map['errors']) > 0) {
     foreach ($map['errors'] as $error) {
       form_set_error('openlayers', t('OpenLayers Map Rendering Error: !error', array('!error' => $error)));
     }
@@ -425,32 +440,29 @@ function _openlayers_map_form_validate($map_form) {
  *
  * Go through an array recursively and unset empty strings and arrays
  *
- * @ingroup API
  * @param $values
  *   Array
  * @return
  *   Array with empty values unset
  */
-function openlayers_recursively_unset_empty_values($array){
- foreach($array as $key => $value) {
-  // If it is an array then recursively check it
-  if (is_array($value)){
-    $array[$key] = openlayers_recursively_unset_empty_values($value);
-  }
+function _openlayers_unset_empty_values($array){
+  foreach($array as $key => $value) {
+    // If it is an array then recursively check it
+    if (is_array($value)){
+      $array[$key] = _openlayers_unset_empty_values($value);
+    }
+    // If it is an array then check if it is empty. We don't use $value so that if it
+    // is emptied by the previous check then it will still unset.
+    if (is_array($array[$key])){
+      if (empty($array[$key])){
+        unset($array[$key]);
+      }
+    }
   
-  // If it is an array then check if it is empty. We don't use $value so that if it
-  // is emptied by the previous check then it will still unset.
-  if (is_array($array[$key])){
-    if (empty($array[$key])){
+    // If it is an empty string then unset it
+    if ($value == "") {
       unset($array[$key]);
     }
   }
-  
-  // If it is an empty string then unset it
-  if ($value == "") {
-    unset($array[$key]);
-  }
-
- }
- return $array;
+  return $array;
 }
