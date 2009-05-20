@@ -6,6 +6,12 @@
  *
  * Provides an API and Modules to interface with OpenLayers.  Needs work...
  */
+ 
+/**
+ * @defgroup openlayers_api OpenLayers API: Specific functions that are part of the OpenLayers API
+ *
+ * Provides an API and Modules to interface with OpenLayers.  Needs work...
+ */
 
 /**
  * @file
@@ -106,7 +112,7 @@ function theme_openlayers_map($map = array()) {
  *
  * Make sure that we have everything we need for OpenLayers
  *
- * @ingroup API
+ * @ingroup openlayers_api
  * @param $params
  *   Associative array of pamaters
  *   (none at the moment)
@@ -145,7 +151,7 @@ function openlayers_intialize() {
  *
  * Given perimeters, render an OpenLayers map
  *
- * @ingroup API
+ * @ingroup openlayers_api
  * @param $map
  *   Associative array of map paramters
  *  
@@ -195,7 +201,7 @@ function openlayers_render_map($map = array()) {
  *
  * Prepare the map for display, merging in defaults, and processing layers
  *
- * @ingroup API
+ * @ingroup openlayers_api
  * @param $map
  *   Associative array of map paramters
  *  
@@ -237,7 +243,7 @@ function openlayers_prepare_map($map){
  *
  * Wrapper around layer info hook
  *
- * @ingroup API
+ * @ingroup openlayers_api
  * @return
  *   array of layer info
  */
@@ -256,7 +262,7 @@ function openlayers_layers_get_info() {
  *
  * Wrapper around behavior info hook
  *
- * @ingroup API
+ * @ingroup openlayers_api
  * @return
  *   array of behavior info
  */
@@ -278,7 +284,7 @@ function openlayers_behaviors_get_info() {
  * for a function in another file.  This keeps the form from
  * being parsed unnecesarily
  *
- * @ingroup API
+ * @ingroup openlayers_api
  * @param $defaults
  *   Array of defaults
  * @return
@@ -296,7 +302,7 @@ function openlayers_map_form($defaults = array()) {
  * for a function in another file.  This keeps the form from
  * being parsed unnecesarily
  *
- * @ingroup API
+ * @ingroup openlayers_api
  * @param $form
  *   Array of of map form
  */
@@ -313,7 +319,7 @@ function openlayers_map_form_validate($map_form = array()) {
  * for a function in another file.  This keeps the form from
  * being parsed unnecesarily
  *
- * @ingroup API
+ * @ingroup openlayers_api
  * @param $values
  *   Array of values to convert
  * @return
@@ -331,7 +337,7 @@ function openlayers_convert_form_to_map($values = array()) {
  * creates unnecesary arrays to values if keys are the same.  This
  * function simply overwrites a value, even if the key is numeric.
  *
- * @ingroup API
+ * @ingroup openlayers_api
  * @param $map1
  *   Map array that holds values that are not preferred
  * @param $map2
@@ -356,9 +362,59 @@ function openlayers_merge_maps($map1 = array(), $map2 = array()) {
 }
 
 /**
+ * Check Map Errors
+ *
+ * Checks map array for incompatibilities or errors.
+ *
+ * @ingroup openlayers_api
+ * @param $map
+ *   Map array
+ * @param $log_errors
+ *   Boolean whether to log erros
+ * @return
+ *   FALSE if passed. String with error message if error.
+ */
+function openlayers_error_check_map($map, $log_errors = TRUE) {
+  // @TODO: Instead of manually specifying projections, we should do a lookup on the projections in a big table to get variables that it should be checked against.
+  $error = FALSE;
+  
+  // Check layer projections
+  foreach ($map['layers'] as $layer){
+    if ($layer['projection']) {
+      if (!in_array($map['projection'],$layer['projection'])) {
+        $error .= t("The layer ". $layer['name'] ." cannot work with the map projection: EPSG:". $map['projection'] ." ");
+      }
+    }
+  }
+  
+  // If we are using a web spherical mercador projection and maxResolution and maxExtent are not set the map will not function. 
+  if ($map['projection'] == '900913' || $map['projection'] == '3785') {
+    if (!$map['options']['maxExtent'] || !$map['options']['maxResolution']){
+      $error .= t("You are using a web spherical mercador projection. However maxExtent or maxResolution are not set. ");
+    }
+  }
+
+  // If we are using a degree based projection, then check to make sure our bounds are not over 180/90 degrees
+  if ($map['projection'] == '4326' || $map['projection'] == '4269') {
+    if (     ($map['options']['maxExtent']['top']     && $map['options']['maxExtent']['top']    > 90)
+          || ($map['options']['maxExtent']['bottom']  && $map['options']['maxExtent']['bottom'] < -90 )
+          || ($map['options']['maxExtent']['left']    && $map['options']['maxExtent']['left']   < -180 )
+          || ($map['options']['maxExtent']['right']   && $map['options']['maxExtent']['right']  > 180 )
+          || ($map['options']['maxResoluton']         && $map['options']['maxResoluton']        > 180 )
+    ){
+      $error .= t("Your Maximum Extents are set greater than 180/90 degrees. Try Maximum Extent of: -180,180,-90,90 and a Maximum Resolution of 1.40625");
+    }
+  }
+  
+  if ($error && $log_errors){
+    // Log the Error(s)
+    watchdog('openlayers', $error, array(), WATCHDOG_ERROR);
+  }
+  return $error;
+}
+
+/**
  * Implemnetation of hook_openlayers_layers_handler_info
- * 
- * @ingroup Default Layer Types and Instances
  */
 function openlayers_openlayers_layers_handler_info($map = array()) {
   return array(
@@ -375,8 +431,6 @@ function openlayers_openlayers_layers_handler_info($map = array()) {
 
 /**
  * Implementation of hook_openlayers_layers_info
- *
- * @ingroup Default Layer Types and Instances
  */
 function openlayers_openlayers_layers_info() {
   // Define info array
@@ -586,51 +640,4 @@ function _openlayers_get_map_defaults() {
     ),
   );
   return $map_default;
-}
-
-/**
- * Check map array for incompatibilities or errors
- *
- * @return
- *   FALSE if passed. String with error message if error.
- */
-
-function openlayers_error_check_map($map, $log_errors = TRUE){
-  // @TODO: Should this be a hook?
-  // @TODO: Instead of manually specifying projections, we should do a lookup on the projections in a big table to get variables that it should be checked against.
-  $error = FALSE;
-  
-  // Check layer projections
-  foreach ($map['layers'] as $layer){
-    if ($layer['projection']) {
-      if (!in_array($map['projection'],$layer['projection'])) {
-        $error .= t("The layer ". $layer['name'] ." cannot work with the map projection: EPSG:". $map['projection'] ." ");
-      }
-    }
-  }
-  
-  // If we are using a web spherical mercador projection and maxResolution and maxExtent are not set the map will not function. 
-  if ($map['projection'] == '900913' || $map['projection'] == '3785') {
-    if (!$map['options']['maxExtent'] || !$map['options']['maxResolution']){
-      $error .= t("You are using a web spherical mercador projection. However maxExtent or maxResolution are not set. ");
-    }
-  }
-
-  // If we are using a degree based projection, then check to make sure our bounds are not over 180/90 degrees
-  if ($map['projection'] == '4326' || $map['projection'] == '4269') {
-    if (     ($map['options']['maxExtent']['top']     && $map['options']['maxExtent']['top']    > 90)
-          || ($map['options']['maxExtent']['bottom']  && $map['options']['maxExtent']['bottom'] < -90 )
-          || ($map['options']['maxExtent']['left']    && $map['options']['maxExtent']['left']   < -180 )
-          || ($map['options']['maxExtent']['right']   && $map['options']['maxExtent']['right']  > 180 )
-          || ($map['options']['maxResoluton']         && $map['options']['maxResoluton']        > 180 )
-    ){
-      $error .= t("Your Maximum Extents are set greater than 180/90 degrees. Try Maximum Extent of: -180,180,-90,90 and a Maximum Resolution of 1.40625");
-    }
-  }
-  
-  if ($error && $log_errors){
-    // Log the Error(s)
-    watchdog('openlayers', $error, array(), WATCHDOG_ERROR);
-  }
-  return $error;
 }
