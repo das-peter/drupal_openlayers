@@ -356,7 +356,7 @@ function openlayers_merge_maps($map1 = array(), $map2 = array()) {
 }
 
 /**
- * Implemnetation of hook_openlayers_layers_handler
+ * Implemnetation of hook_openlayers_layers_handler_info
  * 
  * @ingroup Default Layer Types and Instances
  */
@@ -364,11 +364,11 @@ function openlayers_openlayers_layers_handler_info($map = array()) {
   return array(
     'WMS' => array(
       'layer_handler' => 'openlayersLayerHandlerWMS',
-      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
+      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers.layers.js',
     ),
     'Vector' => array(
       'layer_handler' => 'openlayersLayerHandlerVector',
-      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers_layers.js',
+      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers.layers.js',
     ),
   );
 }
