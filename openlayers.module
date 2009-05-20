@@ -15,9 +15,10 @@
 
 /**
  * @file
+ * Main OpenLayers API File
  *
- * This file holds the main Drupal hook functions 
- * and private functions for the openlayers module.
+ * This file holds the main Drupal hook functions, 
+ * and the openlayers API functions for the openlayers module.
  *
  * @ingroup openlayers
  */

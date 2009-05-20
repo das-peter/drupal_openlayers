@@ -1,14 +1,30 @@
 /*  $Id$ */
 
+/**
+ * @file
+ * OpenLayers Main CSS
+ *
+ * This file holds the base CSS for the openlayers module
+ *
+ * @ingroup openlayers
+ */
+
+/**
+ * Controls
+ */
 .openlayers-controls{
 	z-index:1000;
 }
 
-/* openlayers map form */
-.openlayers-form-proj-layer-list, .openlayers-form-baselayer-description{
+/**
+ * Map Form
+ */
+.openlayers-form-proj-layer-list,
+.openlayers-form-baselayer-description {
   font-size: smaller;
   font-style: italic;
 }
+
 .openlayers-center-helpmap{
   float: right;
 }
