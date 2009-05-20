@@ -23,8 +23,7 @@ function _openlayers_map_form($defaults = array()) {
   $system_defaults = variable_get('openlayers_defaults_form', array());
   
   // @@TODO: Is there a better way to do this? Ideally we could use form id, but I don't see how.
-  if($_GET['q'] == 'admin/settings/openlayers/defaults') $system_form = TRUE;
-  else $system_form = FALSE;
+  $system_form = ($_GET['q'] == 'admin/settings/openlayers/defaults') ? TRUE : FALSE;
   
   // If defaults in not set, then load defaults from the system default
   if (!$defaults || empty($defaults)){
@@ -350,8 +349,6 @@ function _openlayers_map_form($defaults = array()) {
     }
   }
   
-  
-  
   // Add JavaScript
   drupal_add_js(drupal_get_path('module', 'openlayers') .'/js/openlayers.form.js', 'module');
   
@@ -396,7 +393,6 @@ function _openlayers_convert_form_to_map($values = array()) {
   
   // Recursively unset any empty values
   $processed = openlayers_recursively_unset_empty_values($processed);
-  
   return $processed;
 }
 
@@ -411,16 +407,16 @@ function _openlayers_convert_form_to_map($values = array()) {
  * @return
  *   Does not return anything. Uses form_set_error() to communicate errors.
  */
-function _openlayers_map_form_validate($map_form){
+function _openlayers_map_form_validate($map_form) {
+  // Convert form to map array
   $map = _openlayers_convert_form_to_map($map_form);
-  $map = openlayers_prepare_map($map);
-  
-  // @@TODO: Invoke map alter?  It's possible that outside modules may detect and fix errors. 
-  
-  $error = openlayers_error_check_map($map, FALSE);
-  
-  if ($error){
-    form_set_error('openlayers', "OpenLayers Map Error: ".$error);
+  // Attempt to render map to find any errors
+  $map = openlayers_render_map($map, FALSE);
+  // Check if any errors found
+  if (is_array($map['errors']) && count($map['errors']) > 0){
+    foreach ($map['errors'] as $error) {
+      form_set_error('openlayers', t('OpenLayers Map Rendering Error: !error', array('!error' => $error)));
+    }
   }
 }
 

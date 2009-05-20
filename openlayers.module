@@ -155,11 +155,13 @@ function openlayers_intialize() {
  * @ingroup openlayers_api
  * @param $map
  *   Associative array of map paramters
+ * @param $render
+ *   Boolean whether to fully render (include theme and JS)
  *  
  * @return
  *   Boolean if successful
  */
-function openlayers_render_map($map = array()) {
+function openlayers_render_map($map = array(), $render = TRUE) {
   // Check array
   if (!is_array($map)) {
     return FALSE;
@@ -170,16 +172,35 @@ function openlayers_render_map($map = array()) {
     return FALSE;
   }
   
-  $map = openlayers_prepare_map($map);
+  // Check ID
+  if (!$map['id']) {
+    $map['id'] = _openlayers_create_map_id();
+  }
+  
+  // If the map does not specify that it does not want to merge
+  // in the default layers, then merge in defaults
+  if (!$map['only_these_layers']) {
+    $saved_defaults = variable_get('openlayers_defaults', array());
+    $map = openlayers_merge_maps($saved_defaults, $map);
+  }
+  
+  // Merge with module/system defaults
+  $system_defaults = _openlayers_get_map_defaults();
+  $map = openlayers_merge_maps($system_defaults, $map);
+  
+  // Process layers
+  $map['layers'] = _openlayers_layers_process($map['layers'], $map);
+  // Process behaviors
+  $map['behaviors'] = _openlayers_behaviors_process($map['behaviors'], $map);
   
   // Hook for one last alter
   // hook_openlayers_map_alter(&$map = array())
   drupal_alter('openlayers_map', &$map);
   
   // Check our map for errors
-  $errors = openlayers_error_check_map($map);
-  
-  if (!$errors){
+  $map['errors'] = openlayers_error_check_map($map);
+  // Add JS and theme if no errors found
+  if (!$map['errors'] || $render == FALSE) {
     // Add map container to drupal JS settings
     $openlayers = array(
       'openlayers' => array(
@@ -192,52 +213,11 @@ function openlayers_render_map($map = array()) {
     
     // Add themed HTML (no need for it to go to JS)
     $map['themed'] = theme('openlayers_map', $map);
-    
-    return $map;
-  }
-}
-
-/**
- * Prepare Map
- *
- * Prepare the map for display, merging in defaults, and processing layers
- *
- * @ingroup openlayers_api
- * @param $map
- *   Associative array of map paramters
- *  
- * @return
- *    Associative array of map paramters
- */
-function openlayers_prepare_map($map){
-  // Check ID
-  if (!$map['id']) {
-    $map['id'] = _openlayers_create_map_id();
   }
   
-  // Merge with site defaults (saved values)
-  $saved_defaults = variable_get('openlayers_defaults', array());
-  
-  // If the map specifies that it does not to merge in the default layers, then unset them
-  if ($map['only_these_layers'] == TRUE){
-    unset($saved_defaults['layers']);
-  }
-  
-  $map = openlayers_merge_maps($saved_defaults, $map);
-  
-  // Merge with module/system defaults
-  $system_defaults = _openlayers_get_map_defaults();
-  $map = openlayers_merge_maps($system_defaults, $map);
-  
-  // Process layers
-  $map['layers'] = _openlayers_layers_process($map['layers'], $map);
-  
-  // Process behaviors
-  $map['behaviors'] = _openlayers_behaviors_process($map['behaviors'], $map);
-  
+  // Return map with or without errors
   return $map;
 }
-
 
 /**
  * Get Layer Info
@@ -541,15 +521,16 @@ function _openlayers_layers_process($layers = array(), $map = array()) {
  *   Array of processed behaviors
  */
 function _openlayers_behaviors_process($behaviors = array(), &$map) {
-  if (!$behaviors){
+  // Check input
+  if (!is_array($behaviors)) {
     $behaviors = array();
   }
-  if (!$map){
+  if (!is_array($map)) {
     $map = array();
   }
   
+  // Initialized variables
   $processed = array();
-  
   // Get behavior info array
   $behavior_info = openlayers_behaviors_get_info();
   
