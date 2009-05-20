@@ -372,45 +372,55 @@ function openlayers_merge_maps($map1 = array(), $map2 = array()) {
  * @param $log_errors
  *   Boolean whether to log erros
  * @return
- *   FALSE if passed. String with error message if error.
+ *   FALSE if passed. Array of descriptive errors if fail
  */
 function openlayers_error_check_map($map, $log_errors = TRUE) {
   // @TODO: Instead of manually specifying projections, we should do a lookup on the projections in a big table to get variables that it should be checked against.
-  $error = FALSE;
+  // @TODO: For next release, make hook
+  $errors = array();
   
   // Check layer projections
-  foreach ($map['layers'] as $layer){
+  foreach ($map['layers'] as $layer) {
     if ($layer['projection']) {
-      if (!in_array($map['projection'],$layer['projection'])) {
-        $error .= t("The layer ". $layer['name'] ." cannot work with the map projection: EPSG:". $map['projection'] ." ");
+      if (!in_array($map['projection'], $layer['projection'])) {
+        $errors[] = t('The layer %layer_name cannot work with the map projection: EPSG: %map_proj', array(
+          '%layer_name' => $layer['name'],
+          '%map_proj' => $map['projection'],
+        ));
       }
     }
   }
   
-  // If we are using a web spherical mercador projection and maxResolution and maxExtent are not set the map will not function. 
+  // If we are using a web spherical mercador projection and maxResolution 
+  // and maxExtent are not set the map will not function. 
   if ($map['projection'] == '900913' || $map['projection'] == '3785') {
-    if (!$map['options']['maxExtent'] || !$map['options']['maxResolution']){
-      $error .= t("You are using a web spherical mercador projection. However maxExtent or maxResolution are not set. ");
+    if (!$map['options']['maxExtent'] || !$map['options']['maxResolution']) {
+      $errors[] = t("You are using a web spherical mercador projection.  However maxExtent or maxResolution are not set. ");
     }
   }
 
-  // If we are using a degree based projection, then check to make sure our bounds are not over 180/90 degrees
+  // If we are using a degree based projection, then check to make sure 
+  // our bounds are not over 180/90 degrees
   if ($map['projection'] == '4326' || $map['projection'] == '4269') {
-    if (     ($map['options']['maxExtent']['top']     && $map['options']['maxExtent']['top']    > 90)
-          || ($map['options']['maxExtent']['bottom']  && $map['options']['maxExtent']['bottom'] < -90 )
-          || ($map['options']['maxExtent']['left']    && $map['options']['maxExtent']['left']   < -180 )
-          || ($map['options']['maxExtent']['right']   && $map['options']['maxExtent']['right']  > 180 )
-          || ($map['options']['maxResoluton']         && $map['options']['maxResoluton']        > 180 )
-    ){
-      $error .= t("Your Maximum Extents are set greater than 180/90 degrees. Try Maximum Extent of: -180,180,-90,90 and a Maximum Resolution of 1.40625");
+    if (  
+      ($map['options']['maxExtent']['top']     && $map['options']['maxExtent']['top']    > 90)   ||
+      ($map['options']['maxExtent']['bottom']  && $map['options']['maxExtent']['bottom'] < -90)  ||
+      ($map['options']['maxExtent']['left']    && $map['options']['maxExtent']['left']   < -180) ||
+      ($map['options']['maxExtent']['right']   && $map['options']['maxExtent']['right']  > 180)  ||
+      ($map['options']['maxResoluton']         && $map['options']['maxResoluton']        > 180)
+    ) {
+      $errors[] = t("Your Maximum Extents are set greater than 180/90 degrees. Try Maximum Extent of: -180,180,-90,90 and a Maximum Resolution of 1.40625");
     }
   }
   
-  if ($error && $log_errors){
+  // Check if any errors found to log
+  if (count($errors) > 0 && $log_errors){
     // Log the Error(s)
-    watchdog('openlayers', $error, array(), WATCHDOG_ERROR);
+    watchdog('openlayers', implode(', ', $errors), array(), WATCHDOG_ERROR);
   }
-  return $error;
+  
+  // Check if errors and return
+  return (count($errors) > 0) ? $errors : FALSE;
 }
 
 /**
