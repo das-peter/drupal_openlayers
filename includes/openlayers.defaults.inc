@@ -17,15 +17,10 @@ function openlayers_admin_default_settings($form_state) {
   $map_system = _openlayers_get_map_defaults();
   $map_merged = openlayers_merge_maps($map_system, $map_defaults);
   // Convert to form defaults
-  dpm($map_merged);
   $defaults = openlayers_convert_map_to_form($map_merged);
-  dpm($defaults);
   
   // Get default form
   $form = openlayers_map_form($defaults);
-  
-  dpm(openlayers_map_form());
-  dpm($form);
   
   // Add submit button
   $form['submit'] = array(
