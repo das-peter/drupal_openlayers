@@ -1,0 +1,17 @@
+This file describes the hooks available for the OpenLayers module and sub modules.
+
+
+ Map Alter
+=====================================
+/**
+ * OpenLayers Map Alter
+ *
+ * Map array alter.  Fired after prepared, and
+ * before checking for errors.
+ *
+ * @param $map
+ *   Map array
+ */
+function hook_openlayers_map_alter(&$map = array()) {
+  // Do something to the $map
+}

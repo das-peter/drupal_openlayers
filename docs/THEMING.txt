@@ -1,0 +1,14 @@
+This file describes the theming functions available for the OpenLayers module and sub modules.
+
+
+ Main Map Output
+=====================================
+/**
+ * Theme function for openlayers_map
+ */
+function theme_openlayers_map($map = array()) {
+  $output = '
+    <div id="'. $map['id'] .'" class="openlayers-map"></div>
+  ';
+  return $output;
+}
