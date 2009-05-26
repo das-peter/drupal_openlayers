@@ -121,7 +121,7 @@ OL.renderMap = function(map) {
   Drupal.openlayers.activeObjects[map.id].map.setBaseLayer(Drupal.openlayers.activeObjects[map.id].layers[map.default_layer]);
 
   // Trigger beforeControls event
-  var event = { 'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
+  var event = {'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
   OL.triggerCustom(map, 'beforeControls', event);
   
   // Add controls to map
@@ -132,14 +132,14 @@ OL.renderMap = function(map) {
   }
 
   // Trigger beforeEvents event
-  var event = { 'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
+  var event = {'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
   OL.triggerCustom(map, 'beforeEvents', event);
   
   // Add events to the map 
   OL.processEvents(map.events, map.id); 
 
   // Trigger beforeBehaviors event
-  var event = { 'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
+  var event = {'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
   OL.triggerCustom(map, 'beforeBehaviors', event);
   
   // Add behaviors to map
@@ -152,8 +152,8 @@ OL.renderMap = function(map) {
   }
   
   // Trigger mapReady event
-  var event = { 'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
-  OL.triggerCustom(map, 'mapReady',event);
+  var event = {'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
+  OL.triggerCustom(map, 'mapReady', event);
 }
 
 /**
@@ -230,8 +230,8 @@ OL.processLayers = function(layers, mapid) {
       
       // Add events
       for (var evtype in layers[layer].events){
-        for (var ev in layers[layer].events[evtype]){ 
-          newLayer.events.register(evtype,newLayer,window[layers[layer].events[evtype][ev]]);
+        for (var ev in layers[layer].events[evtype]) { 
+          newLayer.events.register(evtype, newLayer, window[layers[layer].events[evtype][ev]]);
         }
       }
     }
@@ -252,12 +252,37 @@ OL.processEvents = function(events, mapid) {
   // Go through events
   for (var evtype in events){
     // Exclude One-Time map events. 
-    if (evtype != 'beforeEverything' && evtype != 'beforeLayers' && evtype != 'beforeCenter' && evtype != 'beforeControls' && evtype != 'beforeEvents' && evtype != 'beforeBehaviors' && evtype != 'mapReady'){
-      for (var ev in events[evtype]){ 
-        Drupal.openlayers.activeObjects[mapid].map.events.register(evtype,Drupal.openlayers.activeObjects[mapid].map,window[events[evtype][ev]]);
+    if (evtype != 'beforeEverything' && evtype != 'beforeLayers' && evtype != 'beforeCenter' && evtype != 'beforeControls' && evtype != 'beforeEvents' && evtype != 'beforeBehaviors' && evtype != 'mapReady') {
+      for (var ev in events[evtype]) { 
+        Drupal.openlayers.activeObjects[mapid].map.events.register(evtype, Drupal.openlayers.activeObjects[mapid].map, window[events[evtype][ev]]);
       }
     }
   }
+}
+
+/**
+ * Trigger Custom Event
+ * 
+ * @param map
+ *   Map object
+ * @param eventName
+ *   String of the name of the event
+ * @param event
+ *   Event object
+ */
+OL.triggerCustom = function(map, eventName, event) {
+  if (OL.isSet(map.events) && openlayersIsSet(map.events[eventName])){
+    for (var ev in map.events[eventName]){
+      window[map.events[eventName][ev]](event);
+    }
+  }
+}
+
+/**
+ * Historical, REMOVE
+ */
+function openlayersTiggerCustomEvent(map, eventName, event) {
+  OL.triggerCustom(map, eventName, event);
 }
 
 /**
@@ -339,31 +364,6 @@ OL.dump = function(element, limit, depth) {
  */
 function openlayersVarDump(element, limit, depth) {
   return OL.dump(element, limit, depth);
-}
-
-/**
- * Trigger Custom Event
- * 
- * @param map
- *   Map object
- * @param eventName
- *   String of the name of the event
- * @param event
- *   Event object
- */
-OL.triggerCustom = function(map, eventName, event) {
-  if (OL.isSet(map.events) && openlayersIsSet(map.events[eventName])){
-    for (var ev in map.events[eventName]){
-      window[map.events[eventName][ev]](event);
-    }
-  }
-}
-
-/**
- * Historical, REMOVE
- */
-function openlayersTiggerCustomEvent(map, eventName, event) {
-  OL.triggerCustom(map, eventName, event);
 }
 
 /**
