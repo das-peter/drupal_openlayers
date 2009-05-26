@@ -8,25 +8,7 @@
  *
  * @ingroup openlayers
  */
- 
-/**
- * Implementation of hook_enable().
- */
-function openlayers_enable() {
-}
- 
-/**
- * Implementation of hook_disable().
- */
-function openlayers_disable() {
-}
- 
-/**
- * Implementation of hook_install().
- */
-function openlayers_install() {
-}
- 
+
 /**
  * Implementation of hook_uninstall().
  */
