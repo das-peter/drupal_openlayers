@@ -3,16 +3,32 @@
 /**
  * @file
  * This file holds the main javascript API for OpenLayers. It is responsable for loading and displaying the map.
+ *
+ * @@TODO: Replace all typeof with this (it's shorter - do we even need to namespace it? ideally it would be isset() or defined() )
  */
+
+/**
+ * Global Object for Namespace
+ */
+var OL = {};
 
 /**
  * When document is ready for JS
  */
 jQuery(document).ready(function() {
-  openlayersLoadMaps();
+  // Check for openlayers
+  if ((typeof(Drupal.settings.openlayers) == 'object') && (OL.isSet(Drupal.settings.openlayers.maps))) {
+    OL.loadMaps();
+  }
 });
 
-function openlayersLoadMaps(){
+/**
+ * Load Maps from OpenLayers Data
+ *
+ * Main function to sart loading maps by parsing
+ * data from Drupal.
+ */
+OL.loadMaps = function() {
   // @@TODO: Implement proxy
   OpenLayers.ProxyHost = "http://raider/proxy/?proxy_url=";
   
@@ -26,8 +42,8 @@ function openlayersLoadMaps(){
     var map = Drupal.openlayers.mapDefs[i];
     
     // Trigger beforeEverything event
-    var event = { 'mapDef': map};
-    openlayersTiggerCustomEvent(map, 'beforeEverything', event);
+    var event = {'mapDef': map};
+    OL.triggerCustom(map, 'beforeEverything', event);
     
     // Check to see if there is a div on the page ready for the map. If there is then proceed.
     if ($('#' + map.id).length > 0) {
@@ -45,7 +61,7 @@ function openlayersLoadMaps(){
       Drupal.openlayers.activeObjects[map.id].active = false;
 
       // Render Map
-      openlayersRenderMap(Drupal.openlayers.mapDefs[i]);
+      OL.renderMap(Drupal.openlayers.mapDefs[i]);
     }
   }
 };
@@ -58,13 +74,13 @@ function openlayersLoadMaps(){
  * @param map
  *   The map definition array.
  */
-function openlayersRenderMap(map) {
+OL.renderMap = function(map) {
   // Create Projection objects
   Drupal.openlayers.activeObjects[map.id].projection = new OpenLayers.Projection("EPSG:" + map.projection);
   Drupal.openlayers.activeObjects[map.id].displayProjection = new OpenLayers.Projection("EPSG:" + map.options.displayProjection);
   
   // Create base map options
-  var options = openlayersCreateMapOptions(map.options, map.controls, map.id);
+  var options = OL.createMapOptions(map.options, map.controls, map.id);
   
   // Store map in our registry of active OpenLayers objects
   Drupal.openlayers.activeObjects[map.id].map = new OpenLayers.Map(map.id, options);
@@ -81,10 +97,10 @@ function openlayersRenderMap(map) {
 
   // Trigger beforeLayers event
   var event = { 'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
-  openlayersTiggerCustomEvent(map, 'beforeLayers', event);
+  OL.triggerCustom(map, 'beforeLayers', event);
   
   // We set up all our layers
-  openlayersProcessLayers(map.layers, map.id);
+  OL.processLayers(map.layers, map.id);
   
   // Add layers to map
   for (var l in Drupal.openlayers.activeObjects[map.id].layers) {
@@ -94,7 +110,7 @@ function openlayersRenderMap(map) {
   
   // Trigger beforeCenter event
   var event = { 'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
-  openlayersTiggerCustomEvent(map, 'beforeCenter', event);
+  OL.triggerCustom(map, 'beforeCenter', event);
   
   // Zoom to Center
   // @@TODO: Do this in the map options -- As isthis will result in a bug in the zoom map helper in the map form
@@ -106,7 +122,7 @@ function openlayersRenderMap(map) {
 
   // Trigger beforeControls event
   var event = { 'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
-  openlayersTiggerCustomEvent(map, 'beforeControls', event);
+  OL.triggerCustom(map, 'beforeControls', event);
   
   // Add controls to map
   for (var c in Drupal.openlayers.activeObjects[map.id].controls) {
@@ -117,14 +133,14 @@ function openlayersRenderMap(map) {
 
   // Trigger beforeEvents event
   var event = { 'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
-  openlayersTiggerCustomEvent(map, 'beforeEvents', event);
+  OL.triggerCustom(map, 'beforeEvents', event);
   
   // Add events to the map 
-  openlayersProcessEvents(map.events, map.id); 
+  OL.processEvents(map.events, map.id); 
 
   // Trigger beforeBehaviors event
   var event = { 'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
-  openlayersTiggerCustomEvent(map, 'beforeBehaviors', event);
+  OL.triggerCustom(map, 'beforeBehaviors', event);
   
   // Add behaviors to map
   for (var b in Drupal.openlayers.mapDefs[map.id].behaviors) {
@@ -137,16 +153,23 @@ function openlayersRenderMap(map) {
   
   // Trigger mapReady event
   var event = { 'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
-  openlayersTiggerCustomEvent(map, 'mapReady',event);
-  
+  OL.triggerCustom(map, 'mapReady',event);
 }
 
 /**
  * Get OpenLayers Map Options
+ *
+ * @param options
+ *   Object of options to include
+ * @param controls
+ *   Object of controls to add
+ * @param mapid
+ *   String Id of map
+ * @return
+ *   Object of processed options
  */
-function openlayersCreateMapOptions(options, controls, mapid) {
+OL.createMapOptions = function(options, controls, mapid) {
   // @@TODO: Dynamically put in controls and options
-  
   var returnOptions = {};
   
   // These parameters are set in the default map array, so they will always be defined
@@ -154,8 +177,9 @@ function openlayersCreateMapOptions(options, controls, mapid) {
   returnOptions.displayProjection = Drupal.openlayers.activeObjects[mapid].displayProjection;
   
   // These parameters may or may not be defined by the map array, so we must check. 
-  if (openlayersIsSet(options.maxResolution)) returnOptions.maxResolution = options.maxResolution;
-  
+  if (openlayersIsSet(options.maxResolution)) {
+    returnOptions.maxResolution = options.maxResolution;
+  }
   if (typeof(options.maxExtent) != "undefined") {
     returnOptions.maxExtent =  new OpenLayers.Bounds(
       options.maxExtent.left,
@@ -164,7 +188,6 @@ function openlayersCreateMapOptions(options, controls, mapid) {
       options.maxExtent.top
     );
   }
-  
   returnOptions.controls = [];
   if (controls.LayerSwitcher)   returnOptions.controls.push( new OpenLayers.Control.LayerSwitcher({'ascending':false}) );
   if (controls.Navigation)      returnOptions.controls.push( new OpenLayers.Control.Navigation() );
@@ -177,10 +200,9 @@ function openlayersCreateMapOptions(options, controls, mapid) {
   if (controls.ZoomBox)         returnOptions.controls.push( new OpenLayers.Control.ZoomBox() );
   if (controls.ZoomToMaxExtent) returnOptions.controls.push( new OpenLayers.Control.ZoomToMaxExtent() );
 
+  // Return processed options
   return returnOptions;
 }
-
-
 
 /**
  * Process Layers
@@ -192,8 +214,7 @@ function openlayersCreateMapOptions(options, controls, mapid) {
  * @param mapid
  *   The id of the map to which we will eventually add these layers.
  */
-function openlayersProcessLayers(layers, mapid) {
-  
+OL.processLayers = function(layers, mapid) {
   Drupal.openlayers.activeObjects[mapid].layers = [];
   
   // Go through layers
@@ -217,7 +238,6 @@ function openlayersProcessLayers(layers, mapid) {
   }
 }
 
-
 /**
  * Process Events
  *
@@ -228,7 +248,7 @@ function openlayersProcessLayers(layers, mapid) {
  * @param mapid
  *   The id of the map to which we will add these events.
  */
-function openlayersProcessEvents(events, mapid) {
+OL.processEvents = function(events, mapid) {
   // Go through events
   for (var evtype in events){
     // Exclude One-Time map events. 
@@ -240,7 +260,6 @@ function openlayersProcessEvents(events, mapid) {
   }
 }
 
-
 /**
  * Parse out key / value pairs out of a string that looks like "key:value;key2:value2"
  * 
@@ -249,7 +268,7 @@ function openlayersProcessEvents(events, mapid) {
  * @return
  *   Array of key:value pairs
  */
-function openlayersParseRel(rel){
+OL.parseRel = function(rel) {
   var outputArray = [];
   
   // Some preprosessing
@@ -271,6 +290,13 @@ function openlayersParseRel(rel){
 }
 
 /**
+ * Historical, REMOVE
+ */
+function openlayersParseRel(rel) {
+  return OL.parseRel(rel);
+}
+
+/**
  * Dump Variables -- This is a JS developer tool
  * 
  * @param element
@@ -279,10 +305,8 @@ function openlayersParseRel(rel){
  *   The depth we should go to.
  * @param depth
  *   The depth we should start at.
- * @return
- *   Nothing. Displaying in a pop-up.
  */
-function openlayersVarDump(element, limit, depth) {
+OL.dump = function(element, limit, depth) {
   limit = limit ? limit : 1;
   depth = depth ? depth : 0;
   returnString = '<ol>';
@@ -310,16 +334,64 @@ function openlayersVarDump(element, limit, depth) {
   return returnString;
 }
 
-function openlayersTiggerCustomEvent(map, eventname,event){
-  if (openlayersIsSet(map.events) && openlayersIsSet(map.events[eventname])){
-    for (var ev in map.events[eventname]){
-      window[map.events[eventname][ev]](event);
+/**
+ * Historical, REMOVE
+ */
+function openlayersVarDump(element, limit, depth) {
+  return OL.dump(element, limit, depth);
+}
+
+/**
+ * Trigger Custom Event
+ * 
+ * @param map
+ *   Map object
+ * @param eventName
+ *   String of the name of the event
+ * @param event
+ *   Event object
+ */
+OL.triggerCustom = function(map, eventName, event) {
+  if (OL.isSet(map.events) && openlayersIsSet(map.events[eventName])){
+    for (var ev in map.events[eventName]){
+      window[map.events[eventName][ev]](event);
     }
   }
 }
 
-// @@TODO: Replace all typeof with this (it's shorter - do we even need to namespace it? ideally it would be isset() or defined() )
-function openlayersIsSet(variable){
-  if (typeof(variable) == 'undefined') return false;
-  else return true;
+/**
+ * Historical, REMOVE
+ */
+function openlayersTiggerCustomEvent(map, eventName, event) {
+  OL.triggerCustom(map, eventName, event);
+}
+
+/**
+ * Check if Variable is define
+ *
+ * @params variable
+ *   Any variable
+ * @return
+ *   Boolean if the variable is definied or not
+ */
+OL.isSet = function(variable) {
+  if (typeof(variable) == 'undefined') {
+    return false;
+  }
+  else {
+    return true;
+  }
+}
+
+/**
+ * For historical Purposes
+ * @@TODO: Remove
+ */
+function openlayersIsSet(variable) {
+  if (typeof(variable) == 'undefined') {
+    return false;
+  }
+  else {
+    return true;
+  }
 }
