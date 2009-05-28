@@ -4,6 +4,8 @@
 /**
  * @file
  * This file holds the functions for the openlayers Defaults settings.
+ *
+ * @ingroup openlayers
  */
 
 /**

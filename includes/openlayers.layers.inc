@@ -5,6 +5,7 @@
  * @file
  * This file contains layer instances for the default openlayers WMS
  *
+ * @ingroup openlayers
  */
 
 /**
@@ -47,9 +48,7 @@ function openlayers_process_layers($layer = NULL) {
         'events' => array(),
       );
       break;
-     
-    default:
-      break;
+      
   }
   
   return $layer_data;

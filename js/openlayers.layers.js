@@ -19,7 +19,7 @@
  * @return
  *  OpenLayers WMS layer object.
  */
-function openlayersLayerHandlerWMS(layerOptions, mapid) {
+OL.Layers.WMS = function(layerOptions, mapid) {
   // Check if there is a defined format
   if (typeof(layerOptions.params.format) == "undefined"){
     layerOptions.params.format = "image/png";
@@ -41,7 +41,7 @@ function openlayersLayerHandlerWMS(layerOptions, mapid) {
  * @return
  *  OpenLayers Vector layer object.
  */
-function openlayersLayerHandlerVector(layerOptions, mapid) {
+OL.Layers.Vectors = function(layerOptions, mapid) {
   // Get styles
   var stylesAll = [];
   // Process Options
@@ -53,8 +53,8 @@ function openlayersLayerHandlerVector(layerOptions, mapid) {
         stylesAdded[styleName] = new OpenLayers.Style(layerOptions.options.styles[styleName].options);
       }
       stylesAll = new OpenLayers.StyleMap(stylesAdded);
-    };  
- }
+    };
+  }
   
   // @@TODO: not be hard-coded
   var myStyles = new OpenLayers.StyleMap({
@@ -82,28 +82,27 @@ function openlayersLayerHandlerVector(layerOptions, mapid) {
     // Go through features
     for (var feat in layerOptions.features) {
       // Extract geometry either from wkt property or lon/lat properties
-      if (typeof(layerOptions.features[feat].wkt) != "undefined"){
-        
+      if (typeof(layerOptions.features[feat].wkt) != "undefined") {
         var wkt;
         
         // Check to see if it is a string of wkt, or an array for a multipart feature.
-        if (typeof(layerOptions.features[feat].wkt) == "string"){
+        if (typeof(layerOptions.features[feat].wkt) == "string") {
           wkt = layerOptions.features[feat].wkt;
         }
-        if (typeof(layerOptions.features[feat].wkt) == "object" && layerOptions.features[feat].wkt.length != 0){
+        if (typeof(layerOptions.features[feat].wkt) == "object" && layerOptions.features[feat].wkt.length != 0) {
           wkt = "GEOMETRYCOLLECTION(" + layerOptions.features[feat].wkt.join(',') + ")";
         }
         
+        // Get new feature
         var newFeatureObject = wktFormat.read(wkt);
-        
       }
-      else if (typeof(layerOptions.features[feat].lon) != "undefined"){
+      else if (typeof(layerOptions.features[feat].lon) != "undefined") {
         var newFeatureObject = wktFormat.read("POINT(" + layerOptions.features[feat].lon + " " + layerOptions.features[feat].lat + ")");    
       }
       
-      // If we have successfully extracted geometry add additional properties and queue it for addition to the layer
+      // If we have successfully extracted geometry add additional 
+      // properties and queue it for addition to the layer
       if (typeof(newFeatureObject) != 'undefined'){
-        
         var newFeatureSet = [];
         
         // Check to see if it is a new feature, or an array of new features.
@@ -116,8 +115,8 @@ function openlayersLayerHandlerVector(layerOptions, mapid) {
           newFeatureSet = newFeatureObject;
         }
         
+        // Go through new features
         for (var i in newFeatureSet){
-          
           var newFeature = newFeatureSet[i];
           
           // Transform the geometry if the 'projection' property is different from the map projection
@@ -143,15 +142,18 @@ function openlayersLayerHandlerVector(layerOptions, mapid) {
             newFeature.style = featureStyle;
           }
           
+          // Push new features
           newFeatures.push(newFeature);
         }
       }
     }
     
+    // Add new features if there are any
     if (newFeatures.length != 0){
       returnVector.addFeatures(newFeatures);
     }
   }
   
+  // Return processed vector
   return returnVector;
 }

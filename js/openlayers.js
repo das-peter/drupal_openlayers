@@ -2,15 +2,16 @@
 
 /**
  * @file
- * This file holds the main javascript API for OpenLayers. It is responsable for loading and displaying the map.
+ * This file holds the main javascript API for OpenLayers. It is 
+ * responsable for loading and displaying the map.
  *
- * @@TODO: Replace all typeof with this (it's shorter - do we even need to namespace it? ideally it would be isset() or defined() )
+ * @ingroup openlayers
  */
 
 /**
  * Global Object for Namespace
  */
-var OL = {};
+var OL = OL || { 'Layers': {} };
 
 /**
  * When document is ready for JS
@@ -32,14 +33,13 @@ OL.loadMaps = function() {
   // @@TODO: Implement proxy
   OpenLayers.ProxyHost = "http://raider/proxy/?proxy_url=";
   
-  // Store rendered maps and other OpenLayer objects in Drupal.openlayers.activeObjects
-  Drupal.openlayers = {}
-  Drupal.openlayers.activeObjects = [];
-  Drupal.openlayers.mapDefs = Drupal.settings.openlayers.maps;
+  // Store rendered maps and other OpenLayer objects in OL object
+  OL.maps = [];
+  OL.mapDefs = Drupal.settings.openlayers.maps;
   
   // Go through array and make maps
-  for (var i in Drupal.openlayers.mapDefs) {
-    var map = Drupal.openlayers.mapDefs[i];
+  for (var i in OL.mapDefs) {
+    var map = OL.mapDefs[i];
     
     // Trigger beforeEverything event
     var event = {'mapDef': map};
@@ -49,19 +49,17 @@ OL.loadMaps = function() {
     if ($('#' + map.id).length > 0) {
       // Make div the right dimensions and add custom controls
       $('#' + map.id).css('width', map.width).css('height', map.height);
-      $('#' + map.id).after('<div class="openlayers-controls" id="openlayers-controls-' + map.id + '"></div>');
-      $('#openlayers-controls-' + map.id).css("position","relative").css("top","-" + map.height);
+      $('#' + map.id).after(Drupal.theme('mapControls', map.id, map.height));
       
       // Set-up our registry of active OpenLayers javascript objects for this particular map.
-      Drupal.openlayers.activeObjects[map.id] = {};
-      
+      OL.maps[map.id] = {};
       // Set up places for us to store layers, controls, etc.
-      Drupal.openlayers.activeObjects[map.id].controls = [];
-      Drupal.openlayers.activeObjects[map.id].layers = [];
-      Drupal.openlayers.activeObjects[map.id].active = false;
+      OL.maps[map.id].controls = [];
+      OL.maps[map.id].layers = [];
+      OL.maps[map.id].active = false;
 
       // Render Map
-      OL.renderMap(Drupal.openlayers.mapDefs[i]);
+      OL.renderMap(OL.mapDefs[i]);
     }
   }
 };
@@ -76,83 +74,86 @@ OL.loadMaps = function() {
  */
 OL.renderMap = function(map) {
   // Create Projection objects
-  Drupal.openlayers.activeObjects[map.id].projection = new OpenLayers.Projection("EPSG:" + map.projection);
-  Drupal.openlayers.activeObjects[map.id].displayProjection = new OpenLayers.Projection("EPSG:" + map.options.displayProjection);
+  OL.maps[map.id].projection = new OpenLayers.Projection('EPSG:' + map.projection);
+  OL.maps[map.id].displayProjection = new OpenLayers.Projection('EPSG:' + map.options.displayProjection);
   
   // Create base map options
   var options = OL.createMapOptions(map.options, map.controls, map.id);
   
   // Store map in our registry of active OpenLayers objects
-  Drupal.openlayers.activeObjects[map.id].map = new OpenLayers.Map(map.id, options);
+  OL.maps[map.id].map = new OpenLayers.Map(map.id, options);
   
   // Add ID to map.
-  Drupal.openlayers.activeObjects[map.id].map.mapid = map.id;
+  OL.maps[map.id].map.mapid = map.id;
   
   //On MouseOver mark the map as "active".
-  $('#' + map.id).mouseover(function(){
-    Drupal.openlayers.activeObjects[$(this).attr('id')].active = true;
-  }).mouseout(function(){
-    Drupal.openlayers.activeObjects[$(this).attr('id')].active = false;
+  $('#' + map.id).mouseover(function() {
+    OL.maps[map.id].active = true;
+  })
+  .mouseout(function() {
+    OL.maps[map.id].active = false;
   });
 
   // Trigger beforeLayers event
-  var event = { 'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
+  var event = {'mapDef': map, 'map': OL.maps[map.id].map};
   OL.triggerCustom(map, 'beforeLayers', event);
   
   // We set up all our layers
   OL.processLayers(map.layers, map.id);
   
   // Add layers to map
-  for (var l in Drupal.openlayers.activeObjects[map.id].layers) {
-    var layer =  Drupal.openlayers.activeObjects[map.id].layers[l];
-    Drupal.openlayers.activeObjects[map.id].map.addLayer(layer);
+  for (var l in OL.maps[map.id].layers) {
+    var layer =  OL.maps[map.id].layers[l];
+    OL.maps[map.id].map.addLayer(layer);
   }
   
   // Trigger beforeCenter event
-  var event = { 'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
+  var event = {'mapDef': map, 'map': OL.maps[map.id].map};
   OL.triggerCustom(map, 'beforeCenter', event);
   
   // Zoom to Center
   // @@TODO: Do this in the map options -- As isthis will result in a bug in the zoom map helper in the map form
   var center = new OpenLayers.LonLat(map.center.lon, map.center.lat);
-  Drupal.openlayers.activeObjects[map.id].map.setCenter(center, map.center.zoom, false, false);
+  OL.maps[map.id].map.setCenter(center, map.center.zoom, false, false);
   
   // Set our default base layer
-  Drupal.openlayers.activeObjects[map.id].map.setBaseLayer(Drupal.openlayers.activeObjects[map.id].layers[map.default_layer]);
+  OL.maps[map.id].map.setBaseLayer(OL.maps[map.id].layers[map.default_layer]);
 
   // Trigger beforeControls event
-  var event = {'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
+  var event = {'mapDef': map, 'map': OL.maps[map.id].map};
   OL.triggerCustom(map, 'beforeControls', event);
   
   // Add controls to map
-  for (var c in Drupal.openlayers.activeObjects[map.id].controls) {
-    var control = Drupal.openlayers.activeObjects[map.id].controls[c];
-    Drupal.openlayers.activeObjects[map.id].map.addControl(control);
-    if (control.activeByDefault) control.activate();
+  for (var c in OL.maps[map.id].controls) {
+    var control = OL.maps[map.id].controls[c];
+    OL.maps[map.id].map.addControl(control);
+    if (control.activeByDefault) {
+      control.activate();
+    }
   }
 
   // Trigger beforeEvents event
-  var event = {'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
+  var event = {'mapDef': map, 'map': OL.maps[map.id].map};
   OL.triggerCustom(map, 'beforeEvents', event);
   
   // Add events to the map 
   OL.processEvents(map.events, map.id); 
 
   // Trigger beforeBehaviors event
-  var event = {'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
+  var event = {'mapDef': map, 'map': OL.maps[map.id].map};
   OL.triggerCustom(map, 'beforeBehaviors', event);
   
   // Add behaviors to map
-  for (var b in Drupal.openlayers.mapDefs[map.id].behaviors) {
+  for (var b in OL.mapDefs[map.id].behaviors) {
     var event = {};
     event.mapDef = map;
-    event.map = Drupal.openlayers.activeObjects[map.id].map;
-    event.behavior = Drupal.openlayers.mapDefs[map.id].behaviors[b];
-    window[Drupal.openlayers.mapDefs[map.id].behaviors[b].js_callback](event);
+    event.map = OL.maps[map.id].map;
+    event.behavior = OL.mapDefs[map.id].behaviors[b];
+    window[OL.mapDefs[map.id].behaviors[b].js_callback](event);
   }
   
   // Trigger mapReady event
-  var event = {'mapDef': map, 'map': Drupal.openlayers.activeObjects[map.id].map};
+  var event = {'mapDef': map, 'map': OL.maps[map.id].map};
   OL.triggerCustom(map, 'mapReady', event);
 }
 
@@ -173,11 +174,11 @@ OL.createMapOptions = function(options, controls, mapid) {
   var returnOptions = {};
   
   // These parameters are set in the default map array, so they will always be defined
-  returnOptions.projection = Drupal.openlayers.activeObjects[mapid].projection;
-  returnOptions.displayProjection = Drupal.openlayers.activeObjects[mapid].displayProjection;
+  returnOptions.projection = OL.maps[mapid].projection;
+  returnOptions.displayProjection = OL.maps[mapid].displayProjection;
   
   // These parameters may or may not be defined by the map array, so we must check. 
-  if (openlayersIsSet(options.maxResolution)) {
+  if (OL.isSet(options.maxResolution)) {
     returnOptions.maxResolution = options.maxResolution;
   }
   if (typeof(options.maxExtent) != "undefined") {
@@ -215,23 +216,25 @@ OL.createMapOptions = function(options, controls, mapid) {
  *   The id of the map to which we will eventually add these layers.
  */
 OL.processLayers = function(layers, mapid) {
-  Drupal.openlayers.activeObjects[mapid].layers = [];
+  OL.maps[mapid].layers = [];
   
   // Go through layers
   if (layers) {
     for (var layer in layers) {
-      // Process layer
-      var newLayer = window[layers[layer].layer_handler](layers[layer], mapid);
-      Drupal.openlayers.activeObjects[mapid].layers[layer] = newLayer;
-
-      // Add our Drupal data to the layer
-      newLayer.drupalId = layer;
-      newLayer.drupalData = layers[layer];
-      
-      // Add events
-      for (var evtype in layers[layer].events){
-        for (var ev in layers[layer].events[evtype]) { 
-          newLayer.events.register(evtype, newLayer, window[layers[layer].events[evtype][ev]]);
+      // Process layer, check for function
+      if (OL.isSet(OL.Layers) && typeof(OL.Layers[layers[layer].layer_handler]) == 'function') {
+        var newLayer = OL.Layers[layers[layer].layer_handler](layers[layer], mapid);
+        OL.maps[mapid].layers[layer] = newLayer;
+  
+        // Add our Drupal data to the layer
+        newLayer.drupalId = layer;
+        newLayer.drupalData = layers[layer];
+        
+        // Add events
+        for (var evtype in layers[layer].events){
+          for (var ev in layers[layer].events[evtype]) { 
+            newLayer.events.register(evtype, newLayer, window[layers[layer].events[evtype][ev]]);
+          }
         }
       }
     }
@@ -254,7 +257,7 @@ OL.processEvents = function(events, mapid) {
     // Exclude One-Time map events. 
     if (evtype != 'beforeEverything' && evtype != 'beforeLayers' && evtype != 'beforeCenter' && evtype != 'beforeControls' && evtype != 'beforeEvents' && evtype != 'beforeBehaviors' && evtype != 'mapReady') {
       for (var ev in events[evtype]) { 
-        Drupal.openlayers.activeObjects[mapid].map.events.register(evtype, Drupal.openlayers.activeObjects[mapid].map, window[events[evtype][ev]]);
+        OL.maps[mapid].map.events.register(evtype, OL.maps[mapid].map, window[events[evtype][ev]]);
       }
     }
   }
@@ -271,18 +274,11 @@ OL.processEvents = function(events, mapid) {
  *   Event object
  */
 OL.triggerCustom = function(map, eventName, event) {
-  if (OL.isSet(map.events) && openlayersIsSet(map.events[eventName])){
+  if (OL.isSet(map.events) && OL.isSet(map.events[eventName])){
     for (var ev in map.events[eventName]){
       window[map.events[eventName][ev]](event);
     }
   }
-}
-
-/**
- * Historical, REMOVE
- */
-function openlayersTiggerCustomEvent(map, eventName, event) {
-  OL.triggerCustom(map, eventName, event);
 }
 
 /**
@@ -312,13 +308,6 @@ OL.parseRel = function(rel) {
   }
   
   return outputArray;
-}
-
-/**
- * Historical, REMOVE
- */
-function openlayersParseRel(rel) {
-  return OL.parseRel(rel);
 }
 
 /**
@@ -360,13 +349,6 @@ OL.dump = function(element, limit, depth) {
 }
 
 /**
- * Historical, REMOVE
- */
-function openlayersVarDump(element, limit, depth) {
-  return OL.dump(element, limit, depth);
-}
-
-/**
  * Check if Variable is define
  *
  * @params variable
@@ -384,14 +366,17 @@ OL.isSet = function(variable) {
 }
 
 /**
- * For historical Purposes
- * @@TODO: Remove
+ * Map Controls Theme Function
+ *
+ * @param mapid
+ *   String of mapid
+ * @param height
+ *   String of the height of the map
+ * @return
+ *   Themed map control division
  */
-function openlayersIsSet(variable) {
-  if (typeof(variable) == 'undefined') {
-    return false;
-  }
-  else {
-    return true;
-  }
+Drupal.theme.prototype.mapControls = function(mapid, height) {
+  var newcontainer = $('<div></div>');
+  newcontainer.addClass('openlayers-controls').attr('id', 'openlayers-controls-' + mapid).css('position', 'relative').css('top', '-' + height);
+  return newcontainer.html();
 }

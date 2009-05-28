@@ -225,15 +225,20 @@ function openlayers_render_map($map = array(), $render = TRUE) {
  * Wrapper around layer info hook
  *
  * @ingroup openlayers_api
+ * @param $reset
+ *   Boolean whether to reset cache or not
  * @return
  *   array of layer info
  */
-function openlayers_layers_get_info() {
-  $info = array();
+function openlayers_layers_get_info($reset = FALSE) {
+  static $info = array();
   
-  // Hook layer info ($map is not necessary)
-  // hook_openlayers_layers_info($map = array())
-  $info = module_invoke_all('openlayers_layers_info');
+  // If empty or reset, get info
+  if (count($info) == 0 || $reset == TRUE) {
+    // Hook layer info ($map is not necessary)
+    // hook_openlayers_layers_info($map = array())
+    $info = module_invoke_all('openlayers_layers_info');
+  }
 
   return $info;
 }
@@ -244,15 +249,20 @@ function openlayers_layers_get_info() {
  * Wrapper around behavior info hook
  *
  * @ingroup openlayers_api
+ * @param $reset
+ *   Boolean whether to reset cache or not
  * @return
  *   array of behavior info
  */
-function openlayers_behaviors_get_info() {
-  $info = array();
+function openlayers_behaviors_get_info($reset = FALSE) {
+  static $info = array();
   
-  // Hook behaviors info ($map is not necessary)
-  // hook_openlayers_behaviors_info($map = array())
-  $info = module_invoke_all('openlayers_behaviors_info');
+  // If empty or reset, get info
+  if (count($info) == 0 || $reset == TRUE) {
+    // Hook behaviors info ($map is not necessary)
+    // hook_openlayers_behaviors_info($map = array())
+    $info = module_invoke_all('openlayers_behaviors_info');
+  }
 
   return $info;
 }
@@ -426,11 +436,11 @@ function openlayers_error_check_map($map, $log_errors = TRUE) {
 function openlayers_openlayers_layers_handler_info($map = array()) {
   return array(
     'WMS' => array(
-      'layer_handler' => 'openlayersLayerHandlerWMS',
+      'layer_handler' => 'WMS',
       'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers.layers.js',
     ),
     'Vector' => array(
-      'layer_handler' => 'openlayersLayerHandlerVector',
+      'layer_handler' => 'Vector',
       'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers.layers.js',
     ),
   );

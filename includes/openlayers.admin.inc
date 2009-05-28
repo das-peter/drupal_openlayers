@@ -4,12 +4,13 @@
 /**
  * @file
  * This file holds the functions for the openlayers Admin settings.
+ *
+ * @ingroup openlayers
  */
 
 /**
  * Menu callback; displays the openlayers module settings page.
  *
- * @ingroup forms
  * @see system_settings_form()
  */
 function openlayers_admin_settings() {

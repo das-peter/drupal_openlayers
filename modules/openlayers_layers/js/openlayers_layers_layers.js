@@ -2,7 +2,7 @@
 
 /**
  * @file
- * JS functions to handle different kinds of layers
+ * JS functions to handle different kinds of layers fo openlayers_layers module
  *
  * @ingroup openlayers
  */
@@ -10,18 +10,18 @@
 /**
  * Process Google Layers
  */
-function openlayersLayerHandlerGoogle(layerOptions, mapid) {
+OL.Layers.Google = function(layerOptions, mapid) {
   var mapType;
-  if (layerOptions.params.type == "street"){
+  if (layerOptions.params.type == "street") {
     mapType = G_NORMAL_MAP;
   }
-  else if (layerOptions.params.type == "satellite"){
+  else if (layerOptions.params.type == "satellite") {
    mapType = G_SATELLITE_MAP;
   }
-  else if (layerOptions.params.type == "hybrid"){
+  else if (layerOptions.params.type == "hybrid") {
     mapType = G_HYBRID_MAP;
   }
-  else if (layerOptions.params.type == "physical"){
+  else if (layerOptions.params.type == "physical") {
     mapType = G_PHYSICAL_MAP;
   }
   
@@ -43,15 +43,15 @@ function openlayersLayerHandlerGoogle(layerOptions, mapid) {
 /**
  * Process Yahoo Layers
  */
-function openlayersLayerHandlerYahoo(layerOptions, mapid) {
+OL.Layers.Yahoo = function(layerOptions, mapid) {
   var mapType;
-  if (layerOptions.params.type == "street"){
+  if (layerOptions.params.type == "street") {
     mapType = YAHOO_MAP_REG;
   }
-  else if (layerOptions.params.type == "satellite"){
+  else if (layerOptions.params.type == "satellite") {
    mapType = YAHOO_MAP_SAT;
   }
-  else if (layerOptions.params.type == "hybrid"){
+  else if (layerOptions.params.type == "hybrid") {
     mapType = YAHOO_MAP_HYB;
   }
   
@@ -73,15 +73,15 @@ function openlayersLayerHandlerYahoo(layerOptions, mapid) {
 /**
  * Process MS Virtual Earth Layers
  */
-function openlayersLayerHandlerVirtualEarth(layerOptions, mapid) {
+OL.Layers.VirtualEarth = function(layerOptions, mapid) {
   var mapType;
-  if (layerOptions.params.type == "street"){
+  if (layerOptions.params.type == "street") (
     mapType = VEMapStyle.Road;
   }
-  else if (layerOptions.params.type == "satellite"){
+  else if (layerOptions.params.type == "satellite") (
    mapType = VEMapStyle.Aerial;
   }
-  else if (layerOptions.params.type == "hybrid"){
+  else if (layerOptions.params.type == "hybrid") (
     mapType = VEMapStyle.Hybrid;
   }
   
@@ -103,7 +103,7 @@ function openlayersLayerHandlerVirtualEarth(layerOptions, mapid) {
 /**
  * Process KML Layers
  */
-function openlayersLayerHandlerKML(layerOptions, mapid) {
+OL.Layers.KML = function(layerOptions, mapid) {
   
   var mapOptions = {
     projection: new OpenLayers.Projection("EPSG:4326"),
@@ -125,7 +125,7 @@ function openlayersLayerHandlerKML(layerOptions, mapid) {
 /**
  * Process XYZ Layers
  */
-function openlayersLayerHandlerXYZ(layerOptions, mapid) {
+OL.Layers.XYZ = function(layerOptions, mapid) {
   var mapOptions = {
     sphericalMercator: true,
     maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34)

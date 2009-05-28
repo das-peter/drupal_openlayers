@@ -31,68 +31,42 @@ function openlayers_layers_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_layers_admin_settings'),
     'access arguments' => array('access administration pages'),
+    'file' => 'includes/openlayers_layers.admin.inc',
     'type' => MENU_LOCAL_TASK,
    );
   return $items;
 }
 
 /**
- * Menu callback; displays the openlayers_layers module settings page.
- *
- * @ingroup forms
- * @see system_settings_form()
- */
-function openlayers_layers_admin_settings() {
-  $form = array();
-
-  $form['openlayers_layers_google_api'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Google Maps API Key'),
-    '#description' => t("Your personal Googlemaps API key.  You must get this for each separate website at <a href='http://www.google.com/apis/maps/'>Google Map API website</a>."),
-    '#default_value' => variable_get('openlayers_layers_google_api', variable_get('googlemap_api_key', '')),
-  );
-  
-  $form['openlayers_layers_yahoo_api'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Yahoo Maps API Key'),
-    '#description' => t("Your personal Yahoo API key.  You must get this for each separate website at <a href='http://developer.yahoo.com/maps/'>Yahoo Maps API website</a>."),
-    '#default_value' => variable_get('openlayers_layers_yahoo_api',''),
-  );  
-  
-  return system_settings_form($form);
-}
-
-/**
  * Implemnetation of hook_openlayers_layers_handler
- *
- * Define Layer Types that won't be used outside of this module such as Google Maps, Yahoo Maps, and MS Virtual Earth
  */
 function openlayers_layers_openlayers_layers_handler_info($map = array()) {
-  
+  // Define Layer Types that won't be used outside of this module 
+  // such as Google Maps, Yahoo Maps, and MS Virtual Earth
+  $js_file = drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers_layers.js';
   return array(
     'KML' => array(
-      'layer_handler' => 'openlayersLayerHandlerKML',
-      'js_file' => drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers_layers.js',
+      'layer_handler' => 'KML',
+      'js_file' => $js_file,
     ),
     'XYZ' => array(
-      'layer_handler' => 'openlayersLayerHandlerXYZ',
-      'js_file' => drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers_layers.js',
+      'layer_handler' => 'XYZ',
+      'js_file' => $js_file,
     ),
     'Google' => array(
-      'layer_handler' => 'openlayersLayerHandlerGoogle',
-      'js_file' => drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers_layers.js',
+      'layer_handler' => 'Google',
+      'js_file' => $js_file,
     ),
     'VirtualEarth' => array(
-      'layer_handler' => 'openlayersLayerHandlerVirtualEarth',
-      'js_file' => drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers_layers.js',
+      'layer_handler' => 'VirtualEarth',
+      'js_file' => $js_file,
     ),
     'Yahoo' => array(
-      'layer_handler' => 'openlayersLayerHandlerYahoo',
-      'js_file' => drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers_layers.js',
+      'layer_handler' => 'Yahoo',
+      'js_file' => $js_file,
     ),
   );
 }
-
 
 /**
  * Implementation of hook_openlayers_layers_info
@@ -131,7 +105,7 @@ function openlayers_layers_openlayers_layers_info() {
   );
   
   $info['openlayers_layers_open_aerial'] = array(
-    'name' => t('Open Aerial (2.8 - do not use)'),
+    'name' => t('Open Aerial (2.8+)'),
     'description' => t('OpenAerialMap is an open collection of aerial photographs, collected into a single coherent view of the world.'),
     'projection' => array('900913'),
     'baselayer' => TRUE,
@@ -144,7 +118,7 @@ function openlayers_layers_openlayers_layers_info() {
     'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
-    'callback' => 'openlayers_layers_process_layers',
+    'callback' => $callback,
   );
   
   $info['openlayers_layers_google_satellite'] = array(
@@ -152,7 +126,7 @@ function openlayers_layers_openlayers_layers_info() {
     'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
-    'callback' => 'openlayers_layers_process_layers',
+    'callback' => $callback,
   );
   
   $info['openlayers_layers_google_hybrid'] = array(
@@ -160,7 +134,7 @@ function openlayers_layers_openlayers_layers_info() {
     'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
-    'callback' => 'openlayers_layers_process_layers',
+    'callback' => $callback,
   );
   
   $info['openlayers_layers_google_physical'] = array(
@@ -168,7 +142,7 @@ function openlayers_layers_openlayers_layers_info() {
     'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
-    'callback' => 'openlayers_layers_process_layers',
+    'callback' => $callback,
   );
   
   $info['openlayers_layers_yahoo_street'] = array(
@@ -176,7 +150,7 @@ function openlayers_layers_openlayers_layers_info() {
     'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
-    'callback' => 'openlayers_layers_process_layers',
+    'callback' => $callback,
   );
   
   $info['openlayers_layers_yahoo_satellite'] = array(
@@ -184,7 +158,7 @@ function openlayers_layers_openlayers_layers_info() {
     'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
-    'callback' => 'openlayers_layers_process_layers',
+    'callback' => $callback,
   );
   
   $info['openlayers_layers_yahoo_hybrid'] = array(
@@ -192,7 +166,7 @@ function openlayers_layers_openlayers_layers_info() {
     'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
-    'callback' => 'openlayers_layers_process_layers',
+    'callback' => $callback,
   );
   
   $info['openlayers_layers_virtual_earth_street'] = array(
@@ -200,7 +174,7 @@ function openlayers_layers_openlayers_layers_info() {
     'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
-    'callback' => 'openlayers_layers_process_layers',
+    'callback' => $callback,
   );
   
   $info['openlayers_layers_virtual_earth_satellite'] = array(
@@ -208,7 +182,7 @@ function openlayers_layers_openlayers_layers_info() {
     'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
-    'callback' => 'openlayers_layers_process_layers',
+    'callback' => $callback,
   );
   
   $info['openlayers_layers_virtual_earth_hybrid'] = array(
@@ -216,31 +190,31 @@ function openlayers_layers_openlayers_layers_info() {
     'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
-    'callback' => 'openlayers_layers_process_layers',
+    'callback' => $callback,
   );
   
   $info['openlayers_layers_osm_mapnik'] = array(
-    'name' => t('OSM Mapnik (2.8 - do not use)'),
+    'name' => t('OSM Mapnik (2.8+)'),
     'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
-    'callback' => 'openlayers_layers_process_layers',
+    'callback' => $callback,
   );
   
   $info['openlayers_layers_osm_tah'] = array(
-    'name' => t('OSM Tiles@Home (2.8 - do not use)'),
+    'name' => t('OSM Tiles@Home (2.8+)'),
     'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
-    'callback' => 'openlayers_layers_process_layers',
+    'callback' => $callback,
   );
   
   $info['openlayers_layers_osm_cycle'] = array(
-    'name' => t('OSM Cycling Map (2.8 - do not use)'),
+    'name' => t('OSM Cycling Map (2.8+)'),
     'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
-    'callback' => 'openlayers_layers_process_layers',
+    'callback' => $callback,
   );
 
   $info['openlayers_layers_osm_4326_hybrid'] = array(
@@ -249,25 +223,26 @@ function openlayers_layers_openlayers_layers_info() {
     'projection' => array('4326'),
     'baselayer' => FALSE,
     'file' => $file,
-    'callback' => 'openlayers_layers_process_layers',
+    'callback' => $callback,
   );
   
-  // Module Dependant Layer Instances
+  // If KML module is enable, create layer for local KML feed
   if (module_exists('kml')){
     $info['openlayers_layers_local_kml'] = array(
       'name' => t('Local KML Feed'),
       'file' => $file,
-      'callback' => 'openlayers_layers_process_layers',
+      'callback' => $callback,
     );
   }
 
+  // If Geo module is enabled, create layer for each geo table
   if (module_exists('geo_data')){
     // Get the data tables loaded from shapefiles, and include them as available layers
     $geo_tables  = geo('tables', '/^content_field/');
     foreach ($geo_tables as $key => $table){
       $info[$key] = array (
         // @@TODO: Actually have a real name
-        'name' => $key,
+        'name' => t('Geo Table (@key)', array('@key' => $key)),
         'file' => $file,
         'callback' => 'openlayers_layers_process_geo_data_layers',
       );

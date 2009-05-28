@@ -1,12 +1,16 @@
+// $Id$
+
 /**
  * @file
  * This file holds the javascript functions for the settings forms.
+ *
+ * @ingroup openlayers
  */
  
 /**
  * When document is ready for JS
  */
-$(document).ready(function(){
+$(document).ready(function() {
   // @@TODO: Namespace this using the form ID
   // @@BUG:  Maps will not display inside fieldsets that are collapsed by default
   
@@ -17,20 +21,19 @@ $(document).ready(function(){
   var radioSelected = false;
   
   // Go through each radio projection option
-  $('.openlayers-form-easy-projection input').each(function(){
+  $('.openlayers-form-easy-projection input').each(function() {
     
     // If it matches the true projection, then select it. 
-    if ($(this).val() == trueProjection){
+    if ($(this).val() == trueProjection) {
       $(this).attr('checked','checked');
       $('.openlayers-form-projection').parent().css('display','none');
       radioSelected = true;
     }
     
     // Attach events to the projection radio buttons
-    $(this).change(function(){
-      
+    $(this).change(function() {
       var projection = $(this).val();
-      if (projection == 'other'){
+      if (projection == 'other') {
         $('.openlayers-form-projection').parent().css('display','block');
       }
       else{
@@ -38,35 +41,34 @@ $(document).ready(function(){
         $('.openlayers-form-projection').val(projection);
         
         // If we are using a web spherical-mercador projection, set the MaxResolution and MaxExtent (If they are not already set)
-        openlayersWebSpericalMercadorAutoSettings();
+        OL.webSpericalMercadorAutoSettings();
         
         // Update our selectable layers
-        openlayersUpdateSelectableLayers(projection);
+        OL.updateSelectableLayers(projection);
       }
     });
     
-    //If no radio has been selected, select "other"
-    if (radioSelected == false){
+    // If no radio has been selected, select "other"
+    if (radioSelected == false) {
       // @@TODO: use class to do this
-      $('#edit-easy-projection-other').attr('checked','checked');
+      $('#edit-easy-projection-other').attr('checked', 'checked');
       $('.openlayers-form-projection').parent().css('display','block');
     }
-    
   });
   
   // Center and zoom for zoom / center helper
-  $('openlayers-form-lat').change(openlayersUpdateHelpmapCenter);
-  $('openlayers-form-lon').change(openlayersUpdateHelpmapCenter);
-  $('openlayers-form-zoom').change(openlayersUpdateHelpmapCenter);
-  openlayersUpdateHelpmapCenter();
+  $('openlayers-form-lat').change(OL.updateHelpmapCenter);
+  $('openlayers-form-lon').change(OL.updateHelpmapCenter);
+  $('openlayers-form-zoom').change(OL.updateHelpmapCenter);
+  OL.updateHelpmapCenter();
   
   // Set up the manual projection input so that layers will filter.
-  $('.openlayers-form-projection').change(function(){
-    openlayersUpdateSelectableLayers(false);
+  $('.openlayers-form-projection').change(function() {
+    OL.updateSelectableLayers(false);
   });
   
   // Do an initial filter of the available layers
-  openlayersUpdateSelectableLayers(trueProjection);
+  OL.updateSelectableLayers(trueProjection);
   
 });
 
@@ -79,7 +81,7 @@ $(document).ready(function(){
  * unset these parameters here.
  *
  */
-function openlayersWebSpericalMercadorAutoSettings(){  
+OL.webSpericalMercadorAutoSettings = function(){  
   // If the projection matches, we should potentially set max extent and max resolution.
   var projection = $('.openlayers-form-projection').val();
   if (projection == '900913' || projection == '3785') {
@@ -87,9 +89,9 @@ function openlayersWebSpericalMercadorAutoSettings(){
     var maxExtentSet = false;
     
     // Checking to see if we should automatically set the maximum Resolution
-    if ($('.openlayers-form-maxResolution').val() == ''){
-     $('.openlayers-form-maxResolution').val('156543.0339');
-     maxResolutionSet = true;
+    if ($('.openlayers-form-maxResolution').val() == '') {
+      $('.openlayers-form-maxResolution').val('156543.0339');
+      maxResolutionSet = true;
     }
     
     // Checking to see if we should automatically set the maximum Extent
@@ -102,15 +104,15 @@ function openlayersWebSpericalMercadorAutoSettings(){
     }
     
     // Letting the user know we did some automatic changes
-    if (maxResolutionSet && maxExtentSet){
+    if (maxResolutionSet && maxExtentSet) {
       $('#openlayers-form-proj-msg').html("Maximum Resolution and Maximum Extent have automatically been set for this projection.").show("slow");
       setTimeout("$('#openlayers-form-proj-msg').hide('fast');",3000);
     }
-    if (maxResolutionSet && !maxExtentSet){
+    if (maxResolutionSet && !maxExtentSet) {
       $('#openlayers-form-proj-msg').html("Maximum Resolution has automatically been set for this projection.").show("slow");
       setTimeout("$('#openlayers-form-proj-msg').hide('fast');",3000);
     }
-    if (!maxResolutionSet && maxExtentSet){
+    if (!maxResolutionSet && maxExtentSet) {
       $('#openlayers-form-proj-msg').html("Maximum Extent has automatically been set for this projection.").show("slow");
       setTimeout("$('#openlayers-form-proj-msg').hide('fast');",3000);
     }
@@ -128,7 +130,7 @@ function openlayersWebSpericalMercadorAutoSettings(){
     }
     
     // Checking to see if we should automatically set the maximum Extent
-    if ($('.openlayers-form-maxExtent-left').val() == '-20037508.34' && $('.openlayers-form-maxExtent-right').val() == '20037508.34' && $('.openlayers-form-maxExtent-bottom').val() == '-20037508.34' && $('.openlayers-form-maxExtent-top').val() == '20037508.34'){
+    if ($('.openlayers-form-maxExtent-left').val() == '-20037508.34' && $('.openlayers-form-maxExtent-right').val() == '20037508.34' && $('.openlayers-form-maxExtent-bottom').val() == '-20037508.34' && $('.openlayers-form-maxExtent-top').val() == '20037508.34') {
       $('.openlayers-form-maxExtent-left').val('');
       $('.openlayers-form-maxExtent-right').val('');
       $('.openlayers-form-maxExtent-bottom').val('');
@@ -137,15 +139,15 @@ function openlayersWebSpericalMercadorAutoSettings(){
     }
     
     // Letting the user know we did some automatic changes
-    if (maxResolutionUnset && maxExtentUnset){
+    if (maxResolutionUnset && maxExtentUnset) {
       $('#openlayers-form-proj-msg').html("Maximum Resolution and Maximum Extent have automatically been unset.").show("slow");
       setTimeout("$('#openlayers-form-proj-msg').hide('fast');",3000);
     }
-    if (maxResolutionUnset && !maxExtentUnset){
+    if (maxResolutionUnset && !maxExtentUnset) {
       $('#openlayers-form-proj-msg').html("Maximum Resolution has automatically been unset.").show("slow");
       setTimeout("$('#openlayers-form-proj-msg').hide('fast');",3000);
     }
-    if (!maxResolutionUnset && maxExtentUnset){
+    if (!maxResolutionUnset && maxExtentUnset) {
       $('#openlayers-form-proj-msg').html("Maximum Extent has automatically been unset.").show("slow");
       setTimeout("$('#openlayers-form-proj-msg').hide('fast');",3000);
     }
@@ -162,33 +164,32 @@ function openlayersWebSpericalMercadorAutoSettings(){
  *
  * @param projection
  *   Projection to filter on.
- *
  */
-function openlayersUpdateSelectableLayers(projection){
+OL.updateSelectableLayers = function(projection) {
   if (projection){
-    $('input.openlayers-form-baselayers').each(function(){
-      openlayersLayerCheckProjection(projection, this);
+    $('input.openlayers-form-baselayers').each(function() {
+      OL.layerCheckProjection(projection, this);
     });
     
-    $('input.openlayers-form-default-layer').each(function(){
-      openlayersLayerCheckProjection(projection, this);
+    $('input.openlayers-form-default-layer').each(function() {
+      OL.layerCheckProjection(projection, this);
     });
     
-    $('input.openlayers-form-overlays').each(function(){
-      openlayersLayerCheckProjection(projection, this);
+    $('input.openlayers-form-overlays').each(function() {
+      OL.layerCheckProjection(projection, this);
     });
   }
   else {
     // No projection specified. Assume the user knows what they are doing and show all layers. 
-    $('input.openlayers-form-baselayers').each(function(){
+    $('input.openlayers-form-baselayers').each(function() {
       $(this).parent().parent().css('display','block');
     });
     
-    $('input.openlayers-form-default-layer').each(function(){
+    $('input.openlayers-form-default-layer').each(function() {
        $(this).parent().parent().css('display','block');
     });
     
-    $('input.openlayers-form-overlays').each(function(){
+    $('input.openlayers-form-overlays').each(function() {
        $(this).parent().parent().css('display','block');
     });
   }
@@ -205,14 +206,13 @@ function openlayersUpdateSelectableLayers(projection){
  *   Projection to filter on.
  * @param domInputObject
  *   Checkbox or radio DOM element to check.
- *
  */
-function openlayersLayerCheckProjection(projection, domInputObject){
+OL.layerCheckProjection = function(projection, domInputObject) {
   $(domInputObject).parent().parent().css('display','none');
  
   var projectionMatch = false
-  for (var l in Drupal.settings.openlayersForm.projectionLayers[projection]){
-    if ($(domInputObject).val() == Drupal.settings.openlayersForm.projectionLayers[projection][l]){
+  for (var l in Drupal.settings.openlayersForm.projectionLayers[projection]) {
+    if ($(domInputObject).val() == Drupal.settings.openlayersForm.projectionLayers[projection][l]) {
       projectionMatch = true;
     }
   }
@@ -230,19 +230,18 @@ function openlayersLayerCheckProjection(projection, domInputObject){
  *
  * Take the center lat, lon and zoom values from the form and update
  * the helper map.
- *
  */
-function openlayersUpdateHelpmapCenter() {
+OL.updateHelpmapCenter = function() {
   var projection = $('.openlayers-form-projection').val();
   var zoom = $('.openlayers-form-zoom').val();
   var lat = $('.openlayers-form-lat').val();
   var lon = $('.openlayers-form-lon').val();
   
-  if (lat != '' && lon != ''){
+  if (lat != '' && lon != '') {
     var center = new OpenLayers.LonLat(lon, lat);
     center.transform(new OpenLayers.Projection('EPSG:' + projection), new OpenLayers.Projection('EPSG:4326'));
     
-    Drupal.openlayers.activeObjects['openlayers-center-helpmap'].map.setCenter(center, zoom);  
+    OL.maps['openlayers-center-helpmap'].map.setCenter(center, zoom);  
   }
 }
 
@@ -250,10 +249,9 @@ function openlayersUpdateHelpmapCenter() {
  * Update the values from the form using center of the helpmap.
  *
  * When a user pans and zooms our helper map, update the form values.
- *
  */
-function openlayersUpdateCenterFormValues() {
-  var helpmap = Drupal.openlayers.activeObjects['openlayers-center-helpmap'].map;
+OL.updateCenterFormValues = function() {
+  var helpmap = OL.maps['openlayers-center-helpmap'].map;
   var projection = $('.openlayers-form-projection').val();
   var zoom = helpmap.getZoom();
   
