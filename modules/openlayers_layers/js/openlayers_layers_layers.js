@@ -75,13 +75,13 @@ OL.Layers.Yahoo = function(layerOptions, mapid) {
  */
 OL.Layers.VirtualEarth = function(layerOptions, mapid) {
   var mapType;
-  if (layerOptions.params.type == "street") (
+  if (layerOptions.params.type == "street") {
     mapType = VEMapStyle.Road;
   }
-  else if (layerOptions.params.type == "satellite") (
+  else if (layerOptions.params.type == "satellite") {
    mapType = VEMapStyle.Aerial;
   }
-  else if (layerOptions.params.type == "hybrid") (
+  else if (layerOptions.params.type == "hybrid") {
     mapType = VEMapStyle.Hybrid;
   }
   
