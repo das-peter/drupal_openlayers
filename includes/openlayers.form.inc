@@ -33,57 +33,46 @@ function _openlayers_map_form($defaults = array()) {
   $baselayers = array();
   $overlays = array();
   
-  // Determine which layer is a baselayer, and which is an overlay.
+  // Get layer options
+  $layer_options = array(
+    'overlays' => array(), 
+    'baselayers' => array(),
+  );
+  
+  // Determine which layer is a baselayer, and which is an overlay, and add
+  // approrpriate descriptions to the options array.
   foreach ($layers as $layer_key => $layer) {
     if ($layer['baselayer']){
-      $baselayers[$layer_key] = $layer['name'];
-      if ($layer['description']) $baselayers[$layer_key] .= " - <span class='openlayers-form-baselayer-description'>". $layer['description'] ."</span>";
+      $layer_options['baselayers'][$layer_key] = $layer['name'];
+      if ($layer['description']) $layer_options['baselayers'][$layer_key] .= " - <span class='openlayers-form-baselayer-description'>". $layer['description'] ."</span>";
     }
     else {
-      $overlays[$layer_key] = $layer['name'];
-      if ($layer['description']) $overlays[$layer_key] .= " - <span class='openlayers-form-baselayer-description'>". $layer['description'] ."</span>";
+      $layer_options['overlays'][$layer_key] = $layer['name'];
+      if ($layer['description']) $layer_options['overlays'][$layer_key] .= " - <span class='openlayers-form-baselayer-description'>". $layer['description'] ."</span>";
     }
   }
   
-  // Set up our easy projection selector options. 
-  // We are setting up the 'easy projection' options, a list of layers that are compatible with all projections,
-  // and an array to pass to JS that contains a list of all the layers indexed by projection
-  $easy_projections = array();
-  $all_projections = array();
-  $projection_layers = array();
-  foreach ($layers as $layer_key => $layer) {
-    if ($layer['projection']){
-      foreach ($layer['projection'] as $projection){
-        
-        // Fill out the easy projection form options
-        if (!array_key_exists($projection, $easy_projections)){
-          $easy_projections[$projection] = $projection. " - <span class='openlayers-form-proj-layer-list'>". $layer['name'] ."</span>";
-        }
-        else{
-          $easy_projections[$projection] .= "<span class='openlayers-form-proj-layer-list'>, ". $layer['name'] ."</span>";
-        }
-        
-        // Fill out the array we will pass to javascript.
-        if (!array_key_exists($projection, $projection_layers)){
-          $projection_layers[$projection] = array();
-        }
-        $projection_layers[$projection][] = $layer_key;
-        
+  // Get Easy Layer options. Get a list of all projections and their compatible layers, 
+  // but keep layers that are compatible with all layers seperated.
+  $projections_for_easy = _openlayers_get_projections($layers, TRUE);
+  $easy_options = array();
+  foreach ($projections_for_easy as $easy_proj => $easy_layers){
+    if ($easy_proj != 'all'){
+      // Fill out the easy projection form options
+      $easy_options[$easy_proj] = $easy_proj.' - ';
+      foreach ($easy_layers as $easy_layer){
+        $easy_options[$easy_proj] .= "<span class='openlayers-form-proj-layer-list'>". $layers[$easy_layer]['name'] ."</span>";
       }
     }
-    else{
-      $all_projections[$layer_key] = $layer['name'];
-    }
   }
- 
+
   // Set the "Other" option for our easy projection selector
-  $easy_projections['other'] = t("Other");
+  $easy_options['other'] = t("Other");
   
-  // Add the layers that are compatible with all projections to our $projection_layers array
-  foreach ($all_projections as $layer_key => $layer){
-    foreach ($projection_layers as $projection => $list_of_layers){
-      $projection_layers[$projection][] = $layer_key;
-    }
+  // Get list of layers that are compatable with all projections
+  $all_projections = array();
+  foreach ($projections_for_easy['all'] as $layer){
+    $all_projections[] = $layers[$layer]['name'];
   }
   
   // Set up our map to help set center lat, lon and zoom
@@ -115,8 +104,8 @@ function _openlayers_map_form($defaults = array()) {
       ),
     ),
     'events' => array(
-      'moveend' => array('openlayersUpdateCenterFormValues'),
-      'zoomend' => array('openlayersUpdateCenterFormValues'),
+      'moveend' => array('updateCenterFormValues'),
+      'zoomend' => array('updateCenterFormValues'),
     ),
   );
   
@@ -125,11 +114,11 @@ function _openlayers_map_form($defaults = array()) {
   
   $passvalues = array(
       'openlayersForm' => array(
-        'projectionLayers' => $projection_layers,
+        'projectionLayers' => _openlayers_get_projections($layers),
       ),
   );
-  drupal_add_js($passvalues, 'setting');
   
+  drupal_add_js($passvalues, 'setting');
   
   // Form Properties
   $form['#tree'] = TRUE;
@@ -142,7 +131,7 @@ function _openlayers_map_form($defaults = array()) {
     '#type' => 'radios',
     '#title' => t('Projection'),
     '#description' => t('Slect the EPSG code of the '.l('geographical projection', 'http://en.wikipedia.org/wiki/Map_projection').' for your map. The list next to each projection is the layers that support this projection. Layers that support all projections are: '. implode(', ', $all_projections)."."),
-    '#options' => $easy_projections,
+    '#options' => $easy_options,
     '#attributes' => array('class' => 'openlayers-form-easy-projection'), 
   );
   
@@ -279,7 +268,7 @@ function _openlayers_map_form($defaults = array()) {
     '#type' => 'checkboxes',
     '#title' => t('Base Layers'),
     '#description' => t('Select the base layers to make available for your map. This list is determined by the projection you select for your map.'),
-    '#options' => $baselayers,
+    '#options' => $layer_options['baselayers'],
     '#attributes' => array('class' => 'openlayers-form-baselayers'), 
     '#multiple' => TRUE,
     '#default_value' => $defaults['layers']['baselayers'] ? $defaults['layers']['baselayers'] : array(),
@@ -288,7 +277,7 @@ function _openlayers_map_form($defaults = array()) {
     '#type' => 'radios',
     '#title' => t('Default Base Layer'),
     '#description' => t('The default base layer to use when rendering maps.  This will be included whether it is in the base layers or not.'),
-    '#options' => $baselayers,
+    '#options' => $layer_options['baselayers'],
     '#attributes' => array('class' => 'openlayers-form-default-layer'), 
     '#default_value' => $defaults['layers']['default_layer'],
   );
@@ -296,7 +285,7 @@ function _openlayers_map_form($defaults = array()) {
     '#type' => 'checkboxes',
     '#title' => t('Overlay Layers'),
     '#description' => t('Select the overlay layers to make available for your map.'),
-    '#options' => $overlays,
+    '#options' => $layer_options['overlays'],
     '#attributes' => array('class' => 'openlayers-form-overlays'), 
     '#multiple' => TRUE,
     '#default_value' => $defaults['layers']['overlays'] ? $defaults['layers']['overlays'] : array(),
@@ -404,13 +393,64 @@ function _openlayers_convert_map_to_form($map = array()) {
     return $processed;
   }
   $processed = $map;
-  
+    
   // Manual changes
+  $processed['layers'] = array();
   $processed['layers']['default_layer'] = $map['default_layer'];
+  $processed['layers']['baselayers'] = array();
+  $processed['layers']['overlays'] = array();
   
+  foreach ($map['layers'] as $layer_id => $layer){
+    if ($layer['baselayer']){
+      $processed['layers']['baselayers'][] = $layer_id;
+    }
+    else {
+      $processed['layers']['overlays'][] = $layer_id;
+    }
+  }
   
   // Return processed
   return $processed;
+}
+
+function _openlayers_get_overays_baselayers_options($layers){
+
+}
+
+function _openlayers_get_projections($layers, $seperate_all = FALSE){
+  $all_projections = array();
+  $projection_layers = array();
+  $projection_layers['all'] = array();
+  foreach ($layers as $layer_key => $layer) {
+    if ($layer['projection']){
+      foreach ($layer['projection'] as $projection){
+        if (!array_key_exists($projection, $projection_layers)){
+          $projection_layers[$projection] = array();
+        }
+        $projection_layers[$projection][] = $layer_key;
+        
+      }
+    }
+    else{
+      $projection_layers['all'][] = $layer_key;
+    }
+  }
+  
+  // Merge all layers that have been marked as 'all' into the list of compatible
+  // layers for all projections. Default is to do this.
+  if ($seperate_all == FALSE){
+    // Add the layers that are compatible with all projections to our $projection_layers array
+    foreach ($projection_layers['all'] as $layer_key){
+      foreach ($projection_layers as $projection => $list_of_layers){
+        if ($projection != 'all'){
+          $projection_layers[$projection][] = $layer_key;
+        }
+      }
+    }
+    unset($projection_layers['all']);
+  }
+  
+  return $projection_layers;
 }
 
 /**

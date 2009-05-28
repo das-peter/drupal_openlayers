@@ -11,7 +11,7 @@
 /**
  * Global Object for Namespace
  */
-var OL = OL || { 'Layers': {} };
+var OL = OL || { 'Layers': {}, 'EventHandlers': {} };
 
 /**
  * When document is ready for JS
@@ -149,7 +149,7 @@ OL.renderMap = function(map) {
     event.mapDef = map;
     event.map = OL.maps[map.id].map;
     event.behavior = OL.mapDefs[map.id].behaviors[b];
-    window[OL.mapDefs[map.id].behaviors[b].js_callback](event);
+    OL[OL.mapDefs[map.id].behaviors[b].js_callback](event);
   }
   
   // Trigger mapReady event
@@ -233,7 +233,7 @@ OL.processLayers = function(layers, mapid) {
         // Add events
         for (var evtype in layers[layer].events){
           for (var ev in layers[layer].events[evtype]) { 
-            newLayer.events.register(evtype, newLayer, window[layers[layer].events[evtype][ev]]);
+            newLayer.events.register(evtype, newLayer, OL[layers[layer].events[evtype][ev]]);
           }
         }
       }
@@ -257,7 +257,7 @@ OL.processEvents = function(events, mapid) {
     // Exclude One-Time map events. 
     if (evtype != 'beforeEverything' && evtype != 'beforeLayers' && evtype != 'beforeCenter' && evtype != 'beforeControls' && evtype != 'beforeEvents' && evtype != 'beforeBehaviors' && evtype != 'mapReady') {
       for (var ev in events[evtype]) { 
-        OL.maps[mapid].map.events.register(evtype, OL.maps[mapid].map, window[events[evtype][ev]]);
+        OL.maps[mapid].map.events.register(evtype, OL.maps[mapid].map, OL[events[evtype][ev]]);
       }
     }
   }
@@ -276,7 +276,7 @@ OL.processEvents = function(events, mapid) {
 OL.triggerCustom = function(map, eventName, event) {
   if (OL.isSet(map.events) && OL.isSet(map.events[eventName])){
     for (var ev in map.events[eventName]){
-      window[map.events[eventName][ev]](event);
+      OL[map.events[eventName][ev]](event);
     }
   }
 }
@@ -335,7 +335,7 @@ OL.dump = function(element, limit, depth) {
         returnString += ': <div style="background:#C9C9C9;border:1px solid black; overflow:auto;"><code>' +
                   element[property].replace(/</g, '<').replace(/>/g, '>') + '</code></div>';
       if ((typeof element[property] == 'object') && (depth <limit))
-        returnString += openlayersVarDump(element[property], limit, (depth + 1));
+        returnString += OL.dump(element[property], limit, (depth + 1));
       returnString += '</li>';
     }
   }
