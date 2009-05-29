@@ -378,5 +378,5 @@ OL.isSet = function(variable) {
 Drupal.theme.prototype.mapControls = function(mapid, height) {
   var newcontainer = $('<div></div>');
   newcontainer.addClass('openlayers-controls').attr('id', 'openlayers-controls-' + mapid).css('position', 'relative').css('top', '-' + height);
-  return newcontainer.html();
+  return newcontainer;
 }

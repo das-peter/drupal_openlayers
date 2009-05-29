@@ -219,17 +219,17 @@ OL.Behaviors.drawFeatures = function(event) {
   // Add special event handlers to controls
   if (behavior.featureadded_handler) {
     for (var ev in behavior.featureadded_handler) {
-      createControl.events.register('featureadded', createControl, OL.Behaviors[behavior.featureadded_handler[ev]]);
+      createControl.events.register('featureadded', createControl, OL[behavior.featureadded_handler[ev]]);
     }
   }
   if (behavior.featuremodified_handler) {
     for (var ev in behavior.featuremodified_handler) { 
-      layer.events.register('afterfeaturemodified', layer, OL.Behaviors[behavior.featuremodified_handler[ev]]);
+      layer.events.register('afterfeaturemodified', layer, OL[behavior.featuremodified_handler[ev]]);
     }
   }
   if (behavior.featureremoved_handler) {
     for (var ev in behavior.featureremoved_handler) { 
-      layer.events.register('beforefeatureremoved', layer, OL.Behaviors[behavior.featureremoved_handler[ev]]);
+      layer.events.register('beforefeatureremoved', layer, OL[behavior.featureremoved_handler[ev]]);
     }
     
     // If a user presses the delete key, delete the currently selected polygon. 
@@ -272,7 +272,7 @@ OL.EventHandlers.drawFeaturesMapReady = function(event) {
   // Add click event to the action link (button)
   $('.openlayers-controls-draw-feature-link').click(function() {
     // Grab the mapid and the type from the rel attribute.
-    var parsedRel = openlayersParseRel($(this).attr('rel'));
+    var parsedRel = OL.parseRel($(this).attr('rel'));
     
     // Change the look of the action link
     $('.openlayers-controls-draw-feature-link').removeClass('openlayers-controls-draw-feature-link-on');

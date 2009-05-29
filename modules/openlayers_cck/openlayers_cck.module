@@ -166,9 +166,9 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
       'type' => 'openlayers_behaviors_draw_features',
       'feature_type' => 'point',
       'layer' => 'openlayers_cck_vector',
-      'featureadded_handler' => array('openlayersCCKFeatureAdded'),
-      'featuremodified_handler' => array('openlayersCCKFeatureModified'),
-      'featureremoved_handler' => array('openlayersCCKFeatureRemoved'),
+      'featureadded_handler' => array('CCK.featureAdded'),
+      'featuremodified_handler' => array('CCK.featureModified'),
+      'featureremoved_handler' => array('CCK.featureRemoved'),
     );
     // Determine type from geo type
     switch ($field['geo_type']) {
