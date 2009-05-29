@@ -242,7 +242,7 @@ OL.CCK.featureAdded = function(event) {
   feature.drupalField = wktFieldNewID;
   
   // Project the geometry if our map has a different geospatial projection as our CCK geo data.
-  if (OL.maps[mapid].projection != OL.maps[mapid].options.displayProjection){
+  if (OL.maps[mapid].projection != OL.mapDefs[mapid].options.displayProjection){
     geometry.transform(OL.maps[mapid].projection, OL.maps[mapid].displayProjection);
   }
   

@@ -219,17 +219,17 @@ OL.Behaviors.drawFeatures = function(event) {
   // Add special event handlers to controls
   if (behavior.featureadded_handler) {
     for (var ev in behavior.featureadded_handler) {
-      createControl.events.register('featureadded', createControl, OL[behavior.featureadded_handler[ev]]);
+      createControl.events.register('featureadded', createControl, OL.getObject(behavior.featureadded_handler[ev]));
     }
   }
   if (behavior.featuremodified_handler) {
     for (var ev in behavior.featuremodified_handler) { 
-      layer.events.register('afterfeaturemodified', layer, OL[behavior.featuremodified_handler[ev]]);
+      layer.events.register('afterfeaturemodified', layer, OL.getObject(behavior.featuremodified_handler[ev]));
     }
   }
   if (behavior.featureremoved_handler) {
     for (var ev in behavior.featureremoved_handler) { 
-      layer.events.register('beforefeatureremoved', layer, OL[behavior.featureremoved_handler[ev]]);
+      layer.events.register('beforefeatureremoved', layer, OL.getObject(behavior.featureremoved_handler[ev]));
     }
     
     // If a user presses the delete key, delete the currently selected polygon. 

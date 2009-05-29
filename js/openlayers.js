@@ -311,6 +311,26 @@ OL.parseRel = function(rel) {
 }
 
 /**
+ * Given a string of the form 'OL.This.that', get the object that the 
+ * string refers to.
+ * 
+ * @param string
+ *   The string to parse.
+ * @return
+ *   Object
+ */
+OL.getObject = function(string) {
+  var parts = string.split('.');
+  i = 0;
+  var object = window;
+  while (i < parts.length){
+   object = object[parts[i]];
+   i++; 
+  }
+  return object;
+}
+
+/**
  * Dump Variables -- This is a JS developer tool
  * 
  * @param element
