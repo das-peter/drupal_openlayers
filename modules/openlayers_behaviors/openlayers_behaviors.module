@@ -1,4 +1,5 @@
 <?php
+// $Id$
 
 /**
  * @file
@@ -14,7 +15,7 @@
 function openlayers_behaviors_help($path, $arg) {
   switch ($path) {
     case 'admin/help#openlayers_behaviors':
-      $output = '<p>'. t('Provides a wide range of map \'behaviors\' - pluggable map interactivities such as pop-ups, tooltips, and feature editing.') .'</p>';
+      $output = '<p>'. t('Provides a wide range of map "behaviors", pluggable map interactivities such as pop-ups, tooltips, and feature editing.') .'</p>';
   }
   return $output;
 }
@@ -24,6 +25,7 @@ function openlayers_behaviors_help($path, $arg) {
  */
 function openlayers_behaviors_openlayers_behaviors_info() {
   $file = drupal_get_path('module', 'openlayers_behaviors') .'/includes/openlayers_behaviors.behaviors.inc';
+  $js_file = drupal_get_path('module', 'openlayers_behaviors') .'/js/openlayers_behaviors.behaviors.js';
   $info = array();
   
   // Define info array
@@ -32,35 +34,32 @@ function openlayers_behaviors_openlayers_behaviors_info() {
     'description' => t('When the map is finished loading, zoom to the features contained within the given layer'),
     'file' => $file,
     'callback' => 'openlayers_behaviors_process_zoom_to_layer',
-    'js_file' => drupal_get_path('module', 'openlayers_behaviors') .'/js/openlayers_behaviors.behaviors.js',
-    'js_callback' => 'openlayersBehaviorsZoomToLayer',
+    'js_file' => $js_file,
+    'js_callback' => 'zoomToLayer',
   );
-  
   $info['openlayers_behaviors_tooltip'] = array(
     'name' => t('Tooltip'),
     'description' => t('When the user hover over a feature, provide a tooltip'),
     'file' => $file,
     'callback' => 'openlayers_behaviors_process_tooltip',
-    'js_file' => drupal_get_path('module', 'openlayers_behaviors') .'/js/openlayers_behaviors.behaviors.js',
-    'js_callback' => 'openlayersBehaviorsTooltip',
+    'js_file' => $js_file,
+    'js_callback' => 'tooltip',
   );
-  
   $info['openlayers_behaviors_draw_features'] = array(
     'name' => t('Draw and Edit Features'),
     'description' => t('Allows creation, editing, and deleting of features in an interactive way.'),
     'file' => $file,
     'callback' => 'openlayers_behaviors_process_draw_features',
-    'js_file' => drupal_get_path('module', 'openlayers_behaviors') .'/js/openlayers_behaviors.behaviors.js',
-    'js_callback' => 'openlayersBehaviorsDrawFeatures',
+    'js_file' => $js_file,
+    'js_callback' => 'drawFeatures',
   );
-
   $info['openlayers_behaviors_fullscreen'] = array(
     'name' => t('Add a fullscreen button'),
     'description' => t('View map fullscreen'),
     'file' => $file,
     'callback' => 'openlayers_behaviors_process_fullscreen',
-    'js_file' => drupal_get_path('module', 'openlayers_behaviors') .'/js/openlayers_behaviors.behaviors.js',
-    'js_callback' => 'openlayersBehaviorsFullscreen',
+    'js_file' => $js_file,
+    'js_callback' => 'fullscreen',
   );
   
   return $info;

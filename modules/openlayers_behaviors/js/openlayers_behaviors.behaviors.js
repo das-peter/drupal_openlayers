@@ -1,3 +1,4 @@
+// $Id$
 
 /**
  * @file
@@ -6,28 +7,53 @@
  * @ingroup openlayers
  */
 
-OL.Behaviors.openlayersBehaviorsTooltip = function(event){
+/**
+ * Global Object for Namespace
+ */
+var OL = OL || {};
+OL.Behaviors = OL.Behaviors || {};
+
+/**
+ * OL Tooltip Behavior
+ *
+ * @param event
+ *   Event Object
+ */
+OL.Behaviors.tooltip = function(event) {
   var mapDef = event.mapDef;
   var mapid = mapDef.id;
   var map = event.map;
   var behavior = event.behavior;
   
-  
   // Set up the hover triggers
   var layer = OL.maps[mapid].layers[behavior.layer];
+  var options = {
+    hover: true, 
+    highlightOnly: true, 
+    renderIntent: "temporary", 
+    eventListeners: {
+      featurehighlighted: openlayersBehaviorsTooltipOver, 
+      featureunhighlighted: openlayersBehaviorsTooltipOut
+    }
+  };
   layer.drupalData.tooltipAttribute = behavior.attribute;
-  OL.maps[mapid].controls[behavior.id] = new OpenLayers.Control.SelectFeature(
-    layer,
-      {hover: true, highlightOnly: true, renderIntent: "temporary", eventListeners: {featurehighlighted: openlayersBehaviorsTooltipOver, featureunhighlighted: openlayersBehaviorsTooltipOut}}
-  );
+  OL.maps[mapid].controls[behavior.id] = new OpenLayers.Control.SelectFeature(layer, options);
+  // Add control
   map.addControl(OL.maps[mapid].controls[behavior.id]);
   OL.maps[mapid].controls[behavior.id].activate();
   
   // Set up the HTML div
-  $("#"+mapid).after('<div id="'+ mapid +'-tooltip" class="openlayers-behaviors-tooltip"><img class="openlayers-behaviors-pointy" src="'+ Drupal.settings.basePath + behavior.pointy_path +'" alt="pointy" /><span id="'+ mapid +'-tooltip-text"></span></div>');
+  // @TODO: Put into Drupal.theme
+  $("#" + mapid).after('<div id="'+ mapid +'-tooltip" class="openlayers-behaviors-tooltip"><img class="openlayers-behaviors-pointy" src="'+ Drupal.settings.basePath + behavior.pointy_path +'" alt="pointy" /><span id="'+ mapid +'-tooltip-text"></span></div>');
 }
 
-function openlayersBehaviorsTooltipOver(event){ 
+/**
+ * OL Tooltip Hover Over Behavior
+ *
+ * @param event
+ *   Event Object
+ */
+OL.Behaviors.tooltipOver = function(event) { 
   var feature = event.feature;
   var tooltipText = feature.attributes[feature.layer.drupalData.tooltipAttribute];
   $('#'+ feature.layer.map.mapid + "-tooltip-text").html(tooltipText);
@@ -39,97 +65,84 @@ function openlayersBehaviorsTooltipOver(event){
   var scrollTop = $(window).scrollTop();
   var scrollLeft = $(window).scrollLeft();
   
-  // @@TODO: Can this -12 and -30 put in openlayers_behavior.css and then be read out and into this script? This would allow easier styling
-  var absoluteTop = centroidPixel.y + mapDivOffset.top - scrollTop -30;
-  var absoluteLeft = centroidPixel.x + mapDivOffset.left - scrollLeft -12;
-  $('#'+ feature.layer.map.mapid + "-tooltip").css('top',absoluteTop).css('left',absoluteLeft).css('display','block');
+  // @@TODO: Can this -12 and -30 put in openlayers_behavior.css and then be 
+  // read out and into this script? This would allow easier styling
+  var absoluteTop = centroidPixel.y + mapDivOffset.top - scrollTop - 30;
+  var absoluteLeft = centroidPixel.x + mapDivOffset.left - scrollLeft - 12;
+  $('#'+ feature.layer.map.mapid + "-tooltip")
+    .css('top', absoluteTop)
+    .css('left', absoluteLeft)
+    .css('display','block');
 }
 
-function openlayersBehaviorsTooltipOut(event){
+/**
+ * OL Tooltip Hover Out Behavior
+ *
+ * @param event
+ *   Event Object
+ */
+OL.Behaviors.tooltipOut = function(event) {
   $('#'+ event.feature.layer.map.mapid + "-tooltip").css('display','none');
 }
 
-function openlayersBehaviorsTooltipGetCentroid(geometry) {
-  if (geometry.CLASS_NAME == 'OpenLayers.Geometry.Polygon'){
-    var firstCentroid = geometry.getCentroid();
-    if (geometry.containsPoint(firstCentroid)){
-      // The polygon contains it's centroid, easy!
-      var baseCentroid = firstCentroid;
-    }else{    
-      // The polygon is a funny shape and does not contain it's own centroid. Find the closest vertex to the centroid.
-      var vertices = geometry.getVertices();
-      var minDistance;
-      for (var v in vertices){
-        var distance = vertices[v].distanceTo(firstCentroid);
-        if (distance < minDistance || v == 0){
-          minDistance = distance;
-          var closestVertices = vertices[v];
-        }
-      }
-     var baseCentroid = closestVertices;
-    }
-
-  }
-  else if (geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString'){
-    // Simply use the middle vertices as the centroid. One day we may want to take into account the lengths of the different segments
-    var vertices = geometry.getVertices();
-    var midVerticesIndex = Math.round((vertices.length -1) / 2);
-    var baseCentroid = vertices[midVerticesIndex];
-  }
-  else if (geometry.CLASS_NAME == 'OpenLayers.Geometry.Point'){
-    var baseCentroid = geometry.getCentroid();
-  }
-  return new OpenLayers.LonLat(baseCentroid.x, baseCentroid.y);
-}
-
-
-OL.Behaviors.openlayersBehaviorsZoomToLayer = function(event){
+/**
+ * OL Zoom to Layer Behavior
+ *
+ * @param event
+ *   Event Object
+ */
+OL.Behaviors.zoomToLayer = function(event) {
   var mapDef = event.mapDef;
   var mapid = mapDef.id;
   var map = event.map;
   var behavior = event.behavior;
   var layer = OL.maps[mapid].layers[behavior.layer];
-  if (layer.features.length != 0){
+  if (layer.features.length != 0) {
     // Check to see if we are dealing with just a single point.
-    if (layer.features.length == 1 && layer.features[0].geometry.getArea() == 0){
+    if (layer.features.length == 1 && layer.features[0].geometry.getArea() == 0) {
       var center = new OpenLayers.LonLat(layer.features[0].geometry.x, layer.features[0].geometry.y);
       // If pointZoom has been set, then center and zoom, else just center and don't zoom
-      if (openlayersIsSet(behavior.pointZoom)){
+      if (openlayersIsSet(behavior.pointZoom)) {
         map.setCenter(center, mapDef.behaviors.pointZoom);
       }
-      else{
+      else {
         map.setCenter(center); 
       }
     }
-    // Else we are dealing with either a polygon, a line, or multiple points, all of which have bounds to which we can zoom
-    else{
+    // Else we are dealing with either a polygon, a line, or 
+    // multiple points, all of which have bounds to which we can zoom
+    else {
       var extentToZoom = new OpenLayers.Bounds();
       // Go through the feautres of the layer, building out the bounds to which we wish to zoom.
-      for (var f in layer.features){
+      for (var f in layer.features) {
         extentToZoom.extend(layer.features[f].geometry.getBounds());
       }
       // Zoom the map to the bounds of the layer
       map.zoomToExtent(extentToZoom);
     }
   }
-
 }
 
 /**
  * Process Draw Features. 
  *
- * This is for marking vector layers as editable. 
- * This function will add standard functionality for adding and editing features.
- * This function does no *do* anything with the features other than allow them to be drawn, edited and deleted by the interface. 
- * Use featureadded_handler, featuremodified_handler and featureremoved_handler if you wish to do something with the drawn/edited/deleted features.
+ * This is for marking vector layers as editable. It will add standard 
+ * functionality for adding and editing features.  This function does 
+ * not *do* anything with the features other than allow them to be 
+ * drawn, edited and deleted by the interface.  Use featureadded_handler, 
+ * featuremodified_handler and featureremoved_handler if you wish to 
+ * do something with the drawn/edited/deleted features.
+ *
+ * @param event
+ *   Event Object
  */
-OL.Behaviors.openlayersBehaviorsDrawFeatures = function(event) {
+OL.Behaviors.drawFeatures = function(event) {
   var mapDef = event.mapDef;
   var mapid = mapDef.id;
   var behavior = event.behavior;  
   
   // Add Base Pan button
-  // @@TODO: Make this out put a themed item in PHP
+  // @@TODO: Use Drupal.theme
   $('#openlayers-controls-' + mapid).append('<a href="#" id="openlayers-controls-pan-' + mapid + '" class="openlayers-controls-draw-feature-link openlayers-controls-draw-feature-link-pan openlayers-controls-draw-feature-link-on" rel="type:pan;mapid:' + mapid + '"></a>');
   
   // Get the OpenLayers layer object that will be editable.
@@ -147,7 +160,8 @@ OL.Behaviors.openlayersBehaviorsDrawFeatures = function(event) {
   OL.maps[mapid].map.addControl(createControl);
   OL.maps[mapid].map.addControl(modifyControl);
 
-  //Disable the active mode by default.  This could be changed if we wanted people to draw on the map immediately.
+  // Disable the active mode by default.  This could be 
+  // changed if we wanted people to draw on the map immediately.
   createControl.activeByDefault = false;
   modifyControl.activeByDefault = false;
   
@@ -162,20 +176,18 @@ OL.Behaviors.openlayersBehaviorsDrawFeatures = function(event) {
   
   // Add special event handlers to controls
   if (behavior.featureadded_handler) {
-    for (var ev in behavior.featureadded_handler){
-      createControl.events.register('featureadded',createControl,window[behavior.featureadded_handler[ev]]);
+    for (var ev in behavior.featureadded_handler) {
+      createControl.events.register('featureadded', createControl, OL.Behaviors[behavior.featureadded_handler[ev]]);
     }
   }
-     
   if (behavior.featuremodified_handler) {
-    for (var ev in behavior.featuremodified_handler){ 
-      layer.events.register('afterfeaturemodified',layer,window[behavior.featuremodified_handler[ev]]);
+    for (var ev in behavior.featuremodified_handler) { 
+      layer.events.register('afterfeaturemodified', layer, OL.Behaviors[behavior.featuremodified_handler[ev]]);
     }
   }
-  
   if (behavior.featureremoved_handler) {
-    for (var ev in behavior.featureremoved_handler){ 
-      layer.events.register('beforefeatureremoved',layer,window[behavior.featureremoved_handler[ev]]);
+    for (var ev in behavior.featureremoved_handler) { 
+      layer.events.register('beforefeatureremoved', layer, OL.Behaviors[behavior.featureremoved_handler[ev]]);
     }
     
     // If a user presses the delete key, delete the currently selected polygon. 
@@ -200,80 +212,89 @@ OL.Behaviors.openlayersBehaviorsDrawFeatures = function(event) {
         }
       }
     });
-    
   }
       
   // Add action link (button)
   // We store the type and associated mapid in the rel attribute.
-  // @@TODO: Make this out put a themed item in PHP, might need a placeholder for dF
+  // @@TODO: Use Drupal.theme
   $('#openlayers-controls-' + mapid).append('<a href="#" id="openlayers-controls-draw-' + behavior.feature_type + '-' + mapid + '" class="openlayers-controls-draw-feature-link openlayers-controls-draw-feature-link-' + behavior.feature_type + ' openlayers-controls-draw-feature-link-off" rel="type:' + behavior.feature_type + ';mapid:' + mapid + ';behaviorid:' + behavior.id + '"></a>');
 }
 
-OL.EventHandlers.openlayersBehaviorsDrawFeaturesMapReady = function(event){
+/**
+ * Draw Features Map Ready Event
+ *
+ * @param event
+ *   Event Object
+ */
+OL.EventHandlers.drawFeaturesMapReady = function(event) {
   // Add click event to the action link (button)
-  $('.openlayers-controls-draw-feature-link').click(
-    function() {
-      // Grab the mapid and the type from the rel attribute.
-      var parsedRel = openlayersParseRel($(this).attr('rel'));
-      
-      // Change the look of the action link
-      $('.openlayers-controls-draw-feature-link').removeClass('openlayers-controls-draw-feature-link-on');
-      $('.openlayers-controls-draw-feature-link').addClass('openlayers-controls-draw-feature-link-off');
-      $(this).addClass('openlayers-controls-draw-feature-link-on');
-      $(this).removeClass('openlayers-controls-draw-feature-link-off');
-      
-      // Cycle through the different possible types of controls (polygon, line, point, pan)
-      for (var b in OL.mapDefs[parsedRel['mapid']].behaviors){
-        var behavior  = OL.mapDefs[parsedRel['mapid']].behaviors[b];
-        if (behavior.type == 'openlayers_behaviors_draw_features'){
-                    
-          var createControl = OL.maps[parsedRel['mapid']].controls['#create-' + behavior.feature_type];
-          var modifyControl = OL.maps[parsedRel['mapid']].controls['#modify-' + behavior.feature_type];
+  $('.openlayers-controls-draw-feature-link').click(function() {
+    // Grab the mapid and the type from the rel attribute.
+    var parsedRel = openlayersParseRel($(this).attr('rel'));
+    
+    // Change the look of the action link
+    $('.openlayers-controls-draw-feature-link').removeClass('openlayers-controls-draw-feature-link-on');
+    $('.openlayers-controls-draw-feature-link').addClass('openlayers-controls-draw-feature-link-off');
+    $(this).addClass('openlayers-controls-draw-feature-link-on');
+    $(this).removeClass('openlayers-controls-draw-feature-link-off');
+    
+    // Cycle through the different possible types of controls (polygon, line, point, pan)
+    for (var b in OL.mapDefs[parsedRel['mapid']].behaviors){
+      var behavior  = OL.mapDefs[parsedRel['mapid']].behaviors[b];
+      if (behavior.type == 'openlayers_behaviors_draw_features'){
+                  
+        var createControl = OL.maps[parsedRel['mapid']].controls['#create-' + behavior.feature_type];
+        var modifyControl = OL.maps[parsedRel['mapid']].controls['#modify-' + behavior.feature_type];
+        
+        // Deactivate everything
+        createControl.deactivate();
+        modifyControl.deactivate();
           
-          // Deactivate everything
-          createControl.deactivate();
-          modifyControl.deactivate();
-            
-          // Activate it if it matches
-          if (parsedRel['type'] == behavior.feature_type){
-            createControl.activate();
-            modifyControl.activate();
-          }
+        // Activate it if it matches
+        if (parsedRel['type'] == behavior.feature_type){
+          createControl.activate();
+          modifyControl.activate();
         }
       }
-      return false;
     }
-  );
+    return false;
+  });
 }
 
-
-OL.Behaviors.openlayersBehaviorsFullscreen = function(event){
+/**
+ * Fullsceen Behavoir
+ *
+ * @param event
+ *   Event Object
+ */
+OL.Behaviors.fullscreen = function(event) {
   var mapDef = event.mapDef;
   var mapid = mapDef.id;
   
+  // @@TODO: Drupal.theme
   $('#openlayers-controls-' + mapid).append('<div id="openlayers-controls-fullscreen-' + mapid + '" class="openlayers-controls-fullscreen"></div>');
   
-  $('#openlayers-controls-fullscreen-' + mapid).click(function(){
-    if (!openlayersIsSet(OLFullscreen)){
+  $('#openlayers-controls-fullscreen-' + mapid).click(function() {
+    if (!openlayersIsSet(OLFullscreen)) {
       OLFullscreen = [];
     }
-    if (!openlayersIsSet(OLFullscreen[mapid])){
+    if (!openlayersIsSet(OLFullscreen[mapid])) {
       OLFullscreen[mapid] = {};
       OLFullscreen[mapid].fullscreen = false;
       OLFullscreen[mapid].mapstyle = [];
       OLFullscreen[mapid].controlsstyle = [];
     }
     
-    if (!OLFullscreen[mapid].fullscreen){
+    if (!OLFullscreen[mapid].fullscreen) {
       OLFullscreen[mapid].fullscreen = true;
       
       // Store old css values
       var mapStylesToStore = ['position','top','left','width','height','z-index'];
       var controlStylesToStore = ['position','top','right'];
-      for (var ms in mapStylesToStore){
+      for (var ms in mapStylesToStore) {
         OLFullscreen[mapid].mapstyle[mapStylesToStore[ms]] = $('#' + mapid).css(mapStylesToStore[ms]);
       }
-      for (var cs in controlStylesToStore){
+      for (var cs in controlStylesToStore) {
         OLFullscreen[mapid].controlsstyle[controlStylesToStore[cs]] = $('#openlayers-controls-' + mapid).css(controlStylesToStore[cs]);
       }
       
@@ -285,12 +306,13 @@ OL.Behaviors.openlayersBehaviorsFullscreen = function(event){
       
       event.map.updateSize();
       
-    } else{
+    }
+    else {
       // Restore styles, resizing the map.
-      for (var ms in OLFullscreen[mapid].mapstyle){
+      for (var ms in OLFullscreen[mapid].mapstyle) {
         $('#' + mapid).css(ms,OLFullscreen[mapid].mapstyle[ms]);
       };
-      for (var cs in OLFullscreen[mapid].controlsstyle){
+      for (var cs in OLFullscreen[mapid].controlsstyle) {
         $('#openlayers-controls-' + mapid).css(cs,OLFullscreen[mapid].controlsstyle[cs]);
       };
       
@@ -299,10 +321,47 @@ OL.Behaviors.openlayersBehaviorsFullscreen = function(event){
       OLFullscreen[mapid].fullscreen = false;
       event.map.updateSize();
     }
-    
-    
-    
   });
-  
+}
 
+/**
+ * Get Centroid for Tooltip
+ *
+ * Help function teo get Centroid
+ *
+ * @param event
+ *   Event Object
+ */
+OL.tooltipGetCentroid = function(geometry) {
+  if (geometry.CLASS_NAME == 'OpenLayers.Geometry.Polygon') {
+    var firstCentroid = geometry.getCentroid();
+    if (geometry.containsPoint(firstCentroid)) {
+      // The polygon contains it's centroid, easy!
+      var baseCentroid = firstCentroid;
+    }else{    
+      // The polygon is a funny shape and does not contain it's own centroid. Find the closest vertex to the centroid.
+      var vertices = geometry.getVertices();
+      var minDistance;
+      for (var v in vertices){
+        var distance = vertices[v].distanceTo(firstCentroid);
+        if (distance < minDistance || v == 0){
+          minDistance = distance;
+          var closestVertices = vertices[v];
+        }
+      }
+     var baseCentroid = closestVertices;
+    }
+
+  }
+  else if (geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString'){
+    // Simply use the middle vertices as the centroid. One day 
+    // we may want to take into account the lengths of the different segments
+    var vertices = geometry.getVertices();
+    var midVerticesIndex = Math.round((vertices.length -1) / 2);
+    var baseCentroid = vertices[midVerticesIndex];
+  }
+  else if (geometry.CLASS_NAME == 'OpenLayers.Geometry.Point'){
+    var baseCentroid = geometry.getCentroid();
+  }
+  return new OpenLayers.LonLat(baseCentroid.x, baseCentroid.y);
 }

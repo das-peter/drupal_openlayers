@@ -91,10 +91,10 @@ function openlayers_cck_widget_settings($op, $widget) {
       // Most users will not want to edit these fields
       $form['openlayers_cck'] = $map_form;
       $form['openlayers_cck']['#type'] = 'fieldset';
-      $form['openlayers_cck']['#title'] = 'Map Settings';
-      $form['openlayers_cck']['#description'] = 'These are the settings that determine how the map will look.';
-      $form['openlayers_cck']['#collapsible'] = 'TRUE';
-      $form['openlayers_cck']['#collapsed'] = 'TRUE';
+      $form['openlayers_cck']['#title'] = t('Map Settings');
+      $form['openlayers_cck']['#description'] = t('These are the settings that determine how the map will look.');
+      $form['openlayers_cck']['#collapsible'] = TRUE;
+      $form['openlayers_cck']['#collapsed'] = TRUE;
       // Return form
       return $form;
 
@@ -114,10 +114,9 @@ function openlayers_cck_widget_settings($op, $widget) {
  * Implementation of hook_widget().
  */
 function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0) {
-  // @@TODO: Put this outside the widget, but inside the field, so it is not rendered
-  // for each item in the field.  Not sure how this is done.
-  
+  // Get field name
   $fieldname = $field['field_name'];
+  
   // Only include map once per field
   static $included_field = '';
   if ($included_field != $fieldname) {
@@ -125,21 +124,22 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
     $mapid = OPENLAYERS_CCK_MAP_ID_PREFIX .'-'. $fieldname;
     $map['id'] = $mapid;
     
-    // Add an event to the map. When a layer is added fire the JavaScript function openlayersCCKLoadValues.
-    // openlayersCCKLoadValues takes care of loading data from the CCK fields into the map.
+    // Add an event to the map. When a layer is added fire the JavaScript function 
+    // OL.EventHandler.CCKLoadValues which will load data from the CCK fields into the map.
     $map['events'] = array(
-      'beforeBehaviors' => array('openlayersCCKLoadValues'),
+      'beforeBehaviors' => array('CCKLoadValues'),
     );
-    
-    $map['behaviors'] = array();
-    $map['behaviors']['openlayers_cck_zoom_to_layer'] = array(
-      'id' => 'openlayers_cck_zoom_to_layer',
-      'type' => 'openlayers_behaviors_zoom_to_layer',
-      'layer' => 'openlayers_cck_vector',
+    // Define beahvoirs
+    $map['behaviors'] = array(
+      'openlayers_cck_zoom_to_layer' => array(
+        'id' => 'openlayers_cck_zoom_to_layer',
+        'type' => 'openlayers_behaviors_zoom_to_layer',
+        'layer' => 'openlayers_cck_vector',
+      ),
     );
     
     // Make sure that our display projection matches the database projection
-    if ($field['db_storage'] == 0){
+    if ($field['db_storage'] == 0) {
       $field['db_storage'] = '4326';
     }
     $map['options'] = array(
@@ -154,59 +154,43 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
         'name' => $field['widget']['label'],
         'options' => array(),
         'events' => array(
-          'featureselected' => array('openlayersCCKFeaturesSelected'),
-          'featureunselected' => array('openlayersCCKFeaturesUnselected'),
+          'featureselected' => array('CCKFeaturesSelected'),
+          'featureunselected' => array('CCKFeaturesUnselected'),
         ),
       ),
     );
     
-    // Look at field type, and add respective behavior
+    // Build control
+    $map['behaviors']['openlayers_cck_edit_'. $field['geo_type']] = array(
+      'id' => 'openlayers_cck_edit_'. $field['geo_type'],
+      'type' => 'openlayers_behaviors_draw_features',
+      'feature_type' => 'point',
+      'layer' => 'openlayers_cck_vector',
+      'featureadded_handler' => array('openlayersCCKFeatureAdded'),
+      'featuremodified_handler' => array('openlayersCCKFeatureModified'),
+      'featureremoved_handler' => array('openlayersCCKFeatureRemoved'),
+    );
+    // Determine type from geo type
     switch ($field['geo_type']) {
       case 'point':
-        $map['behaviors']['openlayers_cck_edit_point'] = array(
-            'id' => 'openlayers_cck_edit_point',
-            'type' => 'openlayers_behaviors_draw_features',
-            'feature_type' => 'point',
-            'layer' => 'openlayers_cck_vector',
-            'featureadded_handler' => array('openlayersCCKFeatureAdded'),
-            'featuremodified_handler' => array('openlayersCCKFeatureModified'),
-            'featureremoved_handler' => array('openlayersCCKFeatureRemoved'),
-        );
+        $map['behaviors']['openlayers_cck_edit_'. $field['geo_type']]['feature_type'] = 'point';
         break;
       
       case 'linestring':
-        $map['behaviors']['openlayers_cck_edit_linestring'] = array(
-            'id' => 'openlayers_cck_edit_linestring',
-            'type' => 'openlayers_behaviors_draw_features',
-            'feature_type' => 'path',
-            'layer' => 'openlayers_cck_vector',
-            'featureadded_handler' => array('openlayersCCKFeatureAdded'),
-            'featuremodified_handler' => array('openlayersCCKFeatureModified'),
-            'featureremoved_handler' => array('openlayersCCKFeatureRemoved'),
-        );
+        $map['behaviors']['openlayers_cck_edit_'. $field['geo_type']]['feature_type'] = 'path';
         break;
         
       case 'polygon':
-        $map['behaviors']['openlayers_cck_edit_polygon'] = array(
-            'id' => 'openlayers_cck_edit_polygon',
-            'type' => 'openlayers_behaviors_draw_features',
-            'feature_type' => 'polygon',
-            'layer' => 'openlayers_cck_vector',
-            'featureadded_handler' => array('openlayersCCKFeatureAdded'),
-            'featuremodified_handler' => array('openlayersCCKFeatureModified'),
-            'featureremoved_handler' => array('openlayersCCKFeatureRemoved'),
-        );
+        $map['behaviors']['openlayers_cck_edit_'. $field['geo_type']]['feature_type'] = 'polygon';
         break;
     }
     
     // Use widget settings form to create base map array
     $widget_map = openlayers_convert_form_to_map($field['widget']['openlayers_cck']);
-    
+    // Merge with map created for field
     $map = openlayers_merge_maps($widget_map, $map);
-    
     // Render Map
     $rendered_map = openlayers_render_map($map);
-
     // Add JS
     drupal_add_js(drupal_get_path('module', 'openlayers_cck') .'/js/openlayers_cck.js');
     //Add CSS
@@ -438,7 +422,7 @@ function theme_openlayers_cck_formatter_openlayersmapformatter_single($element) 
   $layers[$geofield_key]['features'] = array();
   
   // Add features to the map definition
-  foreach ($element  as $key => $feature){
+  foreach ($element  as $key => $feature) {
     if (is_numeric($key)){
       $layers[$geofield_key]['features'][] = array(
         'wkt' => $feature['#item']['wkt'],
@@ -452,7 +436,7 @@ function theme_openlayers_cck_formatter_openlayersmapformatter_single($element) 
   }
   
   // If there are any features to display, then display the map
-  if (count($layers[$geofield_key]['features'])){
+  if (count($layers[$geofield_key]['features'])) {
     // Build our map array
     $map_def = array(
       'id' => $mapid,
