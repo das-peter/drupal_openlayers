@@ -110,7 +110,7 @@ OL.CCK.loadFeatureFromTextarea = function(mapid, textarea) {
   else {
   	// Project the geometry if our map has a different geospatial 
   	// projection as our CCK geo data.
-    if (OL.maps[mapid].projection != OL.maps[mapid].options.displayProjection) {
+    if (OL.maps[mapid].projection != OL.mapDefs[mapid].options.displayProjection) {
       newFeature.geometry.transform(OL.maps[mapid].displayProjection, OL.maps[mapid].projection);
     }
     

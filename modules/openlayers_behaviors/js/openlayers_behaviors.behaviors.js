@@ -32,8 +32,8 @@ OL.Behaviors.tooltip = function(event) {
     highlightOnly: true, 
     renderIntent: "temporary", 
     eventListeners: {
-      featurehighlighted: openlayersBehaviorsTooltipOver, 
-      featureunhighlighted: openlayersBehaviorsTooltipOut
+      featurehighlighted: OL.Behaviors.tooltipOver, 
+      featureunhighlighted: OL.Behaviors.tooltipOut
     }
   };
   layer.drupalData.tooltipAttribute = behavior.attribute;
@@ -48,7 +48,7 @@ OL.Behaviors.tooltip = function(event) {
 }
 
 /**
- * OL Tooltip Hover Over Behavior
+ * OL Tooltip Behavior - Hover Over Handler
  *
  * @param event
  *   Event Object
@@ -59,7 +59,7 @@ OL.Behaviors.tooltipOver = function(event) {
   $('#'+ feature.layer.map.mapid + "-tooltip-text").html(tooltipText);
   
   // Set the tooltip location
-  var centroid = openlayersBehaviorsTooltipGetCentroid(feature.geometry.clone());
+  var centroid = OL.Behaviors.tooltipGetCentroid(feature.geometry.clone());
   var centroidPixel = feature.layer.map.getPixelFromLonLat(centroid);
   var mapDivOffset = $('#'+feature.layer.map.mapid).offset();
   var scrollTop = $(window).scrollTop();
@@ -76,13 +76,55 @@ OL.Behaviors.tooltipOver = function(event) {
 }
 
 /**
- * OL Tooltip Hover Out Behavior
+ * OL Tooltip Behavior - Hover Out Handler
  *
  * @param event
  *   Event Object
  */
 OL.Behaviors.tooltipOut = function(event) {
   $('#'+ event.feature.layer.map.mapid + "-tooltip").css('display','none');
+}
+
+/**
+ * OL Tooltip Behavior - Get Centroid for Tooltip
+ *
+ * Help function to get Centroid
+ *
+ * @param event
+ *   Event Object
+ */
+OL.Behaviors.tooltipGetCentroid = function(geometry) {
+  if (geometry.CLASS_NAME == 'OpenLayers.Geometry.Polygon') {
+    var firstCentroid = geometry.getCentroid();
+    if (geometry.containsPoint(firstCentroid)) {
+      // The polygon contains it's centroid, easy!
+      var baseCentroid = firstCentroid;
+    }else{    
+      // The polygon is a funny shape and does not contain it's own centroid. Find the closest vertex to the centroid.
+      var vertices = geometry.getVertices();
+      var minDistance;
+      for (var v in vertices){
+        var distance = vertices[v].distanceTo(firstCentroid);
+        if (distance < minDistance || v == 0){
+          minDistance = distance;
+          var closestVertices = vertices[v];
+        }
+      }
+     var baseCentroid = closestVertices;
+    }
+
+  }
+  else if (geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString'){
+    // Simply use the middle vertices as the centroid. One day 
+    // we may want to take into account the lengths of the different segments
+    var vertices = geometry.getVertices();
+    var midVerticesIndex = Math.round((vertices.length -1) / 2);
+    var baseCentroid = vertices[midVerticesIndex];
+  }
+  else if (geometry.CLASS_NAME == 'OpenLayers.Geometry.Point'){
+    var baseCentroid = geometry.getCentroid();
+  }
+  return new OpenLayers.LonLat(baseCentroid.x, baseCentroid.y);
 }
 
 /**
@@ -102,7 +144,7 @@ OL.Behaviors.zoomToLayer = function(event) {
     if (layer.features.length == 1 && layer.features[0].geometry.getArea() == 0) {
       var center = new OpenLayers.LonLat(layer.features[0].geometry.x, layer.features[0].geometry.y);
       // If pointZoom has been set, then center and zoom, else just center and don't zoom
-      if (openlayersIsSet(behavior.pointZoom)) {
+      if (OL.isSet(behavior.pointZoom)) {
         map.setCenter(center, mapDef.behaviors.pointZoom);
       }
       else {
@@ -275,10 +317,10 @@ OL.Behaviors.fullscreen = function(event) {
   $('#openlayers-controls-' + mapid).append('<div id="openlayers-controls-fullscreen-' + mapid + '" class="openlayers-controls-fullscreen"></div>');
   
   $('#openlayers-controls-fullscreen-' + mapid).click(function() {
-    if (!openlayersIsSet(OLFullscreen)) {
+    if (!OL.isSet(OLFullscreen)) {
       OLFullscreen = [];
     }
-    if (!openlayersIsSet(OLFullscreen[mapid])) {
+    if (!OL.isSet(OLFullscreen[mapid])) {
       OLFullscreen[mapid] = {};
       OLFullscreen[mapid].fullscreen = false;
       OLFullscreen[mapid].mapstyle = [];
@@ -322,46 +364,4 @@ OL.Behaviors.fullscreen = function(event) {
       event.map.updateSize();
     }
   });
-}
-
-/**
- * Get Centroid for Tooltip
- *
- * Help function teo get Centroid
- *
- * @param event
- *   Event Object
- */
-OL.tooltipGetCentroid = function(geometry) {
-  if (geometry.CLASS_NAME == 'OpenLayers.Geometry.Polygon') {
-    var firstCentroid = geometry.getCentroid();
-    if (geometry.containsPoint(firstCentroid)) {
-      // The polygon contains it's centroid, easy!
-      var baseCentroid = firstCentroid;
-    }else{    
-      // The polygon is a funny shape and does not contain it's own centroid. Find the closest vertex to the centroid.
-      var vertices = geometry.getVertices();
-      var minDistance;
-      for (var v in vertices){
-        var distance = vertices[v].distanceTo(firstCentroid);
-        if (distance < minDistance || v == 0){
-          minDistance = distance;
-          var closestVertices = vertices[v];
-        }
-      }
-     var baseCentroid = closestVertices;
-    }
-
-  }
-  else if (geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString'){
-    // Simply use the middle vertices as the centroid. One day 
-    // we may want to take into account the lengths of the different segments
-    var vertices = geometry.getVertices();
-    var midVerticesIndex = Math.round((vertices.length -1) / 2);
-    var baseCentroid = vertices[midVerticesIndex];
-  }
-  else if (geometry.CLASS_NAME == 'OpenLayers.Geometry.Point'){
-    var baseCentroid = geometry.getCentroid();
-  }
-  return new OpenLayers.LonLat(baseCentroid.x, baseCentroid.y);
 }
