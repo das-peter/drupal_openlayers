@@ -101,7 +101,7 @@ function openlayersCCKLoadFeatureFromTextarea(mapid, textarea){
  * 
  * When the layer is done loading, load in the values from the CCK text fields if it is the correct layer.
  */
-function openlayersCCKLoadValues(event){
+OL.EventHandlers.openlayersCCKLoadValues = function(event){
   openlayersCCKPopulateMap(event.mapDef.id);
 }
 
@@ -110,7 +110,7 @@ function openlayersCCKLoadValues(event){
  * 
  * When a feature is selected, make the WKT field light up so we know which field we are editing
  */
-function openlayersCCKFeaturesSelected(event){
+OL.EventHandlers.openlayersCCKFeaturesSelected = function(event){
  var feature = event.feature;
  $("#" + feature.drupalField).addClass('openlayers-cck-feature-selected');
 }
@@ -120,7 +120,7 @@ function openlayersCCKFeaturesSelected(event){
  * 
  * When a feature is selected, make the WKT field light up so we know which field we are editing
  */
-function openlayersCCKFeaturesUnselected(event){
+OL.EventHandlers.openlayersCCKFeaturesUnselected = function(event){
  var feature = event.feature;
  $("#" + feature.drupalField).removeClass('openlayers-cck-feature-selected');
 }

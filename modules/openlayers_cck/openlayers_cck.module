@@ -197,7 +197,6 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
             'featureremoved_handler' => array('openlayersCCKFeatureRemoved'),
         );
         break;
-    
     }
     
     // Use widget settings form to create base map array
@@ -205,13 +204,13 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
     
     $map = openlayers_merge_maps($widget_map, $map);
     
+    // Render Map
+    $rendered_map = openlayers_render_map($map);
+
     // Add JS
     drupal_add_js(drupal_get_path('module', 'openlayers_cck') .'/js/openlayers_cck.js');
     //Add CSS
     drupal_add_css(drupal_get_path('module', 'openlayers_cck') .'/openlayers_cck.css', 'module');
-    
-    // Render Map
-    $rendered_map = openlayers_render_map($map);
     
     // Put together array for JS
     $openlayers_cck = array(
@@ -300,7 +299,7 @@ function theme_openlayers_cck_geo_field($element) {
 /**
  * Theme function for openlayers_cck_map
  */
-function theme_openlayers_cck_map($field = array(), $map = array()) {
+function theme_openlayers_cck_map($field = array(), $map = array()) {  
   $output = '
     <div class="form-item openlayers-cck-widget-container">
       <label for="'. $map['id'] .'">'. $field['widget']['label'] .'</label>

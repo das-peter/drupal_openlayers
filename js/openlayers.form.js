@@ -250,7 +250,7 @@ OL.updateHelpmapCenter = function() {
  *
  * When a user pans and zooms our helper map, update the form values.
  */
-OL.updateCenterFormValues = function() {
+OL.EventHandlers.updateCenterFormValues = function() {
   var helpmap = OL.maps['openlayers-center-helpmap'].map;
   var projection = $('.openlayers-form-projection').val();
   var zoom = helpmap.getZoom();

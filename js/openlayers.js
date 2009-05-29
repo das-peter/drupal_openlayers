@@ -11,17 +11,17 @@
 /**
  * Global Object for Namespace
  */
-var OL = OL || { 'Layers': {}, 'EventHandlers': {} };
+var OL = OL || { 'Layers': {}, 'EventHandlers': {} ,'Behaviors': {} };
 
 /**
  * When document is ready for JS
  */
-jQuery(document).ready(function() {
+Drupal.behaviors.openlayers = function() {
   // Check for openlayers
   if ((typeof(Drupal.settings.openlayers) == 'object') && (OL.isSet(Drupal.settings.openlayers.maps))) {
     OL.loadMaps();
   }
-});
+};
 
 /**
  * Load Maps from OpenLayers Data
@@ -149,7 +149,7 @@ OL.renderMap = function(map) {
     event.mapDef = map;
     event.map = OL.maps[map.id].map;
     event.behavior = OL.mapDefs[map.id].behaviors[b];
-    OL[OL.mapDefs[map.id].behaviors[b].js_callback](event);
+    OL.Behaviors[OL.mapDefs[map.id].behaviors[b].js_callback](event);
   }
   
   // Trigger mapReady event
@@ -233,7 +233,7 @@ OL.processLayers = function(layers, mapid) {
         // Add events
         for (var evtype in layers[layer].events){
           for (var ev in layers[layer].events[evtype]) { 
-            newLayer.events.register(evtype, newLayer, OL[layers[layer].events[evtype][ev]]);
+            newLayer.events.register(evtype, newLayer, OL.EventHandlers[layers[layer].events[evtype][ev]]);
           }
         }
       }
@@ -257,7 +257,7 @@ OL.processEvents = function(events, mapid) {
     // Exclude One-Time map events. 
     if (evtype != 'beforeEverything' && evtype != 'beforeLayers' && evtype != 'beforeCenter' && evtype != 'beforeControls' && evtype != 'beforeEvents' && evtype != 'beforeBehaviors' && evtype != 'mapReady') {
       for (var ev in events[evtype]) { 
-        OL.maps[mapid].map.events.register(evtype, OL.maps[mapid].map, OL[events[evtype][ev]]);
+        OL.maps[mapid].map.events.register(evtype, OL.maps[mapid].map, OL.EventHandlers[events[evtype][ev]]);
       }
     }
   }
@@ -276,7 +276,7 @@ OL.processEvents = function(events, mapid) {
 OL.triggerCustom = function(map, eventName, event) {
   if (OL.isSet(map.events) && OL.isSet(map.events[eventName])){
     for (var ev in map.events[eventName]){
-      OL[map.events[eventName][ev]](event);
+      OL.EventHandlers[map.events[eventName][ev]](event);
     }
   }
 }

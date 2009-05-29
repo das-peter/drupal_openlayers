@@ -41,13 +41,13 @@ OL.Layers.WMS = function(layerOptions, mapid) {
  * @return
  *  OpenLayers Vector layer object.
  */
-OL.Layers.Vectors = function(layerOptions, mapid) {
+OL.Layers.Vector = function(layerOptions, mapid) {
   // Get styles
   var stylesAll = [];
   // Process Options
-  if (typeof(layerOptions.options) != "undefined"){
+  if (OL.isSet(layerOptions.options)){
     // Process Styles
-    if (typeof(layerOptions.options.styles) != "undefined") {
+    if (OL.isSet(layerOptions.options.styles)) {
       var stylesAdded = [];
       for (var styleName in layerOptions.options.styles) {
         stylesAdded[styleName] = new OpenLayers.Style(layerOptions.options.styles[styleName].options);
@@ -121,9 +121,9 @@ OL.Layers.Vectors = function(layerOptions, mapid) {
           
           // Transform the geometry if the 'projection' property is different from the map projection
           if (typeof(layerOptions.features[feat].projection) != 'undefined'){
-            if (layerOptions.features[feat].projection != Drupal.openlayers.mapDefs[mapid].projection){
+            if (layerOptions.features[feat].projection != OL.mapDefs[mapid].projection){
               var featureProjection = new OpenLayers.Projection("EPSG:" + layerOptions.features[feat].projection);
-              var mapProjection = Drupal.openlayers.activeObjects[mapid].projection;
+              var mapProjection = OL.maps[mapid].projection;
               newFeature.geometry.transform(featureProjection,mapProjection);
             }
           }

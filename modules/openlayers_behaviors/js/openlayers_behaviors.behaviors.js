@@ -6,7 +6,7 @@
  * @ingroup openlayers
  */
 
-function openlayersBehaviorsTooltip(event){
+OL.Behaviors.openlayersBehaviorsTooltip = function(event){
   var mapDef = event.mapDef;
   var mapid = mapDef.id;
   var map = event.map;
@@ -14,14 +14,14 @@ function openlayersBehaviorsTooltip(event){
   
   
   // Set up the hover triggers
-  var layer = Drupal.openlayers.activeObjects[mapid].layers[behavior.layer];
+  var layer = OL.maps[mapid].layers[behavior.layer];
   layer.drupalData.tooltipAttribute = behavior.attribute;
-  Drupal.openlayers.activeObjects[mapid].controls[behavior.id] = new OpenLayers.Control.SelectFeature(
+  OL.maps[mapid].controls[behavior.id] = new OpenLayers.Control.SelectFeature(
     layer,
       {hover: true, highlightOnly: true, renderIntent: "temporary", eventListeners: {featurehighlighted: openlayersBehaviorsTooltipOver, featureunhighlighted: openlayersBehaviorsTooltipOut}}
   );
-  map.addControl(Drupal.openlayers.activeObjects[mapid].controls[behavior.id]);
-  Drupal.openlayers.activeObjects[mapid].controls[behavior.id].activate();
+  map.addControl(OL.maps[mapid].controls[behavior.id]);
+  OL.maps[mapid].controls[behavior.id].activate();
   
   // Set up the HTML div
   $("#"+mapid).after('<div id="'+ mapid +'-tooltip" class="openlayers-behaviors-tooltip"><img class="openlayers-behaviors-pointy" src="'+ Drupal.settings.basePath + behavior.pointy_path +'" alt="pointy" /><span id="'+ mapid +'-tooltip-text"></span></div>');
@@ -49,7 +49,7 @@ function openlayersBehaviorsTooltipOut(event){
   $('#'+ event.feature.layer.map.mapid + "-tooltip").css('display','none');
 }
 
-function openlayersBehaviorsTooltipGetCentroid(geometry){
+function openlayersBehaviorsTooltipGetCentroid(geometry) {
   if (geometry.CLASS_NAME == 'OpenLayers.Geometry.Polygon'){
     var firstCentroid = geometry.getCentroid();
     if (geometry.containsPoint(firstCentroid)){
@@ -83,13 +83,12 @@ function openlayersBehaviorsTooltipGetCentroid(geometry){
 }
 
 
-function openlayersBehaviorsZoomToLayer(event){
+OL.Behaviors.openlayersBehaviorsZoomToLayer = function(event){
   var mapDef = event.mapDef;
   var mapid = mapDef.id;
   var map = event.map;
   var behavior = event.behavior;
-  
-  var layer = Drupal.openlayers.activeObjects[mapid].layers[behavior.layer];
+  var layer = OL.maps[mapid].layers[behavior.layer];
   if (layer.features.length != 0){
     // Check to see if we are dealing with just a single point.
     if (layer.features.length == 1 && layer.features[0].geometry.getArea() == 0){
@@ -124,7 +123,7 @@ function openlayersBehaviorsZoomToLayer(event){
  * This function does no *do* anything with the features other than allow them to be drawn, edited and deleted by the interface. 
  * Use featureadded_handler, featuremodified_handler and featureremoved_handler if you wish to do something with the drawn/edited/deleted features.
  */
-function openlayersBehaviorsDrawFeatures(event) {
+OL.Behaviors.openlayersBehaviorsDrawFeatures = function(event) {
   var mapDef = event.mapDef;
   var mapid = mapDef.id;
   var behavior = event.behavior;  
@@ -134,7 +133,7 @@ function openlayersBehaviorsDrawFeatures(event) {
   $('#openlayers-controls-' + mapid).append('<a href="#" id="openlayers-controls-pan-' + mapid + '" class="openlayers-controls-draw-feature-link openlayers-controls-draw-feature-link-pan openlayers-controls-draw-feature-link-on" rel="type:pan;mapid:' + mapid + '"></a>');
   
   // Get the OpenLayers layer object that will be editable.
-  var layer = Drupal.openlayers.activeObjects[mapid].layers[behavior.layer];
+  var layer = OL.maps[mapid].layers[behavior.layer];
     
   // Determine what handler we need to use.
   if (behavior.feature_type == 'point')       var handler = OpenLayers.Handler.Point;
@@ -145,8 +144,8 @@ function openlayersBehaviorsDrawFeatures(event) {
   var createControl = new OpenLayers.Control.DrawFeature(layer, handler);  
   var modifyControl = new OpenLayers.Control.ModifyFeature(layer, {deleteCodes:[68]});
   
-  Drupal.openlayers.activeObjects[mapid].map.addControl(createControl);
-  Drupal.openlayers.activeObjects[mapid].map.addControl(modifyControl);
+  OL.maps[mapid].map.addControl(createControl);
+  OL.maps[mapid].map.addControl(modifyControl);
 
   //Disable the active mode by default.  This could be changed if we wanted people to draw on the map immediately.
   createControl.activeByDefault = false;
@@ -158,8 +157,8 @@ function openlayersBehaviorsDrawFeatures(event) {
   
   // Add our create and modify controls to the controls object.
   // Use a # prefix since these are special controls created by drawFeatures.
-  Drupal.openlayers.activeObjects[mapid].controls['#create-' + behavior.feature_type] = createControl;
-  Drupal.openlayers.activeObjects[mapid].controls['#modify-' + behavior.feature_type] = modifyControl;
+  OL.maps[mapid].controls['#create-' + behavior.feature_type] = createControl;
+  OL.maps[mapid].controls['#modify-' + behavior.feature_type] = modifyControl;
   
   // Add special event handlers to controls
   if (behavior.featureadded_handler) {
@@ -185,16 +184,16 @@ function openlayersBehaviorsDrawFeatures(event) {
       vKeyCode = event.keyCode;
       // If it is the Mac delete key (63272), or regular delete key (46) delete all selected features for the active map.
       if ((vKeyCode == 63272) || vKeyCode == 46) {
-        for (var m in Drupal.openlayers.activeObjects){
-          if (Drupal.openlayers.activeObjects[m].active == true){
-            for (var b in Drupal.openlayers.mapDefs[m].behaviors){
-              var behavior = Drupal.openlayers.mapDefs[m].behaviors[b];
+        for (var m in OL.maps){
+          if (OL.maps[m].active == true){
+            for (var b in OL.mapDefs[m].behaviors){
+              var behavior = OL.mapDefs[m].behaviors[b];
               if (behavior.type == 'openlayers_behaviors_draw_features'){
-                var featureToErase = Drupal.openlayers.activeObjects[m].layers[behavior.layer].selectedFeatures[0];
-                Drupal.openlayers.activeObjects[m].layers[behavior.layer].destroyFeatures([featureToErase]);
+                var featureToErase = OL.maps[m].layers[behavior.layer].selectedFeatures[0];
+                OL.maps[m].layers[behavior.layer].destroyFeatures([featureToErase]);
                 // Reload the modification control so we dont have ghost control points from the recently deceased feature
-                Drupal.openlayers.activeObjects[m].controls['#modify-' + behavior.feature_type].deactivate();
-                Drupal.openlayers.activeObjects[m].controls['#modify-' + behavior.feature_type].activate();
+                OL.maps[m].controls['#modify-' + behavior.feature_type].deactivate();
+                OL.maps[m].controls['#modify-' + behavior.feature_type].activate();
               }
             }
           }
@@ -210,7 +209,7 @@ function openlayersBehaviorsDrawFeatures(event) {
   $('#openlayers-controls-' + mapid).append('<a href="#" id="openlayers-controls-draw-' + behavior.feature_type + '-' + mapid + '" class="openlayers-controls-draw-feature-link openlayers-controls-draw-feature-link-' + behavior.feature_type + ' openlayers-controls-draw-feature-link-off" rel="type:' + behavior.feature_type + ';mapid:' + mapid + ';behaviorid:' + behavior.id + '"></a>');
 }
 
-function openlayersBehaviorsDrawFeaturesMapReady(event){
+OL.EventHandlers.openlayersBehaviorsDrawFeaturesMapReady = function(event){
   // Add click event to the action link (button)
   $('.openlayers-controls-draw-feature-link').click(
     function() {
@@ -224,12 +223,12 @@ function openlayersBehaviorsDrawFeaturesMapReady(event){
       $(this).removeClass('openlayers-controls-draw-feature-link-off');
       
       // Cycle through the different possible types of controls (polygon, line, point, pan)
-      for (var b in Drupal.openlayers.mapDefs[parsedRel['mapid']].behaviors){
-        var behavior  = Drupal.openlayers.mapDefs[parsedRel['mapid']].behaviors[b];
+      for (var b in OL.mapDefs[parsedRel['mapid']].behaviors){
+        var behavior  = OL.mapDefs[parsedRel['mapid']].behaviors[b];
         if (behavior.type == 'openlayers_behaviors_draw_features'){
                     
-          var createControl = Drupal.openlayers.activeObjects[parsedRel['mapid']].controls['#create-' + behavior.feature_type];
-          var modifyControl = Drupal.openlayers.activeObjects[parsedRel['mapid']].controls['#modify-' + behavior.feature_type];
+          var createControl = OL.maps[parsedRel['mapid']].controls['#create-' + behavior.feature_type];
+          var modifyControl = OL.maps[parsedRel['mapid']].controls['#modify-' + behavior.feature_type];
           
           // Deactivate everything
           createControl.deactivate();
@@ -248,34 +247,34 @@ function openlayersBehaviorsDrawFeaturesMapReady(event){
 }
 
 
-function openlayersBehaviorsFullscreen(event){
+OL.Behaviors.openlayersBehaviorsFullscreen = function(event){
   var mapDef = event.mapDef;
   var mapid = mapDef.id;
   
   $('#openlayers-controls-' + mapid).append('<div id="openlayers-controls-fullscreen-' + mapid + '" class="openlayers-controls-fullscreen"></div>');
   
   $('#openlayers-controls-fullscreen-' + mapid).click(function(){
-    if (!openlayersIsSet(Drupal.openlayersFullscreen)){
-      Drupal.openlayersFullscreen = [];
+    if (!openlayersIsSet(OLFullscreen)){
+      OLFullscreen = [];
     }
-    if (!openlayersIsSet(Drupal.openlayersFullscreen[mapid])){
-      Drupal.openlayersFullscreen[mapid] = {};
-      Drupal.openlayersFullscreen[mapid].fullscreen = false;
-      Drupal.openlayersFullscreen[mapid].mapstyle = [];
-      Drupal.openlayersFullscreen[mapid].controlsstyle = [];
+    if (!openlayersIsSet(OLFullscreen[mapid])){
+      OLFullscreen[mapid] = {};
+      OLFullscreen[mapid].fullscreen = false;
+      OLFullscreen[mapid].mapstyle = [];
+      OLFullscreen[mapid].controlsstyle = [];
     }
     
-    if (!Drupal.openlayersFullscreen[mapid].fullscreen){
-      Drupal.openlayersFullscreen[mapid].fullscreen = true;
+    if (!OLFullscreen[mapid].fullscreen){
+      OLFullscreen[mapid].fullscreen = true;
       
       // Store old css values
       var mapStylesToStore = ['position','top','left','width','height','z-index'];
       var controlStylesToStore = ['position','top','right'];
       for (var ms in mapStylesToStore){
-        Drupal.openlayersFullscreen[mapid].mapstyle[mapStylesToStore[ms]] = $('#' + mapid).css(mapStylesToStore[ms]);
+        OLFullscreen[mapid].mapstyle[mapStylesToStore[ms]] = $('#' + mapid).css(mapStylesToStore[ms]);
       }
       for (var cs in controlStylesToStore){
-        Drupal.openlayersFullscreen[mapid].controlsstyle[controlStylesToStore[cs]] = $('#openlayers-controls-' + mapid).css(controlStylesToStore[cs]);
+        OLFullscreen[mapid].controlsstyle[controlStylesToStore[cs]] = $('#openlayers-controls-' + mapid).css(controlStylesToStore[cs]);
       }
       
       // Resize the map.
@@ -288,16 +287,16 @@ function openlayersBehaviorsFullscreen(event){
       
     } else{
       // Restore styles, resizing the map.
-      for (var ms in Drupal.openlayersFullscreen[mapid].mapstyle){
-        $('#' + mapid).css(ms,Drupal.openlayersFullscreen[mapid].mapstyle[ms]);
+      for (var ms in OLFullscreen[mapid].mapstyle){
+        $('#' + mapid).css(ms,OLFullscreen[mapid].mapstyle[ms]);
       };
-      for (var cs in Drupal.openlayersFullscreen[mapid].controlsstyle){
-        $('#openlayers-controls-' + mapid).css(cs,Drupal.openlayersFullscreen[mapid].controlsstyle[cs]);
+      for (var cs in OLFullscreen[mapid].controlsstyle){
+        $('#openlayers-controls-' + mapid).css(cs,OLFullscreen[mapid].controlsstyle[cs]);
       };
       
       $('#openlayers-controls-fullscreen-' + mapid).removeClass('openlayers-controls-unfullscreen').addClass('openlayers-controls-fullscreen');
 
-      Drupal.openlayersFullscreen[mapid].fullscreen = false;
+      OLFullscreen[mapid].fullscreen = false;
       event.map.updateSize();
     }
     

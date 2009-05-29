@@ -12,6 +12,7 @@ Maps are built using an array that looks like this:
 
   $map = array(
     'id' => _openlayers_create_map_id(),
+    'projection' => '900913',
     'width' => 'auto',
     'height' => '300px',
     'center' => array(
@@ -20,7 +21,6 @@ Maps are built using an array that looks like this:
       'zoom' => 5,
     ),
     'options' => array(
-      'projection' => "900913",
       'displayProjection' => "4326",
       'maxResolution' => 156543.0339,
       'maxExtent' => array(

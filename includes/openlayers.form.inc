@@ -393,22 +393,23 @@ function _openlayers_convert_map_to_form($map = array()) {
     return $processed;
   }
   $processed = $map;
-    
+  $layer_defs = openlayers_layers_get_info();
+  
   // Manual changes
   $processed['layers'] = array();
   $processed['layers']['default_layer'] = $map['default_layer'];
   $processed['layers']['baselayers'] = array();
   $processed['layers']['overlays'] = array();
-  
+    
   foreach ($map['layers'] as $layer_id => $layer){
-    if ($layer['baselayer']){
+    if ($layer_defs[$layer_id]['baselayer']){
       $processed['layers']['baselayers'][] = $layer_id;
     }
     else {
       $processed['layers']['overlays'][] = $layer_id;
     }
   }
-  
+    
   // Return processed
   return $processed;
 }
