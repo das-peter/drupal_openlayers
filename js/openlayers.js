@@ -11,10 +11,10 @@
 /**
  * Global Object for Namespace
  */
-var OL = OL || { 'Layers': {}, 'EventHandlers': {} ,'Behaviors': {} };
+var OL = OL || {'Layers': {}, 'EventHandlers': {} ,'Behaviors': {}, 'maps': []};
 
 /**
- * When document is ready for JS
+ * OpenLayers Base Drupal Behavoirs
  */
 Drupal.behaviors.openlayers = function() {
   // Check for openlayers
@@ -34,12 +34,17 @@ OL.loadMaps = function() {
   OpenLayers.ProxyHost = "http://raider/proxy/?proxy_url=";
   
   // Store rendered maps and other OpenLayer objects in OL object
-  OL.maps = [];
   OL.mapDefs = Drupal.settings.openlayers.maps;
   
   // Go through array and make maps
   for (var i in OL.mapDefs) {
+    // Create a temp map variable 
     var map = OL.mapDefs[i];
+    
+    // Check if map is already rendered
+    if (OL.isSet(OL.maps[map.id]) && OL.isSet(OL.maps[map.id].rendered) && (OL.maps[map.id].rendered == true)) {
+      continue;
+    }
     
     // Trigger beforeEverything event
     var event = {'mapDef': map};
@@ -155,6 +160,9 @@ OL.renderMap = function(map) {
   // Trigger mapReady event
   var event = {'mapDef': map, 'map': OL.maps[map.id].map};
   OL.triggerCustom(map, 'mapReady', event);
+      
+  // Mark as Rendered
+  OL.maps[map.id].rendered = true;
 }
 
 /**
@@ -324,8 +332,8 @@ OL.getObject = function(string) {
   i = 0;
   var object = window;
   while (i < parts.length){
-   object = object[parts[i]];
-   i++; 
+    object = object[parts[i]];
+    i++; 
   }
   return object;
 }
