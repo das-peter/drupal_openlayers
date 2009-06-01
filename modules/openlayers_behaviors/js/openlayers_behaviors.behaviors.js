@@ -317,27 +317,27 @@ OL.Behaviors.fullscreen = function(event) {
   $('#openlayers-controls-' + mapid).append('<div id="openlayers-controls-fullscreen-' + mapid + '" class="openlayers-controls-fullscreen"></div>');
   
   $('#openlayers-controls-fullscreen-' + mapid).click(function() {
-    if (!OL.isSet(OLFullscreen)) {
-      OLFullscreen = [];
+    if (!OL.isSet(OL.Behaviors.fullscreenRegistry)) {
+      OL.Behaviors.fullscreenRegistry = [];
     }
-    if (!OL.isSet(OLFullscreen[mapid])) {
-      OLFullscreen[mapid] = {};
-      OLFullscreen[mapid].fullscreen = false;
-      OLFullscreen[mapid].mapstyle = [];
-      OLFullscreen[mapid].controlsstyle = [];
+    if (!OL.isSet(OL.Behaviors.fullscreenRegistry[mapid])) {
+      OL.Behaviors.fullscreenRegistry[mapid] = {};
+      OL.Behaviors.fullscreenRegistry[mapid].fullscreen = false;
+      OL.Behaviors.fullscreenRegistry[mapid].mapstyle = [];
+      OL.Behaviors.fullscreenRegistry[mapid].controlsstyle = [];
     }
     
-    if (!OLFullscreen[mapid].fullscreen) {
-      OLFullscreen[mapid].fullscreen = true;
+    if (!OL.Behaviors.fullscreenRegistry[mapid].fullscreen) {
+      OL.Behaviors.fullscreenRegistry[mapid].fullscreen = true;
       
       // Store old css values
       var mapStylesToStore = ['position','top','left','width','height','z-index'];
       var controlStylesToStore = ['position','top','right'];
       for (var ms in mapStylesToStore) {
-        OLFullscreen[mapid].mapstyle[mapStylesToStore[ms]] = $('#' + mapid).css(mapStylesToStore[ms]);
+        OL.Behaviors.fullscreenRegistry[mapid].mapstyle[mapStylesToStore[ms]] = $('#' + mapid).css(mapStylesToStore[ms]);
       }
       for (var cs in controlStylesToStore) {
-        OLFullscreen[mapid].controlsstyle[controlStylesToStore[cs]] = $('#openlayers-controls-' + mapid).css(controlStylesToStore[cs]);
+        OL.Behaviors.fullscreenRegistry[mapid].controlsstyle[controlStylesToStore[cs]] = $('#openlayers-controls-' + mapid).css(controlStylesToStore[cs]);
       }
       
       // Resize the map.
@@ -351,16 +351,16 @@ OL.Behaviors.fullscreen = function(event) {
     }
     else {
       // Restore styles, resizing the map.
-      for (var ms in OLFullscreen[mapid].mapstyle) {
-        $('#' + mapid).css(ms,OLFullscreen[mapid].mapstyle[ms]);
+      for (var ms in OL.Behaviors.fullscreenRegistry[mapid].mapstyle) {
+        $('#' + mapid).css(ms,OL.Behaviors.fullscreenRegistry[mapid].mapstyle[ms]);
       };
-      for (var cs in OLFullscreen[mapid].controlsstyle) {
-        $('#openlayers-controls-' + mapid).css(cs,OLFullscreen[mapid].controlsstyle[cs]);
+      for (var cs in OL.Behaviors.fullscreenRegistry[mapid].controlsstyle) {
+        $('#openlayers-controls-' + mapid).css(cs,OL.Behaviors.fullscreenRegistry[mapid].controlsstyle[cs]);
       };
       
       $('#openlayers-controls-fullscreen-' + mapid).removeClass('openlayers-controls-unfullscreen').addClass('openlayers-controls-fullscreen');
 
-      OLFullscreen[mapid].fullscreen = false;
+      OL.Behaviors.fullscreenRegistry[mapid].fullscreen = false;
       event.map.updateSize();
     }
   });

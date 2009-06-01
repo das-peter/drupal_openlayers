@@ -30,6 +30,14 @@ class openlayers_views_style_map extends views_plugin_style {
     
     // @@TODO: Include Map settings form
     
+    // Get list of fields in this view
+    $handlers = $this->display->handler->get_handlers('field');
+    $fields = array();
+    foreach ($handlers as $field_id => $handler){      
+      $fields[$field_id] = $handler->definition['title'];
+    }
+    
+    // Get a list of globally available geodata fields
     $read_geo_options = array();
     
     if (module_exists('content')){
@@ -67,6 +75,35 @@ class openlayers_views_style_map extends views_plugin_style {
       '#default_value' => $this->options['read_geo'], 
     );
     
+    // Behaviors
+    if (module_exists('openlayers_behaviors')){
+      $form['behaviors'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Map Behaviors'),
+        '#collapsible' => TRUE,
+        '#collapsed' => FALSE,
+      );
+      
+      $form['behaviors']['zoom_to_layer'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Automatically zoom to encompass views data (overrides map settings)'),
+        '#default_value' => $this->options['behaviors']['zoom_to_layer'], 
+      );
+      $form['behaviors']['fullscreen'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Allow map to be viewed fullscreen'),
+        '#default_value' => $this->options['behaviors']['fullscreen'], 
+      );
+      $tooltip_options = array_merge(array('0' => t('Do not use a tooltip')), $fields);
+      $form['behaviors']['tooltip'] = array(
+        '#type' => 'radios',
+        '#title' => t('Select the field you would like to use as a tooltip'),
+        '#options' => $tooltip_options,
+        '#default_value' => $this->options['behaviors']['tooltip'], 
+      );
+    }
+    
+    
   }
   
   /**
@@ -88,7 +125,7 @@ class openlayers_views_style_map extends views_plugin_style {
   /**
    * Map features
    */
-  function map_features($rows = array()) {
+  function map_features($rows = array()) {  
     $features = array();
     $content_fields = content_fields();
     $read_geo = $this->options['read_geo'];
@@ -226,6 +263,34 @@ class openlayers_views_style_map extends views_plugin_style {
         ),
       );
       
+      // Set up behaviors
+      $map['behaviors'] = array();
+      
+      if (module_exists('openlayers_behaviors')){
+        // Set up tooltip behavior
+        if ($this->options['behaviors']['tooltip']){
+          $field_id = $this->view->display_handler->get_handler('field', $this->options['behaviors']['tooltip'])->field_alias;
+          $map['behaviors']['openlayers_views_tooltip'] = array(
+            'id' => 'openlayers_views_tooltip',
+            'type' => 'openlayers_behaviors_tooltip',
+            'layer' => 'openlayers_views_layer'. $this->view->name,
+            'attribute' => $field_id,
+          );
+        }
+        if ($this->options['behaviors']['zoom_to_layer']){
+          $map['behaviors']['openlayers_views_zoom_to_layer'] = array(
+            'id' => 'openlayers_views_zoom_to_layer',
+            'type' => 'openlayers_behaviors_zoom_to_layer',
+            'layer' => 'openlayers_views_layer'. $this->view->name,
+          );
+        }
+        if ($this->options['behaviors']['fullscreen']){
+          $map['behaviors']['openlayers_views_fullscreen'] = array(
+            'id' => 'openlayers_views_fullscreen',
+            'type' => 'openlayers_behaviors_fullscreen'
+          );
+        }
+      }
       // @@TODO Add settings from plugin options
       
       // Render map
