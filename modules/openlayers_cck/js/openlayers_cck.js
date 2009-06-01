@@ -210,12 +210,7 @@ OL.CCK.featureAdded = function(event) {
   var mapid = feature.layer.map.mapid;
   
   // Get field names
-  var fieldName;
-  for (var map in OL.CCK.maps) {
-    if (map == mapid) {
-      fieldName = OL.CCK.maps[map].field_name_js;
-    }
-  }
+  var fieldName = OL.CCK.maps[mapid].field_name_js;
   
   // Get the index number of the newly added field
   // Check if we are creating a new node with 2 fresh fields open
@@ -274,7 +269,7 @@ OL.CCK.featureModified = function(event) {
   var geometry = feature.geometry.clone();
   
   // Project the geometry if our map has a different geospatial projection as our CCK geo data.
-  if (OL.maps[mapid].projection != OL.maps[mapid].options.displayProjection) {
+  if (OL.maps[mapid].projection != OL.maps[mapid].displayProjection) {
     geometry.transform(OL.maps[mapid].projection, OL.maps[mapid].displayProjection);
   }
   
