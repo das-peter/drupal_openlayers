@@ -25,12 +25,12 @@ function openlayers_layers_help($path, $arg) {
  */
 function openlayers_layers_menu() {
   $items = array();
-  $items['admin/settings/openlayers/openlayers_layers'] = array(
+  $items['admin/settings/openlayers/layers'] = array(
     'title' => 'Layers Settings',
-    'description' => 'Set your API keys here',
+    'description' => t('Set your API keys here'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_layers_admin_settings'),
-    'access arguments' => array('access administration pages'),
+    'access arguments' => array('administer openlayers'),
     'file' => 'includes/openlayers_layers.admin.inc',
     'type' => MENU_LOCAL_TASK,
    );
