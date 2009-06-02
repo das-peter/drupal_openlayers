@@ -21,10 +21,11 @@
   padding:2px 3px 2px 3px;
 }
 
-.openlayers-behaviors-pointy {
+img.openlayers-behaviors-pointy {
   position: absolute;
   bottom: -7px;
   left: 5px;
+  padding: 0px;
 }
 
 /**

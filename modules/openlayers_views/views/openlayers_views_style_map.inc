@@ -103,6 +103,20 @@ class openlayers_views_style_map extends views_plugin_style {
       );
     }
     
+    // Theming
+    $form['style'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Feature Styles'),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+    );
+      
+    $form['style']['snippet'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Feature Styles function'),
+      '#description' => t('Enter PHP code that returns a style array for each feature. $fields contains your defined fields, $row contains instances of those fields along with geometries. Array should be of the form \'styleProperty\' => \'styleValue\'. You may return false to use defaults. See documentation for available style Properties.'),
+      '#default_value' => $this->options['style']['snippet'], 
+    );
     
   }
   
@@ -130,48 +144,74 @@ class openlayers_views_style_map extends views_plugin_style {
     $content_fields = content_fields();
     $read_geo = $this->options['read_geo'];
     
+    // Get list of fields in this view
+    $handlers = $this->display->handler->get_handlers('field');
+    $fields = array();
+    foreach ($handlers as $field_id => $handler) {      
+      $fields[$field_id] = $handler->definition;
+      $fields[$field_id]['field_alias'] = $handler->field_alias;
+    }
+    
     // Clean read_geo of non-selected fields.
     $read_geo = array_values(array_filter($read_geo));
     
     // Build feature. We create one feature per field per row.
     foreach ($rows as $id => $row) {
-      foreach ($read_geo as $geo_field){
+      foreach ($read_geo as $geo_field) {
         if ($geo_field){
+          // Set up feature      
+          $feature = array(
+            'attributes' => array(),
+          );
           
-         // Set up feature      
-         $feature = array(
-           'attributes' => array(),
-         );
-          
-         // Extract geometry / location information
-         if ($geo_field == 'node_locations'){
-            $wkt_string = 'POINT('.$row->openlayers_node_locations_lon.' '.$row->openlayers_node_locations_lat.')';
-            $feature['wkt'] = $wkt_string;
-            $feature['projection'] = '4326';
+          // Extract geometry / location information
+          if ($geo_field == 'node_locations') {
+             $wkt_string = 'POINT('.$row->openlayers_node_locations_lon.' '.$row->openlayers_node_locations_lat.')';
+             $feature['wkt'] = $wkt_string;
+             $feature['projection'] = '4326';
           }
-          else{
+          else {
             // It's a cck field
-            if ($content_fields[$geo_field]['type'] == 'geo'){
+            if ($content_fields[$geo_field]['type'] == 'geo') {
               $wkt_field = $geo_field.'_wkt';
               $feature['wkt'] = $row->$wkt_field;
               $feature['projection'] = $content_fields[$geo_field]['srid'] ? $content_fields[$geo_field]['srid'] : '4326';
             }
             
-            if ($content_fields[$geo_field]['type'] == 'location'){
+            if ($content_fields[$geo_field]['type'] == 'location') {
               // @@TODO
             }
           }
           
           // Fill in all attributes
-          foreach ($row as $fid => $field){
-            $feature['attributes'][$fid] = $field;
+          foreach ($fields as $fid => $field) {
+            $field_alias = $field['field_alias'];
+            $feature['attributes'][$field_alias] = $row->$field_alias;
           }
           
-          $features[] = $feature;
+          // Fill in tooltip attribute
+          if ($this->options['behaviors']['tooltip']) {
+            $tooltip_field = $this->options['behaviors']['tooltip'];
+            $tooltip_field_alias = $fields[$tooltip_field]['field_alias'];
+            // @@TODO: This needs to be themed. I don't know how.
+            $feature['attributes']['openlayers_tooltip'] = $row->$tooltip_field_alias;
+          }
           
+          // Get feature styles
+          if ($this->options['style']['snippet']) {
+            $feature_style = eval($this->options['style']['snippet']);
+            if (is_array($feature_style)){
+              $feature['style'] = $feature_style;
+            }
+            else {
+             //@@TODO: Error 
+            }
+          }
+          
+          // Push feature to features array
+          $features[] = $feature;
         }
-      }
-      
+      }  
     }
     
     return $features;
@@ -274,7 +314,7 @@ class openlayers_views_style_map extends views_plugin_style {
             'id' => 'openlayers_views_tooltip',
             'type' => 'openlayers_behaviors_tooltip',
             'layer' => 'openlayers_views_layer'. $this->view->name,
-            'attribute' => $field_id,
+            'attribute' => 'openlayers_tooltip',
           );
         }
         if ($this->options['behaviors']['zoom_to_layer']){
