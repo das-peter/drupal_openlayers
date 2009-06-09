@@ -19,8 +19,8 @@
 /**
  * Map Form
  */
-.openlayers-form-proj-layer-list,
-.openlayers-form-baselayer-description {
+.openlayers-form-projection-description,
+.openlayers-form-layer-description {
   font-size: smaller;
   font-style: italic;
 }
