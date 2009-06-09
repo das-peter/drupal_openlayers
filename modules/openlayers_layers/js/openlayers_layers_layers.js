@@ -9,6 +9,13 @@
 
 /**
  * Process Google Layers
+ *
+ * @param layerOptions
+ *   Object of options
+ * @param mapid
+ *   Map ID
+ * @return
+ *   Valid OpenLayers layer
  */
 OL.Layers.Google = function(layerOptions, mapid) {
   var mapType;
@@ -42,6 +49,13 @@ OL.Layers.Google = function(layerOptions, mapid) {
 
 /**
  * Process Yahoo Layers
+ *
+ * @param layerOptions
+ *   Object of options
+ * @param mapid
+ *   Map ID
+ * @return
+ *   Valid OpenLayers layer
  */
 OL.Layers.Yahoo = function(layerOptions, mapid) {
   var mapType;
@@ -72,6 +86,13 @@ OL.Layers.Yahoo = function(layerOptions, mapid) {
 
 /**
  * Process MS Virtual Earth Layers
+ *
+ * @param layerOptions
+ *   Object of options
+ * @param mapid
+ *   Map ID
+ * @return
+ *   Valid OpenLayers layer
  */
 OL.Layers.VirtualEarth = function(layerOptions, mapid) {
   var mapType;
@@ -102,6 +123,13 @@ OL.Layers.VirtualEarth = function(layerOptions, mapid) {
 
 /**
  * Process KML Layers
+ *
+ * @param layerOptions
+ *   Object of options
+ * @param mapid
+ *   Map ID
+ * @return
+ *   Valid OpenLayers layer
  */
 OL.Layers.KML = function(layerOptions, mapid) {
   
@@ -124,6 +152,13 @@ OL.Layers.KML = function(layerOptions, mapid) {
 
 /**
  * Process XYZ Layers
+ *
+ * @param layerOptions
+ *   Object of options
+ * @param mapid
+ *   Map ID
+ * @return
+ *   Valid OpenLayers layer
  */
 OL.Layers.XYZ = function(layerOptions, mapid) {
   var mapOptions = {

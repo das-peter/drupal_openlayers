@@ -56,6 +56,22 @@ function openlayers_theme() {
       'arguments' => array(
         'map' => array(),
       ),
+      'file' => 'includes/openlayers.theme.inc',
+    ),
+    'openlayers_form_layer_description' => array(
+      'arguments' => array(
+        'layer_title' => '',
+        'layer_description' => '',
+      ),
+      'file' => 'includes/openlayers.theme.inc',
+    ),
+    'openlayers_form_projection_description' => array(
+      'arguments' => array(
+        'projection_title' => '',
+        'available_layers' => array(),
+        'layers' => array(),
+      ),
+      'file' => 'includes/openlayers.theme.inc',
     ),
   );
 }
@@ -94,18 +110,15 @@ function openlayers_menu() {
     'type' => MENU_LOCAL_TASK,
     'weight' => -10,
   );
+  $items['openlayers/ahah'] = array(
+    'title' => 'OpenLayers AHAH',
+    'page callback' => 'openlayers_ahah',
+    'access callback' => TRUE,
+    'file' => 'includes/openlayers.form.inc',
+    'type' => MENU_CALLBACK,
+  );
 
   return $items;
-}
-
-/**
- * Theme function for openlayers_map
- */
-function theme_openlayers_map($map = array()) {
-  $output = '
-    <div id="'. $map['id'] .'" class="openlayers-map"></div>
-  ';
-  return $output;
 }
 
 /**
@@ -275,14 +288,14 @@ function openlayers_behaviors_get_info($reset = FALSE) {
  * being parsed unnecesarily
  *
  * @ingroup openlayers_api
- * @param $defaults
- *   Array of defaults
+ * @param $form_state
+ *   Array of defaults.
  * @return
  *   Array of form items
  */
-function openlayers_map_form($defaults = array()) {
+function openlayers_map_form($form_state) {
   module_load_include('inc', 'openlayers', '/includes/openlayers.form');
-  return _openlayers_map_form($defaults);
+  return _openlayers_map_form($form_state);
 }
 
 /**
