@@ -322,6 +322,7 @@ function openlayers_layers_process_geo_data_layers($layer = NULL) {
   // Get table description
   $table_desc = geo('table_desc', $layer);
   $attribute_cols = array();
+  
   // Go through columns
   foreach ($table_desc as $cname => $cinfo){
     if ($cinfo['type'] == 'geometry'){
@@ -329,14 +330,18 @@ function openlayers_layers_process_geo_data_layers($layer = NULL) {
       $srid = $cinfo['srid'];
     }
     else {
-      $attribute_cols[] = $cname;
+      $attribute_cols[] = db_escape_table($cname);
     }
   }
+  
+  // Make values safe since not enritely sure how its getting there.
+  $geometry_col = db_escape_table($geometry_col);
   
   // Get geometry text
   $query = "SELECT asText(%s) as %s, ". implode(',', $attribute_cols) ." from {%s}";
   $res = db_query($query, $geometry_col, $geometry_col, $layer);
   $features = array();
+  
   // Go through results
   while ($row = db_fetch_array($res)){
     $attributes = array();
