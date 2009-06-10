@@ -43,7 +43,7 @@ function openlayers_layers_menu() {
 function openlayers_layers_openlayers_layers_handler_info($map = array()) {
   // Define Layer Types that won't be used outside of this module 
   // such as Google Maps, Yahoo Maps, and MS Virtual Earth
-  $js_file = drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers_layers.js';
+  $js_file = drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers.layers.js';
   return array(
     'KML' => array(
       'layer_handler' => 'KML',
