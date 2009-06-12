@@ -199,7 +199,6 @@ class openlayers_views_style_map extends views_plugin_style {
    */
   function map_features($rows = array()) {  
     $features = array();    
-    $content_fields = content_fields();        
     $read_geo = $this->options['read_geo'];
             
     // Get list of fields in this view
@@ -275,9 +274,6 @@ class openlayers_views_style_map extends views_plugin_style {
   function query() {
     $read_geo = $this->options['read_geo'];
     
-    // Get all fields.
-    $content_fields = content_fields();
-    
     // Load data from Node Locations
     if ($read_geo['value'] == 'node_locations') {
       $table = $this->view->query->ensure_table('location');
@@ -286,6 +282,7 @@ class openlayers_views_style_map extends views_plugin_style {
     }
         
     if ($read_geo['value'] == 'geo') {                
+      $content_fields = content_fields();
       foreach ($content_fields as $content_field){
         if(in_array($content_field['field_name'],array_keys($read_geo['geo']))) {
           $content_table = $this->view->query->ensure_table('node_data_'.$content_field['field_name']);         
