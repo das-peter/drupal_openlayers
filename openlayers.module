@@ -378,6 +378,28 @@ function openlayers_merge_maps($map1 = array(), $map2 = array()) {
 }
 
 /**
+ * Get Default Map
+ *
+ * Gets the Default Map as defined on the defaults setting
+ * page, otherwise, gets basic system default map
+ *
+ * @ingroup openlayers_api
+ * @return
+ *   A map array
+ */
+function openlayers_get_default_map() {
+  // Get system default maps
+  $map_defaults = variable_get('openlayers_defaults', array());
+
+  // If stored map does not exist, get system default
+  if (!$map_defaults) {
+    $map_defaults = _openlayers_get_map_defaults();
+  }
+  
+  return $map_defaults;
+}
+
+/**
  * Check Map Errors
  *
  * Checks map array for incompatibilities or errors.

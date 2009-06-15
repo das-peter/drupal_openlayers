@@ -75,13 +75,13 @@ function openlayers_cck_widget_info() {
 function openlayers_cck_widget_settings($op, $widget) {
   switch ($op) {
     case 'form':
-      // Get defaults, check if there are already defaults
-      // @@TODO: What if the global defaults have not been created in the interface
+      // Get 
       if (isset($widget['openlayers_cck'])) {
         $defaults = $widget['openlayers_cck'];
       }
       else {
-        $defaults = variable_get('openlayers_defaults_form', array());
+        $defaults = openlayers_get_default_map();
+        $defaults = openlayers_convert_map_to_form($defaults);
       }
       
       // Get map form
@@ -103,9 +103,6 @@ function openlayers_cck_widget_settings($op, $widget) {
       break;
 
     case 'save':
-      // @@TODO: Figure out a way to save this form in an easy way.
-      // Ideally we just want to save the map array.
-      // We could create a DB table to save this information.
       return array('openlayers_cck');
   }
 }

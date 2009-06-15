@@ -12,13 +12,8 @@
  * Menu callback; Displays the openlayers module default settings page.
  */
 function openlayers_admin_default_settings($form_state = array()) {
-  // Get system default maps
-  $map_defaults = variable_get('openlayers_defaults', array());
-
-  // If stored map does not exist, get system default
-  if (!$map_defaults) {
-    $map_defaults = _openlayers_get_map_defaults();
-  }
+  // Get default maps
+  $map_defaults = openlayers_get_default_map();
  
   // Get current default map
   $map = openlayers_render_map($map_defaults);
