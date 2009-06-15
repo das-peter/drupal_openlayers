@@ -12,22 +12,28 @@
  * Menu callback; Displays the openlayers module default settings page.
  */
 function openlayers_admin_default_settings($form_state = array()) {
-  // Get current default map
-  $map = openlayers_render_map(array());
   // Get system default maps
   $map_defaults = variable_get('openlayers_defaults', array());
-  $map_system = _openlayers_get_map_defaults();
-  $map_merged = openlayers_merge_maps($map_system, $map_defaults);
+
+  // If stored map does not exist, get system default
+  if (!$map_defaults) {
+    $map_defaults = _openlayers_get_map_defaults();
+  }
+ 
+  // Get current default map
+  $map = openlayers_render_map($map_defaults);
+
   // Convert to form defaults
-  $defaults = openlayers_convert_map_to_form($map_merged);
-  
+  $defaults = openlayers_convert_map_to_form($map_defaults);
+
   // Get default form
   $form = openlayers_map_form($defaults);
   
   // Add submit button
   $form['submit'] = array(
     '#type' => 'submit', 
-    '#value' => t('Save')
+    '#value' => t('Save'),
+    '#submit' => array('openlayers_admin_default_settings_save_submit'),
   );
 
   // Display a map for reference
@@ -45,7 +51,7 @@ function openlayers_admin_default_settings($form_state = array()) {
 /**
  * Form submit for openlayers_admin_default_settings form
  */
-function openlayers_admin_default_settings_submit($form, &$form_state) {
+function openlayers_admin_default_settings_save_submit($form, &$form_state) {
   // Save into a system variable
   if ($form_state['values']['op'] == t('Save')) {
     // Convert values to map array

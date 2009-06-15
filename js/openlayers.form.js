@@ -11,17 +11,22 @@
  * Drupal beahvior for settings form
  */
 Drupal.behaviors.OLSettingsForm = function(context) {
-  var $projectSelect = $("input[@name='projections[easy_projection]']");
+  var $projectSelect = $("input[@name='projections[easy_projection]']:not(.projection-processed)");
   var $projectOther = $('#edit-projections-projection');
   var $projectOtherWrapper = $('#edit-projections-projection-wrapper');
   var $autoOptionsCheck = $('#edit-options-automatic-options');
   
+  // Add class
+  $projectSelect.addClass('projection-processed');
+  
   // Hide the other projection_field
-  if ($projectSelect.val() != 'other') {
-    $projectOtherWrapper.hide();
+  if ($projectSelect.length > 0) {
+    if ($projectSelect.val() != 'other') {
+      // $projectOtherWrapper.hide();
+    }
   }
   
-  // Change event for select
+  // Change event for select and add class
   $projectSelect.change(function(e) {
     var val = $(this).val();
     if (val == 'other') {
@@ -29,11 +34,11 @@ Drupal.behaviors.OLSettingsForm = function(context) {
     }
     else {
       $projectOther.val(val);
-      $projectOtherWrapper.hide();
+      // $projectOtherWrapper.hide();
     }
   });
   
-  // Automatic options.  We do it hear, instead of in Form API because
+  // Automatic options.  We do it here, instead of in Form API because
   // Form API enforces the disabled
   $autoOptionsCheck.change(function() {
     var $thisCheck = $(this);
@@ -45,6 +50,13 @@ Drupal.behaviors.OLSettingsForm = function(context) {
       $autoOptions.removeAttr('disabled');
     }
   });
+  
+  // When form is submitted, if diabled, FAPI does not read values
+  jQuery($autoOptionsCheck.form).submit(function() {
+    $autoOptionsCheck.attr('checked', false);
+    $autoOptionsCheck.trigger('change');
+  });
+  
   // Trigger change
   $autoOptionsCheck.trigger('change');
   

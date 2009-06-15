@@ -62,6 +62,7 @@ function _openlayers_map_form($form_state) {
   $baselayers = array();
   $overlays = array();
   $defaults = $form_state;
+  $available_controls = _openlayers_available_controls();
   
   // Get layer options
   $layer_options = array(
@@ -92,14 +93,8 @@ function _openlayers_map_form($form_state) {
   // Unset All
   unset($projections['all']);
   
-  // Figure out the projection we are using with AHAH involved
-  if ($defaults['projections']['easy_projection'] && $defaults['projections']['easy_projection'] != 'other') {
-    $default_proj = $defaults['projections']['easy_projection'];
-  } elseif ($defaults['projections']['projection'] && $defaults['projections']['easy_projection'] == 'other') {
-    $default_proj = $defaults['projections']['projection'];
-  } else {
-    $default_proj = $defaults['projection'];
-  }
+  // Default projection
+  $default_proj = $defaults['projections']['projection'];
   
   // Check for other, which will show all layers available
   if (!$default_proj || $defaults['projections']['easy_projection'] == 'other') {
@@ -153,6 +148,7 @@ function _openlayers_map_form($form_state) {
     '#description' => t('Please use a CSS Width value.'),
     '#default_value' => $defaults['width'],
     '#maxlength' => 128,
+    '#required' => TRUE,
   );
   $form['height'] = array(
     '#type' => 'textfield',
@@ -160,6 +156,7 @@ function _openlayers_map_form($form_state) {
     '#description' => t('Please use a CSS Height value.'),
     '#default_value' => $defaults['height'],
     '#maxlength' => 128,
+    '#required' => TRUE,
   );
   
   // Map center properties
@@ -199,6 +196,25 @@ function _openlayers_map_form($form_state) {
     '#size' => 25,
   );
   
+  // Map controls
+  $form['controls'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Controls'),
+    '#description' => t('Controls on the map that allow the user to interface with the map.'),
+    '#tree' => TRUE,
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+  // Go through avilable controls
+  foreach ($available_controls as $c_key => $control) {
+    $form['controls'][$c_key] = array(
+      '#type' => 'checkbox',
+      '#title' => $control['title'],
+      '#description' => $control['description'],
+      '#default_value' => $defaults['controls'][$c_key],
+    );
+  }
+  
   // Projections
   $form['projections'] = array(
     '#type' => 'fieldset',
@@ -206,7 +222,7 @@ function _openlayers_map_form($form_state) {
     '#description' => t('Select projection for map.  This will affect which layers are available to choose from.'),
     '#tree' => TRUE,
     '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
+    '#collapsed' => FALSE,
   );
   // This will create an easy way to select projections and have layers change accordingly
   $form['projections']['easy_projection'] = array(
@@ -215,7 +231,7 @@ function _openlayers_map_form($form_state) {
     '#description' => t('Select the EPSG code of the !link_proj for your map. The list next to each projection is the layers that support this projection.', array(
       '!link_proj' => l('geographical projection', 'http://en.wikipedia.org/wiki/Map_projection'),
     )),
-    '#default_value' => $default_proj,
+    '#default_value' => $defaults['projections']['easy_projection'],
     '#options' => $projections,
     '#attributes' => array('class' => 'openlayers-form-easy-projection'),
     '#ahah' => array(
@@ -229,8 +245,8 @@ function _openlayers_map_form($form_state) {
     '#title' => t('Projection'),
     '#description' => t('The EPSG code of the geographical projection for your map.'),
     '#attributes' => array('class' => 'openlayers-form-projection'), 
-    '#default_value' => $default_proj,
-    '#maxlength' => 16
+    '#default_value' => $defaults['projections']['projection'],
+    '#maxlength' => 16,
   );
   
   // Start AHAH Wrapper
@@ -245,7 +261,7 @@ function _openlayers_map_form($form_state) {
     '#description' => t('Layer settings.  The Layer options will change based on the projection chosen above.'),
     '#tree' => TRUE,
     '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
+    '#collapsed' => FALSE,
   );
   $form['layers']['baselayers'] = array(
     '#type' => 'checkboxes',
@@ -281,13 +297,13 @@ function _openlayers_map_form($form_state) {
     '#description' => t('Set additional options'),
     '#tree' => TRUE,
     '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
+    '#collapsed' => FALSE,
   );
   $form['options']['automatic_options'] = array(
     '#type' => 'checkbox',
     '#title' => t('Automatic Options'),
     '#description' => t('If this is checked, options will be automatically filled for you.'),
-    '#default_value' => $defaults['options']['automatic_options'],
+    '#default_value' => isset($defaults['options']['automatic_options']) ?$defaults['options']['automatic_options'] : TRUE,
     '#maxlength' => 6
   );
   $form['options']['displayProjection'] = array(
@@ -365,14 +381,6 @@ function _openlayers_convert_form_to_map($values = array()) {
   }
   $processed = array();
   
-  // Take out form values
-  $throw = array('op', 'submit', 'form_build_id', 'form_token', 'form_id', 'easy_projection','layers');
-  foreach ($values as $k => $v) {
-    if (!in_array($k, $throw)) {
-      $processed[$k] = $v;
-    }
-  }
-  
   // Put projection in right place.
   $processed['projection'] = ($values['projections']['easy_projection'] != 'other') ? $values['projections']['easy_projection'] : $values['projections']['projection'];
   
@@ -383,6 +391,14 @@ function _openlayers_convert_form_to_map($values = array()) {
   $baselayers = array_filter($values['layers']['baselayers']);
   $overlays = array_filter($values['layers']['overlays']);
   $processed['layers'] = array_merge($baselayers, $overlays);
+  
+  // Take out form values
+  $throw = array('op', 'submit', 'form_build_id', 'form_token', 'form_id', 'projections', 'layers');
+  foreach ($values as $k => $v) {
+    if (!in_array($k, $throw)) {
+      $processed[$k] = $v;
+    }
+  }
   
   // Recursively unset any empty values
   $processed = _openlayers_unset_empty_values($processed);
@@ -414,6 +430,11 @@ function _openlayers_convert_map_to_form($map = array()) {
   $processed['layers']['baselayers'] = array();
   $processed['layers']['overlays'] = array();
   
+  // Set projection
+  $processed['projections']['easy_projection'] = $processed['projection'];
+  $processed['projections']['projection'] = $processed['projection'];
+  
+  // Get layers
   if (is_array($map['layers'])) {
     foreach ($map['layers'] as $layer_id => $layer){
       if ($layer_defs[$layer_id]['baselayer']){
@@ -587,4 +608,61 @@ function _openlayers_form_center_map($defaults = array()) {
   drupal_add_js($passvalues, 'setting');
   // Render map
   return openlayers_render_map($centermap_def);
+}
+
+/**
+ * Get Available Controls
+ *
+ * Builds an array of available controls for the form.
+ */
+function _openlayers_available_controls() {
+  $available = array();
+  
+  // Define array
+  $available['Attribution'] = array(
+    'title'=> t('Attribution'),
+    'description' => t('Allows layers to provide attribution to the map if it exists.'),
+  );
+  $available['KeyboardDefaults'] = array(
+    'title'=> t('Keyboard Defaults'),
+    'description' => t('Provides a the ability to use the keyboard to pan and zoom map.'),
+  );
+  $available['LayerSwitcher'] = array(
+    'title'=> t('Layer Switcher'),
+    'description' => t('Gives user ability to switch Layers in the map interface.'),
+  );
+  $available['MousePosition'] = array(
+    'title'=> t('Mouse Position'),
+    'description' => t('Gives a visual indication of the mouse position to the user.'),
+  );
+  $available['Navigation'] = array(
+    'title'=> t('Navigation'),
+    'description' => t('Gives the user the ability to navigate the map interface.'),
+  );
+  $available['OverviewMap'] = array(
+    'title'=> t('Overview Map'),
+    'description' => t('Provides a small overview map in the interface.'),
+  );
+  $available['PanZoomBar'] = array(
+    'title'=> t('Pan Zoom Bar'),
+    'description' => t('Gives user ability to pan and zoom in the map interface.'),
+  );
+  $available['PermaLink'] = array(
+    'title'=> t('Permanent Link'),
+    'description' => t('Prvides a URL that will link to a specific map position.'),
+  );
+  $available['ScaleLine'] = array(
+    'title'=> t('Scale Line'),
+    'description' => t('Provides the user with a line of scale in the map interface.'),
+  );
+  $available['ZoomBox'] = array(
+    'title'=> t('Zoom Box'),
+    'description' => t('Allows user to draw a box on screen to zoom with Shift + Click.'),
+  );
+  $available['ZoomToMaxExtent'] = array(
+    'title'=> t('Zoom to Max Extent'),
+    'description' => t('Provides button to zoom to the maximum extent of the map.'),
+  );
+  
+  return $available;
 }

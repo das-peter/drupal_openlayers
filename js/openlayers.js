@@ -64,7 +64,7 @@ OL.loadMaps = function() {
       OL.maps[map.id].active = false;
 
       // Render Map
-      OL.renderMap(OL.mapDefs[i]);
+      OL.renderMap(map);
     }
   }
 };
@@ -81,10 +81,10 @@ OL.renderMap = function(map) {
   // Create Projection objects
   OL.maps[map.id].projection = new OpenLayers.Projection('EPSG:' + map.projection);
   OL.maps[map.id].displayProjection = new OpenLayers.Projection('EPSG:' + map.options.displayProjection);
-  
+
   // Create base map options
   var options = OL.createMapOptions(map.options, map.controls, map.id);
-  
+
   // Store map in our registry of active OpenLayers objects
   OL.maps[map.id].map = new OpenLayers.Map(map.id, options);
   
@@ -178,14 +178,15 @@ OL.renderMap = function(map) {
  *   Object of processed options
  */
 OL.createMapOptions = function(options, controls, mapid) {
-  // @@TODO: Dynamically put in controls and options
   var returnOptions = {};
   
-  // These parameters are set in the default map array, so they will always be defined
-  returnOptions.projection = OL.maps[mapid].projection;
-  returnOptions.displayProjection = OL.maps[mapid].displayProjection;
+  // Projections 
+  if (OL.isSet(OL.maps[mapid].projection) && OL.isSet(OL.maps[mapid].displayProjection)) {
+    returnOptions.projection = OL.maps[mapid].projection;
+    returnOptions.displayProjection = OL.maps[mapid].displayProjection;
+  }
   
-  // These parameters may or may not be defined by the map array, so we must check. 
+  // Max resolution and Extent
   if (OL.isSet(options.maxResolution)) {
     returnOptions.maxResolution = options.maxResolution;
   }
@@ -197,18 +198,24 @@ OL.createMapOptions = function(options, controls, mapid) {
       options.maxExtent.top
     );
   }
-  returnOptions.controls = [];
-  if (controls.LayerSwitcher)   returnOptions.controls.push( new OpenLayers.Control.LayerSwitcher({'ascending':false}) );
-  if (controls.Navigation)      returnOptions.controls.push( new OpenLayers.Control.Navigation() );
-  if (controls.PanZoomBar)      returnOptions.controls.push( new OpenLayers.Control.PanZoomBar() );
-  if (controls.MousePosition)   returnOptions.controls.push( new OpenLayers.Control.MousePosition() );
-  if (controls.Permalink)       returnOptions.controls.push( new OpenLayers.Control.Permalink() );
-  if (controls.ScaleLine)       returnOptions.controls.push( new OpenLayers.Control.ScaleLine() );
-  if (controls.OverviewMap)     returnOptions.controls.push( new OpenLayers.Control.OverviewMap() );
-  if (controls.KeyboardDefaults)returnOptions.controls.push( new OpenLayers.Control.KeyboardDefaults() );
-  if (controls.ZoomBox)         returnOptions.controls.push( new OpenLayers.Control.ZoomBox() );
-  if (controls.ZoomToMaxExtent) returnOptions.controls.push( new OpenLayers.Control.ZoomToMaxExtent() );
-
+ 
+  // Controls
+  if (OL.isSet(controls)) {
+    // @@TODO: This should be a little more dynamic
+    returnOptions.controls = [];
+    if (controls.LayerSwitcher)   returnOptions.controls.push( new OpenLayers.Control.LayerSwitcher() );
+    if (controls.Navigation)      returnOptions.controls.push( new OpenLayers.Control.Navigation() );
+    if (controls.Attribution)      returnOptions.controls.push( new OpenLayers.Control.Attribution() );
+    if (controls.PanZoomBar)      returnOptions.controls.push( new OpenLayers.Control.PanZoomBar() );
+    if (controls.MousePosition)   returnOptions.controls.push( new OpenLayers.Control.MousePosition() );
+    if (controls.Permalink)       returnOptions.controls.push( new OpenLayers.Control.Permalink() );
+    if (controls.ScaleLine)       returnOptions.controls.push( new OpenLayers.Control.ScaleLine() );
+    if (controls.OverviewMap)     returnOptions.controls.push( new OpenLayers.Control.OverviewMap() );
+    if (controls.KeyboardDefaults)returnOptions.controls.push( new OpenLayers.Control.KeyboardDefaults() );
+    if (controls.ZoomBox)         returnOptions.controls.push( new OpenLayers.Control.ZoomBox() );
+    if (controls.ZoomToMaxExtent) returnOptions.controls.push( new OpenLayers.Control.ZoomToMaxExtent() );
+  }
+  
   // Return processed options
   return returnOptions;
 }
@@ -336,44 +343,6 @@ OL.getObject = function(string) {
     i++; 
   }
   return object;
-}
-
-/**
- * Dump Variables -- This is a JS developer tool
- * 
- * @param element
- *   The element to dump
- * @param limit
- *   The depth we should go to.
- * @param depth
- *   The depth we should start at.
- */
-OL.dump = function(element, limit, depth) {
-  limit = limit ? limit : 1;
-  depth = depth ? depth : 0;
-  returnString = '<ol>';
-  
-  for (property in element) {
-    //Property domConfig isn't accessable
-    if (property != 'domConfig') {
-      returnString += '<li><strong>'+ property + '</strong> <small>(' + (typeof element[property]) + ')</small>';
-      if (typeof element[property] == 'number' || typeof element[property] == 'boolean')
-        returnString += ' : <em>' + element[property] + '</em>';
-      if (typeof element[property] == 'string' && element[property])
-        returnString += ': <div style="background:#C9C9C9;border:1px solid black; overflow:auto;"><code>' +
-                  element[property].replace(/</g, '<').replace(/>/g, '>') + '</code></div>';
-      if ((typeof element[property] == 'object') && (depth <limit))
-        returnString += OL.dump(element[property], limit, (depth + 1));
-      returnString += '</li>';
-    }
-  }
-  returnString += '</ol>';
-  if (depth == 0) {
-    winpop = window.open("", "","width=800,height=600,scrollbars,resizable");
-    winpop.document.write('<pre>' + returnString + '</pre>');
-    winpop.document.close();
-  }
-  return returnString;
 }
 
 /**
