@@ -90,6 +90,11 @@ OL.renderMap = function(map) {
   
   // Add ID to map.
   OL.maps[map.id].map.mapid = map.id;
+
+  // Change image path if specified
+  if (OL.isSet(map.image_path) && map.image_path) {
+    OL.maps[map.id].map.ImgPath = map.image_path;
+  }
   
   // On MouseOver mark the map as "active".
   $('#' + map.id).mouseover(function() {

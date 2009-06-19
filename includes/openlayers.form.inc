@@ -124,25 +124,7 @@ function _openlayers_map_form($form_state) {
   $centering_map = _openlayers_form_center_map($defaults);
   
   // Options
-  if ($defaults['options']['automatic_options']) {
-    $defaults['options']['displayProjection'] = '4326';
-    
-    // Check project
-    if ($default_proj == '900913' || $default_proj == '3785') {
-      $defaults['options']['maxResolution'] = '156543.0339';
-      $defaults['options']['maxExtent']['left'] = '-20037508.34';
-      $defaults['options']['maxExtent']['right'] = '20037508.34';
-      $defaults['options']['maxExtent']['bottom'] = '-20037508.34';
-      $defaults['options']['maxExtent']['top'] = '20037508.34';
-    }
-    else {
-      $defaults['options']['maxResolution'] = '';
-      $defaults['options']['maxExtent']['left'] = '';
-      $defaults['options']['maxExtent']['right'] = '';
-      $defaults['options']['maxExtent']['bottom'] = '';
-      $defaults['options']['maxExtent']['top'] = '';
-    }
-  }
+  if ($defaults['options']['automatic_options']) 
   
   // Form Properties
   $form['#tree'] = TRUE;
@@ -165,6 +147,13 @@ function _openlayers_map_form($form_state) {
     '#maxlength' => 128,
     '#required' => TRUE,
   );
+  $form['image_path'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Image Path'),
+    '#description' => t('The path to a directory for OpenLayers to look for UI graphics. If blank, default graphics are used.'),
+    '#default_value' => $defaults['image_path'], 
+  );
+
   
   // Map center properties
   $form['center'] = array(
@@ -467,6 +456,11 @@ function _openlayers_convert_map_to_form($map = array()) {
   $processed['layers']['default_layer'] = $map['default_layer'];
   $processed['layers']['baselayers'] = array();
   $processed['layers']['overlays'] = array();
+  
+  // Run Image path through url()
+  if ($processed['image_path']) {
+    $processed['image_path'] = check_url($processed['image_path']);
+  }
   
   // Set projection
   $processed['projections']['easy_projection'] = $processed['projection'];
