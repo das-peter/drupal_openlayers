@@ -63,6 +63,8 @@ function _openlayers_map_form($form_state) {
   $overlays = array();
   $defaults = $form_state;
   $available_controls = _openlayers_available_controls();
+  $styles = openlayers_styles_get_info();
+  $available_styles = array();
   
   // Get layer options
   $layer_options = array(
@@ -111,6 +113,11 @@ function _openlayers_map_form($form_state) {
         $reg_layer_options[$l] = $layer_options['baselayers'][$l];
       }
     }
+  }
+  
+  // Make style options array
+  foreach ($styles as $k_style => $style) {
+    $avilable_styles[$k_style] = $style['name'];
   }
 
   // Centering map
@@ -214,6 +221,37 @@ function _openlayers_map_form($form_state) {
       '#default_value' => $defaults['controls'][$c_key],
     );
   }
+  
+  // Vector Styles
+  $form['styles'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Vector Styles'),
+    '#description' => t('Styles used on features in vector layers.'),
+    '#tree' => TRUE,
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+  $form['styles']['default'] = array(
+    '#type' => 'select',
+    '#title' => t('Default Style'),
+    '#description' => t('Default style for features in a vector.'),
+    '#options' => $avilable_styles,
+    '#default_value' => $defaults['styles']['default'],
+  );
+  $form['styles']['select'] = array(
+    '#type' => 'select',
+    '#title' => t('Select Style'),
+    '#description' => t('Default style for features in a vector that are selected.'),
+    '#options' => $avilable_styles,
+    '#default_value' => $defaults['styles']['select'],
+  );
+  $form['styles']['temporary'] = array(
+    '#type' => 'select',
+    '#title' => t('Temporary Style'),
+    '#description' => t('Default style for any temporary features in a vector.'),
+    '#options' => $avilable_styles,
+    '#default_value' => $defaults['styles']['temporary'],
+  );
   
   // Projections
   $form['projections'] = array(

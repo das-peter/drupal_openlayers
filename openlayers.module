@@ -50,7 +50,7 @@ function openlayers_perm() {
 /**
  * Implementation of hook_theme().
  */
-function openlayers_theme() {
+function openlayers_theme($existing, $type, $theme, $path) {
   return array(
     'openlayers_map' => array(
       'arguments' => array(
@@ -70,6 +70,13 @@ function openlayers_theme() {
         'projection_title' => '',
         'available_layers' => array(),
         'layers' => array(),
+      ),
+      'file' => 'includes/openlayers.theme.inc',
+    ),
+    'openlayers_vector_styles' => array(
+      'arguments' => array(
+        'styles' => array(),
+        'map' => array(),
       ),
       'file' => 'includes/openlayers.theme.inc',
     ),
@@ -201,6 +208,8 @@ function openlayers_render_map($map = array(), $render = TRUE) {
   $map['layers'] = _openlayers_layers_process($map['layers'], $map);
   // Process behaviors
   $map['behaviors'] = _openlayers_behaviors_process($map['behaviors'], $map);
+  // Process styles
+  $map['styles'] = _openlayers_styles_process($map['styles'], $map);
   
   // Hook for one last alter
   // hook_openlayers_map_alter(&$map = array())
@@ -240,10 +249,10 @@ function openlayers_render_map($map = array(), $render = TRUE) {
  *   array of layer info
  */
 function openlayers_layers_get_info($reset = FALSE) {
-  static $info = array();
+  static $info = NULL;
   
   // If empty or reset, get info
-  if (count($info) == 0 || $reset == TRUE) {
+  if ($info === NULL || $reset == TRUE) {
     // Hook layer info ($map is not necessary)
     // hook_openlayers_layers_info($map = array())
     $info = module_invoke_all('openlayers_layers_info');
@@ -264,13 +273,37 @@ function openlayers_layers_get_info($reset = FALSE) {
  *   array of behavior info
  */
 function openlayers_behaviors_get_info($reset = FALSE) {
-  static $info = array();
+  static $info = NULL;
   
   // If empty or reset, get info
-  if (count($info) == 0 || $reset == TRUE) {
+  if ($info === NULL || $reset == TRUE) {
     // Hook behaviors info ($map is not necessary)
     // hook_openlayers_behaviors_info($map = array())
     $info = module_invoke_all('openlayers_behaviors_info');
+  }
+
+  return $info;
+}
+
+/**
+ * Get Styles Info
+ *
+ * Wrapper around styles info hook
+ *
+ * @ingroup openlayers_api
+ * @param $reset
+ *   Boolean whether to reset cache or not
+ * @return
+ *   array of styles info
+ */
+function openlayers_styles_get_info($reset = FALSE) {
+  static $info = NULL;
+  
+  // If empty or reset, get info
+  if ($info === NULL || $reset == TRUE) {
+    // Hook behaviors info ($map is not necessary)
+    // hook_openlayers_styles_info($map = array())
+    $info = module_invoke_all('openlayers_styles_info');
   }
 
   return $info;
@@ -492,6 +525,27 @@ function openlayers_openlayers_layers_info() {
   );
   
   return $info;
+} 
+
+/**
+ * Implementation of hook_openlayers_styles_info
+ */
+function openlayers_openlayers_styles_info() {
+  // Define info array
+  $info['default'] = array(
+    'name' => t('Default Style'),
+    'description' => t('Basic default style.'),
+    'file' => drupal_get_path('module', 'openlayers') .'/includes/openlayers.styles.inc',
+    'callback' => 'openlayers_process_styles',
+  );
+  $info['default_select'] = array(
+    'name' => t('Default Select Style'),
+    'description' => t('Default style for selected geometries'),
+    'file' => drupal_get_path('module', 'openlayers') .'/includes/openlayers.styles.inc',
+    'callback' => 'openlayers_process_styles',
+  );  
+      
+  return $info;
 }
 
 /**
@@ -570,8 +624,8 @@ function _openlayers_layers_process($layers = array(), $map = array()) {
  *
  * Get full data for any behaviors and add handlers
  *
- * @param $layers
- *   Array of layers to process
+ * @param $behaviors
+ *   Array of behaviors to process
  * @param $map
  *   Map array
  * @return
@@ -614,7 +668,7 @@ function _openlayers_behaviors_process($behaviors = array(), &$map) {
       // Check for function
       if (function_exists($info['callback'])) {
         // Call function and give it the behavior array
-        $result = call_user_func_array($info['callback'], array($behavior, &$map));
+        $result = call_user_func_array($info['callback'], array($behavior, $map));
         // Check for result
         if (isset($result) && is_array($result)) {
           $result['js_callback'] = $info['js_callback'];
@@ -628,6 +682,64 @@ function _openlayers_behaviors_process($behaviors = array(), &$map) {
     }
   }
     
+  // Return processed
+  return $processed;
+}
+
+/**
+ * Process Styles
+ *
+ * Get full data for any styles
+ *
+ * @param $styles
+ *   Array of styles to process
+ * @param $map
+ *   Map array
+ * @return
+ *   Array of processed styles
+ */
+function _openlayers_styles_process($styles = array(), &$map) {
+  // Check input
+  if (!is_array($styles)) {
+    $styles = array();
+  }
+  if (!is_array($map)) {
+    $map = array();
+  }
+  
+  // Initialized variables
+  $processed = array();
+  // Get behavior info array
+  $styles_info = openlayers_styles_get_info();
+  // Go through styles
+  foreach ($styles as $k => $style) {
+    // Check if array, if array, just pass on
+    if (is_array($style)) {
+      $processed[$k] = $style;
+    }
+    else {
+      // If not array, we want to include the file and call the function
+      if (($info = $styles_info[$style]) && is_array($styles_info[$style])) {
+        // Check if file exists
+        if (is_file('./'. $info['file'])) {          
+          require_once './'. $info['file'];
+          // Check for function
+          if (function_exists($info['callback'])) {
+            // Call function and give it the style name
+            $result = call_user_func_array($info['callback'], array($style, $map));
+            // Check for result
+            if (isset($result) && is_array($result)) {
+              $processed[$k] = $result;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Run through theme function  
+  $processed = theme('openlayers_vector_styles', $processed, $map);
+  
   // Return processed
   return $processed;
 }
@@ -671,7 +783,6 @@ function _openlayers_get_map_defaults() {
     'projection' => '4326',
     'width' => 'auto',
     'default_layer' => 'openlayers_default_wms',
-    'only_these_layers' => FALSE,
     'height' => '300px',
     'center' => array(
       'lat' => '0',

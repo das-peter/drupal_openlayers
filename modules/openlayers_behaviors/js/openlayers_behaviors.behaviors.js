@@ -222,11 +222,13 @@ OL.Behaviors.drawFeatures = function(event) {
       createControl.events.register('featureadded', createControl, OL.getObject(behavior.featureadded_handler[ev]));
     }
   }
+  // Feature modified
   if (behavior.featuremodified_handler) {
     for (var ev in behavior.featuremodified_handler) { 
       layer.events.register('afterfeaturemodified', layer, OL.getObject(behavior.featuremodified_handler[ev]));
     }
   }
+  // Feature moved
   if (behavior.featureremoved_handler) {
     for (var ev in behavior.featureremoved_handler) { 
       layer.events.register('beforefeatureremoved', layer, OL.getObject(behavior.featureremoved_handler[ev]));

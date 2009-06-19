@@ -42,22 +42,11 @@ OL.Layers.WMS = function(layerOptions, mapid) {
  *  OpenLayers Vector layer object.
  */
 OL.Layers.Vector = function(layerOptions, mapid) {
-  // Get styles
-  var stylesAll = [];
-  // Process Options
-  if (OL.isSet(layerOptions.options)){
-    // Process Styles
-    if (OL.isSet(layerOptions.options.styles)) {
-      var stylesAdded = [];
-      for (var styleName in layerOptions.options.styles) {
-        stylesAdded[styleName] = new OpenLayers.Style(layerOptions.options.styles[styleName].options);
-      }
-      stylesAll = new OpenLayers.StyleMap(stylesAdded);
-    };
-  }
+  var styleMap = {};
+  var stylesAdded = [];
   
-  // @@TODO: not be hard-coded
-  var myStyles = new OpenLayers.StyleMap({
+  // Default styles
+  var defaultStyles = new OpenLayers.StyleMap({
     "default": new OpenLayers.Style({
       pointRadius: 5, // sized according to type attribute
       fillColor: "#ffcc66",
@@ -71,11 +60,22 @@ OL.Layers.Vector = function(layerOptions, mapid) {
     })
   });
   
+  // Go through styles if there are any
+  if (OL.isSet(OL.maps[mapid].styles)) {
+    for (var style in OL.maps[mapid].styles) {
+      stylesAdded[style] = new OpenLayers.Style(OL.maps[mapid][style]);
+    }
+    styleMap = new OpenLayers.StyleMap(stylesAdded);
+  }
+  else {
+    styleMap = defaultStyles;
+  }
+  
   // Define layer object
-  var returnVector = new OpenLayers.Layer.Vector(layerOptions.name, {styleMap: myStyles});
+  var returnVector = new OpenLayers.Layer.Vector(layerOptions.name, {'styleMap': styleMap});
   
   // Add features if they are defined
-  if (typeof(layerOptions.features) != "undefined") {
+  if (OL.isSet(layerOptions.features)) {
     var wktFormat = new OpenLayers.Format.WKT();
     var newFeatures = [];
     

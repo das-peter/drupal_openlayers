@@ -91,7 +91,7 @@ OL.renderMap = function(map) {
   // Add ID to map.
   OL.maps[map.id].map.mapid = map.id;
   
-  //On MouseOver mark the map as "active".
+  // On MouseOver mark the map as "active".
   $('#' + map.id).mouseover(function() {
     OL.maps[map.id].active = true;
   })

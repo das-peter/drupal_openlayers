@@ -23,7 +23,7 @@ function openlayers_admin_default_settings($form_state = array()) {
 
   // Get default form
   $form = openlayers_map_form($defaults);
-  
+
   // Add submit button
   $form['submit'] = array(
     '#type' => 'submit', 

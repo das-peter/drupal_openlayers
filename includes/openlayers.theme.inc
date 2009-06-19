@@ -55,3 +55,11 @@ function theme_openlayers_form_projection_description($projection_title = '', $a
   }
   return $output;
 }
+
+/**
+ * Theme function to be able to override styles
+ */
+function theme_openlayers_vector_styles($styles = array(), $map = array()) {
+  // Default is to just send the processed styles back
+  return $styles;
+}

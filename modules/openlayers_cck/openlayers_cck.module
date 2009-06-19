@@ -136,11 +136,8 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
     );
     
     // Make sure that our display projection matches the database projection
-    if ($field['db_storage'] == 0) {
-      $field['db_storage'] = '4326';
-    }
     $map['options'] = array(
-      'displayProjection' => $field['db_storage'],
+      'displayProjection' => ($field['db_storage'] != 0) ? $field['db_storage'] : '4326',
     );
     
     // Define a vector layer for our features
@@ -167,6 +164,7 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
       'featuremodified_handler' => array('OL.CCK.featureModified'),
       'featureremoved_handler' => array('OL.CCK.featureRemoved'),
     );
+    
     // Determine type from geo type
     switch ($field['geo_type']) {
       case 'point':
@@ -188,6 +186,7 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
     $map = openlayers_merge_maps($widget_map, $map);
     // Render Map
     $rendered_map = openlayers_render_map($map);
+
     // Add JS
     drupal_add_js(drupal_get_path('module', 'openlayers_cck') .'/js/openlayers_cck.js');
     //Add CSS
