@@ -38,11 +38,13 @@ OL.loadMaps = function() {
   
   // Go through array and make maps
   for (var i in OL.mapDefs) {
-    // Create a temp map variable 
     var map = OL.mapDefs[i];
+    var $map = $('#' + map.id);
     
     // Check if map is already rendered
-    if (OL.isSet(OL.maps[map.id]) && OL.isSet(OL.maps[map.id].rendered) && (OL.maps[map.id].rendered == true)) {
+    if (OL.isSet(OL.maps[map.id]) && OL.isSet(OL.maps[map.id].rendered) 
+      && (OL.maps[map.id].rendered == true)
+    ) {
       continue;
     }
     
@@ -51,10 +53,12 @@ OL.loadMaps = function() {
     OL.triggerCustom(map, 'beforeEverything', event);
     
     // Check to see if there is a div on the page ready for the map. If there is then proceed.
-    if ($('#' + map.id).length > 0) {
+    var $map = $('#' + map.id);
+    if ($map.length > 0) {
       // Make div the right dimensions and add custom controls
-      $('#' + map.id).css('width', map.width).css('height', map.height);
-      $('#' + map.id).after(Drupal.theme('mapControls', map.id, map.height));
+      $map.css('width', map.width)
+        .css('height', map.height)
+        .after(Drupal.theme('mapControls', map.id, map.height));
       
       // Set-up our registry of active OpenLayers javascript objects for this particular map.
       OL.maps[map.id] = {};
@@ -294,8 +298,8 @@ OL.processEvents = function(events, mapid) {
  *   Event object
  */
 OL.triggerCustom = function(map, eventName, event) {
-  if (OL.isSet(map.events) && OL.isSet(map.events[eventName])){
-    for (var ev in map.events[eventName]){
+  if (OL.isSet(map.events) && OL.isSet(map.events[eventName])) {
+    for (var ev in map.events[eventName]) {
       OL.EventHandlers[map.events[eventName][ev]](event);
     }
   }

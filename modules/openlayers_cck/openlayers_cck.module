@@ -39,186 +39,32 @@ function openlayers_cck_theme() {
     'openlayers_cck_map' => array(
       'arguments' => array(
         'field' => NULL,
-        'mapid' => NULL,
+        'map' => NULL,
       ),
     ),
-    'openlayers_cck_formatter_openlayersmapformatter_grouped' => array(
-      'arguments' => array('element' => NULL),
-    ),
-    'openlayers_cck_formatter_openlayersmapformatter_single' => array(
-      'arguments' => array('element' => NULL),
-    ),
-
   );
 }
 
 /**
- * Implementation of hook_widget_info
+ * Implementation of hook_gis_input_info().
  */
-function openlayers_cck_widget_info() {
-  $info = array();
-  
-  // Check for geo_field module
-  if (module_exists('geo_field')) {
-    $info['openlayers_cck_geo_field'] = array(
-      'label' => t('OpenLayers Map Widget'),
-      'field types' => array('geo'),
-    );
-  }
-  
-  return $info;
-}
-
-/**
- * Implementation of hook_widget_settings().
- */
-function openlayers_cck_widget_settings($op, $widget) {
-  switch ($op) {
-    case 'form':
-      // Get 
-      if (isset($widget['openlayers_cck'])) {
-        $defaults = $widget['openlayers_cck'];
-      }
-      else {
-        $defaults = openlayers_get_default_map();
-        $defaults = openlayers_convert_map_to_form($defaults);
-      }
-      
-      // Get map form
-      $map_form = openlayers_map_form($defaults);
-      
-      // Put form into a collapsed fieldset, as this promotes good usability
-      // Most users will not want to edit these fields
-      $form['openlayers_cck'] = $map_form;
-      $form['openlayers_cck']['#type'] = 'fieldset';
-      $form['openlayers_cck']['#title'] = t('Map Settings');
-      $form['openlayers_cck']['#description'] = t('These are the settings that determine how the map will look.');
-      $form['openlayers_cck']['#collapsible'] = TRUE;
-      $form['openlayers_cck']['#collapsed'] = TRUE;
-      // Return form
-      return $form;
-
-    case 'validate':
-      openlayers_map_form_validate($widget['openlayers_cck']);
-      break;
-
-    case 'save':
-      return array('openlayers_cck');
-  }
-}
-
-/**
- * Implementation of hook_widget().
- */
-function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0) {
-  // Get field name
-  $fieldname = $field['field_name'];
-  
-  // Only include map once per field
-  static $included_field = '';
-  if ($included_field != $fieldname) {
-    // Create map
-    $mapid = OPENLAYERS_CCK_MAP_ID_PREFIX .'-'. $fieldname;
-    $map['id'] = $mapid;
-    
-    // Add an event to the map. When a layer is added fire the JavaScript function 
-    // OL.EventHandler.CCKLoadValues which will load data from the CCK fields into the map.
-    $map['events'] = array(
-      'beforeBehaviors' => array('CCKLoadValues'),
-    );
-    // Define beahvoirs
-    $map['behaviors'] = array(
-      'openlayers_cck_zoom_to_layer' => array(
-        'id' => 'openlayers_cck_zoom_to_layer',
-        'type' => 'openlayers_behaviors_zoom_to_layer',
-        'layer' => 'openlayers_cck_vector',
+function openlayers_cck_gis_input_info($gis_type = NULL) {
+  // Note, we shou use the following so that we can actually control how
+  // the widget will work, butdifficult to make unlimited work
+  // and Geo does not support it yet
+  // 'multiple values' => CONTENT_HANDLE_MODULE,
+  $inputs = array(
+    'openlayers_cck_geo_field' => array(
+      'label' => t('OpenLayers Map'),
+      'gis input' => 'wkt',
+      'safe reverse' => TRUE,
+      'gis types' => array('point', 'linestring', 'polygon'),
+      'element' => array(
+        '#type' => 'openlayers_cck_geo_field',
       ),
-    );
-    
-    // Make sure that our display projection matches the database projection
-    $map['options'] = array(
-      'displayProjection' => ($field['db_storage'] != 0) ? $field['db_storage'] : '4326',
-    );
-    
-    // Define a vector layer for our features
-    $map['layers'] = array(
-      'openlayers_cck_vector' => array(
-        'id' => 'openlayers_cck_vector',
-        'type' => 'Vector',
-        'name' => $field['widget']['label'],
-        'options' => array(),
-        'events' => array(
-          'featureselected' => array('CCKFeaturesSelected'),
-          'featureunselected' => array('CCKFeaturesUnselected'),
-        ),
-      ),
-    );
-    
-    // Build control
-    $map['behaviors']['openlayers_cck_edit_'. $field['geo_type']] = array(
-      'id' => 'openlayers_cck_edit_'. $field['geo_type'],
-      'type' => 'openlayers_behaviors_draw_features',
-      'feature_type' => 'point',
-      'layer' => 'openlayers_cck_vector',
-      'featureadded_handler' => array('OL.CCK.featureAdded'),
-      'featuremodified_handler' => array('OL.CCK.featureModified'),
-      'featureremoved_handler' => array('OL.CCK.featureRemoved'),
-    );
-    
-    // Determine type from geo type
-    switch ($field['geo_type']) {
-      case 'point':
-        $map['behaviors']['openlayers_cck_edit_'. $field['geo_type']]['feature_type'] = 'point';
-        break;
-      
-      case 'linestring':
-        $map['behaviors']['openlayers_cck_edit_'. $field['geo_type']]['feature_type'] = 'path';
-        break;
-        
-      case 'polygon':
-        $map['behaviors']['openlayers_cck_edit_'. $field['geo_type']]['feature_type'] = 'polygon';
-        break;
-    }
-    
-    // Use widget settings form to create base map array
-    $widget_map = openlayers_convert_form_to_map($field['widget']['openlayers_cck']);
-    // Merge with map created for field
-    $map = openlayers_merge_maps($widget_map, $map);
-    // Render Map
-    $rendered_map = openlayers_render_map($map);
-
-    // Add JS
-    drupal_add_js(drupal_get_path('module', 'openlayers_cck') .'/js/openlayers_cck.js');
-    //Add CSS
-    drupal_add_css(drupal_get_path('module', 'openlayers_cck') .'/openlayers_cck.css', 'module');
-    
-    // Put together array for JS
-    $openlayers_cck = array(
-      'openlayers_cck' => array(
-        'maps' => array(
-          $mapid => array(
-            'field_name' => $fieldname,
-            'field_data' => $field,
-            'field_name_js' => str_replace('_', '-', $fieldname), // Best way?
-            'field_map_themed' => theme('openlayers_cck_map', $field, $rendered_map),
-            'field_container' => str_replace('_', '-', $fieldname) .'-items',  // Best way??
-            'field_items' => $items,
-          ),
-        ),
-      ),
-    );
-
-    // Add JS settings
-    drupal_add_js($openlayers_cck, 'setting');
-    // Change static variable
-    $included_field = $fieldname;
-  }
-
-  // Return widget array
-  return array(
-    '#type' => $field['widget']['type'],
-    '#default_value' => isset($items[$delta]) ? $items[$delta] : '',
+    ),
   );
+  return $inputs;
 }
 
 /**
@@ -228,7 +74,7 @@ function openlayers_cck_elements() {
   return array(
     'openlayers_cck_geo_field' => array(
       '#input' => TRUE,
-      '#columns' => array('lat', 'lon', 'wkt'),
+      '#columns' => array('geo_wkt'),
       '#delta' => 0,
       '#process' => array('openlayers_cck_geo_field_process'),
     ),
@@ -240,32 +86,38 @@ function openlayers_cck_elements() {
  *
  * Build the form element. When creating a form using FAPI #process,
  * note that $element['#value'] is already set.
- *
- * The $fields array is in $form['#field_info'][$element['#field_name']].
  */
-function openlayers_cck_geo_field_process($element, $edit, $form_state, $form) {
-  // Define some variables
-  $field = $form['#field_info'][$element['#field_name']];
+function openlayers_cck_geo_field_process($element, $edit, &$form_state, &$form) {
+  $field = $form['#field_info'][$element['#parents'][0]];
   $delta = $element['#delta'];
-  $field_data = content_fields($element['#field_name'], $element['#type_name']);
-    
-  // Define elements
-  $element['wkt'] = array(
-    '#type' => 'textarea',
-    '#title' => t($field['widget']['label']),
-    '#rows' => 2,
-    '#default_value' => isset($element['#value']['wkt']) ? $element['#value']['wkt'] : NULL,
-    '#required' => $field['required'],
-    '#description' => $field['widget']['description'],
-    '#attributes' => array('rel' => OPENLAYERS_CCK_MAP_ID_PREFIX .'-'. $field['field_name']),
-  );
-  
-  // Remove title and description for multiple
-  if ($field_data['multiple'] > 0) {
-    unset($element['wkt']['#title']);
-    unset($element['wkt']['#description']);
+  $field_name = $field['field_name'];
+  $widget = $field['widget'];
+  static $map_included = FALSE;
+
+  // Only include one map
+  if ($map_included == FALSE) {
+    // Make map for input
+    $rendered_map = _openlayers_cck_render_element_map($field_name, $element['#value'], $field);
+    // Create map element
+    $element['map'] = array(
+      '#value' => theme('openlayers_cck_map', $field, $rendered_map),
+    );
+    // Mark as included
+    $map_included = TRUE;
   }
   
+  // Create storage element
+  $element['geo_wkt'] = array(
+    '#type' => 'textarea',
+    '#rows' => 2,
+    '#required' => $delta == 0 && $field['required'],
+    '#delta' => $delta,
+    '#columns' => array_keys($field['columns']),
+    '#field_name' => $field_name,
+    '#type_name' => $field['type_name'],
+    '#attributes' => array('rel' => $rendered_map['id']),
+  );
+
   return $element;
 }
 
@@ -279,181 +131,143 @@ function theme_openlayers_cck_geo_field($element) {
 /**
  * Theme function for openlayers_cck_map
  */
-function theme_openlayers_cck_map($field = array(), $map = array()) {  
+function theme_openlayers_cck_map($field = array(), $map = array()) {
+  $title = check_plain(t($field['widget']['label']));
+  $description = content_filter_xss(t($field['widget']['description']));
+  
   $output = '
-    <div class="form-item openlayers-cck-widget-container">
-      <label for="'. $map['id'] .'">'. $field['widget']['label'] .'</label>
-      '. $map['themed'] .'
-      <div class="description openlayers-cck-field-description">
-        '. $field['widget']['description'] .'
-      </div>
+    <div id="openlayers-cck-map-container-' . $map['id'] . '" class="form-item openlayers-cck-map-container">
+      <label for="openlayers-cck-map-' . $map['id'] . '">' . $title . ':</label>
+      ' . $map['themed'] . '
       <div class="description openlayers-cck-map-instructions">'.t('Click the tools in the upper right-hand corner of the map to switch between draw mode and zoom/pan mode. Draw your shape, double-clicking to finish. You may edit your shape using the control points. To delete a shape, select it and press the delete key. To delete a vertex hover over it and press the d key.').'</div>
+      <div class="description openlayers-cck-map-description">
+        ' . $description . '
+      </div>
       <div class="openlayers-cck-actions">
-        <a href="#" id="'. $map['id'] .'-wkt-switcher" rel="'. $map['id'] .'">'. t('Show/Hide WKT Fields') .'</a>
+        <a href="#" id="' . $map['id'] . '-wkt-switcher" rel="' . $map['id'] . '">'. t('Show/Hide WKT Fields') .'</a>
       </div>
     </div>
   ';
   return $output;
 }
 
-
 /**
- * Implementation of hook_field_formatter_info(),.
+ * Render Map for Geo Widget
+ *
+ * @param $field_name
+ *   CCK name of field
+ * @param $values
+ *   Current default values
+ * @param $field
+ *   Array of field data
+ * @return
+ *   Rendered map array
  */
-function openlayers_cck_field_formatter_info() {
-  return array(
-    // @@TOOD: Implement Grouped Formatter.
-    //'openlayersmapformatter_grouped' => array(
-    //  'label' => t('OpenLayers Grouped Map'),
-    //  'field types' => array('geo'),
-    //  'multiple values' => CONTENT_HANDLE_MODULE,
-    //),
-    'openlayersmapformatter_single' => array(
-      'label' => t('OpenLayers Single Map'),
-      'field types' => array('geo'),
-      'multiple values' => CONTENT_HANDLE_MODULE,
+function _openlayers_cck_render_element_map($field_name = '', $values = array(), $field = array()) {
+  $field_name_html = str_replace('_', '-', $field_name);
+  $map_id = OPENLAYERS_CCK_MAP_ID_PREFIX .'-'. $field_name;
+  $field_container = '';
+
+  // Get default map
+  // @TODO: Use widget settings when geo supports it
+  $map = openlayers_get_default_map();
+  
+  // Put together map
+  $map['id'] = $map_id;
+
+  // Add main event for CCK processing
+  $map['events']['beforeBehaviors'] = array('CCKProcess');
+  
+  // Define beahvoirs
+  $map['behaviors']['openlayers_cck_zoom_to_layer'] = array(
+    'id' => 'openlayers_cck_zoom_to_layer',
+    'type' => 'openlayers_behaviors_zoom_to_layer',
+    'layer' => 'openlayers_cck_vector',
+  );
+  
+  // Make sure that our display projection matches the database projection
+  $map['options'] = array(
+    'displayProjection' => ($field['srid'] != 0) ? $field['srid'] : '4326',
+  );
+  
+  // Define a vector layer for our features
+  $map['layers']['openlayers_cck_vector'] = array(
+    'id' => 'openlayers_cck_vector',
+    'type' => 'Vector',
+    'name' => $field_name,
+    'options' => array(),
+    'events' => array(
+      'featureselected' => array('CCKFeaturesSelected'),
+      'featureunselected' => array('CCKFeaturesUnselected'),
     ),
   );
-}
-
-/**
- * Theme a group of fields using just one map. Each field is given one layer.
- * 
- */
-function theme_openlayers_cck_formatter_openlayersmapformatter_grouped($element) {
-  // @@TODO: We may want to use nodeapi to do this instead of using a field formatter
-  // Since we are grouping all fields, we only ever want to process this function once.
   
-  static $processed = FALSE;
-  if (!$processed){
-    $node = $element['#node'];
-    
-    $mapid = "openlayers-cck-field-". $node->nid ."-grouped";
-    
-    // @@TODO: Put in a map form somewhere to configure the rest of the map properties.
-    // @@TODO: Should we be using the hook_nodeapi for this?  Given that it is currently displaying under the header of the first field?
-
-    // Go through the layers. Each field get it's own layer.
-    $layers = array();
-    foreach ($node->geo_fields as $geofield_key){
-      // Check to make sure this field is using the grouped formatter
-      $formatter = $node->content[$geofield_key]['field']['items']['#formatter'];
-      if ($formatter == 'openlayersmapformatter_grouped'){
-        
-        // Add basic information to the layer in the map array
-        $field_info = $node->content[$geofield_key]['field'];
-        $layers[$geofield_key] = array(
-          'id' => $geofield_key,
-          'type' => 'Vector',
-          'name' => $field_info['#title'],
-        );
-        
-        // Add features to the map
-        $layers[$geofield_key]['features'] = array();
-        foreach ($node->$geofield_key as $feature){
-          $layers[$geofield_key]['features'][] = array(
-            'wkt' => $feature['wkt'],
-            'projection' => $feature[$geofield_key."_srid"] ? $feature[$geofield_key."_srid"] : '4326',
-            'attributes' => array(
-              'name' => $node->node_title, 
-              'nid' => $node->nid, 
-            ),
-          );
-        }
-      }
-    }
-    
-    // Build our map array
-    $map_def = array(
-      'id' => $mapid,
-      'layers' => $layers,
-    );
-
-    
-    $map = openlayers_render_map($map_def);
-        
-    $processed = TRUE;
-    return $map['themed'];
-  }
-  else{
-    return false;
-  }
-}
-
-/**
- * Theme a fields using a map. Each field is given a map.
- */
-function theme_openlayers_cck_formatter_openlayersmapformatter_single($element) { 
-  // @@TODO: Put in a map form somewhere to configure the rest of the map properties.
-  // @@BUG:  When in a view, infinite recursion if more than one value exists per field per node and "each value in it's own row" is set to false in view field settings.
-  // @@BUG:  When in a view, and the multivalue option is set to "each value in it's own row" then the element is formed as a single, and SRID (projection) is nowhere to be found in $element. This is most likely a bug in geo - but i'm not sure.
+  // Build default control without feature type
+  $map['behaviors']['openlayers_cck_edit_'. $field['geo_type']] = array(
+    'id' => 'openlayers_cck_edit_'. $field['geo_type'],
+    'type' => 'openlayers_behaviors_draw_features',
+    'layer' => 'openlayers_cck_vector',
+    'featureadded_handler' => array('OL.CCK.featureAdded'),
+    'featuremodified_handler' => array('OL.CCK.featureModified'),
+    'featureremoved_handler' => array('OL.CCK.featureRemoved'),
+  );
   
-  // Define some common variables
-  $node = $element['#node'];
-  $geofield_key = $element['#field_name'];
-  $srid_key = $geofield_key."_srid";
-  $mapid = "openlayers-cck-field-". $node->nid ."-single-". $geofield_key;
-  
-  // Name our features. If we are in a view, name the feature by the node name.
-  // If we are in a page, name the feature by the field name. This is necessary
-  // because the tricky $element changes it's form depending on context.
-  if ($element['#title']){
-    $feature_name = $element['#title'];
+  // Determine type from geo type
+  switch ($field['geo_type']) {
+    case 'point':
+      $map['behaviors']['openlayers_cck_edit_'. $field['geo_type']]['feature_type'] = 'point';
+      break;
+    
+    case 'linestring':
+      $map['behaviors']['openlayers_cck_edit_'. $field['geo_type']]['feature_type'] = 'path';
+      break;
+      
+    case 'polygon':
+      $map['behaviors']['openlayers_cck_edit_'. $field['geo_type']]['feature_type'] = 'polygon';
+      break;
   }
-  elseif ($node->content[$geofield_key]['field']['#title']){
-    $feature_name = $node->content[$geofield_key]['field']['#title'];
+  
+  // Check if multiple, as there are specific needs
+  if (empty($field['multiple'])) {
+    // If a single value
+    $field_container = 'edit-' . $field_name_html . '-0-geo-geo-wkt-wrapper';
   }
   else {
-    $feature_name = $node->node_title;
+    // For multiples, we need to move out map widget outside of the fields
+    $field_container = $field_name . '_values';
+    // Call Move Map event
+    $map['events']['beforeEverything'] = array('CCKMoveMap');
   }
   
-  // Prepare our layers array.
-  $layers = array();
-  // Add basic information to the layer in the map array
-  $layers[$geofield_key] = array(
-    'id' => $geofield_key,
-    'type' => 'Vector',
-    'name' => $feature_name, 
-  );
-  $layers[$geofield_key]['features'] = array();
+  // Render Map
+  $rendered_map = openlayers_render_map($map);
   
-  // Add features to the map definition
-  foreach ($element  as $key => $feature) {
-    if (is_numeric($key)){
-      $layers[$geofield_key]['features'][] = array(
-        'wkt' => $feature['#item']['wkt'],
-        'projection' => $feature['#item'][$srid_key] ? $feature['#item'][$srid_key] : '4326',
-        'attributes' => array(
-          'name' => $feature_name, 
-          'nid' => $node->nid, 
+  // Check errors
+  if (!$rendered_map['errors']) {
+    // Add JS
+    drupal_add_js(drupal_get_path('module', 'openlayers_cck') .'/js/openlayers_cck.js');
+    //Add CSS
+    drupal_add_css(drupal_get_path('module', 'openlayers_cck') .'/openlayers_cck.css', 'module');
+    
+    // Put together array for JS
+    $openlayers_cck = array(
+      'openlayers_cck' => array(
+        'maps' => array(
+          $map_id => array(
+            'field_name' => $field_name,
+            'field_data' => $field,
+            'field_name_js' => $field_name_html,
+            'field_container' => $field_container,
+            'field_items' => $items,
+            'map_container' => 'openlayers-cck-map-container-' . $map_id,
+          ),
         ),
-      );
-    }
-  }
-  
-  // If there are any features to display, then display the map
-  if (count($layers[$geofield_key]['features'])) {
-    // Build our map array
-    $map_def = array(
-      'id' => $mapid,
-      'layers' => $layers,
-      'behaviors' => array(
-        'openlayers_cck_zoom_to_layer' => array(
-          'id' => 'openlayers_cck_zoom_to_layer',
-          'type' => 'openlayers_behaviors_zoom_to_layer',
-          'layer' => $geofield_key,
-        ),
-        'openlayers_cck_tooltip' => array(
-          'id' => 'openlayers_cck_tooltip',
-          'type' => 'openlayers_behaviors_tooltip',
-          'layer' => $geofield_key,
-          'attribute' => 'name',
-        ),
-      )
+      ),
     );
-    
-    $map = openlayers_render_map($map_def);
-    
-    return $map['themed'];
+
+    // Add JS settings
+    drupal_add_js($openlayers_cck, 'setting');
   }
+
+  return $rendered_map;
 }

@@ -552,9 +552,12 @@ function openlayers_openlayers_styles_info() {
  * @return
  *   Array of processed layers
  */
-function _openlayers_layers_process($layers = array(), $map = array()) {
-  if (!$layers){
+function _openlayers_layers_process($layers = array(), &$map = array()) {
+  if (!$layers) {
     $layers = array();
+  }
+  if (!is_array($map)) {
+    $map = array();
   }
   
   $processed = array();
@@ -582,7 +585,7 @@ function _openlayers_layers_process($layers = array(), $map = array()) {
           // Check for function
           if (function_exists($info['callback'])) {
             // Call function and give it the layer name
-            $result = call_user_func_array($info['callback'], $layer);
+            $result = $info['callback']($layer, $map);
             // Check for result
             if (isset($result) && is_array($result)) {
               $processed[$layer] = $result;
@@ -623,7 +626,7 @@ function _openlayers_layers_process($layers = array(), $map = array()) {
  * @return
  *   Array of processed behaviors
  */
-function _openlayers_behaviors_process($behaviors = array(), &$map) {
+function _openlayers_behaviors_process($behaviors = array(), &$map = array()) {
   // Check input
   if (!is_array($behaviors)) {
     $behaviors = array();
@@ -660,7 +663,7 @@ function _openlayers_behaviors_process($behaviors = array(), &$map) {
       // Check for function
       if (function_exists($info['callback'])) {
         // Call function and give it the behavior array
-        $result = call_user_func_array($info['callback'], array($behavior, $map));
+        $result = $info['callback']($behavior, $map);
         // Check for result
         if (isset($result) && is_array($result)) {
           $result['js_callback'] = $info['js_callback'];
@@ -673,7 +676,7 @@ function _openlayers_behaviors_process($behaviors = array(), &$map) {
       }
     }
   }
-    
+
   // Return processed
   return $processed;
 }
@@ -690,7 +693,7 @@ function _openlayers_behaviors_process($behaviors = array(), &$map) {
  * @return
  *   Array of processed styles
  */
-function _openlayers_styles_process($styles = array(), &$map) {
+function _openlayers_styles_process($styles = array(), &$map = array()) {
   // Check input
   if (!is_array($styles)) {
     $styles = array();
@@ -718,7 +721,7 @@ function _openlayers_styles_process($styles = array(), &$map) {
           // Check for function
           if (function_exists($info['callback'])) {
             // Call function and give it the style name
-            $result = call_user_func_array($info['callback'], array($style, $map));
+            $result = $info['callback']($style, $map);
             // Check for result
             if (isset($result) && is_array($result)) {
               $processed[$k] = $result;

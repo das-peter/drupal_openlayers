@@ -213,14 +213,6 @@ class openlayers_views_style_map extends views_plugin_style {
     
     // Map settings form
     $map_form = openlayers_map_form($this->options);
-    
-    // Put form into a collapsed fieldset, as this promotes good usability
-    // Most users will not want to edit these fields
-    $form['map_settings'] = $map_form;
-    $form['map_settings']['#type'] = 'fieldset';
-    $form['map_settings']['#title'] = t('Map Settings');
-    $form['map_settings']['#collapsible'] = TRUE;
-    $form['map_settings']['#collapsed'] = TRUE;
   }
   
   /**
@@ -378,8 +370,8 @@ class openlayers_views_style_map extends views_plugin_style {
         $rows = $records;
       }
       
-      // Define map array
-      $map = array();
+      // Get defalt map
+      $map = openlayers_get_default_map();
       
       // Define ID
       $map['id'] = OPENLAYERS_VIEWS_MAP_ID_PREFIX .'-'. $this->view->name;
@@ -390,20 +382,17 @@ class openlayers_views_style_map extends views_plugin_style {
       $features = $this->map_features($rows);
 
       // Define a layer for the features
-      $map['layers'] = array(
-        'openlayers_views_layer'. $this->view->name => array(
-          'id' => 'openlayers_views_layer_'. $this->view->name,
-          'type' => 'Vector',
-          'name' => $this->display->display_title,
-          'options' => array(),
-          'events' => array(),
-          'features' => $features,
-        ),
+      $map['layers']['openlayers_views_layer'. $this->view->name] = array(
+        'id' => 'openlayers_views_layer_'. $this->view->name,
+        'type' => 'Vector',
+        'name' => $this->display->display_title,
+        'options' => array(),
+        'events' => array(),
+        'features' => $features,
       );
       
       // Set up behaviors
-      $map['behaviors'] = array();
-      
+      $map['behaviors'] = ($map['behaviors']) ? $map['behaviors'] : array();
       if (module_exists('openlayers_behaviors')){
         // Set up tooltip behavior
         if ($this->options['behaviors']['tooltip']){

@@ -14,50 +14,58 @@ var OL = OL || {};
 OL.CCK = OL.CCK || {};
 
 /**
- * When document is ready for JS
- * 
- * Add the themed map container (HTML) to the document. 
- * Also set-up the click functionality for the Show/Hide WKT Fields
+ * Move Map Event Handler
+ *
+ * This event is called when before map is rendered
+ * in order to move the elemnts outside of the fields.
+ *
+ * @param event
+ *   Event object
  */
-jQuery(document).ready(function() {
-  // Move our openlayers_cck map definitions so they will not 
-  // be overwritten by Drupal AJAX / AHAH trigers.
-  OL.CCK.maps = Drupal.settings.openlayers_cck.maps;
-  
-  // Go through CCK Fields and diplay map
-  var fieldContainer = '';
-  for (var mapid in OL.CCK.maps) {
-    fieldContainer = OL.CCK.maps[mapid].field_container;
-    // Add Themed Map container
-    $('#' + fieldContainer).before(OL.CCK.maps[mapid].field_map_themed);
-    $('#' + fieldContainer).hide();
-    
-    // Define click actions for WKT Switcher
-    $('#' + mapid + '-wkt-switcher').click(function() {
-      var mapid = $(this).attr('rel');
-      var fieldContainer = OL.CCK.maps[mapid].field_container;
-      $('#' + fieldContainer).toggle();
-      return false;
-    });
-  }
-  
-  // Attach Drupal Behavoirs which will call the openlayers rendering function
-  // again now that we have put in the correct markup for the maps.
-  Drupal.attachBehaviors();
-});
+OL.EventHandlers.CCKMoveMap = function(event) {
+  var mapid = event.mapDef.id;
+  var fieldContainer = Drupal.settings.openlayers_cck.maps[mapid].field_container;
+  var mapContainer = Drupal.settings.openlayers_cck.maps[mapid].map_container;
+  var $fieldContainer = $('#' + fieldContainer);
+  var $mapFull = $('#' + mapContainer);
+  var $clonedMap = $mapFull.clone(true);
+  $mapFull.remove();
+  $fieldContainer.before($clonedMap);
+}
 
 /**
- * Implementation of Drupal Behavoir
+ * Main Setup Event for CCK Processing
+ *
+ * Evnet callback for map.
+ *
+ * @param event
+ *   Event object
  */
-Drupal.behaviors.openlayers_cck = function(context) {
-  // Go through OpenLayers data
-  for (var mapid in Drupal.settings.openlayers_cck.maps) {
-    // Add onblur events to fields
-    $('textarea[rel=' + mapid + ']').blur(function() {
-      OL.CCK.alterFeatureFromField($(this));
-    });
-  }
-};
+OL.EventHandlers.CCKProcess = function(event) {
+  OL.CCK.maps = OL.CCK.maps || Drupal.settings.openlayers_cck.maps || [];
+  var mapid = event.mapDef.id;
+  var $map = $('#' + mapid);
+  var $textareas = $('textarea[rel=' + mapid + ']');
+  var $wktSwitcher = $('#' + mapid + '-wkt-switcher');
+  var fieldContainer = OL.CCK.maps[mapid].field_container;
+
+  // WKT Switcher event
+  $wktSwitcher.click(function() {
+    $('#' + fieldContainer).toggle('normal');
+    return false;
+  });
+  
+  // Hide textareas by default
+  $('#' + fieldContainer).hide();
+  
+  // Populate any existing fields
+  OL.CCK.populateMap(mapid);
+  
+  // Add blur events to textareas
+  $textareas.blur(function() {
+    OL.CCK.alterFeatureFromField($(this));
+  });
+}
 
 /**
  * OpenLayers CCK Populate Map
@@ -72,9 +80,12 @@ OL.CCK.populateMap = function(mapid) {
   var fieldContainer = OL.CCK.maps[mapid].field_container;
   
   // Cycle through the fieldContainer item and read WKT from all the textareas
-  $('#' + fieldContainer + ' textarea').each(function(){
-    if ($(this).val() != ''){
-      var newFeature = OL.CCK.loadFeatureFromTextarea(mapid, this);
+  $('#' + fieldContainer + ' textarea').each(function() {
+    var $thisField = $(this);
+    
+    // Check value
+    if ($thisField.val() != '') {
+      var newFeature = OL.CCK.loadFeatureFromTextarea(mapid, $thisField);
       if (newFeature != false) featuresToAdd.push(newFeature);
     }
   });
@@ -93,15 +104,15 @@ OL.CCK.populateMap = function(mapid) {
  * @param mapid
  *   String ID of map
  * @param textarea
- *   DOM element
+ *   jQuery element
  * @return
  *   New feature object or false if error
  */
-OL.CCK.loadFeatureFromTextarea = function(mapid, textarea) {
+OL.CCK.loadFeatureFromTextarea = function(mapid, $textarea) {
 	var wktFormat = new OpenLayers.Format.WKT();
+  var newFeature = wktFormat.read($textarea.val());
 	
-	// read the wkt values into an OpenLayers geometry object
-  var newFeature = wktFormat.read($(textarea).val());
+	// Check if feature is defined
   if (typeof(newFeature) == "undefined") {
     // TODO: Notification a little less harsh
     alert(Drupal.t('WKT is not valid'));
@@ -115,22 +126,9 @@ OL.CCK.loadFeatureFromTextarea = function(mapid, textarea) {
     }
     
     // Link the feature to the field.
-    newFeature.drupalField = $(textarea).attr('id');
+    newFeature.cckField = $textarea.attr('id');
 		return newFeature;
   }
-}
-
-/**
- * OpenLayers CCK Load Values
- * 
- * When the layer is done loading, load in the values from 
- * the CCK text fields if it is the correct layer.
- *
- * @param event
- *   Event object
- */
-OL.EventHandlers.CCKLoadValues = function(event) {
-  OL.CCK.populateMap(event.mapDef.id);
 }
 
 /**
@@ -144,7 +142,7 @@ OL.EventHandlers.CCKLoadValues = function(event) {
  */
 OL.EventHandlers.CCKFeaturesSelected = function(event) {
   var feature = event.feature;
-  $("#" + feature.drupalField).addClass('openlayers-cck-feature-selected');
+  $("#" + feature.cckField).addClass('openlayers-cck-feature-selected');
 }
 
 /**
@@ -158,7 +156,7 @@ OL.EventHandlers.CCKFeaturesSelected = function(event) {
  */
 OL.EventHandlers.CCKFeaturesUnselected = function(event) {
   var feature = event.feature;
-  $("#" + feature.drupalField).removeClass('openlayers-cck-feature-selected');
+  $("#" + feature.cckField).removeClass('openlayers-cck-feature-selected');
 }
 
 /**
@@ -168,28 +166,28 @@ OL.EventHandlers.CCKFeaturesUnselected = function(event) {
  * when users change the raw WKT fields, the map gets updated 
  * in real time
  *
- * @param textarea
- *   DOM element
+ * @param $textarea
+ *   jQuery object
  */
-OL.CCK.alterFeatureFromField = function(textarea) {
-  var mapid = $(textarea).attr('rel');
-  var wkt = $(textarea).val();
+OL.CCK.alterFeatureFromField = function($textarea) {
+  var mapid = $textarea.attr('rel');
+  var wkt = $textarea.val();
   
   // Create the new feature
-  if ($(textarea).val() != ''){
-    var newFeature = OL.CCK.loadFeatureFromTextarea(mapid, textarea);
+  if ($textarea.val() != '') {
+    var newFeature = OL.CCK.loadFeatureFromTextarea(mapid, $textarea);
   }
   
   // Delete the existing feature
   for (var l in OL.maps[mapid].layers['openlayers_cck_vector'].features) {
-	  if (OL.maps[mapid].layers['openlayers_cck_vector'].features[l].drupalField == $(textarea).attr('id')) {
+	  if (OL.maps[mapid].layers['openlayers_cck_vector'].features[l].cckField == $textarea.attr('id')) {
 	    OL.maps[mapid].layers['openlayers_cck_vector'].features[l].destroy();
     }
   }
     
   // Repopulate with a new feature.
    if (wkt != '') {
-    $(textarea).val(wkt);
+    $textarea.val(wkt);
     if (newFeature != false) {
       OL.maps[mapid].layers['openlayers_cck_vector'].addFeatures([newFeature]);
     }
@@ -205,51 +203,64 @@ OL.CCK.alterFeatureFromField = function(textarea) {
  *   Event object
  */
 OL.CCK.featureAdded = function(event) {
-	//Get the feature we have just added out of the event object
   var feature = event.feature;
   var mapid = feature.layer.map.mapid;
-  
-  // Get field names
   var fieldName = OL.CCK.maps[mapid].field_name_js;
-  
-  // Get the index number of the newly added field
-  // Check if we are creating a new node with 2 fresh fields open
-  if ($('#' + fieldName + '-items textarea').size() == 2 && $('#' + fieldName + '-items textarea:first').val() == '') {
-  	// We are creating a new node with two fresh fields open
-  	var newNode = true;
-  	var newFeatureID = 0;
+  var fieldContainer = OL.CCK.maps[mapid].field_container;
+  var $textareas = $('#' + fieldContainer + ' textarea');
+  var $addMore = $('#' + 'edit-' + fieldName + '-' + fieldName + '-add-more');
+  var inputCount = $textareas.length;
+  var isMultiple = $addMore.length;
+  var newNode = true;
+  var found = false;
+  var firstTextareaID = $textareas.filter(':first').attr('id');
+  var lastTextareaID = $textareas.filter(':last').attr('id');
+  var newFeatureID = firstTextareaID;
+  var geometry = feature.geometry.clone();
+
+  // Check if there is an add more button
+  if (isMultiple) {
+    // Check if new field
+    if (!newNode) {
+      $addMore.trigger('mousedown');
+    }
   }
   else {
-  	// We are either not creating a new node, or there is already data filled in.
-  	var newNode = false;
-  	var newFeatureID = $('#' + fieldName + '-items textarea').size() -1;
-  }
-
-  // This is the id of the textfield we will be assigning this feature to.
-  var wktFieldNewID = 'edit-' + fieldName + '-' + newFeatureID + '-wkt';
-  // This is the "Add another item" button
-  var wktFieldAddID = 'edit-' + fieldName + '-' + fieldName + '-add-more';
-  
-  // Clone the geometry so we may safetly work on it without hurting the feature
-  var geometry = feature.geometry.clone();
+    // Get next empty textarea
+    $textareas.each(function(i) {
+      var $thisField = $(this);
+      if (($thisField.val() == '')) {
+        newFeatureID = $thisField.attr('id');
+        found = true;
+        return false;
+      }
+    });
     
-  // Assign field to feature
-  feature.drupalField = wktFieldNewID;
-  
-  // Project the geometry if our map has a different geospatial projection as our CCK geo data.
-  if (OL.maps[mapid].projection != OL.mapDefs[mapid].options.displayProjection){
-    geometry.transform(OL.maps[mapid].projection, OL.maps[mapid].displayProjection);
-  }
-  
-  // Update CCK field with WKT values
-  var wkt = geometry.toString();
-  $('#' + wktFieldNewID).val(wkt);
-  
-  // Link the field to the map
-  $('#' + wktFieldNewID).attr('rel',feature.layer.map.mapid);
+    // If empty textarea not found, use last one
+    if (found == false) {
+      // Make new feature ID, last counted textarea
+      newFeatureID = lastTextareaID;
+      // Clear out current feature
+      $('#' + newFeatureID).val('').trigger('blur');
+    }
     
-  // Add another field if we need to..
-  if (!newNode) $('#' + wktFieldAddID).trigger('mousedown');
+    // This is the object of the textfield we will be assigning this feature to.
+    var $wktFieldNew = $('#' + newFeatureID);
+  
+    // Assign field to feature
+    feature.cckField = newFeatureID;
+    
+    // Project the geometry if our map has a different geospatial projection as our CCK geo data.
+    if (OL.maps[mapid].projection != OL.mapDefs[mapid].options.displayProjection){
+      geometry.transform(OL.maps[mapid].projection, OL.maps[mapid].displayProjection);
+    }
+    
+    // Update CCK field with WKT values
+    $wktFieldNew.val(geometry.toString());
+    
+    // Link the field to the map
+    $wktFieldNew.attr('rel', feature.layer.map.mapid);
+  }
 }
 
 /**
@@ -275,7 +286,7 @@ OL.CCK.featureModified = function(event) {
   
   // update CCK fields
   var wkt = geometry.toString();
-  $('#' + feature.drupalField).val(wkt);
+  $('#' + feature.cckField).val(wkt);
 }
 
 /**
@@ -291,5 +302,5 @@ OL.CCK.featureRemoved = function(event) {
   var feature = event.feature;
   
   // Empty the CCK field values.
-  $('#' + feature.drupalField).val('').removeClass('openlayers-cck-feature-selected');
+  $('#' + feature.cckField).val('').removeClass('openlayers-cck-feature-selected');
 }
