@@ -107,6 +107,9 @@ function openlayers_menu() {
 function openlayers_intialize() {
   $success = TRUE;
   
+  // Make sure openlayers presets are installed
+  openlayers_init_default_presets();
+  
   // Include the OpenLayers JS
   // We need to check if it a local path or URL, but really only need to do it once.
   static $included = FALSE;
@@ -293,7 +296,7 @@ function openlayers_save_preset($preset = array()) {
   // Check for existing preset
   $query = "SELECT preset_id FROM {openlayers_map_presets} WHERE preset_name = '%s'";
   $preset_id = db_result(db_query($query, $preset['preset_name']));
-
+  
   // Check id
   if (!empty($preset_id)) {
     $preset['preset_id'] = $preset_id;
@@ -584,4 +587,17 @@ function openlayers_openlayers_styles_info() {
   );  
       
   return $info;
+}
+
+/**
+ * Initialize Default Preset Wrapper
+ *
+ * Check to see if the presets have been initialized. If not, then initialize them. This only needs to happen once.
+ *
+ */
+function openlayers_init_default_presets(){
+  if (!variable_get('openlayers_default_preset_initialized',FALSE)) {
+    module_load_include('inc', 'openlayers', 'includes/openlayers.init');
+    _openlayers_init_default_presets();
+  }
 }

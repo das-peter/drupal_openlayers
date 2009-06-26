@@ -15,24 +15,6 @@
 function openlayers_install() {
   // Create tables
   drupal_install_schema('openlayers');
-  
-  // Add default map preset
-  $default_map = _openlayers_default_preset();
-  $preset = array(
-    'preset_name' => 'default',
-    'preset_title' => t('Default Map'),
-    'preset_description' => t('This is the default map preset that comes with the OpenLayers module.'),
-    'preset_data' => $default_map,
-  );
-  $created_default = openlayers_save_preset($preset);
-  
-  // Check if created
-  if ($created_default == TRUE) {
-    drupal_set_message(t('OpenLayers Default Preset created succesfully.'));
-  }
-  else {
-    drupal_set_message(t('OpenLayers Default Preset not created succesfully.'), 'error');
-  }
 }
 
 /**
@@ -90,38 +72,4 @@ function openlayers_schema() {
   );
   
   return $schema;
-}
-
-/**
- * Default Preset
- *
- * This is the "system defaults" that come with the module.
- * The goal of these defaults is so that a map can be rendered
- * simply by installing the OL API module.
- *
- * @return
- *   map array
- */
-function _openlayers_default_preset() {
-  $map_default = array(
-    'projection' => '4326',
-    'width' => 'auto',
-    'default_layer' => 'openlayers_default_wms',
-    'height' => '300px',
-    'center' => array(
-      'lat' => '0',
-      'lon' => '0',
-      'zoom' => '2',
-    ),
-    'options' => array(
-      'displayProjection' => '4326',
-    ),
-    'controls' => array(
-      'LayerSwitcher' => TRUE,
-      'Navigation' => TRUE,
-      'PanZoomBar' => TRUE,
-      'MousePosition' => TRUE,
-    ),
-  );
-  return $map_default;
 }
