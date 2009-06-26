@@ -171,3 +171,24 @@ OL.Layers.XYZ = function(layerOptions, mapid) {
   var returnXYZ = new OpenLayers.Layer.XYZ(layerOptions.name, layerOptions.url, mapOptions);
   return returnXYZ;
 }
+
+/**
+ * Process CloudMade Layers
+ *
+ * @param layerOptions
+ *   Object of options
+ * @param mapid
+ *   Map ID
+ * @return
+ *   Valid OpenLayers layer
+ */
+OL.Layers.CloudMade = function(layerOptions, mapid) {
+  var mapOptions = {
+  };
+  jQuery.extend(mapOptions, layerOptions.options);
+  
+console.log(layerOptions);
+
+  var cloudmade = new OpenLayers.Layer.CloudMade(layerOptions.name, layerOptions.options);
+  return cloudmade;
+}

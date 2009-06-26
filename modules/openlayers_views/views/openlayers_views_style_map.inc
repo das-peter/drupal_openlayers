@@ -163,6 +163,21 @@ class openlayers_views_style_map extends views_plugin_style {
       );
     }
     
+    // Map Preset
+    $form['presets'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Map Presets'),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+    );
+    $form['presets']['map_preset'] = array(
+      '#type' => 'select',
+      '#title' => t('Map Preset'),
+      '#description' => t('This is map that will be used to render the view.'),
+      '#options' => openlayers_get_presets(),
+      '#default_value' => variable_get('openlayers_default_preset', 'default'),
+    );
+    
     // Behavior options
     if (module_exists('openlayers_behaviors')){
       $form['behaviors'] = array(
@@ -196,8 +211,7 @@ class openlayers_views_style_map extends views_plugin_style {
       }
     }
     
-    // Theming
-    // @@TODO: This should go away in replacement for the settings for and the style hooks
+    // Variable Styles
     $form['style'] = array(
         '#type' => 'fieldset',
         '#title' => t('Feature Styles'),
@@ -210,9 +224,6 @@ class openlayers_views_style_map extends views_plugin_style {
       '#description' => t('Enter PHP code that returns a style array for each feature. $fields contains your defined fields, $row contains instances of those fields along with geometries. Array should be of the form \'styleProperty\' => \'styleValue\'. You may return false to use defaults. See documentation for available style Properties.'),
       '#default_value' => $this->options['style']['snippet'], 
     );
-    
-    // Map settings form
-    $map_form = openlayers_map_form($this->options);
   }
   
   /**
@@ -248,39 +259,52 @@ class openlayers_views_style_map extends views_plugin_style {
           
     // Build feature. We create one feature per field per row.
     foreach ($rows as $id => $row) {
-      switch ($data_source['value']) {
-        case 'node_locations':
-          $wkt_string = 'POINT('.$row->openlayers_node_locations_lon.' '.$row->openlayers_node_locations_lat.')';
-          $feature['wkt'] = $wkt_string;
-          $feature['projection'] = '4326';
-          break;
-          
-        case 'geo':
-          foreach ($data_source['geo_fields'] as $geo_field) {            
-            $wkt_field = $geo_field.'_wkt';
+      // Go through data sources
+      // In theory, there could be multiple features per row.
+      // TODO: allow for multiple features per row
+      foreach ($data_source['value'] as $data_source_value) {
+        switch ($data_source_value) {
+          case 'node_locations':
+            $wkt_string = 'POINT(' . $row->location_latitude . ' ' . $row->location_longitude . ')';
+            $feature['wkt'] = $wkt_string;
+            $feature['projection'] = '4326';
+            break;
             
-            if ($row->$wkt_field) {
-              $feature['wkt'] = $row->$wkt_field;
+          case 'geo':
+            foreach ($data_source['geo_fields'] as $geo_field) {            
+              $wkt_field = $geo_field.'_wkt';
+              
+              if ($row->$wkt_field) {
+                $feature['wkt'] = $row->$wkt_field;
+                $feature['projection'] ='4326';
+              }
+            }
+            break;
+            
+          case 'location':
+            // @@TODO
+            break;
+            
+          case 'other_latlon':   
+            $lon = $row->$fields[$data_source['other_lon']]['field_alias'];
+            $lat = $row->$fields[$data_source['other_lat']]['field_alias'];
+            
+            if ($lat && $lon) {
+              $feature['wkt'] = 'POINT('.$lon.' '.$lat.')';
+              $feature['projection'] = '4326';
+            }
+            break;
+            
+          case 'other_wkt':
+            // Go through selected field
+            foreach ($data_source['other_wkt'] as $wkt_field) {
+              $feature['wkt'] = $row->$fields[$wkt_field]['field_alias'];
               $feature['projection'] ='4326';
             }
-          }
-          break;
-          
-        case 'location':
-          // @@TODO
-          break;
-          
-        case 'other_latlon':   
-          $lon = $row->$fields[$data_source['other_lon']]['field_alias'];
-          $lat = $row->$fields[$data_source['other_lat']]['field_alias'];
-          
-          if ($lat && $lon) {
-            $feature['wkt'] = 'POINT('.$lon.' '.$lat.')';
-            $feature['projection'] = '4326';
-          }
-          break;
+            break;
+        }
       }
-      
+
       // Fill in all attributes
       foreach ($fields as $fid => $field) {
         $field_alias = $field['field_alias'];
@@ -370,11 +394,13 @@ class openlayers_views_style_map extends views_plugin_style {
         $rows = $records;
       }
       
-      // Get defalt map
-      $map = openlayers_get_default_map();
+      // Get selected preset
+      $preset_name = $this->options['presets']['map_preset'];
+      $preset = openlayers_get_preset($preset_name);
+      $map = $preset['preset_data'];
       
       // Define ID
-      $map['id'] = OPENLAYERS_VIEWS_MAP_ID_PREFIX .'-'. $this->view->name;
+      $map['id'] = OPENLAYERS_VIEWS_MAP_ID_PREFIX . '-' . $this->view->name;
       
       // @@TODO: Reduce and sort duplicates
       

@@ -10,10 +10,37 @@
  */
 
 /**
+ * Implementation of hook_install().
+ */
+function openlayers_install() {
+  // Create tables
+  drupal_install_schema('openlayers');
+  
+  // Add default map preset
+  $default_map = _openlayers_default_preset();
+  $preset = array(
+    'preset_name' => 'default',
+    'preset_title' => t('Default Map'),
+    'preset_description' => t('This is the default map preset that comes with the OpenLayers module.'),
+    'preset_data' => $default_map,
+  );
+  $created_default = openlayers_save_preset($preset);
+  
+  // Check if created
+  if ($created_default == TRUE) {
+    drupal_set_message(t('OpenLayers Default Preset created succesfully.'));
+  }
+  else {
+    drupal_set_message(t('OpenLayers Default Preset not created succesfully.'), 'error');
+  }
+}
+
+/**
  * Implementation of hook_uninstall().
  */
 function openlayers_uninstall() {
-  // @@TODO: This may be a bad idea, as it will destroy all openlayers modules variables. ??
+  // Remove tables
+  drupal_uninstall_schema('openlayers');
   
   // Get module variables
   $results = db_query("SELECT v.name FROM {variable} AS v WHERE v.name LIKE '%s%%'", 'openlayers_');
@@ -21,4 +48,80 @@ function openlayers_uninstall() {
   while ($row = db_fetch_array($results)) {
     variable_del($row['name']);
   }
+}
+
+/**
+ * Implementation of hook_schema.
+ */
+function openlayers_schema() {
+  $schema['openlayers_map_presets'] = array(
+    'fields' => array(
+      'preset_id' => array(
+        'description' => t('The primary identifier for an OpenLayers preset.'),
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'preset_name' => array(
+        'description' => t('The primary identifier for the preset.'),
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'preset_title' => array(
+        'description' => t('The title of the preset.'),
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'preset_description' => array(
+        'description' => t('The description of the preset.'),
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+      'preset_data' => array(
+        'description' => t('The serialized map.'),
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('preset_id'),
+    'unique key' => array('preset_name'),
+  );
+  
+  return $schema;
+}
+
+/**
+ * Default Preset
+ *
+ * This is the "system defaults" that come with the module.
+ * The goal of these defaults is so that a map can be rendered
+ * simply by installing the OL API module.
+ *
+ * @return
+ *   map array
+ */
+function _openlayers_default_preset() {
+  $map_default = array(
+    'projection' => '4326',
+    'width' => 'auto',
+    'default_layer' => 'openlayers_default_wms',
+    'height' => '300px',
+    'center' => array(
+      'lat' => '0',
+      'lon' => '0',
+      'zoom' => '2',
+    ),
+    'options' => array(
+      'displayProjection' => '4326',
+    ),
+    'controls' => array(
+      'LayerSwitcher' => TRUE,
+      'Navigation' => TRUE,
+      'PanZoomBar' => TRUE,
+      'MousePosition' => TRUE,
+    ),
+  );
+  return $map_default;
 }

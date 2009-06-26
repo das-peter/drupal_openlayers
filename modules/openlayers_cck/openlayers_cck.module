@@ -112,7 +112,6 @@ function openlayers_cck_geo_field_process($element, $edit, &$form_state, &$form)
     '#rows' => 2,
     '#required' => $delta == 0 && $field['required'],
     '#delta' => $delta,
-    '#columns' => array_keys($field['columns']),
     '#field_name' => $field_name,
     '#type_name' => $field['type_name'],
     '#attributes' => array('rel' => $rendered_map['id']),

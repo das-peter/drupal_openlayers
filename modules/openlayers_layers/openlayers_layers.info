@@ -2,5 +2,5 @@
 name = OpenLayers Layers
 description = Provides many layers for the OpenLayers module. 
 core = 6.x
-package = GIS
+package = OpenLayers
 dependencies[] = openlayers

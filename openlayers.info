@@ -2,4 +2,4 @@
 name = OpenLayers
 description = OpenLayers base API module
 core = 6.x
-package = GIS
+package = OpenLayers

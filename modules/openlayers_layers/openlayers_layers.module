@@ -65,6 +65,10 @@ function openlayers_layers_openlayers_layers_handler_info($map = array()) {
       'layer_handler' => 'Yahoo',
       'js_file' => $js_file,
     ),
+    'CloudMade' => array(
+      'layer_handler' => 'CloudMade',
+      'js_file' => $js_file,
+    ),
   );
 }
 
@@ -105,7 +109,7 @@ function openlayers_layers_openlayers_layers_info() {
   );
   
   $info['openlayers_layers_open_aerial'] = array(
-    'name' => t('Open Aerial (2.8+)'),
+    'name' => t('Open Aerial'),
     'description' => t('OpenAerialMap is an open collection of aerial photographs, collected into a single coherent view of the world.'),
     'projection' => array('900913'),
     'baselayer' => TRUE,
@@ -194,7 +198,7 @@ function openlayers_layers_openlayers_layers_info() {
   );
   
   $info['openlayers_layers_osm_mapnik'] = array(
-    'name' => t('OSM Mapnik (2.8+)'),
+    'name' => t('OSM Mapnik'),
     'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
@@ -202,7 +206,7 @@ function openlayers_layers_openlayers_layers_info() {
   );
   
   $info['openlayers_layers_osm_tah'] = array(
-    'name' => t('OSM Tiles@Home (2.8+)'),
+    'name' => t('OSM Tiles@Home'),
     'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
@@ -210,7 +214,7 @@ function openlayers_layers_openlayers_layers_info() {
   );
   
   $info['openlayers_layers_osm_cycle'] = array(
-    'name' => t('OSM Cycling Map (2.8+)'),
+    'name' => t('OSM Cycling Map'),
     'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,
@@ -222,6 +226,15 @@ function openlayers_layers_openlayers_layers_info() {
     'description' => t('Semi-transparent hybrid overlay. Projectd into WSG84 for use on non spherical-mercator maps.'),
     'projection' => array('4326'),
     'baselayer' => FALSE,
+    'file' => $file,
+    'callback' => $callback,
+  );
+
+  $info['openlayers_layers_cloudmade'] = array(
+    'name' => t('CloudMade'),
+    'description' => t('CloudMade tiles.  See <a href="!cloudmade_url">CloudMade</a>.', array('cloudmade_url' => 'http://www.cloudmade.com/')),
+    'projection' => array('900913'),
+    'baselayer' => TRUE,
     'file' => $file,
     'callback' => $callback,
   );

@@ -1,4 +1,4 @@
-/*  $Id$ */
+/* $Id$ */
 
 /**
  * @file
@@ -14,21 +14,4 @@
  */
 .openlayers-controls{
 	z-index:1000;
-}
-
-/**
- * Map Form
- */
-.openlayers-form-projection-description,
-.openlayers-form-layer-description {
-  font-size: smaller;
-  font-style: italic;
-}
-
-.openlayers-center-helpmap{
-  float: right;
-}
-
-#openlayers-form-proj-msg{
-  display:none;
 }

@@ -58,21 +58,6 @@ function openlayers_theme($existing, $type, $theme, $path) {
       ),
       'file' => 'includes/openlayers.theme.inc',
     ),
-    'openlayers_form_layer_description' => array(
-      'arguments' => array(
-        'layer_title' => '',
-        'layer_description' => '',
-      ),
-      'file' => 'includes/openlayers.theme.inc',
-    ),
-    'openlayers_form_projection_description' => array(
-      'arguments' => array(
-        'projection_title' => '',
-        'available_layers' => array(),
-        'layers' => array(),
-      ),
-      'file' => 'includes/openlayers.theme.inc',
-    ),
     'openlayers_vector_styles' => array(
       'arguments' => array(
         'styles' => array(),
@@ -91,38 +76,17 @@ function openlayers_menu() {
 
   $items['admin/settings/openlayers'] = array(
     'title' => 'OpenLayers',
-    'description' => t('OpenLayers administrative settings.'),
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('openlayers_admin_settings'),
-    'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
-  );
-  $items['admin/settings/openlayers/settings'] = array(
-    'title' => 'Settings',
     'description' => t('Main settings for OpenLayers.'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_admin_settings'),
     'access arguments' => array('administer openlayers'),
     'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_NORMAL_ITEM
+  );
+  $items['admin/settings/openlayers/settings'] = array(
+    'title' => 'Settings',
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => -20,
-  );
-  $items['admin/settings/openlayers/defaults'] = array(
-    'title' => 'Defaults',
-    'description' => t('Configure defaults for OpenLayers maps.'),
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('openlayers_admin_default_settings'),
-    'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.defaults.inc',
-    'type' => MENU_LOCAL_TASK,
-    'weight' => -10,
-  );
-  $items['openlayers/ahah'] = array(
-    'title' => 'OpenLayers AHAH',
-    'page callback' => 'openlayers_ahah',
-    'access callback' => TRUE,
-    'file' => 'includes/openlayers.form.inc',
-    'type' => MENU_CALLBACK,
   );
 
   return $items;
@@ -191,6 +155,9 @@ function openlayers_render_map($map = array(), $render = TRUE) {
   if (openlayers_intialize() == FALSE) {
     return FALSE;
   }
+  
+  // Include extra rendering functions
+  module_load_include('inc', 'openlayers', 'includes/openlayers.render');
   
   // Check ID
   if (!$map['id']) {
@@ -294,7 +261,6 @@ function openlayers_styles_get_info($reset = FALSE) {
   // If empty or reset, get info
   if ($info === NULL || $reset == TRUE) {
     // Hook behaviors info ($map is not necessary)
-    // hook_openlayers_styles_info($map = array())
     $info = module_invoke_all('openlayers_styles_info');
   }
 
@@ -302,73 +268,175 @@ function openlayers_styles_get_info($reset = FALSE) {
 }
 
 /**
- * OpenLayers Form Wrapper
+ * OpenLayers Save Preset
  *
- * Get the form array to customize OpenLayers Maps.  This is wrapper
- * for a function in another file.  This keeps the form from
- * being parsed unnecesarily
+ * Given an array of data, save the preset
  *
  * @ingroup openlayers_api
- * @param $form_state
- *   Array of defaults.
+ * @param $preset
+ *   Array of data for preset
  * @return
- *   Array of form items
+ *   Boolean of whether successful
  */
-function openlayers_map_form($form_state) {
-  module_load_include('inc', 'openlayers', '/includes/openlayers.form');
-  return _openlayers_map_form($form_state);
+function openlayers_save_preset($preset = array()) {
+  $successful = FALSE;
+
+  // Check for name
+  if (empty($preset['preset_name'])) {
+    return $successful;
+  }
+
+  // Serialize
+  $preset['preset_data'] = (is_array($preset['preset_data'])) 
+    ? serialize($preset['preset_data']) : '';
+
+  // Check for existing preset
+  $query = "SELECT preset_id FROM {openlayers_map_presets} WHERE preset_name = '%s'";
+  $preset_id = db_result(db_query($query, $preset['preset_name']));
+
+  // Check id
+  if (!empty($preset_id)) {
+    $preset['preset_id'] = $preset_id;
+    $successful = drupal_write_record('openlayers_map_presets', $preset, 'preset_id');
+  }
+  else {
+    $successful = drupal_write_record('openlayers_map_presets', $preset);
+  }
+  
+  return $successful;
 }
 
 /**
- * OpenLayers Form Validate Wrapper
+ * OpenLayers Get Preset
  *
- * Validate the form array to customize OpenLayers Maps.  This is wrapper
- * for a function in another file.  This keeps the form from
- * being parsed unnecesarily
+ * Given an a string or integer, get map
  *
  * @ingroup openlayers_api
- * @param $form
- *   Array of of map form
+ * @param $id
+ *   This can be a string or integer
+ * @return
+ *   Array of preset data
  */
-function openlayers_map_form_validate($map_form = array()) {
-  module_load_include('inc', 'openlayers', '/includes/openlayers.form');
-  return _openlayers_map_form_validate($map_form);
+function openlayers_get_preset($id = '') {
+  $return = array();
+
+  // Check for value
+  if (empty($id)) {
+    return $return;
+  }
+
+  // Check for input and make query approriately
+  if (is_integer($id)) {
+    $query = "SELECT * FROM {openlayers_map_presets} WHERE preset_id = %d";
+  }
+  elseif (is_string($id)) {
+    $query = "SELECT * FROM {openlayers_map_presets} WHERE preset_name = '%s'";
+  }
+  else {
+    return $return;
+  }
+  
+  // Get data
+  $return = db_fetch_array(db_query($query, $id));
+  
+  // Check data
+  if (empty($return)) {
+    return $return;
+  }
+  
+  // Manipulate map
+  $return['preset_data'] = unserialize($return['preset_data']);
+  // Put preset id into map array for safe keeping
+  $return['preset_data']['preset_name'] = $return['preset_name'];
+  // Remove any map id or errors
+  unset($return['preset_data']['id']);
+  unset($return['preset_data']['errors']);
+  
+  return $return;
 }
 
 /**
- * OpenLayers Form to Map
+ * Get Presets
  *
- * Converts Form submission to map array.  This is wrapper
- * for a function in another file.  This keeps the form from
- * being parsed unnecesarily
+ * Get Presets from DB and format accordingly
  *
  * @ingroup openlayers_api
- * @param $values
- *   Array of values to convert
+ * @param $format
+ *   String to determine format of results
+ * @param $reset
+ *   Boolean whether to reset or not
  * @return
- *   Array of map
+ *   Return formatted data
  */
-function openlayers_convert_form_to_map($values = array()) {
-  module_load_include('inc', 'openlayers', '/includes/openlayers.form');
-  return _openlayers_convert_form_to_map($values);
+function openlayers_get_presets($format = 'simple', $reset = FALSE) {
+  static $data = array();
+  static $simple = array();
+  static $full = array();
+
+  // Check if data has already been pulled 
+  // (there should at least be the default)
+  if (empty($data) || ($reset == TRUE)) {
+    $query = "SELECT * FROM {openlayers_map_presets} ORDER BY preset_title";
+    $results = db_query($query);
+    while ($row = db_fetch_array($results)) {
+      $data[$row['preset_id']] = $row;
+    }
+  }
+  
+  // Check if format variable has data
+  if (empty(${$format}) || ($reset == TRUE)) {
+    $return = array();
+  
+    // Go through results
+    foreach ($data as $id => $preset) {
+      // Determine how to format data
+      switch ($format) {
+        case 'simple':
+          $return[$preset['preset_name']] = $preset['preset_title'];
+          break;
+          
+        case 'full':
+          $return[$preset['preset_name']] = $preset;
+          break;
+          
+      }
+    }
+    
+    return $return;
+  }
+  else {
+    return ${$format};
+  }
 }
 
 /**
- * OpenLayers Convert Map to Form
+ * Get Default Map
  *
- * Converst map array to form defualts.  This is wrapper
- * for a function in another file.  This keeps the form from
- * being parsed unnecesarily
+ * Gets default map as determined by admin setting
  *
  * @ingroup openlayers_api
- * @param $map
- *   Array of map values to convert
+ * @param $reset
+ *   Boolean whether get cached version or not
  * @return
- *   Array of form items
+ *   Map array
  */
-function openlayers_convert_map_to_form($map = array()) {
-  module_load_include('inc', 'openlayers', '/includes/openlayers.form');
-  return _openlayers_convert_map_to_form($map);
+function openlayers_get_default_map($reset = FALSE) {
+  static $preset = array();
+  static $searched = FALSE;
+  
+  if (!$searched || $reset) {
+    // Get preset
+    $preset = openlayers_get_preset(variable_get('openlayers_default_preset', 'default'));
+    // If for some reason, we still dont have a map
+    // try to get just default
+    if (empty($preset)) {
+      $preset = openlayers_get_preset('default');
+    }
+    $searched = TRUE;
+  }
+  
+  // Return map data
+  return $preset['preset_data'];
 }
 
 /**
@@ -400,28 +468,6 @@ function openlayers_merge_maps($map1 = array(), $map2 = array()) {
   }
   
   return $map1;
-}
-
-/**
- * Get Default Map
- *
- * Gets the Default Map as defined on the defaults setting
- * page, otherwise, gets basic system default map
- *
- * @ingroup openlayers_api
- * @return
- *   A map array
- */
-function openlayers_get_default_map() {
-  // Get system default maps
-  $map_defaults = variable_get('openlayers_defaults', array());
-
-  // If stored map does not exist, get system default
-  if (!$map_defaults) {
-    $map_defaults = _openlayers_get_map_defaults();
-  }
-  
-  return $map_defaults;
 }
 
 /**
@@ -538,261 +584,4 @@ function openlayers_openlayers_styles_info() {
   );  
       
   return $info;
-}
-
-/**
- * Process Layers
- *
- * Get full data for any layers and add handlers
- *
- * @param $layers
- *   Array of layers to process
- * @param $map
- *   Map array
- * @return
- *   Array of processed layers
- */
-function _openlayers_layers_process($layers = array(), &$map = array()) {
-  if (!$layers) {
-    $layers = array();
-  }
-  if (!is_array($map)) {
-    $map = array();
-  }
-  
-  $processed = array();
-  
-  // Get layer info array
-  $layer_info = openlayers_layers_get_info();
-  
-  // Check to make sure our default layer is present, if it isn't then add it.
-  if (!array_key_exists($map['default_layer'], $layers) && ($map['default_layer'])) {
-    $layers[$map['default_layer']] = $map['default_layer'];
-  }
-  
-  // Go through layers
-  foreach ($layers as $k => $layer) {
-    // Check if array, if array, just pass on
-    if (is_array($layer)) {
-      $processed[$k] = $layer;
-    }
-    else {
-      // If not array, we want to include the file and call the function
-      if (($info = $layer_info[$layer]) && is_array($layer_info[$layer])) {
-        // Check if file exists
-        if (is_file('./'. $info['file'])) {
-          require_once './'. $info['file'];
-          // Check for function
-          if (function_exists($info['callback'])) {
-            // Call function and give it the layer name
-            $result = $info['callback']($layer, $map);
-            // Check for result
-            if (isset($result) && is_array($result)) {
-              $processed[$layer] = $result;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  // Add Handlers
-  $handlers = module_invoke_all('openlayers_layers_handler_info', $map);
-  // Go through processed
-  foreach ($processed as $k => $l) {
-    // Check for handler
-    if (is_string($handlers[$l['type']]['layer_handler'])) {
-      $processed[$k]['layer_handler'] = $handlers[$l['type']]['layer_handler'];
-      // Include JS file if there is one
-      if (is_string($handlers[$l['type']]['js_file'])) {
-        drupal_add_js($handlers[$l['type']]['js_file'], 'module');
-      }
-    }
-  }
-  
-  // Return processed
-  return $processed;
-}
-
-/**
- * Process Behaviors
- *
- * Get full data for any behaviors and add handlers
- *
- * @param $behaviors
- *   Array of behaviors to process
- * @param $map
- *   Map array
- * @return
- *   Array of processed behaviors
- */
-function _openlayers_behaviors_process($behaviors = array(), &$map = array()) {
-  // Check input
-  if (!is_array($behaviors)) {
-    $behaviors = array();
-  }
-  if (!is_array($map)) {
-    $map = array();
-  }
-  
-  // Initialized variables
-  $processed = array();
-  // Get behavior info array
-  $behavior_info = openlayers_behaviors_get_info();
-  
-  // Go through behaviors
-  foreach ($behaviors as $k => $behavior) {
-    // Check if array, if array, just pass on
-    if (is_array($behaviors)) {
-      $processed[$behavior['id']] = $behavior;
-    }
-    else {
-      $processed[$behavior] = array(
-        'id' => $behavior,
-        'type' => $behavior,
-      );
-    }
-  }
-  
-  // Go through processed
-  foreach ($processed as $bkey => $behavior) {
-    $info = $behavior_info[$behavior['type']];
-    
-    if (is_file($info['file'])) {
-      require_once $info['file'];
-      // Check for function
-      if (function_exists($info['callback'])) {
-        // Call function and give it the behavior array
-        $result = $info['callback']($behavior, $map);
-        // Check for result
-        if (isset($result) && is_array($result)) {
-          $result['js_callback'] = $info['js_callback'];
-          $processed[$bkey] = $result;
-        }
-      }
-      // Include JavaScript
-      if ($info['js_file']){
-        drupal_add_js($info['js_file'], 'module');
-      }
-    }
-  }
-
-  // Return processed
-  return $processed;
-}
-
-/**
- * Process Styles
- *
- * Get full data for any styles
- *
- * @param $styles
- *   Array of styles to process
- * @param $map
- *   Map array
- * @return
- *   Array of processed styles
- */
-function _openlayers_styles_process($styles = array(), &$map = array()) {
-  // Check input
-  if (!is_array($styles)) {
-    $styles = array();
-  }
-  if (!is_array($map)) {
-    $map = array();
-  }
-  
-  // Initialized variables
-  $processed = array();
-  // Get behavior info array
-  $styles_info = openlayers_styles_get_info();
-  // Go through styles
-  foreach ($styles as $k => $style) {
-    // Check if array, if array, just pass on
-    if (is_array($style)) {
-      $processed[$k] = $style;
-    }
-    else {
-      // If not array, we want to include the file and call the function
-      if (($info = $styles_info[$style]) && is_array($styles_info[$style])) {
-        // Check if file exists
-        if (is_file('./'. $info['file'])) {          
-          require_once './'. $info['file'];
-          // Check for function
-          if (function_exists($info['callback'])) {
-            // Call function and give it the style name
-            $result = $info['callback']($style, $map);
-            // Check for result
-            if (isset($result) && is_array($result)) {
-              $processed[$k] = $result;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  // Run through theme function  
-  $processed = theme('openlayers_vector_styles', $processed, $map);
-  
-  // Return processed
-  return $processed;
-}
-
-/**
- * Create Map ID
- *
- * Create a unique ID for any maps that are not assigned an ID
- *
- * @note
- *   Technically someone can assign a map ID identical
- *   to the one that is created
- * @return
- *   New map id
- */
-function _openlayers_create_map_id() {
-  // Set up variables
-  $map_id = '';
-  static $map_count = 0;
-  // Put together ID
-  $map_id = OPENLAYERS_MAP_ID_PREFIX .'-'. $map_count;
-  // Add another
-  $map_count += 1;
-  // Return ID
-  return $map_id;
-}
-
-/**
- * Get Map Defaults
- *
- * This is the "system defaults" that come with the module.
- * The goal of these defaults is so that a map can be rendered
- * simply by installing the OL API module.
- *
- * @return
- *   map array
- */
-function _openlayers_get_map_defaults() {
-  $map_default = array(
-    'id' => _openlayers_create_map_id(),
-    'projection' => '4326',
-    'width' => 'auto',
-    'default_layer' => 'openlayers_default_wms',
-    'height' => '300px',
-    'center' => array(
-      'lat' => '0',
-      'lon' => '0',
-      'zoom' => '2',
-    ),
-    'options' => array(
-      'displayProjection' => '4326',
-    ),
-    'controls' => array(
-      'LayerSwitcher' => TRUE,
-      'Navigation' => TRUE,
-      'PanZoomBar' => TRUE,
-      'MousePosition' => TRUE,
-    ),
-  );
-  return $map_default;
 }

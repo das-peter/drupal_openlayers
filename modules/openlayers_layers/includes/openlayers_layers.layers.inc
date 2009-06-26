@@ -290,6 +290,23 @@ function openlayers_layers_process_layers($layer = NULL) {
         ),
       );
       break;
+      
+    case 'openlayers_layers_cloudmade':
+      $layer_data = array(
+        'id' => $layer,
+        'type' => 'CloudMade',
+        'name' => $layer_info[$layer]['name'],
+        'projection' => $layer_info[$layer]['projection'],
+        'baselayer' => $layer_info[$layer]['baselayer'],
+        'options' => array(
+          'key' => variable_get('openlayers_layers_cloudmade_api', ''),
+          'styleId' => variable_get('openlayers_layers_cloudmade_style', ''),
+        ),
+      );
+      
+      // Include JS
+      drupal_add_js(variable_get('openlayers_layers_cloudmade_js',''));
+      break;
    
    case 'openlayers_layers_local_kml':
       $layer_data = array(
