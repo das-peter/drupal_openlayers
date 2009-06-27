@@ -68,6 +68,13 @@ Drupal.behaviors.OLUI = function(context) {
   $('#edit-center-lat').change(OL.updateHelpmapCenter);
   $('#edit-center-lon').change(OL.updateHelpmapCenter);
   $('#edit-center-zoom').change(OL.updateHelpmapCenter);
+  
+  // @@TODO: Reproject lat/lon values of center map. On the first load
+  // this is redundent, but it is important for ahah updates so that when
+  // the projection changes the lat/lon changes to fit the new units.
+  
+  // Initial trigger of updateHelpmapCenter  
+  OL.updateHelpmapCenter();
 }
 
 /**

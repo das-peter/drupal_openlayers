@@ -232,7 +232,7 @@ function openlayers_layers_openlayers_layers_info() {
 
   $info['openlayers_layers_cloudmade'] = array(
     'name' => t('CloudMade'),
-    'description' => t('CloudMade tiles.  See <a href="!cloudmade_url">CloudMade</a>.', array('cloudmade_url' => 'http://www.cloudmade.com/')),
+    'description' => t('CloudMade tiles.  See <a href="http://www.cloudmade.com/">CloudMade</a>.'),
     'projection' => array('900913'),
     'baselayer' => TRUE,
     'file' => $file,

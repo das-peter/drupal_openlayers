@@ -159,16 +159,16 @@ function openlayers_presets_ui_presets_manage_add(&$form_state, $preset = array(
   // Check for other, which will show all layers available
   if (!$default_proj || $defaults['projections']['easy_projection'] == 'other') {
     $base_options = $layer_options['baselayers'];
-    $reg_layer_options = $layer_options['baselayers'];
+    $overlay_options = $layer_options['overlays'];
   }
-  else {  
+  else {   
     // Create specific layer options for given projection
     foreach ($sorted_projections[$default_proj] as $p => $l) {
       if ($layer_options['baselayers'][$l]) {
         $base_options[$l] = $layer_options['baselayers'][$l];
       }
-      if ($layer_options['baselayers'][$l]) {
-        $reg_layer_options[$l] = $layer_options['baselayers'][$l];
+      if ($layer_options['overlays'][$l]) {
+        $overlay_options[$l] = $layer_options['overlays'][$l];
       }
     }
   }
@@ -428,7 +428,7 @@ function openlayers_presets_ui_presets_manage_add(&$form_state, $preset = array(
     '#type' => 'checkboxes',
     '#title' => t('Overlay Layers'),
     '#description' => t('Select the overlay layers to make available for your map.'),
-    '#options' => $layer_options['overlays'],
+    '#options' => $overlay_options,
     '#attributes' => array('class' => 'openlayers-form-overlays'), 
     '#multiple' => TRUE,
     '#default_value' => $defaults['layers']['overlays'] ? $defaults['layers']['overlays'] : array(),
