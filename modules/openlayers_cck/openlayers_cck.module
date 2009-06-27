@@ -92,12 +92,13 @@ function openlayers_cck_geo_field_process($element, $edit, &$form_state, &$form)
   $delta = $element['#delta'];
   $field_name = $field['field_name'];
   $widget = $field['widget'];
+  $field_label = $widget['label'];
   static $map_included = FALSE;
 
   // Only include one map
   if ($map_included == FALSE) {
     // Make map for input
-    $rendered_map = _openlayers_cck_render_element_map($field_name, $element['#value'], $field);
+    $rendered_map = _openlayers_cck_render_element_map($field_name, $field_label, $element['#value'], $field);
     // Create map element
     $element['map'] = array(
       '#value' => theme('openlayers_cck_map', $field, $rendered_map),
@@ -162,7 +163,7 @@ function theme_openlayers_cck_map($field = array(), $map = array()) {
  * @return
  *   Rendered map array
  */
-function _openlayers_cck_render_element_map($field_name = '', $values = array(), $field = array()) {
+function _openlayers_cck_render_element_map($field_name = '', $field_label = '', $values = array(), $field = array()) {
   $field_name_html = str_replace('_', '-', $field_name);
   $map_id = OPENLAYERS_CCK_MAP_ID_PREFIX .'-'. $field_name;
   $field_container = '';
@@ -193,7 +194,7 @@ function _openlayers_cck_render_element_map($field_name = '', $values = array(),
   $map['layers']['openlayers_cck_vector'] = array(
     'id' => 'openlayers_cck_vector',
     'type' => 'Vector',
-    'name' => $field_name,
+    'name' => $field_label,
     'options' => array(),
     'events' => array(
       'featureselected' => array('CCKFeaturesSelected'),
