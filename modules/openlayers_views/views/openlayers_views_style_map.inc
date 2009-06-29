@@ -265,7 +265,8 @@ class openlayers_views_style_map extends views_plugin_style {
       foreach ($data_source['value'] as $data_source_value) {
         switch ($data_source_value) {
           case 'node_locations':
-            $wkt_string = 'POINT(' . $row->location_latitude . ' ' . $row->location_longitude . ')';
+            // TODO: These fields are provided only if the fields are chosen in the interface.
+            $wkt_string = 'POINT(' . $row->location_longitude . ' ' . $row->location_latitude . ')';
             $feature['wkt'] = $wkt_string;
             $feature['projection'] = '4326';
             break;
