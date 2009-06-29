@@ -354,7 +354,7 @@ function openlayers_presets_ui_presets_manage_add(&$form_state, $preset = array(
   $form['styles']['temporary'] = array(
     '#type' => 'select',
     '#title' => t('Temporary Style'),
-    '#description' => t('Default style for any temporary features in a vector.'),
+    '#description' => t('Default style for any temporary features in a vector.  This will also be used for rollovers for things like Tooltips.'),
     '#options' => $avilable_styles,
     '#default_value' => $defaults['styles']['temporary'],
   );

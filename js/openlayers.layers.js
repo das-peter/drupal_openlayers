@@ -48,7 +48,7 @@ OL.Layers.Vector = function(layerOptions, mapid) {
   // Default styles
   var defaultStyles = new OpenLayers.StyleMap({
     "default": new OpenLayers.Style({
-      pointRadius: 5, // sized according to type attribute
+      pointRadius: 5,
       fillColor: "#ffcc66",
       strokeColor: "#ff9933",
       strokeWidth: 4,
@@ -61,9 +61,9 @@ OL.Layers.Vector = function(layerOptions, mapid) {
   });
   
   // Go through styles if there are any
-  if (OL.isSet(OL.maps[mapid].styles)) {
-    for (var style in OL.maps[mapid].styles) {
-      stylesAdded[style] = new OpenLayers.Style(OL.maps[mapid][style]);
+  if (OL.isSet(OL.mapDefs[mapid].styles)) {
+    for (var style in OL.mapDefs[mapid].styles) {
+      stylesAdded[style] = new OpenLayers.Style(OL.mapDefs[mapid].styles[style]);
     }
     styleMap = new OpenLayers.StyleMap(stylesAdded);
   }
@@ -71,6 +71,8 @@ OL.Layers.Vector = function(layerOptions, mapid) {
     styleMap = defaultStyles;
   }
   
+  console.log(styleMap);
+
   // Define layer object
   var returnVector = new OpenLayers.Layer.Vector(layerOptions.name, {'styleMap': styleMap});
   
