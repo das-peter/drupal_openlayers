@@ -30,7 +30,7 @@ function openlayers_cck_help($path, $arg) {
  * Implementation of hook_theme().
  */
 function openlayers_cck_theme() {
-  return array(
+  $themes = array(
     'openlayers_cck_geo_field' => array(
       'arguments' => array(
         'element' => NULL
@@ -43,6 +43,16 @@ function openlayers_cck_theme() {
       ),
     ),
   );
+    
+  // Create formatter theme functions
+  foreach (openlayers_get_presets() as $name => $title) {
+    $themes['openlayers_cck_formatter_' . $name] = array(
+      'arguments' => array('element' => NULL),
+      'function' => 'theme_openlayers_cck_formatter',
+    );
+  }
+  
+  return $themes;
 }
 
 /**
@@ -68,26 +78,154 @@ function openlayers_cck_gis_input_info($gis_type = NULL) {
 }
 
 /**
+ * Implementation of hook_field_info().
+ */
+function openlayers_cck_field_info() {
+  return array(
+    'openlayers_wkt' => array(
+      'label' => t('OpenLayers WKT'),
+      'description' => t('Input WKT data via an OpenLayers map.'),
+      'callbacks' => array(
+        'tables' => CONTENT_CALLBACK_DEFAULT,
+        'arguments' => CONTENT_CALLBACK_DEFAULT,
+        ),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_field_settings
+ */
+function openlayers_cck_field_settings($op, $field) {
+  switch ($op) {
+    case 'form':
+      $form = array();      
+      return $form;
+
+    case 'validate':
+      break;
+
+    case 'save':
+      return array();
+
+    case 'database columns':
+      $columns = array(
+        'openlayers_wkt' => array(
+          'type' => 'text',
+          'not null' => FALSE, 
+          'sortable' => TRUE,
+        ),
+      );
+      return $columns;
+      
+  }
+}
+
+/**
+ * Implementation of hook_field
+ */
+function openlayers_cck_field($op, &$node, $field, &$items, $teaser, $page) {
+  switch ($op) {
+    case 'validate':
+      // Check if field is valid WKT format
+      foreach($items as $delta => $value) {
+        // @@TODO: validate WKT
+      }
+      break;
+      
+  }
+}
+
+/**
+ * Implementation of hook_content_is_empty
+ */
+function openlayers_cck_content_is_empty($item, $field) {
+  if (empty($item['openlayers_wkt'])) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Implementation of hook_widget_info
+ */
+function openlayers_cck_widget_info() {
+  return array(
+    'openlayers_wkt_widget' => array(
+      'label' => t('OpenLayers WKT Map Widget'),
+      'field types' => array('openlayers_wkt'),
+      'multiple values' => CONTENT_HANDLE_CORE,
+      'callbacks' => array(
+        'default value' => CONTENT_CALLBACK_DEFAULT,
+      ),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_widget_settings
+ */
+function openlayers_cck_widget_settings($op, $widget) {
+  switch ($op) {
+    case 'form':
+      // Get Presets
+      $presets = openlayers_get_presets();
+      $default_preset = variable_get('openlayers_default_preset', 'default');
+      
+      $form['openlayers_cck_preset_map'] = array(
+        '#type' => 'select',
+        '#title' => t('Input Map Preset'),
+        '#description' => t('Choose the OpenLayers Preset Map that will be used to input the WKT data.'),
+        '#options' => $presets,
+        '#default_value' => isset($widget['openlayers_cck_preset_map']) ? $widget['openlayers_cck_preset_map'] : $default_preset,
+      );
+      // Return form
+      return $form;
+
+    case 'save':
+      return array('openlayers_cck_preset_map');
+  }
+}
+
+/**
+ * Implementation of hook_widget
+ */
+function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0) {
+  switch ($field['widget']['type']) {
+    case 'openlayers_wkt_widget':
+      $element = array(
+        '#type' => 'openlayers_wkt_widget',
+        '#default_value' => $items,
+      );
+      break;
+  }
+  return $element;
+}
+
+/**
  * Implementation of FAPI hook_elements().
  */
 function openlayers_cck_elements() {
   return array(
     'openlayers_cck_geo_field' => array(
       '#input' => TRUE,
-      '#columns' => array('geo_wkt'),
+      '#columns' => array('openlayers_wkt'),
       '#delta' => 0,
-      '#process' => array('openlayers_cck_geo_field_process'),
+      '#process' => array('openlayers_cck_wkt_element_process'),
+    ),
+    'openlayers_wkt_widget' => array(
+      '#input' => TRUE,
+      '#columns' => array('openlayers_wkt'),
+      '#delta' => 0,
+      '#process' => array('openlayers_cck_wkt_element_process'),
     ),
   );
 }
 
 /**
  * Process an individual element.
- *
- * Build the form element. When creating a form using FAPI #process,
- * note that $element['#value'] is already set.
  */
-function openlayers_cck_geo_field_process($element, $edit, &$form_state, &$form) {
+function openlayers_cck_wkt_element_process($element, $edit, &$form_state, &$form) {
   $field = $form['#field_info'][$element['#parents'][0]];
   $delta = $element['#delta'];
   $field_name = $field['field_name'];
@@ -108,7 +246,7 @@ function openlayers_cck_geo_field_process($element, $edit, &$form_state, &$form)
   }
   
   // Create storage element
-  $element['geo_wkt'] = array(
+  $element['openlayers_wkt'] = array(
     '#type' => 'textarea',
     '#rows' => 2,
     '#required' => $delta == 0 && $field['required'],
@@ -122,10 +260,44 @@ function openlayers_cck_geo_field_process($element, $edit, &$form_state, &$form)
 }
 
 /**
+ * Implementation of hook_field_formatter_info().
+ */
+function openlayers_cck_field_formatter_info() {
+  $formatters = array();
+  foreach (openlayers_get_presets() as $name => $title) {
+    $formatters['openlayers_cck_formatter_' . $name] = array(
+      'label' => t('OpenLayers Map: @preset', array('@preset' => check_plain($title))),
+      'field types' => array('geo', 'openlayers_wkt'),
+    );
+  }
+  return $formatters;
+}
+
+/**
  * Theme function for openlayers_cck_geo_field element
  */
 function theme_openlayers_cck_geo_field($element) {
   return $element['#children'];
+}
+
+/**
+ * Theme function for openlayers cck formatters
+ */
+function theme_openlayers_cck_formatter($element) {
+  // Get preset name from formatter
+  $preset_name = str_replace('openlayers_cck_formatter_', '', $element['#formatter']);
+  
+  // Get map preset
+  $map = openlayers_get_map($preset_name);
+  $rendered = openlayers_map_map($map);
+  
+  // Check for output
+  if (empty($map['errors']) && !empty($map['width'])) {
+    return $map['themed'];
+  }
+  else {
+    return '';
+  }
 }
 
 /**
