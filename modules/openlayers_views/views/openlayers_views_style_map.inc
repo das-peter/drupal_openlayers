@@ -216,30 +216,14 @@ class openlayers_views_style_map extends views_plugin_style {
         '#type' => 'fieldset',
         '#title' => t('Feature Styles'),
         '#collapsible' => TRUE,
-        '#collapsed' => TRUE,
+        '#collapsed' => FALSE,
     );
-    $form['style']['snippet'] = array(
-      '#type' => 'textarea',
-      '#title' => t('Feature Styles function'),
-      '#description' => t('Enter PHP code that returns a style array for each feature. $fields contains your defined fields, $row contains instances of those fields along with geometries. Array should be of the form \'styleProperty\' => \'styleValue\'. You may return false to use defaults. See documentation for available style Properties.'),
-      '#default_value' => $this->options['style']['snippet'], 
+    $form['style']['enable_styling'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Enable Variable Styling'),
+      '#description' => t('This will enable the view to run the features through the theming styles functions to determine each feature\'s style.  This allows for variable styling, such as changing the color based on another field in the view.  See the OpenLayers theming documentation for details.'),
+      '#default_value' => $this->options['style']['enable_styling'],
     );
-  }
-  
-  /**
-   * Options form submit
-   */
-  function options_submit($form, &$form_state) {
-    // @@TODO: ??
-  }
-   
-  /**
-   * Options form validate
-   */
-  function validate() {
-    $errors = array();
-    // TODO: ??
-    return $errors;
   }
      
   /**
@@ -303,6 +287,7 @@ class openlayers_views_style_map extends views_plugin_style {
               $feature['projection'] ='4326';
             }
             break;
+            
         }
       }
 
@@ -320,14 +305,11 @@ class openlayers_views_style_map extends views_plugin_style {
         $feature['attributes']['openlayers_tooltip'] = $row->$tooltip_field_alias;
       }
       
-      // Get feature styles
-      if ($this->options['style']['snippet']) {
-        $feature_style = eval($this->options['style']['snippet']);
-        if (is_array($feature_style)){
+      // Check for varable styling
+      if ($this->options['style']['enable_styling']) {
+        $feature_style = theme('openlayers_views_feature_style', $this, $row);
+        if (is_array($feature_style) && !empty($feature_style)) {
           $feature['style'] = $feature_style;
-        }
-        else {
-         //@@TODO: Error 
         }
       }
       
@@ -364,7 +346,6 @@ class openlayers_views_style_map extends views_plugin_style {
    * Renders views (map)
    */
   function render() {
-    
     // Check for live preview.
     if (isset($this->view->live_preview) && $this->view->live_preview) {
       return t('OpenLayers views are not compatible with live preview.');
@@ -445,7 +426,6 @@ class openlayers_views_style_map extends views_plugin_style {
           );
         }
       }
-      // @@TODO Add settings from plugin options
       
       // Render map
       $map = openlayers_render_map($map);

@@ -309,7 +309,7 @@ function openlayers_save_preset($preset = array()) {
 /**
  * OpenLayers Get Preset
  *
- * Given an a string or integer, get map
+ * Given an a string or integer, get full preset array
  *
  * @ingroup openlayers_api
  * @param $id
@@ -353,6 +353,30 @@ function openlayers_get_preset($id = '') {
   unset($return['preset_data']['errors']);
   
   return $return;
+}
+
+/**
+ * OpenLayers Get Map
+ *
+ * Given an a string or integer, get just map array
+ *
+ * @ingroup openlayers_api
+ * @param $id
+ *   This can be a string or integer
+ * @return
+ *   Array of preset data
+ */
+function openlayers_get_map($id = '') {
+  // Get preset
+  $preset = openlayers_get_preset($id);
+  
+  // Check for data
+  if (is_array($preset['preset_data'])) {
+    return $preset['preset_data'];
+  }
+  else {
+    return array();
+  }
 }
 
 /**
