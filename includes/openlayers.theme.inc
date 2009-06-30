@@ -13,7 +13,7 @@
  */
 function theme_openlayers_map($map = array()) {
   $output = '
-    <div id="'. $map['id'] .'" class="openlayers-map"></div>
+    <div id="'. $map['id'] .'" class="openlayers-map openlayers-preset-' . $map['preset_name'] .'"></div>
   ';
   return $output;
 }
