@@ -175,7 +175,7 @@ class openlayers_views_style_map extends views_plugin_style {
       '#title' => t('Map Preset'),
       '#description' => t('This is map that will be used to render the view.'),
       '#options' => openlayers_get_presets(),
-      '#default_value' => variable_get('openlayers_default_preset', 'default'),
+      '#default_value' => $this->options['presets']['map_preset'] ? $this->options['presets']['map_preset'] : variable_get('openlayers_default_preset', 'default'),
     );
     
     // Behavior options

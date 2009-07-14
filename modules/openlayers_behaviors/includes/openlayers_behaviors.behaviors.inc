@@ -37,6 +37,7 @@ function openlayers_behaviors_process_zoom_to_layer($behavior, &$map) {
  *   Behavior array
  */
 function openlayers_behaviors_process_fullscreen($behavior, &$map) {
+  drupal_add_css(drupal_get_path('module', 'openlayers_behaviors') .'/openlayers_behaviors.css', 'module');
   return $behavior;
 }
 
