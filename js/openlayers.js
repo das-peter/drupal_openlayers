@@ -128,7 +128,8 @@ OL.renderMap = function(map) {
   // Zoom to Center
   // @@TODO: Do this in the map options -- As isthis will result in a bug in the zoom map helper in the map form
   var center = new OpenLayers.LonLat(map.center.lon, map.center.lat);
-  OL.maps[map.id].map.setCenter(center, map.center.zoom, false, false);
+  var zoom = parseInt(map.center.zoom);
+  OL.maps[map.id].map.setCenter(center, zoom, false, false);
   
   // Set our default base layer
   OL.maps[map.id].map.setBaseLayer(OL.maps[map.id].layers[map.default_layer]);
