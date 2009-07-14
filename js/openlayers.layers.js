@@ -70,8 +70,6 @@ OL.Layers.Vector = function(layerOptions, mapid) {
   else {
     styleMap = defaultStyles;
   }
-  
-  console.log(styleMap);
 
   // Define layer object
   var returnVector = new OpenLayers.Layer.Vector(layerOptions.name, {'styleMap': styleMap});
