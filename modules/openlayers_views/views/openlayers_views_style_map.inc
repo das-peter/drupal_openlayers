@@ -179,7 +179,7 @@ class openlayers_views_style_map extends views_plugin_style {
     );
     
     // Behavior options
-    if (module_exists('openlayers_behaviors')){
+    if (module_exists('openlayers_behaviors')) {
       $form['behaviors'] = array(
         '#type' => 'fieldset',
         '#title' => t('Map Behaviors Options'),
@@ -198,9 +198,24 @@ class openlayers_views_style_map extends views_plugin_style {
         '#description' => t('Allow map to be viewed fullscreen'),
         '#default_value' => $this->options['behaviors']['fullscreen'], 
       );
+      $form['behaviors']['declutter'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Declutter'),
+        '#description' => t('Automagically space points so they do not overlap.'),
+        '#default_value' => $this->options['behaviors']['declutter'], 
+      );
+      $form['behaviors']['declutter_adjustment'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Declutter Distance Adjustment'),
+        '#description' => t('Set to a negative number to have icons cluster closer together. Set to a positive number to have them furthur apart. Leave blank for default.'),
+        '#default_value' => $this->options['behaviors']['declutter_adjustment'],
+        '#process' => array('views_process_dependency'),
+        '#dependency' => array('edit-style-options-behaviors-declutter' => array('1')),
+      );
+
       // Tooltip options if fields
       if (count($fields) > 0) {
-        $tooltip_options = array_merge(array('0' => t('Do not use a tooltip')), $fields);
+        $tooltip_options = array_merge(array('0' => t('<none>')), $fields);
         $form['behaviors']['tooltip'] = array(
           '#type' => 'select',
           '#title' => t('Tooltip Field'),
@@ -211,25 +226,43 @@ class openlayers_views_style_map extends views_plugin_style {
       }
     }
     
+    // Grouping
+    $form['grouping_set'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Grouping'),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+    );
+    $grouping_options = array_merge(array('0' => t('<none>')), $fields);
+    $form['grouping_set']['grouping'] = array(
+      '#type' => 'select',
+      '#title' => t('Grouping Field'),
+      '#options' => $grouping_options,
+      '#default_value' => $this->options['grouping_set']['grouping'],
+      '#description' => t('You can group features by field.  This means that each group will be a separate layer with those specific features.'),
+    );
+    
     // Variable Styles
     $form['style'] = array(
         '#type' => 'fieldset',
         '#title' => t('Feature Styles'),
+        '#description' => t('For advanced users only'),
         '#collapsible' => TRUE,
-        '#collapsed' => FALSE,
+        '#collapsed' => TRUE,
     );
-    $form['style']['enable_styling'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Enable Variable Styling'),
-      '#description' => t('This will enable the view to run the features through the theming styles functions to determine each feature\'s style.  This allows for variable styling, such as changing the color based on another field in the view.  See the OpenLayers theming documentation for details.'),
-      '#default_value' => $this->options['style']['enable_styling'],
+    $form['style']['snippet'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Feature Styles function'),
+      '#description' => t('Enter PHP code that returns a style array for each feature. This will overrirde theme feature styling functions. <br/> $fields contains your defined fields, $row contains instances of those fields along with geometries. Array should be of the form \'styleProperty\' => \'styleValue\'. You may return false to use defaults. See documentation for available style Properties.'),
+      '#default_value' => $this->options['style']['snippet'],
     );
+    
   }
      
   /**
    * Map features
    */
-  function map_features($rows = array()) {  
+  function map_features($rows = array(), $group = NULL) {  
     $features = array();    
     $data_source = $this->options['data_source'];
             
@@ -243,21 +276,25 @@ class openlayers_views_style_map extends views_plugin_style {
           
     // Build feature. We create one feature per field per row.
     foreach ($rows as $id => $row) {
+      $feature = array();
+      
       // Go through data sources
-      // In theory, there could be multiple features per row.
-      // TODO: allow for multiple features per row
+      // @@TODO: In theory, there could be multiple features per row., allow for multiple features per row
       foreach ($data_source['value'] as $data_source_value) {
         switch ($data_source_value) {
           case 'node_locations':
-            // TODO: These fields are provided only if the fields are chosen in the interface.
-            $wkt_string = 'POINT(' . $row->location_longitude . ' ' . $row->location_latitude . ')';
-            $feature['wkt'] = $wkt_string;
-            $feature['projection'] = '4326';
+            // @@TODO: These fields are provided only if the fields are chosen in the interface.
+            if (!empty($row->location_longitude) && !empty($row->location_latitude)) {
+              $wkt_string = 'POINT(' . $row->location_longitude . ' ' . $row->location_latitude . ')';
+              $feature['wkt'] = $wkt_string;
+              $feature['projection'] = '4326';
+            }
             break;
             
           case 'geo':
+            // @@TODO: Geo does not work
             foreach ($data_source['geo_fields'] as $geo_field) {            
-              $wkt_field = $geo_field.'_wkt';
+              $wkt_field = $geo_field . '_wkt';
               
               if ($row->$wkt_field) {
                 $feature['wkt'] = $row->$wkt_field;
@@ -274,8 +311,8 @@ class openlayers_views_style_map extends views_plugin_style {
             $lon = $row->$fields[$data_source['other_lon']]['field_alias'];
             $lat = $row->$fields[$data_source['other_lat']]['field_alias'];
             
-            if ($lat && $lon) {
-              $feature['wkt'] = 'POINT('.$lon.' '.$lat.')';
+            if (!empty($lat) && !empty($lon)) {
+              $feature['wkt'] = 'POINT(' . $lon . ' ' . $lat . ')';
               $feature['projection'] = '4326';
             }
             break;
@@ -283,8 +320,10 @@ class openlayers_views_style_map extends views_plugin_style {
           case 'other_wkt':
             // Go through selected field
             foreach ($data_source['other_wkt'] as $wkt_field) {
-              $feature['wkt'] = $row->$fields[$wkt_field]['field_alias'];
-              $feature['projection'] ='4326';
+              if (!empty($row->$fields[$wkt_field]['field_alias'])) {
+                $feature['wkt'] = $row->$fields[$wkt_field]['field_alias'];
+                $feature['projection'] ='4326';
+              }
             }
             break;
             
@@ -298,26 +337,31 @@ class openlayers_views_style_map extends views_plugin_style {
       }
       
       // Fill in tooltip attribute
-      if ($this->options['behaviors']['tooltip']) {
+      if (!empty($this->options['behaviors']['tooltip'])) {
         $tooltip_field = $this->options['behaviors']['tooltip'];
         $tooltip_field_alias = $fields[$tooltip_field]['field_alias'];
-        // @@TODO: This needs to be themed. I don't know how.
         $feature['attributes']['openlayers_tooltip'] = $row->$tooltip_field_alias;
       }
       
-      // Check for varable styling
-      if ($this->options['style']['enable_styling']) {
-        $feature_style = theme('openlayers_views_feature_style', $this, $row);
-        if (is_array($feature_style) && !empty($feature_style)) {
+      // Run feature styles through theme function
+      $feature_style = theme('openlayers_views_feature_style', $this, $row, $group);
+      if (is_array($feature_style) && !empty($feature_style)) {
+        $feature['style'] = $feature_style;
+      }
+      
+      // Run feature styles through custom php function
+      if ($this->options['style']['snippet']) {
+        $feature_style = eval($this->options['style']['snippet']);
+        if (is_array($feature_style)){
           $feature['style'] = $feature_style;
         }
       }
       
       // Only add features with WKT data
-      if ($feature['wkt']) {
+      if (!empty($feature['wkt'])) {
         $features[] = $feature;
       }
-    }    
+    }
     return $features;    
   }
   
@@ -333,10 +377,10 @@ class openlayers_views_style_map extends views_plugin_style {
         
     if ($data_source['value'] == 'geo') {                
       $content_fields = content_fields();
-      foreach ($content_fields as $content_field){
-        if(in_array($content_field['field_name'],array_keys($data_source['geo_fields']))) {
-          $content_table = $this->view->query->ensure_table('node_data_'.$content_field['field_name']);         
-          $this->view->query->add_field($wkt_table, $content_field['field_name'].'_wkt');
+      foreach ($content_fields as $content_field) {
+        if (in_array($content_field['field_name'], array_keys($data_source['geo_fields']))) {
+          $content_table = $this->view->query->ensure_table('node_data_' . $content_field['field_name']);         
+          $this->view->query->add_field($wkt_table, $content_field['field_name'] . '_wkt');
         }
       }    
     }
@@ -346,8 +390,10 @@ class openlayers_views_style_map extends views_plugin_style {
    * Renders views (map)
    */
   function render() {
+    $output = '';
+    
     // Check for live preview.
-    if (isset($this->view->live_preview) && $this->view->live_preview) {
+    if (!empty($this->view->live_preview)) {
       return t('OpenLayers views are not compatible with live preview.');
     }
     
@@ -356,14 +402,24 @@ class openlayers_views_style_map extends views_plugin_style {
       vpr('views_plugin_style_default: Missing row plugin');
       return;
     }
-    
+
+    // Get selected preset
+    $preset_name = $this->options['presets']['map_preset'];
+    $preset = openlayers_get_preset($preset_name);
+    $map = $preset['preset_data'];
+
+    // Define ID
+    $map['id'] = OPENLAYERS_VIEWS_MAP_ID_PREFIX . '-' . $this->view->name;
+
     // Group the rows according to the grouping field, if specified.
-    $sets = $this->render_grouping($this->view->result, $this->options['grouping']);
+    $sets = $this->render_grouping($this->view->result, $this->options['grouping_set']['grouping']);
+    $grouped = !empty($this->options['grouping_set']['grouping']) ? TRUE : FALSE;
     
     // Render each group separately and concatenate.  Plugins may override this
     // method if they wish some other way of handling grouping.
-    $output = '';
-    foreach ($sets as $title => $records) {
+    foreach ($sets as $group_title => $records) {
+      // Make 'machine readable' format
+      $group_name = strtolower(str_replace(' ', '_', $group_title));
     
       // Get rows
       if ($this->uses_row_plugin()) {
@@ -376,64 +432,83 @@ class openlayers_views_style_map extends views_plugin_style {
         $rows = $records;
       }
       
-      // Get selected preset
-      $preset_name = $this->options['presets']['map_preset'];
-      $preset = openlayers_get_preset($preset_name);
-      $map = $preset['preset_data'];
-      
-      // Define ID
-      $map['id'] = OPENLAYERS_VIEWS_MAP_ID_PREFIX . '-' . $this->view->name;
-      
       // @@TODO: Reduce and sort duplicates
       
-      // Get features
-      $features = $this->map_features($rows);
+      // Style the features based on group (can override this with the theme hook)
+      $features = $this->map_features($rows, $group_name);
+      
+      // Create name of layer and id
+      $layer_name = $grouped ? $group_title . ' layer' : $this->display->display_title;
+      $layer_id = 'openlayers_views_layer_' . $this->view->name;
+      $layer_id .= $grouped ? '_' . $group_name : '';
 
       // Define a layer for the features
-      $map['layers']['openlayers_views_layer'. $this->view->name] = array(
-        'id' => 'openlayers_views_layer_'. $this->view->name,
+      $map['layers'] = is_array($map['layers']) ? $map['layers'] : array();
+      $map['layers'][$layer_id] = array(
+        'id' => $layer_id,
         'type' => 'Vector',
-        'name' => $this->display->display_title,
+        'name' => $layer_name,
         'options' => array(),
         'events' => array(),
         'features' => $features,
       );
       
-      // Set up behaviors
-      $map['behaviors'] = ($map['behaviors']) ? $map['behaviors'] : array();
-      if (module_exists('openlayers_behaviors')){
-        // Set up tooltip behavior
-        if ($this->options['behaviors']['tooltip']){
+      // Set up tooltip behavior
+      if (module_exists('openlayers_behaviors')) {
+        if (!empty($this->options['behaviors']['tooltip'])) {
+          $map['behaviors'] = is_array($map['behaviors']) ? $map['behaviors'] : array();
           $field_id = $this->view->display_handler->get_handler('field', $this->options['behaviors']['tooltip'])->field_alias;
-          $map['behaviors']['openlayers_views_tooltip'] = array(
-            'id' => 'openlayers_views_tooltip',
+          $map['behaviors']['openlayers_views_tooltip_' . $layer_id] = array(
+            'id' => 'openlayers_views_tooltip_' . $layer_id,
             'type' => 'openlayers_behaviors_tooltip',
-            'layer' => 'openlayers_views_layer'. $this->view->name,
+            'layer' => $layer_id,
             'attribute' => 'openlayers_tooltip',
           );
         }
-        if ($this->options['behaviors']['zoom_to_layer']){
-          $map['behaviors']['openlayers_views_zoom_to_layer'] = array(
-            'id' => 'openlayers_views_zoom_to_layer',
-            'type' => 'openlayers_behaviors_zoom_to_layer',
-            'layer' => 'openlayers_views_layer'. $this->view->name,
-          );
-        }
-        if ($this->options['behaviors']['fullscreen']){
-          $map['behaviors']['openlayers_views_fullscreen'] = array(
-            'id' => 'openlayers_views_fullscreen',
-            'type' => 'openlayers_behaviors_fullscreen'
-          );
-        }
       }
-      
-      // Render map
-      $map = openlayers_render_map($map);
-      
-      // Return map array
-      $output .= theme($this->theme_functions(), $this->view, $this->options, $map, $title);
     }
     
+    // Sort layers by id
+    ksort($map['layers']);
+    
+    // Check other beahvior options
+    if (module_exists('openlayers_behaviors')) {
+      $map['behaviors'] = is_array($map['behaviors']) ? $map['behaviors'] : array();
+      // Zoom to layer., assuming last layer
+      // @@TODO: Use better logic or use options
+      if ($this->options['behaviors']['zoom_to_layer']) {
+        $map['behaviors']['openlayers_views_zoom_to_layer'] = array(
+          'id' => 'openlayers_views_zoom_to_layer',
+          'type' => 'openlayers_behaviors_zoom_to_layer',
+          'layer' => 'openlayers_views_layer_'. $this->view->name,
+        );
+      }
+      // Full screen
+      if ($this->options['behaviors']['fullscreen']) {
+        $map['behaviors']['openlayers_views_fullscreen'] = array(
+          'id' => 'openlayers_views_fullscreen',
+          'type' => 'openlayers_behaviors_fullscreen'
+        );
+      }
+      // Declutter
+      if ($this->options['behaviors']['declutter']) {
+        $map['behaviors']['openlayers_views_declutter'] = array(
+          'id' => 'openlayers_views_declutter',
+          'type' => 'openlayers_behaviors_declutter',
+          'layer' => 'openlayers_views_layer_'. $this->view->name,
+        );
+        
+        if ($this->options['behaviors']['declutter_adjustment']) {
+          $map['behaviors']['openlayers_views_declutter']['adjustment'] = intval($this->options['behaviors']['declutter_adjustment']);
+        }
+      }
+    }
+    
+    // Render map
+    $map = openlayers_render_map($map);
+      
+    // Return map array
+    $output .= theme($this->theme_functions(), $this->view, $this->options, $map, $group_name);
     return $output;
   }
 }
