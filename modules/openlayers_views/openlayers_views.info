@@ -1,7 +1,0 @@
-; $Id$
-name = OpenLayers Views
-description = Provides OpenLayers Views plugins.
-core = 6.x
-package = OpenLayers
-dependencies[] = openlayers
-dependencies[] = views
