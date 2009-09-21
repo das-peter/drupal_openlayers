@@ -101,7 +101,7 @@ function openlayers_cck_field_settings($op, $field) {
         '#description' => t('Choose the features that are allowed to be inputed on the map.'),
         '#options' => $features,
         '#required' => TRUE,
-        '#default_value' => isset($widget['openlayers_cck_feature_types']) ? $widget['openlayers_cck_feature_types'] : array('point', 'path', 'polygon'),
+        '#default_value' => isset($field['openlayers_cck_feature_types']) ? $field['openlayers_cck_feature_types'] : array('point', 'path', 'polygon'),
       );
       
       return $form;
