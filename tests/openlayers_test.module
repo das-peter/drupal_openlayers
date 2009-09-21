@@ -1,0 +1,51 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Main OpenLayers Test Module file
+ *
+ * This file contains a test module to help with automated
+ * testing.
+ *
+ * @ingroup openlayers
+ */
+
+/**
+ * Implementation of hook_openlayers_presets().
+ */
+function openlayers_test_openlayers_presets() {
+  $presets = array();
+
+  // Create map array
+  $default_map = array(
+    'projection' => '4326',
+    'width' => 'auto',
+    'default_layer' => 'openlayers_default_wms',
+    'height' => '300px',
+    'center' => array(
+      'lat' => '0',
+      'lon' => '0',
+      'zoom' => '2',
+    ),
+    'options' => array(
+      'displayProjection' => '4326',
+    ),
+    'controls' => array(
+      'LayerSwitcher' => TRUE,
+      'Navigation' => TRUE,
+      'PanZoomBar' => TRUE,
+      'MousePosition' => TRUE,
+    ),
+  );
+
+  // Create full preset array
+  $presets['default_test'] = array(
+    'preset_name' => 'default_test',
+    'preset_title' => t('Default Test Map'),
+    'preset_description' => t('This is a test preset.'),
+    'preset_data' => $default_map,
+  );
+
+  return $presets;
+}

@@ -1,0 +1,24 @@
+/* $Id$ */
+
+/**
+ * @file
+ * OpenLayers Main CSS
+ *
+ * This file holds the base CSS for the openlayers module
+ *
+ * @ingroup openlayers
+ */
+
+
+.openlayers-map {
+  z-index:0;
+}
+
+
+/**
+ * Controls
+ */
+.openlayers-controls {
+	z-index:1000;
+}
+
