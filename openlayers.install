@@ -73,3 +73,12 @@ function openlayers_schema() {
 
   return $schema;
 }
+
+/**
+ * Implementation of hook_update_n()
+ *
+ * Updates OpenLayers from 6-1.x to 6-2.x
+ */
+function openlayers_update_6200() {
+  // TODO: Create migration of data objects
+}
