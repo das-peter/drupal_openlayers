@@ -36,39 +36,144 @@ function openlayers_uninstall() {
  * Implementation of hook_schema().
  */
 function openlayers_schema() {
+  $schema = array();
+
+  // Maps table (ctools extras)
   $schema['openlayers_map_presets'] = array(
-    'fields' => array(
-      'preset_id' => array(
-        'description' => t('The primary identifier for an OpenLayers preset.'),
-        'type' => 'serial',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
+    'description' => 'Storage for User defined OpenLayers map presets.',
+    'export' => array(
+      'key' => 'name',
+      'identifier' => 'openlayers_presets',
+      'default hook' => 'openlayers_presets',
+      'api' => array(
+        'owner' => 'openlayers',
+        'api' => 'openlayers_presets',
+        'minimum_version' => 1,
+        'current_version' => 1,
       ),
-      'preset_name' => array(
+    ),
+    'fields' => array(
+      'name' => array(
         'description' => t('The primary identifier for the preset.'),
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
       ),
-      'preset_title' => array(
+      'title' => array(
         'description' => t('The title of the preset.'),
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
       ),
-      'preset_description' => array(
+      'description' => array(
         'description' => t('The description of the preset.'),
         'type' => 'text',
         'not null' => TRUE,
       ),
-      'preset_data' => array(
+      'data' => array(
         'description' => t('The serialized map.'),
         'type' => 'text',
         'not null' => TRUE,
+        'serialize' => TRUE,
       ),
     ),
-    'primary key' => array('preset_id'),
-    'unique key' => array('preset_name'),
+    'primary key' => array('name'),
+  );
+
+  // Layer table (ctools extras)
+  $schema['openlayers_layers'] = array(
+    'description' => 'Storage for user defined OpenLayers layers.',
+    'export' => array(
+      'key' => 'name',
+      'identifier' => 'openlayers_layers',
+      'default hook' => 'openlayers_layers_info',
+      'api' => array(
+        'owner' => 'openlayers',
+        'api' => 'openlayers_layers',
+        'minimum_version' => 1,
+        'current_version' => 1,
+      ),
+    ),
+    'fields' => array(
+      'name' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Layer name.',
+      ),
+      'title' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Layer title.',
+      ),
+      'description' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Layer description.',
+      ),
+      'data' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+        'description' => 'Layer data serialized.',
+        'serialize' => TRUE,
+      ),
+    ),
+    'primary key' => array('name'),
+    'indexes' => array(
+      'name' => array('name'),
+    ),
+  );
+
+  // Styles table (ctools extras)
+  $schema['openlayers_styles'] = array(
+    'description' => 'Storage for user defined OpenLayers styles.',
+    'export' => array(
+      'key' => 'name',
+      'identifier' => 'openlayers_styles',
+      'default hook' => 'openlayers_styles_info',
+      'api' => array(
+        'owner' => 'openlayers',
+        'api' => 'openlayers_styles',
+        'minimum_version' => 1,
+        'current_version' => 1,
+      ),
+    ),
+    'fields' => array(
+      'name' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Style name.',
+      ),
+      'title' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Style title.',
+      ),
+      'description' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Style description.',
+      ),
+      'data' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+        'description' => 'Style data serialized.',
+        'serialize' => TRUE,
+      ),
+    ),
+    'primary key' => array('name'),
+    'indexes' => array(
+      'name' => array('name'),
+    ),
   );
 
   return $schema;
@@ -80,5 +185,34 @@ function openlayers_schema() {
  * Updates OpenLayers from 6-1.x to 6-2.x
  */
 function openlayers_update_6200() {
-  // TODO: Create migration of data objects
+  $ret = array();
+
+  // Alter presets table.
+  db_drop_field($ret, 'openlayers_map_presets', 'preset_id');
+  db_change_field($ret, 'openlayers_map_presets', 'preset_name', 'name',
+    array('type' => 'varchar', 'length' => 255, 'not null' => TRUE),
+    array('primary key' => array('name'))
+  );
+  db_change_field($ret, 'openlayers_map_presets', 'preset_title', 'title',
+    array('type' => 'varchar', 'length' => 255, 'not null' => TRUE),
+    array()
+  );
+  db_change_field($ret, 'openlayers_map_presets', 'preset_description', 'description',
+    array('type' => 'text', 'not null' => TRUE),
+    array()
+  );
+  db_change_field($ret, 'openlayers_map_presets', 'preset_data', 'data',
+    array('type' => 'text', 'not null' => TRUE),
+    array()
+  );
+
+  // Ensure that all tables are installed
+  $schema = drupal_get_schema_unprocessed('openlayers');
+  foreach ($schema as $name => $table) {
+    if (!db_table_exists($name)) {
+      db_create_table($ret, $name, $table);
+    }
+  }
+
+  return $ret;
 }
