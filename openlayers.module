@@ -111,6 +111,20 @@ function openlayers_menu() {
 }
 
 /**
+ * Implementation of hook_ctools_plugin_api().
+ */
+function openlayers_ctools_plugin_api($module, $api) {
+  // Define plugins for OpenLayers plugins api
+  if ($module == "openlayers") {
+    switch ($api) {
+      case 'openlayers_presets':
+        return array('version' => 1);
+
+    }
+  }
+}
+
+/**
  * Intialize OpenLayers
  *
  * Make sure that we have everything we need for OpenLayers
@@ -176,7 +190,7 @@ function openlayers_render_map($map = array(), $render = TRUE) {
   // If it's a non-empty string then load the preset specified.
   elseif (is_string($map)) {
     $preset = openlayers_get_preset($map);
-    $map = $preset['preset_data'];
+    $map = $preset->data;
   }
 
   // Intialize
@@ -303,55 +317,32 @@ function openlayers_styles_get_info($reset = FALSE) {
 /**
  * OpenLayers Save Preset
  *
- * Given an array of data, save the preset
+ * Given a preset object, save
  *
  * @ingroup openlayers_api
  * @param $preset
- *   Array of data for preset
+ *   Preset object
  * @return
  *   Boolean of whether successful
  */
 function openlayers_save_preset($preset = array()) {
-  $successful = FALSE;
-
-  // Check for name
-  if (empty($preset['preset_name'])) {
-    return $successful;
+  // Check name
+  if (!empty($preset->name)) {
+    // Check if preset exists
+    $query = "SELECT name FROM {openlayers_map_presets} WHERE name = '%s'";
+    $exists = db_result(db_query($query, $preset->name));
+    
+    // Write record depending on existence
+    return $exists ? drupal_write_record('openlayers_map_presets', $preset, 'name') : drupal_write_record('openlayers_map_presets', $preset);
   }
   
-  // Check the map array for errors
-  $map_processed = openlayers_render_map($preset['preset_data'], FALSE);
-  if (isset($map_processed['errors']) && count($map_processed['errors'])){
-    foreach($map_processed['errors'] as $error){
-      drupal_set_message($error, 'error');
-    }
-    return $successful;
-  }
-  
-  // Serialize
-  $preset['preset_data'] = (is_array($preset['preset_data']))
-    ? serialize($preset['preset_data']) : '';
-
-  // Check for existing preset
-  $query = "SELECT preset_id FROM {openlayers_map_presets} WHERE preset_name = '%s'";
-  $preset_id = db_result(db_query($query, $preset['preset_name']));
-
-  // Check id
-  if (!empty($preset_id)) {
-    $preset['preset_id'] = $preset_id;
-    $successful = drupal_write_record('openlayers_map_presets', $preset, 'preset_id');
-  }
-  else {
-    $successful = drupal_write_record('openlayers_map_presets', $preset);
-  }
-
-  return $successful;
+  return FALSE;
 }
 
 /**
  * OpenLayers Get Preset
  *
- * Given an a string or integer, get full preset array
+ * Given an a string, get full preset object
  *
  * @ingroup openlayers_api
  * @param $name
@@ -359,35 +350,12 @@ function openlayers_save_preset($preset = array()) {
  * @param $reset
  *   Boolean whether to reset cache
  * @return
- *   Array of preset data
+ *   Preset object or array
  */
 function openlayers_get_preset($name = '', $reset = FALSE) {
-  $preset = array();
-
-  // Check for value
-  if (empty($name)) {
-    return $preset;
-  }
-
-  // Get presets
-  $presets = openlayers_get_presets('full', $reset);
-  $preset = $presets[$name];
-
-  if (empty($preset)) {
-    return array();
-  }
-
-  // Manipulate map
-  if (!is_array($preset['preset_data'])) {
-    $preset['preset_data'] = unserialize($preset['preset_data']);
-  }
-  // Put preset name into map array for safe keeping
-  $preset['preset_data']['preset_name'] = $preset['preset_name'];
-  // Remove any map id or errors
-  unset($preset['preset_data']['id']);
-  unset($preset['preset_data']['errors']);
-
-  return $preset;
+  ctools_include('export');
+  $presets = ctools_export_load_object('openlayers_map_presets', 'names', array($name), $reset);
+  return !empty($presets[$name]) ? $presets[$name] : FALSE;
 }
 
 /**
@@ -406,8 +374,8 @@ function openlayers_get_map($name = '') {
   $preset = openlayers_get_preset($name);
 
   // Check for data
-  if (is_array($preset['preset_data'])) {
-    return $preset['preset_data'];
+  if (is_array($preset->data)) {
+    return $preset->data;
   }
   else {
     return array();
@@ -415,7 +383,7 @@ function openlayers_get_map($name = '') {
 }
 
 /**
- * Get Presets Array
+ * Get All Presets
  *
  * Get Presets from DB or code, via cache
  *
@@ -426,116 +394,32 @@ function openlayers_get_map($name = '') {
  *   Return formatted data
  */
 function openlayers_presets($reset = FALSE) {
-  static $presets = array();
-
-  // If reset, reset cache
-  if ($reset) {
-    $presets = array();
-    cache_clear_all('openlayers:presets', 'cache');
-
-    // Clear the content.module cache
-    // (refreshes the list of formatters provided by imagefield.module)
-    if (module_exists('content')) {
-      content_clear_type_cache();
-    }
-  }
-
-  // Return presets if already exists (page request cache)
-  if (!empty($presets)) {
-    return $presets;
-  }
-
-  // Attempt to get presets from cache
-  if ($cache = cache_get('openlayers:presets', 'cache')) {
-    $presets = $cache->data;
-  }
-  else {
-    // Get data from hooks
-    $defaults = module_invoke_all('openlayers_presets');
-
-    // Since data from hooks cannot be edited or deleted, we mark now
-    foreach ($defaults as $name => $preset) {
-      $preset['type'] = OPENLAYERS_STORAGE_DEFAULT;
-      $presets[$name] = $preset;
-    }
-
-    // Get data from DB
-    $db_data = array();
-    $query = "SELECT * FROM {openlayers_map_presets} ORDER BY preset_title";
-    $results = db_query($query);
-    while ($row = db_fetch_array($results)) {
-      $db_data[$row['preset_name']] = $row;
-    }
-
-    // Check for conflicting preset names, use DB over hook
-    foreach ($db_data as $name => $preset) {
-      if (!empty($presets[$name])) {
-        $preset['type'] = OPENLAYERS_STORAGE_OVERRIDE;
-        $presets[$name] = $preset;
-      }
-      else {
-        $preset['type'] = OPENLAYERS_STORAGE_NORMAL;
-        $presets[$name] = $preset;
-      }
-    }
-
-    // Cache data
-    cache_set('openlayers:presets', $presets);
-  }
-
+  ctools_include('export');
+  $presets = ctools_export_load_object('openlayers_map_presets', 'all', array(), $reset);
   return $presets;
 }
 
 /**
- * Get Formatted Presets
- *
- * Get Presets and formats accordingly
+ * Get Preset Options
+ * 
+ * Get preset options in an array suitable for a FormAPI element.
  *
  * @ingroup openlayers_api
- * @param $format
- *   String to determine format of results
- *   - simple: 'preset_name' => 'Preset Title'
- *   - full: 'preset_name' => array( full preset data )
  * @param $reset
  *   Boolean whether to reset or not
  * @return
  *   Return formatted data
  */
-function openlayers_get_presets($format = 'simple', $reset = FALSE) {
-  static $data = array();
-  static $simple = array();
-  static $full = array();
-
-  // Check if data has already been pulled
-  // (there should at least be the default)
-  if (empty($data) || ($reset == TRUE)) {
-    $data = openlayers_presets($reset);
+function openlayers_preset_options($reset = FALSE) {
+  $options = array();
+  
+  // Get all presets and get only name and title
+  $presets = openlayers_presets($reset);
+  foreach ($presets as $preset) {
+    $options[$preset->name] = $preset->title;
   }
-
-  // Check if format variable has data
-  if (empty(${$format}) || ($reset == TRUE)) {
-    $return = array();
-
-    // Go through results
-    foreach ($data as $name => $preset) {
-      // Determine how to format data
-      switch ($format) {
-        case 'simple':
-          $return[$preset['preset_name']] = $preset['preset_title'];
-          break;
-
-        case 'full':
-          $return[$preset['preset_name']] = $preset;
-          break;
-
-      }
-    }
-
-    return $return;
-  }
-  else {
-    return ${$format};
-  }
+  
+  return $options;
 }
 
 /**
@@ -565,7 +449,7 @@ function openlayers_get_default_map($reset = FALSE) {
   }
 
   // Return map data
-  return $preset['preset_data'];
+  return $preset->data;
 }
 
 /**
@@ -725,7 +609,7 @@ function openlayers_openlayers_styles_info() {
  * Implementation of hook_openlayers_presets().
  */
 function openlayers_openlayers_presets() {
-  $presets = array();
+  $default = new stdClass();
 
   // Create map array
   $default_map = array(
@@ -748,27 +632,16 @@ function openlayers_openlayers_presets() {
       'MousePosition' => TRUE,
     ),
   );
-
+  
   // Create full preset array
-  $presets['default'] = array(
-    'preset_name' => 'default',
-    'preset_title' => t('Default Map'),
-    'preset_description' => t('This is the default map preset that comes with the OpenLayers module.'),
-    'preset_data' => $default_map,
+  $default->api_version = 1;
+  $default->name = 'default';
+  $default->title = t('Default Map');
+  $default->description = t('This is the default map preset that comes with the OpenLayers module.');
+  $default->data = $default_map;
+
+  // Return preset(s) in an array
+  return array(
+    'default' => $default,
   );
-
-  return $presets;
 }
-
-/**
- * Implementation of hook_features_api().
- *
- * For features integration: provides map presets
- * to the features module for programmatic export.
- */
-// function openlayers_features_api() {
-//   return array(
-//     'file' => drupal_get_path('module', 'openlayers') . '/includes/openlayers.features.inc',
-//     'default_hook' => 'openlayers_get_presets',
-//  );
-// }

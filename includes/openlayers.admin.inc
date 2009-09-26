@@ -55,7 +55,7 @@ function openlayers_admin_settings() {
     '#type' => 'select',
     '#title' => t('OpenLayers Default Preset'),
     '#description' => t('This is the default preset that will be used in cases where one is not defined.  It will also be used as the default when creating new presets.'),
-    '#options' => openlayers_get_presets(),
+    '#options' => openlayers_preset_options(),
     '#default_value' => variable_get('openlayers_default_preset', 'default'),
   );
 
