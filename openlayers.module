@@ -29,22 +29,6 @@
 define('OPENLAYERS_MAP_ID_PREFIX', 'openlayers-map-auto-id');
 
 /**
- * OpenLayers preset storage constant for user-defined presets in the DB.
- */
-define('OPENLAYERS_STORAGE_NORMAL', 0);
-
-/**
- * OpenLayers preset storage constant for module-defined presets in code.
- */
-define('OPENLAYERS_STORAGE_DEFAULT', 1);
-
-/**
- * OpenLayers preset storage constant for user-defined presets that override
- * module-defined presets.
- */
-define('OPENLAYERS_STORAGE_OVERRIDE', 2);
-
-/**
  * Implementation of hook_help().
  */
 function openlayers_help($path, $arg) {
