@@ -12,10 +12,42 @@
  */
 
 /**
+ * Implementation of hook_menu().
+ */
+function openlayers_test_menu() {
+  $items = array();
+
+  $items['admin/settings/openlayers/test'] = array(
+    'title' => 'OpenLayers Test Page',
+    'description' => 'Test Page for OpenLayers.',
+    'page callback' => 'openlayers_test_page',
+    'access arguments' => array('administer openlayers'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 9999,
+  );
+
+  return $items;
+}
+
+/**
+ * Implementation of hook_ctools_plugin_api().
+ */
+function openlayers_test_ctools_plugin_api($module, $api) {
+  // Define plugins for OpenLayers plugins api
+  if ($module == "openlayers") {
+    switch ($api) {
+      case 'openlayers_presets':
+        return array('version' => 1);
+
+    }
+  }
+}
+
+/**
  * Implementation of hook_openlayers_presets().
  */
 function openlayers_test_openlayers_presets() {
-  $presets = array();
+  $default = new stdClass();
 
   // Create map array
   $default_map = array(
@@ -40,12 +72,51 @@ function openlayers_test_openlayers_presets() {
   );
 
   // Create full preset array
-  $presets['default_test'] = array(
-    'preset_name' => 'default_test',
-    'preset_title' => t('Default Test Map'),
-    'preset_description' => t('This is a test preset.'),
-    'preset_data' => $default_map,
-  );
+  $default->api_version = 1;
+  $default->name = 'default_test';
+  $default->title = t('Default Test Map');
+  $default->description = t('This is a test preset.');
+  $default->data = $default_map;
 
-  return $presets;
+  // Return preset(s) in an array
+  return array(
+    'default_test' => $default,
+  );
+}
+
+/**
+ * Callback for OpenLayers Test Page
+ */
+function openlayers_test_page() {
+  $output = '';
+
+  // Get default map
+  $render_default = openlayers_render_map();
+
+  // Get test map
+  $render_default_test = openlayers_render_map('default_test');
+
+  // Create collapsed fieldset
+  $render_fieldset = openlayers_render_map();
+  $element = array(
+    '#value' => $render_fieldset['themed'],
+    '#title' => t('Fieldset Example'),
+    '#collapsed' => TRUE,
+    '#collapsible' => TRUE,
+  );
+  $fieldset = theme_fieldset($element);
+
+  // Create output
+  $output .= '
+    <h3>' . t('Default Map') . '</h3>
+     ' . $render_default['themed'] . '
+
+    <h3>' . t('Default Test Map') . '</h3>
+     ' . $render_default_test['themed'] . '
+
+    <h3>' . t('Collapsed Fieldset Example') . '</h3>
+     ' . $fieldset . '
+  ';
+
+  return $output;
 }
