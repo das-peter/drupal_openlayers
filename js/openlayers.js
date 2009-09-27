@@ -51,7 +51,13 @@ Drupal.behaviors.openlayers = function(context) {
         OL.maps[map_id].active = false;
   
         // Render Map
-        OL.renderMap(map);
+        var rendered = OL.renderMap(map);
+
+        // Attach data to map DOM object
+        $map.data('openlayers', {'mapDef': map, 'mapRendered': rendered});
+
+        // Finally, attach behaviors
+        Drupal.attachBehaviors(this);
       }
     });
   }
@@ -64,6 +70,8 @@ Drupal.behaviors.openlayers = function(context) {
  * 
  * @param map
  *   The map definition array.
+ * @return
+ *   The rendered map object
  */
 OL.renderMap = function(map) {
   // Create Projection objects
@@ -166,6 +174,9 @@ OL.renderMap = function(map) {
       
   // Mark as Rendered
   OL.maps[map.id].rendered = true;
+  
+  // Return rendered map
+  return OL.maps[map.id].map;
 }
 
 /**
