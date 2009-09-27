@@ -53,3 +53,40 @@ function openlayers_views_views_api() {
     'path' => drupal_get_path('module', 'openlayers_views') .'/views',
   );
 }
+
+
+
+/**
+ * Implementation of hook_openlayers_layers_info().
+ */
+function openlayers_views_openlayers_layers_info() {
+  $layers = array();
+
+  $views = views_get_all_views();
+  /**
+   * Loop through views for displays generatd by the openlayers data style plugin.  Provide each as
+   * available layer for map presets
+   *
+   * @Todo: think about what settings should be allowed to be defined by the view display options,
+   *        what should be automatic, and what to configure on the map preset level
+   *
+   */
+  foreach ($views as $view) {
+    foreach ($view->display as $display => $data) {
+      if ($data->display_options['style_plugin'] == 'openlayers_data') {
+        // @@TODO: Needs to be plug-in-ized
+        $layer = array (
+          'id' => 'openlayers_views_' . $view->name . '_' . $display, 
+          'name' => $data->display_options['title'] ? $data->display_options['title'] : $view->display['default']->display_options['title'], 
+          'description' => $view->description . ' - ' . $data->display_title, 
+          'baselayer' => FALSE,
+          'views' => array('view' => $view->name, 'display' => $display),
+          'file' => drupal_get_path('module', 'openlayers_views') .'/includes/openlayers_views.layers.inc',
+          'callback' => 'openlayers_views_process_layers',
+        );
+        $layers[$layer['id']] = $layer;
+      }
+    }
+  }
+  return $layers;
+}

@@ -10,7 +10,8 @@
 
 /**
  * @class
- * Extension of the Views Plugin Syle for OpenLayers
+ * Extension of the Views Plugin Syle for OpenLayers. This is the 1.x
+ * version.
  *
  * This class extended the default views plugin class to provide
  * a style plugin for the Open Layers module.
