@@ -157,6 +157,7 @@ function openlayers_initialize() {
     drupal_add_css(drupal_get_path('module', 'openlayers') .'/openlayers.css', 'module');
     // Add base JS file
     drupal_add_js(drupal_get_path('module', 'openlayers') .'/js/openlayers.js', 'module');
+    drupal_add_js(drupal_get_path('module', 'openlayers') .'/js/openlayers.helper.js', 'module');
     $included = TRUE;
   }
 

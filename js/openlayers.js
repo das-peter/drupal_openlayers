@@ -16,58 +16,44 @@ var OL = OL || {'Layers': {}, 'EventHandlers': {} ,'Behaviors': {}, 'maps': []};
 /**
  * OpenLayers Base Drupal Behavoirs
  */
-Drupal.behaviors.openlayers = function() {
-  // Check for openlayers
-  if ((typeof(Drupal.settings.openlayers) == 'object') && (OL.isSet(Drupal.settings.openlayers.maps))) {
-    OL.loadMaps();
-  }
-};
-
-/**
- * Load Maps from OpenLayers Data
- *
- * Main function to sart loading maps by parsing
- * data from Drupal.
- */
-OL.loadMaps = function() {
-  // @@TODO: Implement proxy
-  OpenLayers.ProxyHost = "http://raider/proxy/?proxy_url=";
-  
+Drupal.behaviors.openlayers = function(context) {
   // Store rendered maps and other OpenLayer objects in OL object
   OL.mapDefs = Drupal.settings.openlayers.maps;
   
-  // Go through array and make maps
-  for (var i in OL.mapDefs) {
-    var map = OL.mapDefs[i];
-    var $map = $('#' + map.id);
-    
-    // Check if map is already rendered
-    if (OL.isSet(OL.maps[map.id]) && OL.isSet(OL.maps[map.id].rendered) 
-      && (OL.maps[map.id].rendered == true)
-    ) {
-      continue;
-    }
-    
-    // Trigger beforeEverything event
-    var event = {'mapDef': map};
-    OL.triggerCustom(map, 'beforeEverything', event);
-    
-    // Check to see if there is a div on the page ready for the map. If there is then proceed.
-    var $map = $('#' + map.id);
-    if ($map.length > 0 && OL.isSet(map.width) && OL.isSet(map.height)) {
-      // Add any custom controls
-      $map.after(Drupal.theme('mapControls', map.id, map.height));
+  // Check that there is openlayers data sent from PHP, and
+  // there is maps data, and that we are not going
+  // through a map again
+  if (typeof(Drupal.settings.openlayers) == 'object' && (OL.isSet(Drupal.settings.openlayers.maps)) && !$(context).data('openlayers')) {
+    // Get all non-processed maps
+    $('.openlayers-map:not(.openlayers-processed)').each(function() {
+      var $map = $(this);
       
-      // Set-up our registry of active OpenLayers javascript objects for this particular map.
-      OL.maps[map.id] = {};
-      // Set up places for us to store layers, controls, etc.
-      OL.maps[map.id].controls = [];
-      OL.maps[map.id].layers = [];
-      OL.maps[map.id].active = false;
+      // Mark as processed
+      $map.addClass('openlayers-processed');
 
-      // Render Map
-      OL.renderMap(map);
-    }
+      // Get map ID and check for map data
+      var map_id = $map.attr('id');
+      if (OL.isSet(Drupal.settings.openlayers.maps[map_id])) {
+        var map = Drupal.settings.openlayers.maps[map_id];
+  
+        // Trigger beforeEverything event
+        var event = {'mapDef': map};
+        OL.triggerCustom(map, 'beforeEverything', event);
+      
+        // Add any custom controls
+        $map.after(Drupal.theme('mapControls', map_id, map.height));
+        
+        // Set-up our registry of active OpenLayers javascript objects for this particular map.
+        OL.maps[map_id] = {};
+        // Set up places for us to store layers, controls, etc.
+        OL.maps[map_id].controls = [];
+        OL.maps[map_id].layers = [];
+        OL.maps[map_id].active = false;
+  
+        // Render Map
+        OL.renderMap(map);
+      }
+    });
   }
 };
 
@@ -274,112 +260,6 @@ OL.processLayers = function(layers, mapid) {
         }
       }
     }
-  }
-}
-
-/**
- * Process Events
- *
- * Process the layers part of the map definition into OpenLayers layer objects
- * 
- * @param events
- *   The events section of the map definition array.
- * @param mapid
- *   The id of the map to which we will add these events.
- */
-OL.processEvents = function(events, mapid) {
-  // Go through events
-  for (var evtype in events){
-    // Exclude One-Time map events. 
-    if (evtype != 'beforeEverything' && evtype != 'beforeLayers' && evtype != 'beforeCenter' && evtype != 'beforeControls' && evtype != 'beforeEvents' && evtype != 'beforeBehaviors' && evtype != 'mapReady') {
-      for (var ev in events[evtype]) { 
-        OL.maps[mapid].map.events.register(evtype, OL.maps[mapid].map, OL.EventHandlers[events[evtype][ev]]);
-      }
-    }
-  }
-}
-
-/**
- * Trigger Custom Event
- * 
- * @param map
- *   Map object
- * @param eventName
- *   String of the name of the event
- * @param event
- *   Event object
- */
-OL.triggerCustom = function(map, eventName, event) {
-  if (OL.isSet(map.events) && OL.isSet(map.events[eventName])) {
-    for (var ev in map.events[eventName]) {
-      OL.EventHandlers[map.events[eventName][ev]](event);
-    }
-  }
-}
-
-/**
- * Parse out key / value pairs out of a string that looks like "key:value;key2:value2"
- * 
- * @param rel
- *   The string to parse. Usually the rel attribute of a html tag.
- * @return
- *   Array of key:value pairs
- */
-OL.parseRel = function(rel) {
-  var outputArray = [];
-  
-  // Some preprosessing
-  // replace dangling whitespaces. Use regex?
-  rel = rel.replace('; ',';');
-  //Cut out final ; if it exists
-  if (rel.charAt(rel.length-1) == ";") rel = rel.substr(0,rel.length-1);
-  
-  //Get all the key:value strings
-  var keyValueStrings = rel.split(';');
-  
-  // Process the key:value strings into key:value pairs
-  for (var i in keyValueStrings){
-    var singleKeyValue = keyValueStrings[i].split(':');
-    outputArray[singleKeyValue[0]] = singleKeyValue[1];
-  }
-  
-  return outputArray;
-}
-
-/**
- * Given a string of the form 'OL.This.that', get the object that the 
- * string refers to.
- * 
- * @param string
- *   The string to parse.
- * @return
- *   Object
- */
-OL.getObject = function(string) {
-  var parts = string.split('.');
-  i = 0;
-  var object = window;
-  while (i < parts.length){
-    object = object[parts[i]];
-    i++; 
-  }
-  return object;
-}
-
-/**
- * Check if Variable is define
- *
- * @params variable
- *   Any variable
- * @return
- *   Boolean if the variable is definied or not
- */
-OL.isSet = function(variable) {
-  if (typeof(variable) == 'undefined') {
-    return false;
-  }
-  else {
-    return true;
   }
 }
 
