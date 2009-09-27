@@ -1,6 +1,6 @@
 ; $Id$
-name = OpenLayers Preset UI
-description = Provides a user interface to create OpenLayers map presets. 
+name = OpenLayers UI
+description = Provides a user interface to create OpenLayers objects.
 core = 6.x
 package = OpenLayers
 dependencies[] = openlayers

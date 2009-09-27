@@ -11,7 +11,7 @@
 /**
  * Menu Callback for Preset List
  */
-function openlayers_presets_ui_presets_manage_list() {
+function openlayers_ui_presets_manage_list() {
   $rows = array();
 
   // Make table of presets and actions
@@ -61,24 +61,24 @@ function openlayers_presets_ui_presets_manage_list() {
  * @param
  *   Action to do with preset
  */
-function openlayers_presets_ui_presets_manage($preset = array(), $action = 'edit') {
+function openlayers_ui_presets_manage($preset = array(), $action = 'edit') {
   $output = '';
 
   // Switch action
   switch ($action) {
     case 'delete':
-      $output = drupal_get_form('openlayers_presets_ui_presets_manage_delete', $preset);
+      $output = drupal_get_form('openlayers_ui_presets_manage_delete', $preset);
       break;
 
     case 'export':
       drupal_set_title(t('Export: %title', array('%title' => $preset['preset_title'])));
-      $output = drupal_get_form('openlayers_presets_ui_presets_manage_export', $preset);
+      $output = drupal_get_form('openlayers_ui_presets_manage_export', $preset);
       break;
 
     case 'edit':
     default:
       drupal_set_title(t('Edit: %title', array('%title' => $preset['preset_title'])));
-      $output = drupal_get_form('openlayers_presets_ui_presets_manage_add', $preset, TRUE);
+      $output = drupal_get_form('openlayers_ui_presets_manage_add', $preset, TRUE);
       break;
   }
 
@@ -88,12 +88,12 @@ function openlayers_presets_ui_presets_manage($preset = array(), $action = 'edit
 /**
  * Menu Callback for Add Preset
  */
-function openlayers_presets_ui_presets_manage_add(&$form_state, $preset = array(), $edit = FALSE) {
+function openlayers_ui_presets_manage_add(&$form_state, $preset = array(), $edit = FALSE) {
   $form = array();
   $layers = openlayers_layers_get_info();
   $baselayers = array();
   $overlays = array();
-  $available_controls = _openlayers_presets_ui_available_controls();
+  $available_controls = _openlayers_ui_available_controls();
   $styles = openlayers_styles_get_info();
   $available_styles = array();
 
@@ -118,12 +118,12 @@ function openlayers_presets_ui_presets_manage_add(&$form_state, $preset = array(
 
   // Update map for new form
   if (!empty($form_state['values'])) {
-    $form_map = _openlayers_presets_ui_convert_form_to_map($form_state['values']);
+    $form_map = _openlayers_ui_convert_form_to_map($form_state['values']);
     $default_map = openlayers_merge_maps($default_map, $form_map);
   }
 
   // Change map to form values
-  $defaults = _openlayers_presets_ui_convert_map_to_form($default_map);
+  $defaults = _openlayers_ui_convert_map_to_form($default_map);
   // Merge with form values
   $defaults = (is_array($form_state['values'])) ? $form_state['values'] + $defaults : $defaults;
   $rendered_map = (is_array($default_map)) ? openlayers_render_map($default_map) : array();
@@ -137,7 +137,7 @@ function openlayers_presets_ui_presets_manage_add(&$form_state, $preset = array(
   // Determine which layer is a baselayer, and which is an overlay, and add
   // approrpriate descriptions to the options array.
   foreach ($layers as $layer_key => $layer) {
-    $description = theme('openlayers_presets_ui_form_layer_description', $layer['name'], $layer['description']);
+    $description = theme('openlayers_ui_form_layer_description', $layer['name'], $layer['description']);
     if ($layer['baselayer']) {
       $layer_options['baselayers'][$layer_key] = $description;
     }
@@ -147,10 +147,10 @@ function openlayers_presets_ui_presets_manage_add(&$form_state, $preset = array(
   }
 
   // Define list of projections
-  $sorted_projections = _openlayers_presets_ui_get_projections($layers);
+  $sorted_projections = _openlayers_ui_get_projections($layers);
   $projections = array();
   foreach ($sorted_projections as $projection => $available_layers) {
-    $projections[$projection] = theme('openlayers_presets_ui_form_projection_description', $projection, $available_layers, $layers);
+    $projections[$projection] = theme('openlayers_ui_form_projection_description', $projection, $available_layers, $layers);
   }
   // Set the "Other" option for our easy projection selector
   $projections['other'] = t("Other");
@@ -204,7 +204,7 @@ function openlayers_presets_ui_presets_manage_add(&$form_state, $preset = array(
   }
 
   // Centering map
-  $centering_map = _openlayers_presets_ui_form_center_map($defaults);
+  $centering_map = _openlayers_ui_form_center_map($defaults);
 
   // Form Properties
   $form['#tree'] = TRUE;
@@ -532,9 +532,9 @@ function openlayers_presets_ui_presets_manage_add(&$form_state, $preset = array(
   );
 
   // Add JavaScript
-  drupal_add_js(drupal_get_path('module', 'openlayers_presets_ui') .'/js/openlayers_presets_ui.ui.js', 'module');
+  drupal_add_js(drupal_get_path('module', 'openlayers_ui') .'/js/openlayers_ui.ui.js', 'module');
   // Add CSS
-  drupal_add_css(drupal_get_path('module', 'openlayers_presets_ui') .'/openlayers_presets_ui.css');
+  drupal_add_css(drupal_get_path('module', 'openlayers_ui') .'/openlayers_ui.css');
 
   return $form;
 }
@@ -549,7 +549,7 @@ function openlayers_presets_ui_presets_manage_add(&$form_state, $preset = array(
  * @return
  *   Does not return anything. Uses form_set_error() to communicate errors.
  */
-function openlayers_presets_ui_presets_manage_add_validate($form, &$form_state) {
+function openlayers_ui_presets_manage_add_validate($form, &$form_state) {
   $values = $form_state['values'];
   $found_error = FALSE;
 
@@ -600,7 +600,7 @@ function openlayers_presets_ui_presets_manage_add_validate($form, &$form_state) 
   }
 
   // Convert form to map array
-  $map = _openlayers_presets_ui_convert_form_to_map($form_state['values']);
+  $map = _openlayers_ui_convert_form_to_map($form_state['values']);
   
   // Attempt to render map to find any errors
   $map = openlayers_render_map($map, FALSE);
@@ -622,7 +622,7 @@ function openlayers_presets_ui_presets_manage_add_validate($form, &$form_state) 
 /**
  * Form submit for preset add form, for the projection add ahah
  */
-function openlayers_presets_ui_presets_manage_add_projection_submit($form, &$form_state) {
+function openlayers_ui_presets_manage_add_projection_submit($form, &$form_state) {
   unset($form_state['submit_handlers']);
   form_execute_handlers('submit', $form, $form_state);
   $form_state['rebuild'] = TRUE;
@@ -631,7 +631,7 @@ function openlayers_presets_ui_presets_manage_add_projection_submit($form, &$for
 /**
  * Form submit for preset add form
  */
-function openlayers_presets_ui_presets_manage_add_submit($form, &$form_state) {
+function openlayers_ui_presets_manage_add_submit($form, &$form_state) {
   // Check for cancel
   if ($form_state['clicked_button']['#id'] == 'edit-openlayers-cancel') {
     $form_state['redirect'] = 'admin/settings/openlayers/presets/list';
@@ -643,11 +643,11 @@ function openlayers_presets_ui_presets_manage_add_submit($form, &$form_state) {
     // that cannot be accounted for UI
     if (!empty($form_state['values']['default_map'])) {
       // Convert form, but keep empty values, so merging is subtractive
-      $map = _openlayers_presets_ui_convert_form_to_map($form_state['values'], FALSE);
-      $map = _openlayers_presets_ui_merge_maps($map, $form_state['values']['default_map']);
+      $map = _openlayers_ui_convert_form_to_map($form_state['values'], FALSE);
+      $map = _openlayers_ui_merge_maps($map, $form_state['values']['default_map']);
     }
     else {
-      $map = _openlayers_presets_ui_convert_form_to_map($form_state['values']);
+      $map = _openlayers_ui_convert_form_to_map($form_state['values']);
     }
 
     // Create preset array
@@ -674,7 +674,7 @@ function openlayers_presets_ui_presets_manage_add_submit($form, &$form_state) {
 /**
  * Menu Callback for Preset Delete Form
  */
-function openlayers_presets_ui_presets_manage_delete(&$form_state, $preset = array()) {
+function openlayers_ui_presets_manage_delete(&$form_state, $preset = array()) {
   // Ensure we are not deleting any coded presets
   if ($preset['type'] == OPENLAYERS_STORAGE_DEFAULT) {
     drupal_set_message(t('Cannot delete default preset.'), 'error');
@@ -714,7 +714,7 @@ function openlayers_presets_ui_presets_manage_delete(&$form_state, $preset = arr
 /**
  * Form Submit Callback for Preset Delete Form
  */
-function openlayers_presets_ui_presets_manage_delete_submit($form, &$form_state) {
+function openlayers_ui_presets_manage_delete_submit($form, &$form_state) {
   $preset = openlayers_get_preset($form_state['values']['preset_name'], TRUE);
 
   // Check if coded
@@ -742,7 +742,7 @@ function openlayers_presets_ui_presets_manage_delete_submit($form, &$form_state)
 /**
  * Menu callback for Preset Export Form
  */
-function openlayers_presets_ui_presets_manage_export(&$form_state, $preset = array()) {
+function openlayers_ui_presets_manage_export(&$form_state, $preset = array()) {
   // Create output
   $exported = '$map_preset = array();';
   $exported .= "\n";
@@ -772,7 +772,7 @@ function openlayers_presets_ui_presets_manage_export(&$form_state, $preset = arr
 /**
  * Menu callback for Preset Import Form
  */
-function openlayers_presets_ui_presets_import(&$form_state) {
+function openlayers_ui_presets_import(&$form_state) {
   // Create form
   $form = array();
 
@@ -814,7 +814,7 @@ function openlayers_presets_ui_presets_import(&$form_state) {
 /**
  * Form Validate Callback for Preset Import Form
  */
-function openlayers_presets_ui_presets_import_validate($form, &$form_state) {
+function openlayers_ui_presets_import_validate($form, &$form_state) {
   $values = $form_state['values'];
 
   // If Cancel redirect
@@ -856,7 +856,7 @@ function openlayers_presets_ui_presets_import_validate($form, &$form_state) {
 /**
  * Form Submit Callback for Preset Import Form
  */
-function openlayers_presets_ui_presets_import_submit($form, &$form_state) {
+function openlayers_ui_presets_import_submit($form, &$form_state) {
   $values = $form_state['values'];
 
   // If Cancel redirect
@@ -874,7 +874,7 @@ function openlayers_presets_ui_presets_import_submit($form, &$form_state) {
  *
  * Function to handle the AHAH request of the openlayers form
  */
-function openlayers_presets_ui_preset_ahah() {
+function openlayers_ui_preset_ahah() {
   $form_state = array('storage' => NULL, 'submitted' => FALSE);
   $form_build_id = $_POST['form_build_id'];
   $form = form_get_cache($form_build_id, $form_state);
@@ -910,7 +910,7 @@ function openlayers_presets_ui_preset_ahah() {
  * @return
  *   Array of form items
  */
-function _openlayers_presets_ui_convert_form_to_map($values = array(), $clear_empty = TRUE) {
+function _openlayers_ui_convert_form_to_map($values = array(), $clear_empty = TRUE) {
   // If the form values are empty then we have nothing to return.
   if (empty($values)) {
     return array();
@@ -938,7 +938,7 @@ function _openlayers_presets_ui_convert_form_to_map($values = array(), $clear_em
 
   // Recursively unset any empty values
   if ($clear_empty) {
-    $processed = _openlayers_presets_ui_unset_empty_values($processed);
+    $processed = _openlayers_ui_unset_empty_values($processed);
   }
   return $processed;
 }
@@ -953,7 +953,7 @@ function _openlayers_presets_ui_convert_form_to_map($values = array(), $clear_em
  * @return
  *   Array of default form values
  */
-function _openlayers_presets_ui_convert_map_to_form($map = array()) {
+function _openlayers_ui_convert_map_to_form($map = array()) {
   $processed = array();
   // Check input
   if (!is_array($map) || empty($map)) {
@@ -1003,7 +1003,7 @@ function _openlayers_presets_ui_convert_map_to_form($map = array()) {
  * @return
  *   Return sorted array
  */
-function _openlayers_presets_ui_get_projections($layers = array()) {
+function _openlayers_ui_get_projections($layers = array()) {
   $all_projections = array();
   $projection_layers = array();
 
@@ -1051,11 +1051,11 @@ function _openlayers_presets_ui_get_projections($layers = array()) {
  * @return
  *   Array with empty values unset
  */
-function _openlayers_presets_ui_unset_empty_values($array) {
+function _openlayers_ui_unset_empty_values($array) {
   foreach ($array as $key => $value) {
     // If it is an array then recursively check it
     if (is_array($value)) {
-      $array[$key] = _openlayers_presets_ui_unset_empty_values($value);
+      $array[$key] = _openlayers_ui_unset_empty_values($value);
     }
     // If it is an array then check if it is empty. We don't use $value so that if it
     // is emptied by the previous check then it will still unset.
@@ -1083,7 +1083,7 @@ function _openlayers_presets_ui_unset_empty_values($array) {
  * @return
  *   Themed map array
  */
-function _openlayers_presets_ui_form_center_map($defaults = array()) {
+function _openlayers_ui_form_center_map($defaults = array()) {
   // Set up our map to help set center lat, lon and zoom
   // This map will always be projected as 4326 and use just the basic layer so that
   // even if the user is using screwed up map settings, this map will still function.
@@ -1120,7 +1120,7 @@ function _openlayers_presets_ui_form_center_map($defaults = array()) {
   // Pass variables etc. to javascript
   $pass_values = array(
     'openlayersForm' => array(
-      'projectionLayers' => _openlayers_presets_ui_get_projections($layers),
+      'projectionLayers' => _openlayers_ui_get_projections($layers),
     ),
   );
   drupal_add_js($pass_values, 'setting');
@@ -1136,7 +1136,7 @@ function _openlayers_presets_ui_form_center_map($defaults = array()) {
  * @return
  *   Array of available controls
  */
-function _openlayers_presets_ui_available_controls() {
+function _openlayers_ui_available_controls() {
   $available = array();
 
   // Define array
@@ -1197,7 +1197,7 @@ function _openlayers_presets_ui_available_controls() {
  * @return
  *   Merged map array
  */
-function _openlayers_presets_ui_merge_maps($submitted_map = array(), $orig_map = array()) {
+function _openlayers_ui_merge_maps($submitted_map = array(), $orig_map = array()) {
   $merged_map = array();
 
   // Check map arrays
@@ -1224,6 +1224,6 @@ function _openlayers_presets_ui_merge_maps($submitted_map = array(), $orig_map =
   // Merge maps.  The passed in submitted map has not had empty values removed.
   // This ensures that there is a subtractive merge
   $merged_map = openlayers_merge_maps($orig_map, $submitted_map);
-  $merged_map = _openlayers_presets_ui_unset_empty_values($merged_map);
+  $merged_map = _openlayers_ui_unset_empty_values($merged_map);
   return $merged_map;
 }
