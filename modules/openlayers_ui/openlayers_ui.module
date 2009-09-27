@@ -19,7 +19,7 @@ function openlayers_ui_help($path, $arg) {
 
   switch ($path) {
     case 'admin/help#openlayers_ui':
-      $output = '<p>'. t('The OpenLayers Preset UI module provides a User Interface to create map presets.') .'</p>';
+      $output = '<p>'. t('The OpenLayers UI module provides a User Interface to create map objects.') .'</p>';
       return $output;
 
   }
@@ -57,7 +57,7 @@ function openlayers_ui_menu() {
   $items['admin/settings/openlayers/presets'] = array(
     'title' => 'Presets',
     'description' => 'Create OpenLayers map presets.',
-    'page callback' => 'openlayers_ui_presets_manage_list',
+    'page callback' => 'openlayers_ui_object_list',
     'access arguments' => array('administer openlayers'),
     'file' => 'includes/openlayers_ui.ui.inc',
     'type' => MENU_LOCAL_TASK,
@@ -72,7 +72,7 @@ function openlayers_ui_menu() {
     'title' => 'Add',
     'description' => 'Add OpenLayers map preset.',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('openlayers_ui_presets_manage_add'),
+    'page arguments' => array('openlayers_ui_presets_form'),
     'access arguments' => array('administer openlayers'),
     'file' => 'includes/openlayers_ui.ui.inc',
     'type' => MENU_LOCAL_TASK,
@@ -82,7 +82,7 @@ function openlayers_ui_menu() {
     'title' => 'Clone Preset',
     'description' => 'Add OpenLayers map preset.',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('openlayers_ui_presets_manage_add', 5),
+    'page arguments' => array('openlayers_ui_presets_form', 5),
     'access arguments' => array('administer openlayers'),
     'file' => 'includes/openlayers_ui.ui.inc',
     'type' => MENU_NORMAL_ITEM,

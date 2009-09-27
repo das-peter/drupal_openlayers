@@ -9,9 +9,9 @@
  */
 
 /**
- * Menu Callback for Preset List
+ * Menu Callback for Various Object Lists
  */
-function openlayers_ui_presets_manage_list() {
+function openlayers_ui_object_list($type = 'presets') {
   $rows = array();
 
   // Make table of presets and actions
@@ -21,26 +21,31 @@ function openlayers_ui_presets_manage_list() {
     t('Actions'),
   );
 
-  // Get presets
-  $presets = openlayers_get_presets('full', TRUE);
+  // Get objects
+  switch ($type) {
+    case 'presets':
+      $objects = openlayers_presets(TRUE);
+      break;
+
+  }
 
   // Create table rows
-  foreach ($presets as $name => $preset) {
+  foreach ($objects as $object) {
     $row = array();
     $links = array();
-    $row[] = $preset['preset_title'];
-    $row[] = $preset['preset_description'];
+    $row[] = $object->title;
+    $row[] = $object->description;
     // Check preset type and create links accordingly.
-    if ($preset['type'] == OPENLAYERS_STORAGE_OVERRIDE) {
-      $links[] = l(t('Edit'), 'admin/settings/openlayers/presets/' . $preset['preset_name'] . '/edit');
-      $links[] = l(t('Revert'), 'admin/settings/openlayers/presets/' . $preset['preset_name'] .'/delete');
+    if ($object->export_type == (EXPORT_IN_CODE | EXPORT_IN_DATABASE)) {
+      $links[] = l(t('Edit'), "admin/settings/openlayers/{$type}/{$object->name}/edit");
+      $links[] = l(t('Revert'), "admin/settings/openlayers/{$type}/{$object->name}/delete");
     }
-    elseif ($preset['type'] == OPENLAYERS_STORAGE_NORMAL) {
-      $links[] = l(t('Edit'), 'admin/settings/openlayers/presets/' . $preset['preset_name'] . '/edit');
-      $links[] = l(t('Delete'), 'admin/settings/openlayers/presets/' . $preset['preset_name'] .'/delete');
+    elseif ($object->export_type == EXPORT_IN_DATABASE) {
+      $links[] = l(t('Edit'), "admin/settings/openlayers/{$type}/{$object->name}/edit");
+      $links[] = l(t('Delete'), "admin/settings/openlayers/{$type}/{$object->name}/delete");
     }
-    $links[] = l(t('Export'), 'admin/settings/openlayers/presets/' . $preset['preset_name'] . '/export');
-    $links[] = l(t('Clone'), 'admin/settings/openlayers/presets/add/' . $preset['preset_name']);
+    $links[] = l(t('Export'), "admin/settings/openlayers/{$type}/{$object->name}/export");
+    $links[] = l(t('Clone'), "admin/settings/openlayers/{$type}/add/{$object->name}");
     $row[] = implode(' | ', $links);
     $rows[] = $row;
   }
@@ -61,7 +66,7 @@ function openlayers_ui_presets_manage_list() {
  * @param
  *   Action to do with preset
  */
-function openlayers_ui_presets_manage($preset = array(), $action = 'edit') {
+function openlayers_ui_presets_manage($preset = NULL, $action = 'edit') {
   $output = '';
 
   // Switch action
@@ -71,14 +76,14 @@ function openlayers_ui_presets_manage($preset = array(), $action = 'edit') {
       break;
 
     case 'export':
-      drupal_set_title(t('Export: %title', array('%title' => $preset['preset_title'])));
+      drupal_set_title(t('Export: %title', array('%title' => $preset->title)));
       $output = drupal_get_form('openlayers_ui_presets_manage_export', $preset);
       break;
 
     case 'edit':
     default:
-      drupal_set_title(t('Edit: %title', array('%title' => $preset['preset_title'])));
-      $output = drupal_get_form('openlayers_ui_presets_manage_add', $preset, TRUE);
+      drupal_set_title(t('Edit: %title', array('%title' => $preset->title)));
+      $output = drupal_get_form('openlayers_ui_presets_form', $preset, TRUE);
       break;
   }
 
@@ -86,9 +91,9 @@ function openlayers_ui_presets_manage($preset = array(), $action = 'edit') {
 }
 
 /**
- * Menu Callback for Add Preset
+ * Menu Callback for Preset Form
  */
-function openlayers_ui_presets_manage_add(&$form_state, $preset = array(), $edit = FALSE) {
+function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE) {
   $form = array();
   $layers = openlayers_layers_get_info();
   $baselayers = array();
@@ -98,7 +103,7 @@ function openlayers_ui_presets_manage_add(&$form_state, $preset = array(), $edit
   $available_styles = array();
 
   // Ensure we are not editing any coded presets
-  if ($preset['preset_coded'] && $edit) {
+  if (($preset->export_type == EXPORT_IN_CODE) && $edit) {
     drupal_set_message(t('Cannot edit default preset.'), 'error');
     drupal_goto('admin/settings/openlayers/presets');
   }
@@ -110,10 +115,10 @@ function openlayers_ui_presets_manage_add(&$form_state, $preset = array(), $edit
     unset($default_map['preset_name']);
   }
   else {
-    $default_map = $preset['preset_data'];
+    $default_map = $preset->data;
     // Push the preset data into the map
-    $default_map['preset_title'] = $preset['preset_title'];
-    $default_map['preset_description'] = $preset['preset_description'];
+    $default_map['preset_title'] = $preset->title;
+    $default_map['preset_description'] = $preset->description;
   }
 
   // Update map for new form
@@ -549,7 +554,7 @@ function openlayers_ui_presets_manage_add(&$form_state, $preset = array(), $edit
  * @return
  *   Does not return anything. Uses form_set_error() to communicate errors.
  */
-function openlayers_ui_presets_manage_add_validate($form, &$form_state) {
+function openlayers_ui_presets_form_validate($form, &$form_state) {
   $values = $form_state['values'];
   $found_error = FALSE;
 
@@ -594,7 +599,7 @@ function openlayers_ui_presets_manage_add_validate($form, &$form_state) {
 
   // Check if adding and name already exists
   $existing = openlayers_get_preset($values['preset_name'], TRUE);
-  if (!empty($existing) && (!$form_state['values']['preset_edit']) && $existing['type'] != OPENLAYERS_STORAGE_DEFAULT) {
+  if (!empty($existing) && (!$form_state['values']['preset_edit']) && $existing->get_type & EXPORT_IN_DATABASE) {
     form_set_error('preset_name', t('The Preset Name already exists.'));
     $found_error = TRUE;
   }
@@ -622,7 +627,7 @@ function openlayers_ui_presets_manage_add_validate($form, &$form_state) {
 /**
  * Form submit for preset add form, for the projection add ahah
  */
-function openlayers_ui_presets_manage_add_projection_submit($form, &$form_state) {
+function openlayers_ui_presets_form_projection_submit($form, &$form_state) {
   unset($form_state['submit_handlers']);
   form_execute_handlers('submit', $form, $form_state);
   $form_state['rebuild'] = TRUE;
@@ -631,7 +636,7 @@ function openlayers_ui_presets_manage_add_projection_submit($form, &$form_state)
 /**
  * Form submit for preset add form
  */
-function openlayers_ui_presets_manage_add_submit($form, &$form_state) {
+function openlayers_ui_presets_form_submit($form, &$form_state) {
   // Check for cancel
   if ($form_state['clicked_button']['#id'] == 'edit-openlayers-cancel') {
     $form_state['redirect'] = 'admin/settings/openlayers/presets/list';
@@ -650,20 +655,19 @@ function openlayers_ui_presets_manage_add_submit($form, &$form_state) {
       $map = _openlayers_ui_convert_form_to_map($form_state['values']);
     }
 
-    // Create preset array
-    $preset = array(
-      'preset_name' => $form_state['values']['preset_name'],
-      'preset_title' => $form_state['values']['preset_title'],
-      'preset_description' => $form_state['values']['preset_description'],
-      'preset_data' => $map,
-    );
+    // Create preset object
+    $preset = new stdClass();
+    $preset->name = $form_state['values']['preset_name'];
+    $preset->title = $form_state['values']['preset_title'];
+    $preset->description = $form_state['values']['preset_description'];
+    $preset->data = $map;
 
     // Save preset
     $success = openlayers_save_preset($preset);
     // Redirect to edit page
     if ($success) {
       drupal_set_message(t('Map saved.'));
-      $form_state['redirect'] = 'admin/settings/openlayers/presets/' . $preset['preset_name'] . '/edit';
+      $form_state['redirect'] = 'admin/settings/openlayers/presets/' . $preset->name . '/edit';
     }
     else {
       form_set_error('openlayers', t('Error trying to save map'));
@@ -674,21 +678,22 @@ function openlayers_ui_presets_manage_add_submit($form, &$form_state) {
 /**
  * Menu Callback for Preset Delete Form
  */
-function openlayers_ui_presets_manage_delete(&$form_state, $preset = array()) {
+function openlayers_ui_presets_manage_delete(&$form_state, $preset = NULL) {
   // Ensure we are not deleting any coded presets
-  if ($preset['type'] == OPENLAYERS_STORAGE_DEFAULT) {
+  if (!($preset->export_type & EXPORT_IN_DATABASE)) {
     drupal_set_message(t('Cannot delete default preset.'), 'error');
     drupal_goto('admin/settings/openlayers/presets');
   }
 
   // Create delete form
   $form = array();
-  $form['preset_name'] = array('#type' => 'value', '#value' => $preset['preset_name']);
-  if ($preset['type'] == OPENLAYERS_STORAGE_OVERRIDE) {
+  $form['preset_name'] = array('#type' => 'value', '#value' => $preset->name);
+  // Check if can revert
+  if ($preset->export_type & EXPORT_IN_CODE) {
     return confirm_form(
       $form,
       t('Are you sure you want to revert the preset %preset?',
-        array('%preset' => $preset['preset_title'])
+        array('%preset' => $preset->title)
       ),
       'admin/settings/openlayers/presets',
       t('This will delete the preset in the database and revert to the preset in a feature or code. This action cannot be undone.'),
@@ -701,7 +706,7 @@ function openlayers_ui_presets_manage_delete(&$form_state, $preset = array()) {
     return confirm_form(
       $form,
       t('Are you sure you want to delete the preset %preset?',
-        array('%preset' => $preset['preset_title'])
+        array('%preset' => $preset->title)
       ),
       'admin/settings/openlayers/presets',
       t('This action cannot be undone.'),
@@ -718,17 +723,17 @@ function openlayers_ui_presets_manage_delete_submit($form, &$form_state) {
   $preset = openlayers_get_preset($form_state['values']['preset_name'], TRUE);
 
   // Check if coded
-  if ($preset['type'] == OPENLAYERS_STORAGE_DEFAULT) {
-    drupal_set_message(t('Cannot delete %name because it is provided by a module.', array('%name' => $preset['preset_name'])));
+  if ($preset->type == EXPORT_IN_CODE) {
+    drupal_set_message(t('Cannot delete %name because it is provided by a module.', array('%name' => $preset->name)));
   }
   else {
     // Create query
-    $query = "DELETE FROM {openlayers_map_presets} WHERE preset_id = %d";
-    $result = db_query($query, $preset['preset_id']);
+    $query = "DELETE FROM {openlayers_map_presets} WHERE name = '%s'";
+    $result = db_query($query, $preset->name);
 
     // Check query results
     if ($result) {
-      drupal_set_message(t('Preset %name was deleted.', array('%name' => $preset['preset_name'])));
+      drupal_set_message(t('Preset %name was deleted.', array('%name' => $preset->name)));
     }
     else {
       drupal_set_message(t('Error when attempting to delete preset.'), 'error');
@@ -742,22 +747,31 @@ function openlayers_ui_presets_manage_delete_submit($form, &$form_state) {
 /**
  * Menu callback for Preset Export Form
  */
-function openlayers_ui_presets_manage_export(&$form_state, $preset = array()) {
+function openlayers_ui_presets_manage_export(&$form_state, $object = NULL) {
+  $type = 'presets';
+  
+  // Determine what api we are using
+  switch ($type) {
+    case 'presets':
+      $api = 'openlayers_map_presets';
+      break;
+
+  }
+  
   // Create output
-  $exported = '$map_preset = array();';
-  $exported .= "\n";
-  $exported .= '$map_preset[\''. $preset['preset_name'] .'\'] = ';
-  $exported .= var_export($preset, TRUE) .';';
-  $exported .= "\n";
-  $exported .= 'return $map_preset;';
-  $rows = substr_count($exported, "\n") + 1;
+  ctools_include('export');
+  $code = '$items = array();' ."\n";
+  $code .= ctools_export_object($api, $object, '');
+  $code .= '$items["'. $object->name .'"] = $' . $api . ';' ."\n";
+  $code .= 'return $items;';
+  $rows = substr_count($code, "\n") + 1;
 
   // Create form
   $form = array();
   $form['export'] = array(
     '#type' => 'textarea',
-    '#default_value' => $exported,
-    '#rows' => $rows,
+    '#default_value' => $code,
+    '#rows' => $rows + 2,
     '#resizable' => FALSE,
   );
   $form['done'] = array(
@@ -834,19 +848,19 @@ function openlayers_ui_presets_import_validate($form, &$form_state) {
       if (!is_array($preset)) {
         form_set_error('import', t('Format is bad for key: %key', array('%k' => $k)));
       }
-      if (empty($preset['preset_title'])) {
+      if (empty($preset->title)) {
         form_set_error('import', t('No Preset Title Found for key: %key', array('%k' => $k)));
       }
-      if (empty($preset['preset_description'])) {
+      if (empty($preset->description)) {
         form_set_error('import', t('No Preset Description Found for key: %key', array('%k' => $k)));
       }
-      if (empty($preset['preset_data'])) {
+      if (empty($preset->data)) {
         form_set_error('import', t('No Map Data Found for key: %key', array('%k' => $k)));
       }
-      if (empty($preset['preset_data']['width'])) {
+      if (empty($preset->data['width'])) {
         form_set_error('import', t('No Map Width Found for key: %key', array('%k' => $k)));
       }
-      if (empty($preset['preset_data']['height'])) {
+      if (empty($preset->data['height'])) {
         form_set_error('import', t('No Map Height Found for key: %key', array('%k' => $k)));
       }
     }
