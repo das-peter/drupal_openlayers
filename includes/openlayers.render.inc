@@ -94,61 +94,18 @@ function _openlayers_layers_process($layers = array(), &$map = array()) {
  *   Array of processed behaviors
  */
 function _openlayers_behaviors_process($behaviors = array(), &$map = array()) {
-  // Check input
-  if (!is_array($behaviors)) {
-    $behaviors = array();
-  }
-  if (!is_array($map)) {
-    $map = array();
-  }
-
-  // Initialized variables
   $processed = array();
-  // Get behavior info array
-  $behavior_info = openlayers_behaviors_get_info();
-
-  // Go through behaviors
-  foreach ($behaviors as $k => $behavior) {
-    // Check if array, if array, just pass on
-    if (is_array($behaviors)) {
-      $processed[$behavior['id']] = $behavior;
-    }
-    else {
-      $processed[$behavior] = array(
-        'id' => $behavior,
-        'type' => $behavior,
-      );
+  
+  // Get and go through behaviors
+  foreach (openlayers_behaviors() as $key => $plugin) {
+    // Check for behavior and plugin class
+    if (isset($behaviors[$key]) && $class = ctools_plugin_get_class($plugin, 'behavior')) {
+      // Instantiate new class and proccess
+      $behavior = new $class($behaviors[$key], $map);     
+      $processed[$key] = $behavior->render($map);
     }
   }
-
-  // Go through processed
-  foreach ($processed as $bkey => $behavior) {
-    $info = $behavior_info[$behavior['type']];
-
-    if (is_file($info['file'])) {
-      require_once $info['file'];
-      // Check for function
-      if (function_exists($info['callback'])) {
-        // Call function and give it the behavior array
-        $result = $info['callback']($behavior, $map);
-
-        // Check for result
-        if (isset($result) && is_array($result)) {
-          $result['js_callback'] = $info['js_callback'];
-          $processed[$bkey] = $result;
-        }
-        else {
-          unset($processed[$bkey]);
-        }
-      }
-      // Include JavaScript
-      if ($info['js_file']) {
-        drupal_add_js($info['js_file'], 'module');
-      }
-    }
-  }
-
-  // Return processed
+  
   return $processed;
 }
 

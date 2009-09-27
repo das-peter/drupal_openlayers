@@ -256,25 +256,21 @@ function openlayers_layers_get_info($reset = FALSE) {
 }
 
 /**
- * Get Behavior Info
+ * Get all behaviors.
  *
- * Wrapper around behavior info hook
+ * Use CTools to get all openlayers behaviors plugins
+ * with context.
  *
  * @ingroup openlayers_api
  * @param $reset
- *   Boolean whether to reset cache or not
+ *   Boolean whether to reset cache or not.
  * @return
- *   array of behavior info
+ *   Array of behavior info.
  */
-function openlayers_behaviors_get_info($reset = FALSE) {
-  static $info = NULL;
-
-  // If empty or reset, get info
-  if ($info === NULL || $reset == TRUE) {
-    $info = module_invoke_all('openlayers_behaviors_info');
-  }
-
-  return $info;
+function openlayers_behaviors($reset = FALSE) {
+  ctools_include('plugins');
+  ctools_include('context');
+  return ctools_get_plugins('openlayers', 'behaviors');
 }
 
 /**
@@ -611,10 +607,10 @@ function openlayers_openlayers_presets() {
       'displayProjection' => '4326',
     ),
     'controls' => array(
-      'LayerSwitcher' => TRUE,
-      'Navigation' => TRUE,
-      'PanZoomBar' => TRUE,
-      'MousePosition' => TRUE,
+      'LayerSwitcher' => 'LayerSwitcher',
+      'Navigation' => 'Navigation',
+      'PanZoomBar' => 'PanZoomBar',
+      'MousePosition' => 'MousePosition',
     ),
   );
   
@@ -628,5 +624,194 @@ function openlayers_openlayers_presets() {
   // Return preset(s) in an array
   return array(
     'default' => $default,
+  );
+}
+
+/**
+ * Interface for openlayers_behaviors.
+ *
+ * Interface for behavior classes.  TODO: DOCUMENT!
+ */
+interface openlayers_behavior_interface {
+  function __construct($options = array(), $map = array());
+  function options_init();
+  function options_form();
+  function render(&$map);
+}
+
+/**
+ * OpenLayers Behavior Base Class
+ * 
+ * We define base classes in the core module.
+ * All other parent classes can be autoloaded through ctools.
+ * TODO: DOCUMENT!
+ */
+class openlayers_behavior implements openlayers_behavior_interface {
+  var $options, $map;
+
+  function __construct($options = array(), $map = array()) {
+    $this->options = $options + $this->options_init();
+    $this->map = $map;
+  }
+
+  function options_init() {
+    return array();
+  }
+
+  function options_form() {
+    return array();
+  }
+
+  function render(&$map) {}
+}
+
+/**
+ * Implementation of hook_openlayers_behaviors().
+ */
+function openlayers_openlayers_behaviors() {
+  $include_path = drupal_get_path('module', 'openlayers') .'/includes/behaviors';
+  $parent = $parent;
+
+  return array(
+    'openlayers_behavior_attribution' => array(
+       'title' => t('Attribution'),
+       'description' => t('Allows layers to provide attribution to the map if it exists.'),
+       'type' => 'layer',
+       'path' => $include_path,
+       'behavior' => array(
+         'class' => 'openlayers_behavior_attribution',
+         'parent' => $parent,
+       ),
+     ),
+    'openlayers_behavior_keyboarddefaults' => array(
+       'title' => t('Keyboard Defaults'),
+       'description' => t('Provides a the ability to use the keyboard to pan and zoom map.'),
+       'type' => 'layer',
+       'path' => $include_path,
+       'behavior' => array(
+         'class' => 'openlayers_behavior_keyboarddefaults',
+         'parent' => $parent,
+       ),
+     ),
+    'openlayers_behavior_layerswitcher' => array(
+       'title' => t('Layer Switcher'),
+       'description' => t('Gives user ability to switch Layers in the map interface.'),
+       'type' => 'map',
+       'path' => $include_path,
+       'behavior' => array(
+         'class' => 'openlayers_behavior_layerswitcher',
+         'parent' => $parent,
+       ),
+     ),
+    'openlayers_behavior_mouseposition' => array(
+       'title' => t('Mouse Position'),
+       'description' => t('Gives a visual indication of the mouse position to the user.'),
+       'type' => 'map',
+       'path' => $include_path,
+       'behavior' => array(
+         'class' => 'openlayers_behavior_mouseposition',
+         'parent' => $parent,
+       ),
+     ),
+    'openlayers_behavior_navigation' => array(
+       'title' => t('Navigation'),
+       'description' => t('Gives the user the ability to navigate the map interface.'),
+       'type' => 'map',
+       'path' => $include_path,
+       'behavior' => array(
+         'class' => 'openlayers_behavior_navigation',
+         'parent' => $parent,
+       ),
+     ),
+     'openlayers_behavior_dragpan' => array(
+      'title' => t('DragPan'),
+      'description' => t('Gives user ability to pan in the map interface.'),
+      'type' => 'map',
+      'path' => $include_path,
+      'behavior' => array(
+        'class' => 'openlayers_behavior_dragpan',
+        'parent' => $parent,
+      ),
+    ),
+    'openlayers_behavior_panzoombar' => array(
+      'title' => t('PanZoomBar'),
+      'description' => t('Gives user ability to pan and zoom in the map interface.'),
+      'type' => 'map',
+      'path' => $include_path,
+      'behavior' => array(
+        'class' => 'openlayers_behavior_panzoombar',
+        'parent' => $parent,
+      ),
+    ),
+    'openlayers_behavior_mapformvalues' => array(
+      'title' => t('Map Form Values'),
+      'description' => t('Private method for admin UI'),
+      'type' => 'map',
+      'path' => $include_path,
+      'behavior' => array(
+        'class' => 'openlayers_behavior_mapformvalues',
+        'parent' => $parent,
+      ),
+    ),
+    'openlayers_behavior_boxselect' => array(
+      'title' => t('Boxselect'),
+      'description' => t('Allows the selection and display of a box.'),
+      'type' => 'map',
+      'path' => $include_path,
+      'behavior' => array(
+        'class' => 'openlayers_behavior_boxselect',
+        'parent' => $parent,
+      ),
+    ),
+    'openlayers_behavior_crosshair' => array(
+      'title' => t('Crosshair'),
+      'description' => t('Creates a crosshair at the center of the map'),
+      'type' => 'map',
+      'path' => $include_path,
+      'behavior' => array(
+        'class' => 'openlayers_behavior_crosshair',
+        'parent' => $parent,
+      ),
+    ),
+    'openlayers_behavior_permalink' => array(
+      'title' => t('Permalink'),
+      'description' =>  t('Prvides a URL that will link to a specific map position.'),
+      'type' => 'map',
+      'path' => $include_path,
+      'behavior' => array(
+        'class' => 'openlayers_behavior_permalink',
+        'parent' => $parent,
+      ),
+    ),
+    'openlayers_behavior_scaleline' => array(
+      'title' => t('Scale Line'),
+      'description' => t('Provides the user with a line of scale in the map interface.'),
+      'type' => 'map',
+      'path' => $include_path,
+      'behavior' => array(
+        'class' => 'openlayers_behavior_scaleline',
+        'parent' => $parent,
+      ),
+    ),
+    'openlayers_behavior_zoombox' => array(
+      'title' => t('Zoom Box'),
+      'description' => t('Allows user to draw a box on screen to zoom with Shift + Click.'),
+      'type' => 'map',
+      'path' => $include_path,
+      'behavior' => array(
+        'class' => 'openlayers_behavior_zoombox',
+        'parent' => $parent,
+      ),
+    ),
+    'openlayers_behavior_zoomtomaxextent' => array(
+      'title' => t('Zoom to Max Extent'),
+      'description' => t('Provides button to zoom to the maximum extent of the map.'),
+      'type' => 'map',
+      'path' => $include_path,
+      'behavior' => array(
+        'class' => 'openlayers_behavior_zoomtomaxextent',
+        'parent' => $parent,
+      ),
+    ),
   );
 }
