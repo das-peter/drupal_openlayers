@@ -30,7 +30,7 @@ function _openlayers_layers_process($layers = array(), &$map = array()) {
   $processed = array();
 
   // Get layer info array
-  $layer_info = openlayers_layers_get_info();
+  $layer_info = openlayers_layers();
 
   // Check to make sure our default layer is present, if it isn't then add it.
   if (!array_key_exists($map['default_layer'], $layers) && ($map['default_layer'])) {
@@ -45,19 +45,27 @@ function _openlayers_layers_process($layers = array(), &$map = array()) {
     }
     else {
       // If not array, we want to include the file and call the function
-      if (($info = $layer_info[$layer]) && is_array($layer_info[$layer])) {
-        // Check if file exists
-        if (is_file('./'. $info['file'])) {
-          require_once './'. $info['file'];
-          // Check for function
-          if (function_exists($info['callback'])) {
-            // Call function and give it the layer name
-            $result = $info['callback']($layer, $map);
-            // Check for result
-            if (isset($result) && is_array($result)) {
-              $processed[$layer] = $result;
+      if (!empty($layer_info[$layer]) && $info = $layer_info[$layer]) {
+        
+        // Check to see if we should use a callback, or use the default callback
+        if ($info->data['callback']) {
+          // Check if file exists
+          if (is_file('./'. $info->data['file'])) {
+            require_once './'. $info->data['file'];
+            // Check for function
+            if (function_exists($info->data['callback'])) {
+              // Call function and give it the layer name
+              $result = $info->data['callback']($info, $map);
             }
           }
+        }
+        else {
+          // Use a default callback
+          $result = _openlayers_default_layer_callback($info);
+        }
+        // Check for result
+        if (isset($result) && is_array($result)) {
+          $processed[$layer] = $result;
         }
       }
     }
@@ -76,10 +84,17 @@ function _openlayers_layers_process($layers = array(), &$map = array()) {
       }
     }
   }
-
+  
   // Return processed
   return $processed;
 }
+
+function _openlayers_default_layer_callback ($info) {
+  $layer = $info->data;
+  $layer['name'] = $info->title;
+  return $layer;
+}
+
 
 /**
  * Process Behaviors

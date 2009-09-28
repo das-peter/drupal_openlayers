@@ -103,7 +103,8 @@ function openlayers_ctools_plugin_api($module, $api) {
     switch ($api) {
       case 'openlayers_presets':
         return array('version' => 1);
-
+      case 'openlayers_layers':
+        return array('version' => 1);
     }
   }
 }
@@ -234,9 +235,7 @@ function openlayers_render_map($map = array(), $render = TRUE) {
 }
 
 /**
- * Get Layer Info
- *
- * Wrapper around layer info hook
+ * Get all openlayers layers.
  *
  * @ingroup openlayers_api
  * @param $reset
@@ -244,16 +243,33 @@ function openlayers_render_map($map = array(), $render = TRUE) {
  * @return
  *   array of layer info
  */
-function openlayers_layers_get_info($reset = FALSE) {
-  static $info = NULL;
-
-  // If empty or reset, get info
-  if ($info === NULL || $reset == TRUE) {
-    $info = module_invoke_all('openlayers_layers_info');
-  }
-
-  return $info;
+function openlayers_layers($reset = TRUE) {
+  ctools_include('export');
+  $layers = ctools_export_load_object('openlayers_layers', 'all', array(), $reset);
+    
+  return $layers;
 }
+
+//@@TODO: This seems really inefficient. Should we use ctools_export_load_object?  -- phayes
+/**
+ * Menu loader for layers.
+ */
+function openlayers_layer_load($name) {
+  $layers = openlayers_layers();
+  return !empty($layers[$name]) ? $layers[$name] : FALSE;
+}
+
+/**
+ * Save layer.
+ */
+function openlayers_layer_save($layer) {
+  if (!empty($layer->name)) {
+    $exists = db_result(db_query("SELECT name FROM {openlayers_layers} WHERE name = '%s'", $layer->name));
+    return $exists ? drupal_write_record('openlayers_layers', $layer, 'name') : drupal_write_record('openlayers_layers', $layer);
+  }
+  return FALSE;
+}
+
 
 /**
  * Get all behaviors.
@@ -552,17 +568,24 @@ function openlayers_openlayers_layers_handler_info($map = array()) {
  * Implementation of hook_openlayers_layers_info().
  */
 function openlayers_openlayers_layers_info() {
-  // Define info array
-  $info['openlayers_default_wms'] = array(
-    'name' => t('Default OpenLayers WMS'),
-    'description' => t('A simple basemap to get you started'),
-    'file' => drupal_get_path('module', 'openlayers') .'/includes/openlayers.layers.inc',
-    'callback' => 'openlayers_process_layers',
+  $layers = array();
+  
+  $layer = new StdClass();
+  $layer->api_version = 1;
+  $layer->name = 'openlayers_default_wms';
+  $layer->title = t('Default OpenLayers WMS');
+  $layer->description = t('A simple basemap to get you started');
+  $layer->data = array(
     'projection' => array('4326', '900913', '4269'),
     'baselayer' => TRUE,
+    'type' => 'WMS',
+    'url' => 'http://labs.metacarta.com/wms/vmap0',
+    'params' => array('layers' => 'basic')
   );
+  
+  $layers[$layer->name] = $layer;
 
-  return $info;
+  return $layers;
 }
 
 /**

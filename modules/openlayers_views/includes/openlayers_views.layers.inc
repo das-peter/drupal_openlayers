@@ -20,31 +20,12 @@
  * @return
  *   Layer data
  */
-function openlayers_views_process_layers($layer = NULL) {
+function openlayers_views_process_layers($info = NULL) {
+  $layer = $info->data;
+  $layer['name'] = $info->title;
   
-  $layer_data = array();
-  
-  // Make sure layer is a string
-  if (!is_string($layer)) {
-    return FALSE;
-  }
-  
-  // Get info array to reference title
-  $layer_info = openlayers_layers_get_info();
-  
-  $l = $layer_info[$layer];
-  
-  $layer_data = array (
-    'id' => $layer,
-    'type' => 'Vector',
-    'name' => $l['name'],
-    'baselayer' => $l['baselayer'],
-    'options' => array(),
-    'events' => array(),
-  );
-  
-  if (isset($l['views']['view'], $l['views']['display'])) {
-    if ($view = views_get_view($l['views']['view'])) {
+  if (isset($layer['views']['view'], $layer['views']['display'])) {
+    if ($view = views_get_view($layer['views']['view'])) {
       $args = array();
     
       // Retrieve args/filters from current view to pass on to our vector layer.
@@ -57,12 +38,11 @@ function openlayers_views_process_layers($layer = NULL) {
       $view->execute_display($l['views']['display'], $args);
       $view->init_style();
       
-      $layer_data['features'] = $view->style_plugin->pre_render($view->result);
+      $layer['features'] = $view->style_plugin->pre_render($view->result);
       
       $view->destroy();          
      }
    }
-  
-  return $layer_data;
+  return $layer;
 
 }

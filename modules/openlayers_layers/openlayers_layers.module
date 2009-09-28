@@ -41,6 +41,18 @@ function openlayers_layers_menu() {
 }
 
 /**
+ * Implementation of hook_ctools_plugin_api().
+ */
+function openlayers_layers_ctools_plugin_api($module, $api) {
+  if ($module == "openlayers") {
+    switch ($api) {
+      case 'openlayers_layers':
+        return array('version' => 1);
+    }
+  }
+}
+
+/**
  * Implementation of hook_openlayers_layers_handler().
  */
 function openlayers_layers_openlayers_layers_handler_info($map = array()) {
@@ -79,175 +91,244 @@ function openlayers_layers_openlayers_layers_handler_info($map = array()) {
  * Implementation of hook_openlayers_layers_info().
  */
 function openlayers_layers_openlayers_layers_info() {
+  
   $file = drupal_get_path('module', 'openlayers_layers') .'/includes/openlayers_layers.layers.inc';
   $callback = 'openlayers_layers_process_layers';
+  
   $info = array();
 
   // Define info array
-  $info['openlayers_layers_nasa_global_mosaic'] = array(
-    'name' => t('NASA Global Mosaic'),
-    'description' => t('A high resolution global image mosaic of the earth, produced from 1999-2003 Landsat7 scenes. The highest resolution has a resolution of 15 meters.'),
+
+  $info['openlayers_layers_nasa_daily_planet'] = new StdClass();
+  $info['openlayers_layers_nasa_daily_planet']->api_version = 1;
+  $info['openlayers_layers_nasa_daily_planet']->name = 'openlayers_layers_nasa_daily_planet';
+  $info['openlayers_layers_nasa_daily_planet']->title = t('NASA Daily Planet');
+  $info['openlayers_layers_nasa_daily_planet']->description = t('This layer is the most current, near-global image of the earth available. It is a countinuously updating image from the MODIS TERRA satellite');
+  $info['openlayers_layers_nasa_daily_planet']->data = array (
     'projection' => array('4326'),
     'baselayer' => TRUE,
-    'file' => $file,
-    'callback' => $callback,
+    'type' => 'WMS',
+    'url' => 'http://wms.jpl.nasa.gov/wms.cgi?',
+    'params' => array('layers' => 'daily_planet', 'format' => 'image/png'),
   );
 
-  $info['openlayers_layers_nasa_daily_planet'] = array(
-    'name' => t('NASA Daily Planet'),
-    'description' => t('This layer is the most current, near-global image of the earth available. It is a countinuously updating image from the MODIS TERRA satellite'),
+  $info['openlayers_layers_nasa_blue_marble'] = new StdClass();
+  $info['openlayers_layers_nasa_blue_marble']->api_version = 1;
+  $info['openlayers_layers_nasa_blue_marble']->name = 'openlayers_layers_nasa_blue_marble';
+  $info['openlayers_layers_nasa_blue_marble']->title = t('NASA Blue Marbel');
+  $info['openlayers_layers_nasa_blue_marble']->description = t('Blue Marble Next Generation, A MODIS-derived 500m true color earth dataset showing seasonal dynamics. This version of the BMNG was updated June 2007');
+  $info['openlayers_layers_nasa_blue_marble']->data = array (
     'projection' => array('4326'),
     'baselayer' => TRUE,
-    'file' => $file,
-    'callback' => $callback,
+    'type' => 'WMS',
+    'url' => 'http://wms.jpl.nasa.gov/wms.cgi?',
+    'params' => array('layers' => 'BMNG', 'format' => 'image/png'),
   );
 
-  $info['openlayers_layers_nasa_blue_marble'] = array(
-    'name' => t('NASA Blue Marbel'),
-    'description' => t('Blue Marble Next Generation, A MODIS-derived 500m true color earth dataset showing seasonal dynamics. This version of the BMNG was updated June 2007'),
-    'projection' => array('4326'),
+  $info['openlayers_layers_google_street'] = new StdClass();
+  $info['openlayers_layers_google_street']->api_version = 1;
+  $info['openlayers_layers_google_street']->name = 'openlayers_layers_google_street';
+  $info['openlayers_layers_google_street']->title = t('Google Street');
+  $info['openlayers_layers_google_street']->description = t('Street map by Google');
+  $info['openlayers_layers_google_street']->data = array (
+    'projection' => array('900919'),
     'baselayer' => TRUE,
+    'type' => 'Google',
+    'params' => array('type' => 'street'),
     'file' => $file,
     'callback' => $callback,
   );
 
-  $info['openlayers_layers_open_aerial'] = array(
-    'name' => t('Open Aerial'),
-    'description' => t('OpenAerialMap is an open collection of aerial photographs, collected into a single coherent view of the world.'),
-    'projection' => array('900913'),
+  $info['openlayers_layers_google_satellite'] = new StdClass();
+  $info['openlayers_layers_google_satellite']->api_version = 1;
+  $info['openlayers_layers_google_satellite']->name = 'openlayers_layers_google_satellite';
+  $info['openlayers_layers_google_satellite']->title = t('Google Satellite');
+  $info['openlayers_layers_google_satellite']->description = t('Satellite map by Google');
+  $info['openlayers_layers_google_satellite']->data = array (
+    'projection' => array('900919'),
     'baselayer' => TRUE,
+    'type' => 'Google',
+    'params' => array('type' => 'satellite'),
     'file' => $file,
     'callback' => $callback,
   );
 
-  $info['openlayers_layers_google_street'] = array(
-    'name' => t('Google Street'),
-    'projection' => array('900913'),
+  $info['openlayers_layers_google_hybrid'] = new StdClass();
+  $info['openlayers_layers_google_hybrid']->api_version = 1;
+  $info['openlayers_layers_google_hybrid']->name = 'openlayers_layers_google_hybrid';
+  $info['openlayers_layers_google_hybrid']->title = t('Google Hybrid');
+  $info['openlayers_layers_google_hybrid']->description = t('A satellite map with place labels by Google');
+  $info['openlayers_layers_google_hybrid']->data = array (
+    'projection' => array('900919'),
     'baselayer' => TRUE,
+    'type' => 'Google',
+    'params' => array('type' => 'hybrid'),
     'file' => $file,
     'callback' => $callback,
   );
-
-  $info['openlayers_layers_google_satellite'] = array(
-    'name' => t('Google Satellite'),
-    'projection' => array('900913'),
+  
+  $info['openlayers_layers_google_physical'] = new StdClass();
+  $info['openlayers_layers_google_physical']->api_version = 1;
+  $info['openlayers_layers_google_physical']->name = 'openlayers_layers_google_physical';
+  $info['openlayers_layers_google_physical']->title = t('Google Physical');
+  $info['openlayers_layers_google_physical']->description = t('A physical terrian by Google');
+  $info['openlayers_layers_google_physical']->data = array (
+    'projection' => array('900919'),
     'baselayer' => TRUE,
+    'type' => 'Google',
+    'params' => array('type' => 'physical'),
     'file' => $file,
     'callback' => $callback,
   );
-
-  $info['openlayers_layers_google_hybrid'] = array(
-    'name' => t('Google Hybrid'),
-    'projection' => array('900913'),
+  
+  $info['openlayers_layers_yahoo_street'] = new StdClass();
+  $info['openlayers_layers_yahoo_street']->api_version = 1;
+  $info['openlayers_layers_yahoo_street']->name = 'openlayers_layers_yahoo_street';
+  $info['openlayers_layers_yahoo_street']->title = t('Yahoo Street');
+  $info['openlayers_layers_yahoo_street']->description = t('A sreet map by Yahoo');
+  $info['openlayers_layers_yahoo_street']->data = array (
+    'projection' => array('900919'),
     'baselayer' => TRUE,
+    'type' => 'Yahoo',
+    'params' => array('type' => 'street'),
     'file' => $file,
     'callback' => $callback,
   );
 
-  $info['openlayers_layers_google_physical'] = array(
-    'name' => t('Google Physical'),
-    'projection' => array('900913'),
+  $info['openlayers_layers_yahoo_satellite'] = new StdClass();
+  $info['openlayers_layers_yahoo_satellite']->api_version = 1;
+  $info['openlayers_layers_yahoo_satellite']->name = 'openlayers_layers_yahoo_satellite';
+  $info['openlayers_layers_yahoo_satellite']->title = t('Yahoo Satellite');
+  $info['openlayers_layers_yahoo_satellite']->description = t('A satellite map by Yahoo');
+  $info['openlayers_layers_yahoo_satellite']->data = array (
+    'projection' => array('900919'),
     'baselayer' => TRUE,
+    'type' => 'Yahoo',
+    'params' => array('type' => 'satellite'),
     'file' => $file,
     'callback' => $callback,
   );
 
-  $info['openlayers_layers_yahoo_street'] = array(
-    'name' => t('Yahoo Street'),
-    'projection' => array('900913'),
+  $info['openlayers_layers_yahoo_hybrid'] = new StdClass();
+  $info['openlayers_layers_yahoo_hybrid']->api_version = 1;
+  $info['openlayers_layers_yahoo_hybrid']->name = 'openlayers_layers_yahoo_hybrid';
+  $info['openlayers_layers_yahoo_hybrid']->title = t('Yahoo Hybrid');
+  $info['openlayers_layers_yahoo_hybrid']->description = t('A satellite map with place labels by Yahoo');
+  $info['openlayers_layers_yahoo_hybrid']->data = array (
+    'projection' => array('900919'),
     'baselayer' => TRUE,
+    'type' => 'Yahoo',
+    'params' => array('type' => 'hybrid'),
     'file' => $file,
     'callback' => $callback,
   );
 
-  $info['openlayers_layers_yahoo_satellite'] = array(
-    'name' => t('Yahoo Satellite'),
-    'projection' => array('900913'),
+  $info['openlayers_layers_virtual_earth_street'] = new StdClass();
+  $info['openlayers_layers_virtual_earth_street']->api_version = 1;
+  $info['openlayers_layers_virtual_earth_street']->name = 'openlayers_layers_virtual_earth_street';
+  $info['openlayers_layers_virtual_earth_street']->title = t('Virtual Earth Street');
+  $info['openlayers_layers_virtual_earth_street']->description = t('A street map by Microsoft');
+  $info['openlayers_layers_virtual_earth_street']->data = array (
+    'projection' => array('900919'),
     'baselayer' => TRUE,
+    'type' => 'VirtualEarth',
+    'params' => array('type' => 'street'),
     'file' => $file,
     'callback' => $callback,
   );
 
-  $info['openlayers_layers_yahoo_hybrid'] = array(
-    'name' => t('Yahoo Hybrid'),
-    'projection' => array('900913'),
+  $info['openlayers_layers_virtual_earth_satellite'] = new StdClass();
+  $info['openlayers_layers_virtual_earth_satellite']->api_version = 1;
+  $info['openlayers_layers_virtual_earth_satellite']->name = 'openlayers_layers_virtual_earth_satellite';
+  $info['openlayers_layers_virtual_earth_satellite']->title = t('Virtual Earth Satellite');
+  $info['openlayers_layers_virtual_earth_satellite']->description = t('A satellite map by Microsoft');
+  $info['openlayers_layers_virtual_earth_satellite']->data = array (
+    'projection' => array('900919'),
     'baselayer' => TRUE,
+    'type' => 'VirtualEarth',
+    'params' => array('type' => 'satellite'),
     'file' => $file,
     'callback' => $callback,
   );
 
-  $info['openlayers_layers_virtual_earth_street'] = array(
-    'name' => t('Virtual Earth Street'),
-    'projection' => array('900913'),
+  $info['openlayers_layers_virtual_earth_hybrid'] = new StdClass();
+  $info['openlayers_layers_virtual_earth_hybrid']->api_version = 1;
+  $info['openlayers_layers_virtual_earth_hybrid']->name = 'openlayers_layers_virtual_earth_hybrid';
+  $info['openlayers_layers_virtual_earth_hybrid']->title = t('Virtual Earth Hybrid');
+  $info['openlayers_layers_virtual_earth_hybrid']->description = t('A satellite map with place labels by Microsoft');
+  $info['openlayers_layers_virtual_earth_hybrid']->data = array (
+    'projection' => array('900919'),
     'baselayer' => TRUE,
+    'type' => 'VirtualEarth',
+    'params' => array('type' => 'hybrid'),
     'file' => $file,
     'callback' => $callback,
   );
 
-  $info['openlayers_layers_virtual_earth_satellite'] = array(
-    'name' => t('Virtual Earth Satellite'),
-    'projection' => array('900913'),
+  $info['openlayers_layers_osm_mapnik'] = new StdClass();
+  $info['openlayers_layers_osm_mapnik']->api_version = 1;
+  $info['openlayers_layers_osm_mapnik']->name = 'openlayers_layers_osm_mapnik';
+  $info['openlayers_layers_osm_mapnik']->title = t('OSM Mapnik');
+  $info['openlayers_layers_osm_mapnik']->description = t('A \'Mapnik style\' free and opensource street map by OpenStreetMap.');
+  $info['openlayers_layers_osm_mapnik']->data = array (
+    'projection' => array('900919'),
     'baselayer' => TRUE,
-    'file' => $file,
-    'callback' => $callback,
+    'type' => 'XYZ',
+    'url' => 'http://tile.openstreetmap.org/${z}/${x}/${y}.png',
   );
 
-  $info['openlayers_layers_virtual_earth_hybrid'] = array(
-    'name' => t('Virtual Earth Hybrid'),
-    'projection' => array('900913'),
+  $info['openlayers_layers_osm_tah'] = new StdClass();
+  $info['openlayers_layers_osm_tah']->api_version = 1;
+  $info['openlayers_layers_osm_tah']->name = 'openlayers_layers_osm_tah';
+  $info['openlayers_layers_osm_tah']->title = t('OSM Tiles@Home');
+  $info['openlayers_layers_osm_tah']->description = t('Tiles@Home map by OpenStreetMap.');
+  $info['openlayers_layers_osm_tah']->data = array (
+    'projection' => array('900919'),
+    'type' => 'XYZ',
     'baselayer' => TRUE,
-    'file' => $file,
-    'callback' => $callback,
+    'url' => 'http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png',
   );
 
-  $info['openlayers_layers_osm_mapnik'] = array(
-    'name' => t('OSM Mapnik'),
-    'projection' => array('900913'),
+  $info['openlayers_layers_osm_cycle'] = new StdClass();
+  $info['openlayers_layers_osm_cycle']->api_version = 1;
+  $info['openlayers_layers_osm_cycle']->name = 'openlayers_layers_osm_cycle';
+  $info['openlayers_layers_osm_cycle']->title = t('OSM Cycling Map');
+  $info['openlayers_layers_osm_cycle']->description = t('A cycling map using data from OpenStreetMap. Brought to you by CloudMade.');
+  $info['openlayers_layers_osm_cycle']->data = array (
+    'projection' => array('900919'),
+    'type' => 'XYZ',
     'baselayer' => TRUE,
-    'file' => $file,
-    'callback' => $callback,
+    'url' => 'http://andy.sandbox.cloudmade.com/tiles/cycle/${z}/${x}/${y}.png',
   );
 
-  $info['openlayers_layers_osm_tah'] = array(
-    'name' => t('OSM Tiles@Home'),
-    'projection' => array('900913'),
+  $info['openlayers_layers_cloudmade'] = new StdClass();
+  $info['openlayers_layers_cloudmade']->api_version = 1;
+  $info['openlayers_layers_cloudmade']->name = 'openlayers_layers_cloudmade';
+  $info['openlayers_layers_cloudmade']->title = t('CloudMade');
+  $info['openlayers_layers_cloudmade']->description = t('CloudMade tiles.  See <a href="http://www.cloudmade.com/">CloudMade</a>.');
+  $info['openlayers_layers_cloudmade']->data = array (
+    'projection' => array('900919'),
     'baselayer' => TRUE,
-    'file' => $file,
-    'callback' => $callback,
-  );
-
-  $info['openlayers_layers_osm_cycle'] = array(
-    'name' => t('OSM Cycling Map'),
-    'projection' => array('900913'),
-    'baselayer' => TRUE,
-    'file' => $file,
-    'callback' => $callback,
-  );
-
-  $info['openlayers_layers_osm_4326_hybrid'] = array(
-    'name' => t('OSM Overlay'),
-    'description' => t('Semi-transparent hybrid overlay. Projectd into WSG84 for use on non spherical-mercator maps.'),
-    'projection' => array('4326'),
-    'baselayer' => FALSE,
-    'file' => $file,
-    'callback' => $callback,
-  );
-
-  $info['openlayers_layers_cloudmade'] = array(
-    'name' => t('CloudMade'),
-    'description' => t('CloudMade tiles.  See <a href="http://www.cloudmade.com/">CloudMade</a>.'),
-    'projection' => array('900913'),
-    'baselayer' => TRUE,
+    'options' => array(
+      'key' => variable_get('openlayers_layers_cloudmade_api', ''),
+      'styleId' => variable_get('openlayers_layers_cloudmade_style', ''),
+    ),
     'file' => $file,
     'callback' => $callback,
   );
 
   // If KML module is enable, create layer for local KML feed
   if (module_exists('kml')) {
-    $info['openlayers_layers_local_kml'] = array(
-      'name' => t('Local KML Feed'),
-      'file' => $file,
-      'callback' => $callback,
+    $info['openlayers_layers_local_kml'] = new StdClass();
+    $info['openlayers_layers_local_kml']->api_version = 1;
+    $info['openlayers_layers_local_kml']->name = 'openlayers_layers_local_kml';
+    $info['openlayers_layers_local_kml']->title = t('Local KML Feed');
+    $info['openlayers_layers_local_kml']->description = t('KML produced by the kml module.');
+    $info['openlayers_layers_local_kml']->data = array (
+      'projection' => array('900919'),
+      'baselayer' => TRUE,
+      'type' => 'KML',
+      'url' => url('kml/node'),
     );
   }
 
@@ -256,14 +337,18 @@ function openlayers_layers_openlayers_layers_info() {
     // Get the data tables loaded from shapefiles, and include them as available layers
     $geo_tables  = geo('tables', '/^content_field/');
     foreach ($geo_tables as $key => $table) {
-      $info[$key] = array(
-        // @@TODO: Actually have a real name
-        'name' => t('Geo Table (@key)', array('@key' => $key)),
+      $info[$key] = new StdClass();
+      $info[$key]->api_version = 1;
+      $info[$key]->name = $key;
+      $info[$key]->title = t('Geo Table (@key)', array('@key' => $key));
+      $info[$key]->description = t('A table imported from a shapfile using the geo_data module');
+      $info[$key]->data = array (
+        'baselayer' => FALSE,
         'file' => $file,
         'callback' => 'openlayers_layers_process_geo_data_layers',
       );
     }
   }
-
+  
   return $info;
 }

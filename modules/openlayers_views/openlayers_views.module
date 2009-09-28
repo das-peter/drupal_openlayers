@@ -55,6 +55,18 @@ function openlayers_views_views_api() {
 }
 
 
+/**
+ * Implementation of hook_ctools_plugin_api().
+ */
+function openlayers_views_ctools_plugin_api($module, $api) {
+  if ($module == "openlayers") {
+    switch ($api) {
+      case 'openlayers_layers':
+        return array('version' => 1);
+    }
+  }
+}
+
 
 /**
  * Implementation of hook_openlayers_layers_info().
@@ -74,17 +86,19 @@ function openlayers_views_openlayers_layers_info() {
   foreach ($views as $view) {
     foreach ($view->display as $display => $data) {
       if ($data->display_options['style_plugin'] == 'openlayers_data') {
-        // @@TODO: Needs to be plug-in-ized
-        $layer = array (
-          'id' => 'openlayers_views_' . $view->name . '_' . $display, 
-          'name' => $data->display_options['title'] ? $data->display_options['title'] : $view->display['default']->display_options['title'], 
-          'description' => $view->description . ' - ' . $data->display_title, 
+        $layer = new StdClass();
+        $layer->api_version = 1;
+        $layer->name = 'openlayers_views_' . $view->name . '_' . $display;
+        $layer->title = $data->display_options['title'] ? $data->display_options['title'] : $view->display['default']->display_options['title'];
+        $layer->description = $view->description . ' - ' . $data->display_title;
+        $layer->data = array (
           'baselayer' => FALSE,
+          'type' => 'Vector',
           'views' => array('view' => $view->name, 'display' => $display),
           'file' => drupal_get_path('module', 'openlayers_views') .'/includes/openlayers_views.layers.inc',
           'callback' => 'openlayers_views_process_layers',
         );
-        $layers[$layer['id']] = $layer;
+        $layers[$layer->name] = $layer;
       }
     }
   }
