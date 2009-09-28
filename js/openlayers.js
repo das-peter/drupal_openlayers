@@ -17,13 +17,15 @@ var OL = OL || {'Layers': {}, 'EventHandlers': {} ,'Behaviors': {}, 'maps': []};
  * OpenLayers Base Drupal Behavoirs
  */
 Drupal.behaviors.openlayers = function(context) {
-  // Store rendered maps and other OpenLayer objects in OL object
-  OL.mapDefs = Drupal.settings.openlayers.maps;
-  
   // Check that there is openlayers data sent from PHP, and
   // there is maps data, and that we are not going
   // through a map again
   if (typeof(Drupal.settings.openlayers) == 'object' && (OL.isSet(Drupal.settings.openlayers.maps)) && !$(context).data('openlayers')) {
+    // Store rendered maps and other OpenLayer objects in OL object
+    // TODO: This should go away because the data gets passed
+    // along to DOM object
+    OL.mapDefs = Drupal.settings.openlayers.maps;
+    
     // Get all non-processed maps
     $('.openlayers-map:not(.openlayers-processed)').each(function() {
       var $map = $(this);
