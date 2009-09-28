@@ -103,8 +103,13 @@ function openlayers_ctools_plugin_api($module, $api) {
     switch ($api) {
       case 'openlayers_presets':
         return array('version' => 1);
+        
       case 'openlayers_layers':
         return array('version' => 1);
+        
+      case 'openlayers_styles':
+        return array('version' => 1);
+        
     }
   }
 }
@@ -203,7 +208,7 @@ function openlayers_render_map($map = array(), $render = TRUE) {
   // Process behaviors
   $map['behaviors'] = _openlayers_behaviors_process($map['behaviors'], $map);
   // Process styles
-  $map['styles'] = _openlayers_styles_process($map['styles'], $map);
+  $map['styles'] = _openlayers_styles_process($map['styles'], $map['layer_styles'], $map);
 
   // Hook for one last alter (this should be changed to _postprocess for 2.x)
   drupal_alter('openlayers_map', $map);
@@ -232,6 +237,24 @@ function openlayers_render_map($map = array(), $render = TRUE) {
   
   // Return map with or without errors
   return $map;
+}
+
+/**
+ * Get all behaviors.
+ *
+ * Use CTools to get all openlayers behaviors plugins
+ * with context.
+ *
+ * @ingroup openlayers_api
+ * @param $reset
+ *   Boolean whether to reset cache or not.
+ * @return
+ *   Array of behavior info.
+ */
+function openlayers_behaviors($reset = FALSE) {
+  ctools_include('plugins');
+  ctools_include('context');
+  return ctools_get_plugins('openlayers', 'behaviors');
 }
 
 /**
@@ -271,27 +294,7 @@ function openlayers_layer_save($layer) {
 }
 
 /**
- * Get all behaviors.
- *
- * Use CTools to get all openlayers behaviors plugins
- * with context.
- *
- * @ingroup openlayers_api
- * @param $reset
- *   Boolean whether to reset cache or not.
- * @return
- *   Array of behavior info.
- */
-function openlayers_behaviors($reset = FALSE) {
-  ctools_include('plugins');
-  ctools_include('context');
-  return ctools_get_plugins('openlayers', 'behaviors');
-}
-
-/**
- * Get Styles Info
- *
- * Wrapper around styles info hook
+ * Get all openlayers styles.
  *
  * @ingroup openlayers_api
  * @param $reset
@@ -299,15 +302,65 @@ function openlayers_behaviors($reset = FALSE) {
  * @return
  *   array of styles info
  */
-function openlayers_styles_get_info($reset = FALSE) {
-  static $info = NULL;
+function openlayers_styles($reset = FALSE) {
+  ctools_include('export');
+  $styles = ctools_export_load_object('openlayers_styles', 'all', array(), $reset);
+  return $styles;
+}
 
-  // If empty or reset, get info
-  if ($info === NULL || $reset == TRUE) {
-    $info = module_invoke_all('openlayers_styles_info');
+/**
+ * Menu loader for styles.
+ */
+function openlayers_style_load($name) {
+  $styles = openlayers_styles();
+  return !empty($styles[$name]) ? $styles[$name] : FALSE;
+}
+
+/**
+ * Save style.
+ */
+function openlayers_style_save($style) {
+  if (!empty($style->name)) {
+    $exists = db_result(db_query("SELECT name FROM {openlayers_styles} WHERE name = '%s'", $style->name));
+    return $exists ? drupal_write_record('openlayers_styles', $style, 'name') : drupal_write_record('openlayers_styles', $style);
   }
+  return FALSE;
+}
 
-  return $info;
+/**
+ * Get All Presets
+ *
+ * Get Presets from DB or code, via cache
+ *
+ * @ingroup openlayers_api
+ * @param $reset
+ *   Boolean whether to reset or not
+ * @return
+ *   Return formatted data
+ */
+function openlayers_presets($reset = FALSE) {
+  ctools_include('export');
+  $presets = ctools_export_load_object('openlayers_map_presets', 'all', array(), $reset);
+  return $presets;
+}
+
+/**
+ * OpenLayers Get Preset
+ *
+ * Given an a string, get full preset object
+ *
+ * @ingroup openlayers_api
+ * @param $name
+ *   Name of preset
+ * @param $reset
+ *   Boolean whether to reset cache
+ * @return
+ *   Preset object or array
+ */
+function openlayers_preset_load($name = '', $reset = FALSE) {
+  ctools_include('export');
+  $presets = ctools_export_load_object('openlayers_map_presets', 'names', array($name), $reset);
+  return !empty($presets[$name]) ? $presets[$name] : FALSE;
 }
 
 /**
@@ -336,25 +389,6 @@ function openlayers_save_preset($preset = array()) {
 }
 
 /**
- * OpenLayers Get Preset
- *
- * Given an a string, get full preset object
- *
- * @ingroup openlayers_api
- * @param $name
- *   Name of preset
- * @param $reset
- *   Boolean whether to reset cache
- * @return
- *   Preset object or array
- */
-function openlayers_preset_load($name = '', $reset = FALSE) {
-  ctools_include('export');
-  $presets = ctools_export_load_object('openlayers_map_presets', 'names', array($name), $reset);
-  return !empty($presets[$name]) ? $presets[$name] : FALSE;
-}
-
-/**
  * OpenLayers Get Map
  *
  * Given an a string or integer, get just map array
@@ -376,23 +410,6 @@ function openlayers_get_map($name = '') {
   else {
     return array();
   }
-}
-
-/**
- * Get All Presets
- *
- * Get Presets from DB or code, via cache
- *
- * @ingroup openlayers_api
- * @param $reset
- *   Boolean whether to reset or not
- * @return
- *   Return formatted data
- */
-function openlayers_presets($reset = FALSE) {
-  ctools_include('export');
-  $presets = ctools_export_load_object('openlayers_map_presets', 'all', array(), $reset);
-  return $presets;
 }
 
 /**
@@ -588,24 +605,42 @@ function openlayers_openlayers_layers_info() {
 }
 
 /**
- * Implementation of hook_openlayers_styles_info().
+ * Implementation of hook_openlayers_styles_info
  */
 function openlayers_openlayers_styles_info() {
-  // Define info array
-  $info['default'] = array(
-    'name' => t('Default Style'),
-    'description' => t('Basic default style.'),
-    'file' => drupal_get_path('module', 'openlayers') .'/includes/openlayers.styles.inc',
-    'callback' => 'openlayers_process_styles',
+  $styles = array();
+  
+  // Default style
+  $style = new stdClass();
+  $style->api_version = 1;
+  $style->name = 'default';
+  $style->title = t('Default style');
+  $style->description = t('Basic default style.');
+  $style->data = array(
+    'pointRadius' => 5,
+    'fillColor' => '#FFCC66',
+    'strokeColor' => '#FF9933',
+    'strokeWidth' => 4,
+    'fillOpacity' => 0.5
   );
-  $info['default_select'] = array(
-    'name' => t('Default Select Style'),
-    'description' => t('Default style for selected geometries'),
-    'file' => drupal_get_path('module', 'openlayers') .'/includes/openlayers.styles.inc',
-    'callback' => 'openlayers_process_styles',
-  );
+  $styles[$style->name] = $style;
 
-  return $info;
+  // Default select style
+  $style = new stdClass();
+  $style->api_version = 1;
+  $style->name = 'default_select';
+  $style->title = t('Default select style');
+  $style->description = t('Default style for selected geometries');
+  $style->data = array(
+    'pointRadius' => 5,
+    'fillColor' => '#66CCFF',
+    'strokeColor' => '#3399FF',
+    'strokeWidth' => 4,
+    'fillOpacity' => 0.5
+  );
+  $styles[$style->name] = $style;
+
+  return $styles;
 }
 
 /**

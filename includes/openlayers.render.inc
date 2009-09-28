@@ -131,52 +131,42 @@ function _openlayers_behaviors_process($behaviors = array(), &$map = array()) {
  *
  * @param $styles
  *   Array of styles to process
+ * @param $layer_styles
+ *   Array of styles to specific to layer
  * @param $map
  *   Map array
  * @return
  *   Array of processed styles
  */
-function _openlayers_styles_process($styles = array(), &$map = array()) {
-  // Check input
-  if (!is_array($styles)) {
-    $styles = array();
-  }
-  if (!is_array($map)) {
-    $map = array();
-  }
-
-  // Initialized variables
+function _openlayers_styles_process($styles = array(), $layer_styles = array(), &$map = array()) {
+  $styles = is_array($styles) ? $styles : array();
+  $layer_styles = is_array($layer_styles) ? $layer_styles : array();
+  $map = is_array($map) ? $map : array();
   $processed = array();
-  // Get behavior info array
-  $styles_info = openlayers_styles_get_info();
+
+  // Get styles
+  $styles_info = openlayers_styles();
+
   // Go through styles
   foreach ($styles as $k => $style) {
     // Check if array, if array, just pass on
     if (is_array($style)) {
       $processed[$k] = $style;
     }
-    else {
-      // If not array, we want to include the file and call the function
-      if (($info = $styles_info[$style]) && is_array($styles_info[$style])) {
-        // Check if file exists
-        if (is_file('./'. $info['file'])) {
-          require_once './'. $info['file'];
-          // Check for function
-          if (function_exists($info['callback'])) {
-            // Call function and give it the style name
-            $result = $info['callback']($style, $map);
-            // Check for result
-            if (isset($result) && is_array($result)) {
-              $processed[$k] = $result;
-            }
-          }
-        }
-      }
+    else if (!empty($styles_info[$style]) && $info = $styles_info[$style]->data) {
+      $processed[$k] = $info;
+    }
+  }
+
+  // Add layer styles
+  foreach ($layer_styles as $style) {
+    if (!isset($processed[$style]) && !empty($styles_info[$style]) && $info = $styles_info[$style]->data) {
+      $processed[$style] = $info;
     }
   }
 
   // Run through theme function
-  $processed = theme('openlayers_vector_styles', $processed, $map);
+  $processed = theme('openlayers_styles', $processed, $map);
 
   // Return processed
   return $processed;
