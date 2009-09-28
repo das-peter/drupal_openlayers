@@ -71,11 +71,11 @@ function openlayers_layers_process_layers($info = NULL) {
  * @return
  *   Layer data
  */
-function openlayers_layers_process_geo_data_layers($layer = NULL) {
+function openlayers_layers_process_geo_data_layers($info = NULL) {
   //@@TODO: This has not be converted to ctools style yet
   
   // Get table description
-  $table_desc = geo('table_desc', $layer);
+  $table_desc = geo('table_desc', $info->name);
   $attribute_cols = array();
 
   // Go through columns
@@ -94,7 +94,7 @@ function openlayers_layers_process_geo_data_layers($layer = NULL) {
 
   // Get geometry text
   $query = "SELECT asText(%s) as %s, ". implode(',', $attribute_cols) ." from {%s}";
-  $res = db_query($query, $geometry_col, $geometry_col, $layer);
+  $res = db_query($query, $geometry_col, $geometry_col, $info->name);
   $features = array();
 
   // Go through results
@@ -111,17 +111,18 @@ function openlayers_layers_process_geo_data_layers($layer = NULL) {
       'projection' => $srid,
     );
   }
-
-  // Create layer data array
-  $layer_data = array(
-    'id' => $layer,
-    'type' => 'Vector',
-    'name' => $layer,
-    'features' => $features,
-  );
-  //return $layer_data;
   
-  return array();
+  
+  
+  
+  // Create layer data array
+  
+  $layer = $info->data;
+  $layer['id'] = $info->name;
+  $layer['name'] = $info->title;
+  $layer['features'] = $features;
+  
+  return $layer;
 }
 
 /**

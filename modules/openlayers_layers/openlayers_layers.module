@@ -344,6 +344,7 @@ function openlayers_layers_openlayers_layers_info() {
       $info[$key]->description = t('A table imported from a shapfile using the geo_data module');
       $info[$key]->data = array (
         'baselayer' => FALSE,
+        'type' => 'Vector',
         'file' => $file,
         'callback' => 'openlayers_layers_process_geo_data_layers',
       );
