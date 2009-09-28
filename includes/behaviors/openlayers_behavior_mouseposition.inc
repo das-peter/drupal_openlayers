@@ -1,5 +1,14 @@
 <?php
+// $Id$
 
+/**
+ * @file
+ * Implementation of OpenLayers behavior.
+ */
+
+/**
+ * Mouse Position Behavior
+ */
 class openlayers_behavior_mouseposition extends openlayers_behavior {
   /**
    * Provide initial values for options.

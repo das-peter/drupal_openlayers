@@ -1,5 +1,14 @@
 <?php
+// $Id$
 
+/**
+ * @file
+ * Implementation of OpenLayers behavior.
+ */
+
+/**
+ * Attribution Behavior
+ */
 class openlayers_behavior_attribution extends openlayers_behavior {
   /**
    * Provide initial values for options.

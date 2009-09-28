@@ -54,10 +54,10 @@ Drupal.behaviors.openlayers = function(context) {
         var rendered = OL.renderMap(map);
 
         // Attach data to map DOM object
-        $map.data('openlayers', {'mapDef': map, 'mapRendered': rendered});
+        $map.data('openlayers', {'map': map, 'openlayers': rendered});
 
         // Finally, attach behaviors
-        Drupal.attachBehaviors(this);
+        Drupal.attachBehaviors($map);
       }
     });
   }
@@ -158,15 +158,6 @@ OL.renderMap = function(map) {
   // Trigger beforeBehaviors event
   var event = {'mapDef': map, 'map': OL.maps[map.id].map};
   OL.triggerCustom(map, 'beforeBehaviors', event);
-  
-  // Add behaviors to map
-  for (var b in OL.mapDefs[map.id].behaviors) {
-    var event = {};
-    event.mapDef = map;
-    event.map = OL.maps[map.id].map;
-    event.behavior = OL.mapDefs[map.id].behaviors[b];
-    OL.Behaviors[OL.mapDefs[map.id].behaviors[b].js_callback](event);
-  }
   
   // Trigger mapReady event
   var event = {'mapDef': map, 'map': OL.maps[map.id].map};

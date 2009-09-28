@@ -1,5 +1,14 @@
 <?php
+// $Id$
 
+/**
+ * @file
+ * Implementation of OpenLayers behavior.
+ */
+
+/**
+ * Zoom to Max Extent Behavior
+ */
 class openlayers_behavior_zoomtomaxextent extends openlayers_behavior {
   /**
    * Provide initial values for options.

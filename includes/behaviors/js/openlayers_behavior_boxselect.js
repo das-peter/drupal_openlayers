@@ -1,15 +1,14 @@
+// $Id$
+
+/**
+ * @file
+ * JS Implementation of OpenLayers behavior.
+ */
 var selections_layer;
 
-function setRestrictedExtent(box) {
-  bounding_box = box.geometry.getBounds().toBBOX();
-  $('#edit-center-restrict-restrictedExtent').val(bounding_box);
-  for(i = 0; i < selections_layer.features.length; i++) {
-    if(selections_layer.features[i] != box) {
-      selections_layer.features[i].destroy();
-    }
-  }
-}
-
+/**
+ * Box Select Behavior
+ */
 Drupal.behaviors.openlayers_behavior_boxselect = function(context) {
   var data = $(context).data('openlayers');
   if (data && data.map.behaviors['openlayers_behavior_boxselect']) {
@@ -29,5 +28,15 @@ Drupal.behaviors.openlayers_behavior_boxselect = function(context) {
       selections_layer.addFeatures([feature]);
     }
     control.activate();
+  }
+}
+
+function setRestrictedExtent(box) {
+  bounding_box = box.geometry.getBounds().toBBOX();
+  $('#edit-center-restrict-restrictedExtent').val(bounding_box);
+  for(i = 0; i < selections_layer.features.length; i++) {
+    if(selections_layer.features[i] != box) {
+      selections_layer.features[i].destroy();
+    }
   }
 }

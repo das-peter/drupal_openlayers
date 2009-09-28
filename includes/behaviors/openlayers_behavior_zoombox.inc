@@ -1,5 +1,14 @@
 <?php
+// $Id$
 
+/**
+ * @file
+ * Implementation of OpenLayers behavior.
+ */
+
+/**
+ * Zoom Box Behavior
+ */
 class openlayers_behavior_zoombox extends openlayers_behavior {
   /**
    * Provide initial values for options.

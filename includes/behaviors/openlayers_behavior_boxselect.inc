@@ -1,5 +1,14 @@
 <?php
+// $Id$
 
+/**
+ * @file
+ * Implementation of OpenLayers behavior.
+ */
+
+/**
+ * BoxSelect Behavior
+ */
 class openlayers_behavior_boxselect extends openlayers_behavior {
   /**
    * Provide initial values for options.

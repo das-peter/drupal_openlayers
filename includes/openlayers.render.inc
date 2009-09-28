@@ -95,7 +95,7 @@ function _openlayers_layers_process($layers = array(), &$map = array()) {
  */
 function _openlayers_behaviors_process($behaviors = array(), &$map = array()) {
   $processed = array();
-  
+
   // Get and go through behaviors
   foreach (openlayers_behaviors() as $key => $plugin) {
     // Check for behavior and plugin class

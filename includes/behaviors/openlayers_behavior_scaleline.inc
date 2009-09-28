@@ -1,5 +1,14 @@
 <?php
+// $Id$
 
+/**
+ * @file
+ * Implementation of OpenLayers behavior.
+ */
+
+/**
+ * Scaleline Behavior
+ */
 class openlayers_behavior_scaleline extends openlayers_behavior {
   /**
    * Provide initial values for options.

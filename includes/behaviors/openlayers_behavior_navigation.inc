@@ -1,5 +1,14 @@
 <?php
+// $Id$
 
+/**
+ * @file
+ * Implementation of OpenLayers behavior.
+ */
+
+/**
+ * Navigation Behavior
+ */
 class openlayers_behavior_navigation extends openlayers_behavior {
   /**
    * Provide initial values for options.

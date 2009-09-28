@@ -1,5 +1,14 @@
 <?php
+// $Id$
 
+/**
+ * @file
+ * Implementation of OpenLayers behavior.
+ */
+
+/**
+ * DragPan Behavior
+ */
 class openlayers_behavior_dragpan extends openlayers_behavior {
   /**
    * Provide initial values for options.

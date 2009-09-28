@@ -7,15 +7,15 @@
  */
 
 /**
- * Mouse Potision Behavior
+ * Tooltip Behavior
  */
-class openlayers_behavior_overviewmap extends openlayers_behavior {
+class openlayers_behavior_tooltips extends openlayers_behavior {
   /**
    * Provide initial values for options.
    */
   function options_init() {
     return array(
-      'overviewmap' => '',
+      'tooltips' => '',
     );
   }
 
@@ -23,7 +23,7 @@ class openlayers_behavior_overviewmap extends openlayers_behavior {
    * Render.
    */
   function render(&$map) {
-    // drupal_add_js(drupal_get_path('module', 'openlayers') .'/includes/behaviors/js/openlayers_behavior_mouseposition.js');
+    drupal_add_js(drupal_get_path('module', 'openlayers_behaviors') .'/behaviors/js/openlayers_behavior_tooltips.js');
     return $this->options;
   }
 }

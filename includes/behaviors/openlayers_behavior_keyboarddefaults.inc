@@ -1,5 +1,14 @@
 <?php
+// $Id$
 
+/**
+ * @file
+ * Implementation of OpenLayers behavior.
+ */
+
+/**
+ * Keyboard Defaults Behavior
+ */
 class openlayers_behavior_keyboarddefaults extends openlayers_behavior {
   /**
    * Provide initial values for options.

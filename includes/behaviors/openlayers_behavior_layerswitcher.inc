@@ -1,5 +1,14 @@
 <?php
+// $Id$
 
+/**
+ * @file
+ * Implementation of OpenLayers behavior.
+ */
+
+/**
+ * Layer Switcher Behavior
+ */
 class openlayers_behavior_layerswitcher extends openlayers_behavior {
   /**
    * Provide initial values for options.

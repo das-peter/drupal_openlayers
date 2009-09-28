@@ -47,10 +47,13 @@ function openlayers_test_ctools_plugin_api($module, $api) {
  * Implementation of hook_openlayers_presets().
  */
 function openlayers_test_openlayers_presets() {
+  // Create maps
   $default = new stdClass();
-
-  // Create map array
-  $default_map = array(
+  $default->api_version = 1;
+  $default->name = 'default_test';
+  $default->title = t('Default Test Map');
+  $default->description = t('This is a test preset.');
+  $default->data = array(
     'projection' => '4326',
     'width' => 'auto',
     'default_layer' => 'openlayers_default_wms',
@@ -63,24 +66,41 @@ function openlayers_test_openlayers_presets() {
     'options' => array(
       'displayProjection' => '4326',
     ),
-    'controls' => array(
-      'LayerSwitcher' => TRUE,
-      'Navigation' => TRUE,
-      'PanZoomBar' => TRUE,
-      'MousePosition' => TRUE,
+    'behaviors' => array(
+      'openlayers_behavior_layerswitcher' => TRUE,
+      'openlayers_behavior_navigation' => TRUE,
+      'openlayers_behavior_panzoombar' => TRUE,
+      'openlayers_behavior_mouseposition' => TRUE,
     ),
   );
-
-  // Create full preset array
-  $default->api_version = 1;
-  $default->name = 'default_test';
-  $default->title = t('Default Test Map');
-  $default->description = t('This is a test preset.');
-  $default->data = $default_map;
+  // Map with some behaviors
+  $behaviors_test = new stdClass();
+  $behaviors_test->api_version = 1;
+  $behaviors_test->name = 'behaviors_test';
+  $behaviors_test->title = t('Behaviors Test Map');
+  $behaviors_test->description = t('This is a test preset.');
+  $behaviors_test->data = array(
+    'projection' => '4326',
+    'width' => 'auto',
+    'default_layer' => 'openlayers_default_wms',
+    'height' => '300px',
+    'center' => array(
+      'lat' => '0',
+      'lon' => '0',
+      'zoom' => '2',
+    ),
+    'options' => array(
+      'displayProjection' => '4326',
+    ),
+    'behaviors' => array(
+      'openlayers_behavior_layerswitcher' => array(),
+    ),
+  );
 
   // Return preset(s) in an array
   return array(
     'default_test' => $default,
+    'behaviors_test' => $behaviors_test,
   );
 }
 
@@ -90,11 +110,10 @@ function openlayers_test_openlayers_presets() {
 function openlayers_test_page() {
   $output = '';
 
-  // Get default map
+  // Render maps
   $render_default = openlayers_render_map();
-
-  // Get test map
   $render_default_test = openlayers_render_map('default_test');
+  $render_behaviors_test = openlayers_render_map('behaviors_test');
 
   // Create collapsed fieldset
   $render_fieldset = openlayers_render_map();
@@ -114,8 +133,10 @@ function openlayers_test_page() {
     <h3>' . t('Default Test Map') . '</h3>
      ' . $render_default_test['themed'] . '
 
-    <h3>' . t('Collapsed Fieldset Example') . '</h3>
-     ' . $fieldset . '
+    <h3>' . t('Behaviors Test Map') . '</h3>
+     ' . $render_behaviors_test['themed'] . '
+
+    <!-- Not including fieldset cause its broken -->
   ';
 
   return $output;

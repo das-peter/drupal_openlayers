@@ -1,5 +1,14 @@
 <?php
+// $Id$
 
+/**
+ * @file
+ * Implementation of OpenLayers behavior.
+ */
+
+/**
+ * Pan Zoom Bar Behavior
+ */
 class openlayers_behavior_panzoombar extends openlayers_behavior {
   /**
    * Provide initial values for options.

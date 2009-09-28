@@ -606,11 +606,11 @@ function openlayers_openlayers_presets() {
     'options' => array(
       'displayProjection' => '4326',
     ),
-    'controls' => array(
-      'LayerSwitcher' => 'LayerSwitcher',
-      'Navigation' => 'Navigation',
-      'PanZoomBar' => 'PanZoomBar',
-      'MousePosition' => 'MousePosition',
+    'behaviors' => array(
+      'openlayers_behavior_layerswitcher' => TRUE,
+      'openlayers_behavior_navigation' => TRUE,
+      'openlayers_behavior_panzoombar' => TRUE,
+      'openlayers_behavior_mouseposition' => TRUE,
     ),
   );
   
@@ -650,7 +650,8 @@ class openlayers_behavior implements openlayers_behavior_interface {
   var $options, $map;
 
   function __construct($options = array(), $map = array()) {
-    $this->options = $options + $this->options_init();
+    $get_options = $this->options_init();
+    $this->options = (is_array($get_options) && is_array($options)) ? $options + $get_options : $options;
     $this->map = $map;
   }
 
@@ -810,6 +811,16 @@ function openlayers_openlayers_behaviors() {
       'path' => $include_path,
       'behavior' => array(
         'class' => 'openlayers_behavior_zoomtomaxextent',
+        'parent' => $parent,
+      ),
+    ),
+    'openlayers_behavior_overviewmap' => array(
+      'title' => t('Overview Map (broken)'),
+      'description' => t('Provides an overview map (needs work).'),
+      'type' => 'map',
+      'path' => $include_path,
+      'behavior' => array(
+        'class' => 'openlayers_behavior_overviewmap',
         'parent' => $parent,
       ),
     ),

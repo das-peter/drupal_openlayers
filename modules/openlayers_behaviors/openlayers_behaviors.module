@@ -39,13 +39,48 @@ function openlayers_behaviors_theme($existing, $type, $theme, $path) {
 }
 
 /**
- * Implementation of hook_openlayers_behaviors_info().
+ * Implementation of hook_openlayers_behaviors().
  */
-function openlayers_behaviors_openlayers_behaviors_info() {
-  $file = drupal_get_path('module', 'openlayers_behaviors') .'/includes/openlayers_behaviors.behaviors.inc';
-  $js_file = drupal_get_path('module', 'openlayers_behaviors') .'/js/openlayers_behaviors.behaviors.js';
+function openlayers_behaviors_openlayers_behaviors() {
+  $file = drupal_get_path('module', 'openlayers_behaviors') . '/includes/openlayers_behaviors.behaviors.inc';
+  $js_file = drupal_get_path('module', 'openlayers_behaviors') . '/js/openlayers_behaviors.behaviors.js';
+  $path = drupal_get_path('module', 'openlayers_behaviors') . '/behaviors';
   $info = array();
-
+  
+  // TODO: NEED TO BE REVIEWED
+  $info['openlayers_behavior_tooltips'] = array(
+    'title' => t('Tooltips'),
+    'description' => t('Provides customizable popups when users hover over elements on the map'),
+    'type' => 'layer',
+    'path' => $path,
+    'behavior' => array(
+      'class' => 'openlayers_behavior_tooltips',
+      'parent' => 'openlayers_behavior',
+    ),
+  );
+  $info['openlayers_behavior_fullscreen'] = array(
+    'title' => t('Fullscreen mode'),
+    'description' => t('Provides a button that allows user to toggle fullscreen viewing of the map'),
+    'type' => 'map',
+    'path' => $path,
+    'behavior' => array(
+      'class' => 'openlayers_behavior_fullscreen',
+      'parent' => 'openlayers_behavior',
+    ),
+  );
+  $info['openlayers_behavior_zoomtolayer'] = array(
+    'title' => t('Zoom to Layer'),
+    'description' => t('Zooms map to extent of a selected layer'),
+    'type' => 'layer',
+    'path' => $path,
+    'behavior' => array(
+      'class' => 'openlayers_behavior_zoomtolayer',
+      'parent' => 'openlayers_behavior',
+    ),
+  );
+  
+  // TODO: OLD, NEEDS TO BE CONVERTED
+  /*
   // Define info array
   $info['openlayers_behaviors_zoom_to_layer'] = array(
     'name' => t('Zoom to Layer'),
@@ -103,6 +138,7 @@ function openlayers_behaviors_openlayers_behaviors_info() {
     'js_file' => $js_file,
     'js_callback' => 'popup',
   );
+  */
 
   return $info;
 }

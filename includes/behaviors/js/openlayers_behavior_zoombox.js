@@ -1,3 +1,13 @@
+// $Id$
+
+/**
+ * @file
+ * JS Implementation of OpenLayers behavior.
+ */
+
+/**
+ * Zoom Box Behavior
+ */
 Drupal.behaviors.openlayers_behavior_zoombox = function(context) {
   var data = $(context).data('openlayers');
   if (data && data.map.behaviors['openlayers_behavior_zoombox']) {

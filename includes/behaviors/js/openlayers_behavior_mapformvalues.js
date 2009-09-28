@@ -1,3 +1,13 @@
+// $Id$
+
+/**
+ * @file
+ * JS Implementation of OpenLayers behavior.
+ */
+
+/**
+ * Map Form Values Behavior
+ */
 Drupal.behaviors.openlayers_behavior_mapformvalues = function(context) {
   var data = $(context).data('openlayers');
   function updateForm(evt) {

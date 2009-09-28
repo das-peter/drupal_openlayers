@@ -1,3 +1,13 @@
+// $Id$
+
+/**
+ * @file
+ * JS Implementation of OpenLayers behavior.
+ */
+
+/**
+ * Scale Line Behavior
+ */
 Drupal.behaviors.openlayers_behavior_scaleline = function(context) {
   var data = $(context).data('openlayers');
   if (data && data.map.behaviors['openlayers_behavior_scaleline']) {

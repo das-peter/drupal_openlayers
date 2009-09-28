@@ -1,5 +1,14 @@
 <?php
+// $Id$
 
+/**
+ * @file
+ * Implementation of OpenLayers behavior.
+ */
+
+/**
+ * Map Form Values Behavior
+ */
 class openlayers_behavior_mapformvalues extends openlayers_behavior {
   /**
    * Provide initial values for options.

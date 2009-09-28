@@ -1,5 +1,14 @@
 <?php
+// $Id$
 
+/**
+ * @file
+ * Implementation of OpenLayers behavior.
+ */
+
+/**
+ * PermaLink Behavior
+ */
 class openlayers_behavior_permalink extends openlayers_behavior {
   /**
    * Provide initial values for options.
