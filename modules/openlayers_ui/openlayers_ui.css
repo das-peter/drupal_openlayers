@@ -2,7 +2,7 @@
 
 /**
  * @file
- * OpenLayers Preset UI Main CSS
+ * OpenLayers UI Main CSS
  *
  * This file holds the base CSS for the openlayers preset ui module
  *
@@ -23,5 +23,67 @@
 }
 
 #openlayers-form-proj-msg{
+  display: none;
+}
+
+/**
+ * Preset form
+ */
+div.openlayers-column-right input.form-text,
+div.openlayers-column-left input.form-text {
+  width: 90%;
+}
+
+div.openlayers-column-left {
+  width: 20%;
+  float: left;
+}
+
+div.openlayers-column-right {
+  width: 80%;
+  float: right;
+}
+
+/**
+ * Panela on Preset Form
+ */
+div.openlayers-column-left ul#openlayers-panel-links,
+div.openlayers-column-left ul#openlayers-panel-links li,
+div.openlayers-column-left ul#openlayers-panel-links li a {
+  display: block;
+  float: none;
+  padding: 0px;
+  margin: 0px;
+}
+
+div.openlayers-column-left ul#openlayers-panel-links {
+  margin: 0px 0px 10px;
+}
+
+div.openlayers-column-left ul#openlayers-panel-links li a {
+  background: #f8f8f8;
+  padding: 5px 5px 4px 4px;
+  border-left: 1px solid #EEEEEE;
+  border-bottom: 1px solid #EEEEEE;
+  cursor: pointer;
+}
+
+div.openlayers-column-left ul#openlayers-panel-links li a.openlayers-panel-active {
+  padding: 4px 5px 4px 4px;
+  background: #FFFFFF;
+  border: 1px solid #CCCCCC;
+  border-right: 0px;
+  margin-right: -1px;
+}
+
+div.openlayers-panel {
+  border:1px solid #CCCCCC;
+  background:#FFFFFF;
+  padding:10px;
+  margin:0px 0px 20px;
   display:none;
+}
+
+div.openlayers-panel-active {
+  display:block;
 }

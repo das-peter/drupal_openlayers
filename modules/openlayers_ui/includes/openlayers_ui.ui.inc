@@ -26,6 +26,14 @@ function openlayers_ui_object_list($type = 'presets') {
     case 'presets':
       $objects = openlayers_presets(TRUE);
       break;
+      
+    case 'styles':
+      $objects = openlayers_styles(TRUE);
+      break;
+      
+    case 'layers':
+      $objects = openlayers_layers(TRUE);
+      break;
 
   }
 
@@ -56,38 +64,94 @@ function openlayers_ui_object_list($type = 'presets') {
 }
 
 /**
- * Menu Callback for Preset Routing
- *
- * Takes general arguments from menu and routed to
- * appropriate place.
- *
- * @param $preset_id
- *   Preset ID passed in from URL
- * @param
- *   Action to do with preset
+ * Menu callback for object delete form.
  */
-function openlayers_ui_presets_manage($preset = NULL, $action = 'edit') {
-  $output = '';
+function openlayers_ui_object_delete(&$form_state, $type, $object) {
+  if ($object->export_type & EXPORT_IN_DATABASE) {
+    // Create delete form
+    $form = array(
+      'type' => array('#type' => 'value', '#value' => $type),
+      'object' => array('#type' => 'value', '#value' => $object),
+    );
+    $message = ($object->export_type & EXPORT_IN_CODE) ?
+      t('Are you sure you want to revert %object?', array('%object' => $object->title)) :
+      t('Are you sure you want to delete %object?', array('%object' => $object->title));
+    return confirm_form($form, $message, 'admin/settings/openlayers/'. $type);
+  }
+}
 
-  // Switch action
-  switch ($action) {
-    case 'delete':
-      $output = drupal_get_form('openlayers_ui_presets_manage_delete', $preset);
+/**
+ * Form Submit Callback for Preset Delete Form
+ */
+function openlayers_ui_object_delete_submit($form, &$form_state) {
+  $type = $form_state['values']['type'];
+  $object = $form_state['values']['object'];
+
+  switch ($type) {
+    case 'styles':
+      $result = db_query("DELETE FROM {openlayers_styles} WHERE name = '%s'", $object->name);
       break;
-
-    case 'export':
-      drupal_set_title(t('Export: %title', array('%title' => $preset->title)));
-      $output = drupal_get_form('openlayers_ui_presets_manage_export', $preset);
+      
+    case 'layers':
+      $result = db_query("DELETE FROM {openlayers_layers} WHERE name = '%s'", $object->name);
       break;
-
-    case 'edit':
-    default:
-      drupal_set_title(t('Edit: %title', array('%title' => $preset->title)));
-      $output = drupal_get_form('openlayers_ui_presets_form', $preset, TRUE);
+      
+    case 'presets':
+      $result = db_query("DELETE FROM {openlayers_map_presets} WHERE name = '%s'", $object->name);
       break;
   }
 
-  return $output;
+  // Check query results
+  if ($result) {
+    drupal_set_message(t('%name was deleted.', array('%name' => $object->name)));
+  }
+  else {
+    drupal_set_message(t('Error when attempting to delete %name.', array('%name' => $object->name)), 'error');
+  }
+
+  // Redirect
+  $form_state['redirect'] = 'admin/settings/openlayers/'. $type;
+}
+
+/**
+ * Menu callback for object export form.
+ */
+function openlayers_ui_object_export(&$form_state, $type, $object) {
+  switch ($type) {
+    case 'styles':
+      $api = 'openlayers_styles';
+      break;
+    case 'layers':
+      $api = 'openlayers_layers';
+      break;
+    case 'presets':
+      $api = 'openlayers_map_presets';
+      break;
+
+  }
+  ctools_include('export');
+  $code = '$items = array();' ."\n";
+  $code .= ctools_export_object($api, $object, '');
+  $code .= '$items["'. $object->name .'"] = $' . $api . ';' ."\n";
+  $code .= 'return $items;';
+
+  $rows = substr_count($code, "\n") + 1;
+
+  // Create form
+  $form = array();
+  $form['export'] = array(
+    '#type' => 'textarea',
+    '#default_value' => $code,
+    '#rows' => $rows,
+    '#resizable' => FALSE,
+  );
+  $form['done'] = array(
+    '#type' => 'submit',
+    '#value' => t('Done'),
+  );
+  $form['#redirect'] = 'admin/settings/openlayers/'. $type;
+
+  return $form;
 }
 
 /**
@@ -95,7 +159,7 @@ function openlayers_ui_presets_manage($preset = NULL, $action = 'edit') {
  */
 function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE) {
   $form = array();
-  $layers = openlayers_layers_get_info();
+  $layers = openlayers_layers();
   $baselayers = array();
   $overlays = array();
   $available_controls = _openlayers_ui_available_controls();
@@ -111,14 +175,12 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   // If cloning or editing, attempt to get preset
   if (empty($preset)) {
     $default_map = openlayers_get_default_map();
-    // Unset preset name
-    unset($default_map['preset_name']);
   }
   else {
     $default_map = $preset->data;
     // Push the preset data into the map
-    $default_map['preset_title'] = $preset->title;
-    $default_map['preset_description'] = $preset->description;
+    $default_map['title'] = $preset->title;
+    $default_map['description'] = $preset->description;
   }
 
   // Update map for new form
@@ -142,8 +204,8 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   // Determine which layer is a baselayer, and which is an overlay, and add
   // approrpriate descriptions to the options array.
   foreach ($layers as $layer_key => $layer) {
-    $description = theme('openlayers_ui_form_layer_description', $layer['name'], $layer['description']);
-    if ($layer['baselayer']) {
+    $description = theme('openlayers_ui_form_layer_description', $layer->name, $layer->description);
+    if ($layer->data['baselayer']) {
       $layer_options['baselayers'][$layer_key] = $description;
     }
     else {
@@ -236,13 +298,17 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#value' => $rendered_map['themed'],
   );
 
-  // Preset properties
-  $form['preset_name'] = array(
+  // General properties
+  $form['info'] = array(
+    '#title' => t('General information'),
+    '#tree' => FALSE,
+  );
+  $form['info']['name'] = array(
     '#type' => 'textfield',
     '#title' => t('Preset Name'),
     '#description' => t('This is the machine readable identifier.  This should be all lowercase characters, numbers, or underscores (_).'),
     '#maxlength' => 255,
-    '#default_value' => $defaults['preset_name'],
+    '#default_value' => !empty($defaults['name']) ? $defaults['name'] : '',
     '#disabled' => $edit,
   );
   // If edit, set value
@@ -250,55 +316,58 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     $form['preset_name']['#value'] = $defaults['preset_name'];
   }
 
-  $form['preset_title'] = array(
+  $form['info']['title'] = array(
     '#type' => 'textfield',
     '#title' => t('Preset Title'),
     '#description' => t('This is the descriptive title of the preset and will show up most often in the interface.'),
     '#maxlength' => 255,
-    '#default_value' => $defaults['preset_title'],
+    '#default_value' => !empty($defaults['title']) ? $defaults['title'] : '',
   );
-  $form['preset_description'] = array(
+  $form['info']['description'] = array(
     '#type' => 'textarea',
     '#title' => t('Preset Description'),
     '#description' => t('This is full description of the preset and is mostly used on the preset overview list page.'),
     '#rows' => 2,
-    '#default_value' => $defaults['preset_description'],
+    '#default_value' => !empty($defaults['description']) ? $defaults['description'] : '',
   );
-
-  // Map general properties
-  $form['width'] = array(
+  $form['info']['width'] = array(
     '#type' => 'textfield',
     '#title' => t('Width'),
     '#description' => t('Please use a CSS Width value.'),
-    '#default_value' => $defaults['width'],
+    '#default_value' => !empty($defaults['width']) ? $defaults['width'] : '',
     '#maxlength' => 128,
   );
-  $form['height'] = array(
+  $form['info']['height'] = array(
     '#type' => 'textfield',
     '#title' => t('Height'),
     '#description' => t('Please use a CSS Height value.'),
-    '#default_value' => $defaults['height'],
+    '#default_value' => !empty($defaults['height']) ? $defaults['height'] : '',
     '#maxlength' => 128,
   );
-  $form['image_path'] = array(
+  $form['info']['image_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Image Path'),
     '#description' => t('The path to a directory for OpenLayers to look for UI graphics. If blank, default graphics are used.'),
-    '#default_value' => $defaults['image_path'],
+    '#default_value' => !empty($defaults['image_path']) ? $defaults['image_path'] : '',
+  );
+  $form['info']['css_path'] = array(
+    '#type' => 'textfield',
+    '#title' => t('CSS Path'),
+    '#description' => t('Path for where OpenLayers should look for its theme CSS file. The default hosted OpenLayers URL is http://openlayers.org/api/theme/default/style.css'),
+    '#default_value' => !empty($defaults['css_path']) ? $defaults['css_path'] : '',
   );
 
   // Map center properties
   $form['center'] = array(
-    '#type' => 'fieldset',
     '#title' => t('Center'),
     '#description' => t('Where the map will center itself initially. You may use the small map to help you set your center and zoom.  Pan and zoom where you want the centering defaults to be.'),
     '#tree' => TRUE,
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
   );
+/*
   $form['center']['helpmap'] = array(
     '#value' => '<div class="form-item openlayers-center-helpmap" style="display:block">'. $centering_map['themed'] .'</div>'
   );
+*/
   $form['center']['lat'] = array(
     '#type' => 'textfield',
     '#title' => t('Latitude'),
@@ -323,34 +392,20 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#attributes' => array('class' => 'openlayers-form-zoom'),
     '#size' => 25,
   );
-
-  // Map controls
-  $form['controls'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Controls'),
-    '#description' => t('Controls on the map that allow the user to interface with the map.'),
+  
+  // Behaviors
+  $form['behaviors'] = array(
+    '#title' => t('Behaviors'),
+    '#description' => t('Configure interactive map behaviors and controls.'),
     '#tree' => TRUE,
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
   );
-  // Go through avilable controls
-  foreach ($available_controls as $c_key => $control) {
-    $form['controls'][$c_key] = array(
-      '#type' => 'checkbox',
-      '#title' => $control['title'],
-      '#description' => $control['description'],
-      '#default_value' => $defaults['controls'][$c_key],
-    );
-  }
+  $form['behaviors'] = $form['behaviors'] + _openlayers_ui_get_behavior_options('map', $defaults);
 
   // Vector Styles
   $form['styles'] = array(
-    '#type' => 'fieldset',
     '#title' => t('Vector Styles'),
     '#description' => t('Styles used on features in vector layers.'),
     '#tree' => TRUE,
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
   );
   $form['styles']['default'] = array(
     '#type' => 'select',
@@ -374,8 +429,14 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#default_value' => $defaults['styles']['temporary'],
   );
 
+  // Projections and Layers
+  $form['projection_layers'] = array(
+    '#title' => t('Projection and Layers'),
+    '#description' => t('Manage projections and layers for the map.'),
+    '#tree' => FALSE,
+  );
   // Projections
-  $form['projections'] = array(
+  $form['projection_layers']['projections'] = array(
     '#type' => 'fieldset',
     '#title' => t('Projection'),
     '#description' => t('Select projection for map.  This will affect which layers are available to choose from.'),
@@ -384,7 +445,7 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#collapsed' => FALSE,
   );
   // This will create an easy way to select projections and have layers change accordingly
-  $form['projections']['easy_projection'] = array(
+  $form['projection_layers']['projections']['easy_projection'] = array(
     '#type' => 'radios',
     '#title' => t('Projection'),
     '#description' => t('Select the EPSG code of the !link_proj for your map. The list next to each projection is the layers that support this projection.', array(
@@ -399,7 +460,7 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
       'event' => 'change',
     ),
   );
-  $form['projections']['projection'] = array(
+  $form['projection_layers']['projections']['projection'] = array(
     '#type' => 'textfield',
     '#title' => t('Projection'),
     '#description' => t('The EPSG code of the geographical projection for your map.'),
@@ -409,12 +470,12 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   );
 
   // Start AHAH Wrapper
-  $form['openlayers-ahah-wrapper-start'] = array(
+  $form['projection_layers']['openlayers-ahah-wrapper-start'] = array(
     '#value' => '<div id="openlayers-layers-select">',
   );
 
   // Layers
-  $form['layers'] = array(
+  $form['projection_layers']['layers'] = array(
     '#type' => 'fieldset',
     '#title' => t('Layers'),
     '#description' => t('Layer settings.  The Layer options will change based on the projection chosen above.'),
@@ -422,7 +483,7 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
   );
-  $form['layers']['baselayers'] = array(
+  $form['projection_layers']['layers']['baselayers'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Base Layers'),
     '#description' => t('Select the base layers to make available for your map. This list is determined by the projection you select for your map.'),
@@ -431,7 +492,7 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#multiple' => TRUE,
     '#default_value' => $defaults['layers']['baselayers'] ? $defaults['layers']['baselayers'] : array(),
   );
-  $form['layers']['default_layer'] = array(
+  $form['projection_layers']['layers']['default_layer'] = array(
     '#type' => 'radios',
     '#title' => t('Default Base Layer'),
     '#description' => t('The default base layer to use when rendering maps.  This will be included whether it is in the base layers or not.'),
@@ -439,7 +500,7 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#attributes' => array('class' => 'openlayers-form-default-layer'),
     '#default_value' => $defaults['layers']['default_layer'],
   );
-  $form['layers']['overlays'] = array(
+  $form['projection_layers']['layers']['overlays'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Overlay Layers'),
     '#description' => t('Select the overlay layers to make available for your map.'),
@@ -450,7 +511,7 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   );
 
   // Map options properties
-  $form['options'] = array(
+  $form['projection_layers']['options'] = array(
     '#type' => 'fieldset',
     '#title' => t('Options'),
     '#description' => t('Set additional options'),
@@ -458,28 +519,28 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
   );
-  $form['options']['automatic_options'] = array(
+  $form['projection_layers']['options']['automatic_options'] = array(
     '#type' => 'checkbox',
     '#title' => t('Automatic Options'),
     '#description' => t('If this is checked, options will be automatically filled for you.'),
     '#default_value' => isset($defaults['options']['automatic_options']) ?$defaults['options']['automatic_options'] : TRUE,
     '#maxlength' => 6
   );
-  $form['options']['displayProjection'] = array(
+  $form['projection_layers']['options']['displayProjection'] = array(
     '#type' => 'textfield',
     '#title' => t('Display Projection'),
     '#description' => t('This is the projection that is presented to your users as the interface for viewing / editing location data. You will most likely want use 4326 for lat/lon coordinates.'),
     '#default_value' => $defaults['options']['displayProjection'],
     '#maxlength' => 6
   );
-  $form['options']['maxResolution'] = array(
+  $form['projection_layers']['options']['maxResolution'] = array(
     '#type' => 'textfield',
     '#title' => t('Maximum Resolution'),
     '#description' => t('The maximum number of pixels / map unit at the highest zoom.'),
     '#default_value' => $defaults['options']['maxResolution'],
     '#attributes' => array('class' => 'openlayers-form-maxResolution'),
   );
-  $form['options']['maxExtent'] = array(
+  $form['projection_layers']['options']['maxExtent'] = array(
     '#type' => 'fieldset',
     '#title' => t('Maximum Extent'),
     '#description' => t('Set the bounds for the edges of your map. Set them according to the units of your projection.'),
@@ -487,25 +548,25 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
-  $form['options']['maxExtent']['left'] = array(
+  $form['projection_layers']['options']['maxExtent']['left'] = array(
     '#type' => 'textfield',
     '#title' => t('Left'),
     '#default_value' => $defaults['options']['maxExtent']['left'],
     '#attributes' => array('class' => 'openlayers-form-maxExtent-left'),
   );
-  $form['options']['maxExtent']['right'] = array(
+  $form['projection_layers']['options']['maxExtent']['right'] = array(
     '#type' => 'textfield',
     '#title' => t('Right'),
     '#default_value' => $defaults['options']['maxExtent']['right'],
     '#attributes' => array('class' => 'openlayers-form-maxExtent-right'),
   );
-  $form['options']['maxExtent']['bottom'] = array(
+  $form['projection_layers']['options']['maxExtent']['bottom'] = array(
     '#type' => 'textfield',
     '#title' => t('Bottom'),
     '#default_value' => $defaults['options']['maxExtent']['bottom'],
     '#attributes' => array('class' => 'openlayers-form-maxExtent-bottom'),
   );
-  $form['options']['maxExtent']['top'] = array(
+  $form['projection_layers']['options']['maxExtent']['top'] = array(
     '#type' => 'textfield',
     '#title' => t('Top'),
     '#default_value' => $defaults['options']['maxExtent']['top'],
@@ -513,25 +574,30 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   );
 
   // End AHAH Wrapper
-  $form['openlayers-ahah-wrapper-end'] = array(
+  $form['projection_layers']['openlayers-ahah-wrapper-end'] = array(
     '#value' => '</div>',
+  );
+  
+  // Buttons
+  $form['buttons'] = array(
+    '#tree' => FALSE,
   );
 
   // Add a submit button that is the submit handler for the
   // AHAH change event on projections
-  $form['openlayers_projection_ahah'] = array(
+  $form['buttons']['openlayers_projection_ahah'] = array(
     '#type' => 'submit',
     '#value' => t('Update Projections'),
     '#submit' => array('openlayers_presets_manage_add_projection_submit'),
   );
 
   // Save button
-  $form['openlayers_save'] = array(
+  $form['buttons']['openlayers_save'] = array(
     '#type' => 'submit',
     '#value' => t('Save')
   );
   // Cancel button
-  $form['openlayers_cancel'] = array(
+  $form['buttons']['openlayers_cancel'] = array(
     '#type' => 'submit',
     '#value' => t('Cancel')
   );
@@ -676,214 +742,6 @@ function openlayers_ui_presets_form_submit($form, &$form_state) {
 }
 
 /**
- * Menu Callback for Preset Delete Form
- */
-function openlayers_ui_presets_manage_delete(&$form_state, $preset = NULL) {
-  // Ensure we are not deleting any coded presets
-  if (!($preset->export_type & EXPORT_IN_DATABASE)) {
-    drupal_set_message(t('Cannot delete default preset.'), 'error');
-    drupal_goto('admin/settings/openlayers/presets');
-  }
-
-  // Create delete form
-  $form = array();
-  $form['preset_name'] = array('#type' => 'value', '#value' => $preset->name);
-  // Check if can revert
-  if ($preset->export_type & EXPORT_IN_CODE) {
-    return confirm_form(
-      $form,
-      t('Are you sure you want to revert the preset %preset?',
-        array('%preset' => $preset->title)
-      ),
-      'admin/settings/openlayers/presets',
-      t('This will delete the preset in the database and revert to the preset in a feature or code. This action cannot be undone.'),
-      t('Delete'),
-      t('Cancel')
-    );
-
-  }
-  else {
-    return confirm_form(
-      $form,
-      t('Are you sure you want to delete the preset %preset?',
-        array('%preset' => $preset->title)
-      ),
-      'admin/settings/openlayers/presets',
-      t('This action cannot be undone.'),
-      t('Delete'),
-      t('Cancel')
-    );
-  }
-}
-
-/**
- * Form Submit Callback for Preset Delete Form
- */
-function openlayers_ui_presets_manage_delete_submit($form, &$form_state) {
-  $preset = openlayers_get_preset($form_state['values']['preset_name'], TRUE);
-
-  // Check if coded
-  if ($preset->type == EXPORT_IN_CODE) {
-    drupal_set_message(t('Cannot delete %name because it is provided by a module.', array('%name' => $preset->name)));
-  }
-  else {
-    // Create query
-    $query = "DELETE FROM {openlayers_map_presets} WHERE name = '%s'";
-    $result = db_query($query, $preset->name);
-
-    // Check query results
-    if ($result) {
-      drupal_set_message(t('Preset %name was deleted.', array('%name' => $preset->name)));
-    }
-    else {
-      drupal_set_message(t('Error when attempting to delete preset.'), 'error');
-    }
-  }
-
-  // Redirect
-  $form_state['redirect'] = 'admin/settings/openlayers/presets';
-}
-
-/**
- * Menu callback for Preset Export Form
- */
-function openlayers_ui_presets_manage_export(&$form_state, $object = NULL) {
-  $type = 'presets';
-  
-  // Determine what api we are using
-  switch ($type) {
-    case 'presets':
-      $api = 'openlayers_map_presets';
-      break;
-
-  }
-  
-  // Create output
-  ctools_include('export');
-  $code = '$items = array();' ."\n";
-  $code .= ctools_export_object($api, $object, '');
-  $code .= '$items["'. $object->name .'"] = $' . $api . ';' ."\n";
-  $code .= 'return $items;';
-  $rows = substr_count($code, "\n") + 1;
-
-  // Create form
-  $form = array();
-  $form['export'] = array(
-    '#type' => 'textarea',
-    '#default_value' => $code,
-    '#rows' => $rows + 2,
-    '#resizable' => FALSE,
-  );
-  $form['done'] = array(
-    '#type' => 'submit',
-    '#value' => t('Done'),
-  );
-  $form['#redirect'] = 'admin/settings/openlayers/presets';
-
-  return $form;
-}
-
-/**
- * Menu callback for Preset Import Form
- */
-function openlayers_ui_presets_import(&$form_state) {
-  // Create form
-  $form = array();
-
-  $form['warning'] = array(
-    '#value' => '<strong>NOT WORKING</strong>',
-  );
-  // Put in name field if needed
-  if ($form_state['needs_name']) {
-    $form['new_name'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Preset Name'),
-      '#description' => t('Identifier of new preset if one is not provided or already exists.'),
-      '#default_value' => $defaults['new_name'],
-      '#maxlength' => 255,
-      '#required' => TRUE,
-    );
-  }
-  $form['import'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Import Code'),
-    '#description' => t('Input the code that was produced from the Export function.  If you put in bad code, this could break your site, please be careful.'),
-    '#default_value' => $form_state['import'], // Not consisten where value is
-    '#rows' => 20,
-    '#required' => TRUE,
-    '#disabled' => TRUE,
-  );
-  $form['openlayers_save'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save')
-  );
-  $form['openlayers_cancel'] = array(
-    '#type' => 'submit',
-    '#value' => t('Cancel')
-  );
-
-  return $form;
-}
-
-/**
- * Form Validate Callback for Preset Import Form
- */
-function openlayers_ui_presets_import_validate($form, &$form_state) {
-  $values = $form_state['values'];
-
-  // If Cancel redirect
-  if ($form_state['clicked_button']['#id'] == 'edit-openlayers-cancel') {
-    return TRUE;
-  }
-
-  // Get data
-  $presets = eval($values['import']);
-  if (!is_array($presets)) {
-    form_set_error('import', t('Format is bad'));
-  }
-  else {
-    // Go through each preset
-    foreach ($presets as $k => $preset) {
-      // Check various things
-      if (!is_array($preset)) {
-        form_set_error('import', t('Format is bad for key: %key', array('%k' => $k)));
-      }
-      if (empty($preset->title)) {
-        form_set_error('import', t('No Preset Title Found for key: %key', array('%k' => $k)));
-      }
-      if (empty($preset->description)) {
-        form_set_error('import', t('No Preset Description Found for key: %key', array('%k' => $k)));
-      }
-      if (empty($preset->data)) {
-        form_set_error('import', t('No Map Data Found for key: %key', array('%k' => $k)));
-      }
-      if (empty($preset->data['width'])) {
-        form_set_error('import', t('No Map Width Found for key: %key', array('%k' => $k)));
-      }
-      if (empty($preset->data['height'])) {
-        form_set_error('import', t('No Map Height Found for key: %key', array('%k' => $k)));
-      }
-    }
-  }
-}
-
-/**
- * Form Submit Callback for Preset Import Form
- */
-function openlayers_ui_presets_import_submit($form, &$form_state) {
-  $values = $form_state['values'];
-
-  // If Cancel redirect
-  if ($form_state['clicked_button']['#id'] == 'edit-openlayers-cancel') {
-    $form_state['redirect'] = 'admin/settings/openlayers/presets/list';
-  }
-  else {
-    // Get data
-    $preset = eval($values['import']);
-  }
-}
-
-/**
  * OpenLayers AHAH
  *
  * Function to handle the AHAH request of the openlayers form
@@ -910,6 +768,166 @@ function openlayers_ui_preset_ahah() {
 
   // Final rendering callback.
   drupal_json(array('status' => TRUE, 'data' => $output));
+}
+
+/**
+ * Drupal Form for Layer add/edit form.
+ */
+function openlayers_ui_layers_form(&$form_state, $layer = NULL, $edit = FALSE) {
+  // TODO: Need to be able to add types of layers, each with their
+  // own set of form
+  $form = array();
+
+  $form['info'] = array(
+    '#type' => 'fieldset',
+    '#tree' => FALSE,
+  );
+  $form['info']['name'] = array(
+    '#title' => t('Name'),
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#default_value' => !empty($layer->name) ? $layer->name : '',
+  );
+  $form['info']['title'] = array(
+    '#title' => t('Title'),
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#default_value' => !empty($layer->title) ? $layer->title : '',
+  );
+  $form['info']['description'] = array(
+    '#title' => t('Description'),
+    '#type' => 'textfield',
+    '#default_value' => !empty($layer->description) ? $layer->description : '',
+  );
+
+  if (empty($layer) || (!empty($layer->data['type']) && $layer->data['type'] == "KMLHTTP")) {
+    $form['data'] = array('#type' => 'fieldset', '#tree' => TRUE);
+    $defaults = array(
+      'type' => 'KMLHTTP',
+      'projection' => array(4326, 900913),
+      'baselayer' => FALSE,
+      'options' => array('isBaseLayer' => FALSE),
+      'events' => array('loadend' => array()),
+    );
+    foreach ($defaults as $key => $value) {
+      $form['data'][$key] = array('#type' => 'value', '#value' => $value);
+    }
+    $form['data']['url'] = array(
+      '#title' => t('URL of KML feed'),
+      '#type' => 'textfield',
+      '#default_value' => !empty($layer->data['url']) ? $layer->data['url'] : '',
+    );
+  }
+  else if (!empty($layer)) {
+    $form['data'] = array('#type' => 'value', '#value' => $layer->data);
+  }
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+  );
+  return $form;
+}
+
+/**
+ * Submit handler for layers.
+ */
+function openlayers_ui_layers_form_submit(&$form, &$form_state) {
+  // Save preset
+  $layer = new stdClass();
+  $layer->name = $form_state['values']['name'];
+  $layer->title = $form_state['values']['title'];
+  $layer->description = $form_state['values']['description'];
+  $layer->data = $form_state['values']['data'];
+
+  // Doctor some values
+  $layer->data['id'] = $layer->name;
+  $layer->data['name'] = $layer->name;
+
+  $success = openlayers_layer_save($layer);
+
+  // Redirect to edit page
+  if ($success) {
+    drupal_set_message(t('Layer saved.'));
+    $form_state['redirect'] = 'admin/settings/openlayers/layers/' . $layer->name . '/edit';
+  }
+  else {
+    form_set_error('openlayers', t('Error trying to save layer.'));
+  }
+}
+
+/**
+ * Drupal Form for Styles add/edit.
+ */
+function openlayers_ui_styles_form(&$form_state, $style = NULL, $edit = FALSE) {
+  $form = array();
+
+  $form['info'] = array(
+    '#type' => 'fieldset',
+    '#tree' => FALSE,
+  );
+  $form['info']['name'] = array(
+    '#title' => t('Name'),
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#default_value' => !empty($style->name) ? $style->name : '',
+  );
+  $form['info']['title'] = array(
+    '#title' => t('Title'),
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#default_value' => !empty($style->title) ? $style->title : '',
+  );
+  $form['info']['description'] = array(
+    '#title' => t('Description'),
+    '#type' => 'textfield',
+    '#default_value' => !empty($style->description) ? $style->description : '',
+  );
+
+  $form['data'] = array('#type' => 'fieldset', '#tree' => TRUE);
+  $defaults = array(
+    'externalGraphic' => '',
+    'pointRadius' => 5,
+    'fillColor' => '#FFFFFF',
+    'strokeColor' => '#FFFFFF',
+    'strokeWidth' => 5,
+    'fillOpacity' => 0.5,
+  );
+  foreach ($defaults as $key => $value) {
+    $form['data'][$key] = array(
+      '#title' => $key,
+      '#type' => 'textfield',
+      '#default_value' => isset($style->data[$key]) ? $style->data[$key] : $value,
+    );
+  }
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+  );
+  return $form;
+}
+
+/**
+ * Submit handler for styles.
+ */
+function openlayers_ui_styles_form_submit(&$form, &$form_state) {
+  $style = new stdClass();
+  $style->name = $form_state['values']['name'];
+  $style->title = $form_state['values']['title'];
+  $style->description = $form_state['values']['description'];
+  $style->data = $form_state['values']['data'];
+
+  $success = openlayers_style_save($style);
+
+  // Redirect to edit page
+  if ($success) {
+    drupal_set_message(t('Style saved.'));
+    $form_state['redirect'] = 'admin/settings/openlayers/styles/' . $style->name . '/edit';
+  }
+  else {
+    form_set_error('openlayers', t('Error trying to save style.'));
+  }
 }
 
 /**
@@ -974,7 +992,7 @@ function _openlayers_ui_convert_map_to_form($map = array()) {
     return $processed;
   }
   $processed = $map;
-  $layer_defs = openlayers_layers_get_info();
+  $layer_defs = openlayers_layers();
 
   // Manual changes
   $processed['layers'] = array();
@@ -994,7 +1012,7 @@ function _openlayers_ui_convert_map_to_form($map = array()) {
   // Get layers
   if (is_array($map['layers'])) {
     foreach ($map['layers'] as $layer_id => $layer) {
-      if ($layer_defs[$layer_id]['baselayer']) {
+      if ($layer_defs[$layer_id]->data['baselayer']) {
         $processed['layers']['baselayers'][] = $layer_id;
       }
       else {
@@ -1029,9 +1047,9 @@ function _openlayers_ui_get_projections($layers = array()) {
   // Go through layers
   foreach ($layers as $layer_key => $layer) {
     // Check projections
-    if ($layer['projection']) {
+    if ($layer->data['projection']) {
       // Go through projections
-      foreach ($layer['projection'] as $projection) {
+      foreach ($layer->data['projection'] as $projection) {
         if (!array_key_exists($projection, $projection_layers)) {
           $projection_layers[$projection] = array();
         }
@@ -1043,7 +1061,7 @@ function _openlayers_ui_get_projections($layers = array()) {
   // Add any layers that do not have a projection specified to all
   foreach ($layers as $layer_key => $layer) {
     // Check projections
-    if (!$layer['projection']) {
+    if (!$layer->data['projection']) {
       // Go through projections
       foreach ($projection_layers as $k => $v) {
         $projection_layers[$k][] = $layer_key;
@@ -1240,4 +1258,47 @@ function _openlayers_ui_merge_maps($submitted_map = array(), $orig_map = array()
   $merged_map = openlayers_merge_maps($orig_map, $submitted_map);
   $merged_map = _openlayers_ui_unset_empty_values($merged_map);
   return $merged_map;
+}
+
+/**
+ * Get behavior options.
+ *
+ * Gets form items for each behaviors.
+ *
+ * @param $type
+ *   Type or scope of behaviors.  This will probably
+ *   be map or layer
+ * @param $defaults
+ *   Array of defaults
+ * @return
+ *   Form array
+ */
+function _openlayers_ui_get_behavior_options($type = 'map', $defaults = array()) {
+  $form = array();
+  
+  // Go through each behavior
+  foreach (openlayers_behaviors() as $key => $plugin) {
+    $class = ctools_plugin_get_class($plugin, 'behavior');
+    if ($class) {
+      // Build form.
+      $form[$key] = array(
+        '#tree' => TRUE,
+        '#type' => 'fieldset',
+        '#title' => $plugin['title'],
+        '#description' => $plugin['description'],
+        '#collapsible' => TRUE,
+        '#collapsed' => FALSE,
+        'enabled' => array(
+          '#type' => 'checkbox',
+          '#title' => t('Enabled'),
+          '#default_value' => isset($defaults['behaviors'][$key]),
+        ),
+      );
+
+      $options = isset($defaults['behaviors'][$key]) ? $defaults['behaviors'][$key] : array();
+      $behavior = new $class($options, $defaults);
+      $form[$key]['options'] = $behavior->options_form();
+    }
+  }
+  return $form;
 }

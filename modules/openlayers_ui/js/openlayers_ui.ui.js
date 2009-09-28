@@ -17,6 +17,19 @@ Drupal.behaviors.OLUI = function(context) {
   var $autoOptionsCheck = $('#edit-options-automatic-options');
   var $submitProjection = $('#edit-openlayers-projection-ahah');
   
+  // Panels
+  $("ul#openlayers-panel-links li a:not(.openlayers-ui-processed)").each(function() {
+    $panel = $(this);
+    $panel.addClass('openlayers-ui-processed');
+    $panel.click(function() {
+      $(".openlayers-panel-active").removeClass('openlayers-panel-active');
+      var panel = $(this).attr('href').split('#')[1];
+      $("div." + panel).addClass('openlayers-panel-active');
+      $(this).addClass('openlayers-panel-active');
+      return false;
+    });
+  });
+  
   // Hide submit button
   $submitProjection.hide();
   
@@ -96,7 +109,9 @@ OL.updateHelpmapCenter = function() {
     // Transform for projection
     center.transform(new OpenLayers.Projection('EPSG:' + projection), new OpenLayers.Projection('EPSG:4326'));
     // Set center of map.
-    OL.maps['openlayers-center-helpmap'].map.setCenter(center, zoom);  
+    if (OL.isSet(OL.maps['openlayers-center-helpmap'])) {
+      OL.maps['openlayers-center-helpmap'].map.setCenter(center, zoom);
+    }
   }
 }
 

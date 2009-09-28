@@ -175,7 +175,7 @@ function openlayers_render_map($map = array(), $render = TRUE) {
   }
   // If it's a non-empty string then load the preset specified.
   elseif (is_string($map)) {
-    $preset = openlayers_get_preset($map);
+    $preset = openlayers_preset_load($map);
     $map = $preset->data;
   }
 
@@ -270,7 +270,6 @@ function openlayers_layer_save($layer) {
   return FALSE;
 }
 
-
 /**
  * Get all behaviors.
  *
@@ -349,7 +348,7 @@ function openlayers_save_preset($preset = array()) {
  * @return
  *   Preset object or array
  */
-function openlayers_get_preset($name = '', $reset = FALSE) {
+function openlayers_preset_load($name = '', $reset = FALSE) {
   ctools_include('export');
   $presets = ctools_export_load_object('openlayers_map_presets', 'names', array($name), $reset);
   return !empty($presets[$name]) ? $presets[$name] : FALSE;
@@ -368,7 +367,7 @@ function openlayers_get_preset($name = '', $reset = FALSE) {
  */
 function openlayers_get_map($name = '') {
   // Get preset
-  $preset = openlayers_get_preset($name);
+  $preset = openlayers_preset_load($name);
 
   // Check for data
   if (is_array($preset->data)) {
@@ -436,11 +435,11 @@ function openlayers_get_default_map($reset = FALSE) {
 
   if (!$searched || $reset) {
     // Get preset
-    $preset = openlayers_get_preset(variable_get('openlayers_default_preset', 'default'));
+    $preset = openlayers_preset_load(variable_get('openlayers_default_preset', 'default'));
     // If for some reason, we still dont have a map
     // try to get just default
     if (empty($preset)) {
-      $preset = openlayers_get_preset('default');
+      $preset = openlayers_preset_load('default');
     }
     $searched = TRUE;
   }
