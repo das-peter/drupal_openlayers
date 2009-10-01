@@ -325,6 +325,7 @@ class openlayers_views_style_map extends views_plugin_style {
       $fields[$field_id] = $handler->definition;
       $fields[$field_id]['field_alias'] = $handler->field_alias;
     }
+    
     // Build feature. We create one feature per field per row.
     foreach ($records as $id => $record) {
       $feature = array();
@@ -335,30 +336,35 @@ class openlayers_views_style_map extends views_plugin_style {
       // for features.
       $rendered_record = array();
       foreach ($handlers as $hid => $handler) {
+        // Render record fields to add to attributes
         $rendered_record[$handler->field_alias] = $handler->advanced_render($record);
       }
 
       // Go through data sources
       // @@TODO: In theory, there could be multiple features per row., allow for multiple features per row
+      
+      $feature['wkt'] = array();
+      
       foreach ($data_source['value'] as $data_source_value) {
         switch ($data_source_value) {
           case 'node_locations':
             // @@TODO: These fields are provided only if the fields are chosen in the interface.
             if (!empty($record->location_longitude) && !empty($record->location_latitude)) {
               $wkt_string = 'POINT(' . $record->location_longitude . ' ' . $record->location_latitude . ')';
-              $feature['wkt'] = $wkt_string;
+              $feature['wkt'][] = $wkt_string;
               $feature['projection'] = '4326';
             }
             break;
 
           case 'geo':
+            //@@TODO: Make it work on grouped multi-value fields geo. First http://drupal.org/node/446754 must be fixed.
             foreach ($data_source['geo_fields'] as $geo_field) {
               $geo_alias = $fields[$geo_field .'_geo']['field_alias'];
               $geo_record = $record->$geo_alias;
               $wkt_object = geo_wkb_get_data($geo_record['wkb'], 'wkt');
               $wkt = $wkt_object['value'];
               if (!empty($wkt)) {
-                $feature['wkt'] = $wkt;
+                $feature['wkt'][] = $wkt;
                 $feature['projection'] = $geo_record['srid'];
               }
             }
@@ -375,7 +381,7 @@ class openlayers_views_style_map extends views_plugin_style {
             $lat = $record->$lat_field;
 
             if (!empty($lat) && !empty($lon)) {
-              $feature['wkt'] = 'POINT(' . $lon . ' ' . $lat . ')';
+              $feature['wkt'][] = 'POINT(' . $lon . ' ' . $lat . ')';
               $feature['projection'] = '4326';
             }
             break;
@@ -384,9 +390,23 @@ class openlayers_views_style_map extends views_plugin_style {
             // Go through selected field
             foreach ($data_source['other_wkt'] as $wkt_field) {
               $wkt_alias = $fields[$wkt_field]['field_alias'];
+              
+              if ($wkt_alias == 'node_vid') {
+                // It's a grouped multi-value. 
+                $wkt = array();
+                foreach ($this->view->field[$wkt_field]->field_values[$record->$wkt_alias] as $wkt_item) {
+                  if ($wkt_item['openlayers_wkt']) {
+                    $wkt[] = $wkt_item['openlayers_wkt'];
+                  }
+                }
+              }
+              else {
+                // It's a normal field item;
+                $wkt = array($record->$wkt_alias);
+              }
+              
               if (!empty($record->$wkt_alias)) {
-                $feature['wkt'] =
-                $record->$wkt_alias;
+                $feature['wkt'] = array_merge($feature['wkt'],$wkt);
                 // @@TODO: Allow different projections
                 $feature['projection'] ='4326';
               }
@@ -448,7 +468,7 @@ class openlayers_views_style_map extends views_plugin_style {
     }
     return $features;
   }
-
+  
   /**
    * Renders views (map)
    */
@@ -487,15 +507,15 @@ class openlayers_views_style_map extends views_plugin_style {
     // method if they wish some other way of handling grouping.
     foreach ($sets as $group_title => $records) {
       // Make 'machine readable' format
-      $group_name = drupal_strtolower(str_replace(' ', '_', $group_title));
-
+      $group_name = _openlayers_views_clean($group_title);
+      
       // @@TODO: Reduce and sort duplicates
 
       // Style the features based on group (can override this with the theme hook)
       $features = $this->map_features($records, $group_name);
 
       // Create name of layer and id
-      $layer_name = $grouped ? $group_title . ' layer' : $this->display->display_title;
+      $layer_name = $grouped ? $group_title : $this->display->display_title;
       $layer_id = 'openlayers_views_layer_' . $this->view->name;
       $layer_id .= $grouped ? '_' . $group_name : '';
 
@@ -588,7 +608,7 @@ class openlayers_views_style_map extends views_plugin_style {
         if ($grouped) {
           $map['behaviors']['openlayers_views_zoom_to_layer']['layer'] = array();
           foreach ($sets as $group_title => $records) {
-            $group_name = drupal_strtolower(str_replace(' ', '_', $group_title));
+            $group_name = _openlayers_views_clean($group_title);
             $layer_id = 'openlayers_views_layer_' . $this->view->name;
             $layer_id .= $grouped ? '_' . $group_name : '';
             $map['behaviors']['openlayers_views_zoom_to_layer']['layer'][] = $layer_id;
@@ -615,4 +635,12 @@ class openlayers_views_style_map extends views_plugin_style {
     $output .= theme($this->theme_functions(), $this->view, $this->options, $map, $group_name);
     return $output;
   }
+}
+
+
+function _openlayers_views_clean($dirty_name) {
+  $cleaning = strip_tags($dirty_name);
+  $cleaning = drupal_strtolower(str_replace(' ', '_', $cleaning));
+  $cleaning = preg_replace("/[^a-z0-9_.]+/i", "", $cleaning);
+  return $cleaning;
 }
