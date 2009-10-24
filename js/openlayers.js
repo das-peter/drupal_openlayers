@@ -1,20 +1,30 @@
 // $Id$
+/*jslint white: false */
+/*global OpenLayers Drupal $ document jQuery */
 
 /**
  * @file
  * This file holds the main javascript API for OpenLayers. It is 
- * responsable for loading and displaying the map.
+ * responsible for loading and displaying the map.
  *
  * @ingroup openlayers
  */
 
+/**
+ * This is a workaround for a bug involving IE and VML support.
+ * See the Drupal Book page describing this problem:
+ * http://drupal.org/node/613002
+ */
+
+document.namespaces;
 /**
  * Global Object for Namespace
  */
 var OL = OL || {'Layers': {}, 'EventHandlers': {} ,'Behaviors': {}, 'maps': []};
 
 /**
- * OpenLayers Base Drupal Behavoirs
+ * Minimal OpenLayers map bootstrap.
+ * All additional operations occur in additional Drupal behaviors.
  */
 Drupal.behaviors.openlayers = function(context) {
   // Check that there is openlayers data sent from PHP, and
