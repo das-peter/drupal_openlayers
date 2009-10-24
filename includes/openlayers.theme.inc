@@ -31,7 +31,7 @@ function theme_openlayers_map($map = array()) {
 /**
  * Theme function to be able to override styles
  */
-function theme_openlayers_vector_styles($styles = array(), $map = array()) {
+function theme_openlayers_styles($styles = array(), $map = array()) {
   // Default is to just send the processed styles back
   return $styles;
 }
