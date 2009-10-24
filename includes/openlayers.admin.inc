@@ -15,7 +15,7 @@
  */
 function openlayers_admin_settings() {
   // Initialize
-  openlayers_initialize();
+  openlayers_include();
   
   // Let user know about advanced help
   if (module_exists('advanced_help')) {

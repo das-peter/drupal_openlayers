@@ -115,43 +115,28 @@ function openlayers_ctools_plugin_api($module, $api) {
 }
 
 /**
- * Intialize OpenLayers
- *
- * Make sure that we have everything we need for OpenLayers
+ * Include necessary CSS and JS for OpenLayers.
  *
  * @ingroup openlayers_api
- * @param $params
- *   Associative array of pamaters
- *   (none at the moment)
- * @return
- *   Boolean if intialization was succesful
  */
-function openlayers_initialize() {
-  $success = TRUE;
+function openlayers_include() {
+  // Use a static variable to prevent running URL check code repeatedly.
+  static $once;
+  if (!isset($once)) {
+    $once = TRUE;
 
-  // Include the OpenLayers JS
-  // We need to check if it a local path or URL, but really only need to do it once.
-  static $included = FALSE;
-  if ($included == FALSE) {
     $path = check_plain(variable_get('openlayers_source', 'http://openlayers.org/dev/OpenLayers.js'));
-    // Check for full URL
+    // Check for full URL and include it manually if external.
     if (valid_url($path, TRUE)) {
-      // If URL, we have to manually include it in Drupal
       drupal_set_html_head('<script src="'. check_url($path) .'" type="text/javascript"></script>');
     }
     else {
       drupal_add_js($path);
     }
-
-    // Add CSS
     drupal_add_css(drupal_get_path('module', 'openlayers') .'/openlayers.css', 'module');
-    // Add base JS file
     drupal_add_js(drupal_get_path('module', 'openlayers') .'/js/openlayers.js', 'module');
-    drupal_add_js(drupal_get_path('module', 'openlayers') .'/js/openlayers.helper.js', 'module');
-    $included = TRUE;
+    drupal_add_js(drupal_get_path('module', 'openlayers') .'/js/openlayers.layers.js', 'module');
   }
-
-  return $success;
 }
 
 /**
@@ -185,9 +170,7 @@ function openlayers_render_map($map = array(), $render = TRUE) {
   }
 
   // Intialize
-  if (openlayers_initialize() == FALSE) {
-    return FALSE;
-  }
+  openlayers_include();
 
   // Include extra rendering functions
   module_load_include('inc', 'openlayers', 'includes/openlayers.render');
@@ -525,14 +508,7 @@ function openlayers_error_check_map(&$map, $log_errors = TRUE) {
     }
   }
 
-  // If we are using a web spherical mercator projection and maxResolution
-  // and maxExtent are not set the map will not function.
-  if ($map['projection'] == '900913' || $map['projection'] == '3785') {
-    if (!$map['options']['maxExtent'] || !$map['options']['maxResolution']) {
-      $errors[] = t('You are using a web spherical mercator projection.  However maxExtent or maxResolution are not set.');
-    }
-  }
-
+  // TODO: rewrite to use openlayers_get_extent
   // If we are using a degree based projection, then check to make sure
   // our bounds are not over 180/90 degrees
   if ($map['projection'] == '4326' || $map['projection'] == '4269') {
