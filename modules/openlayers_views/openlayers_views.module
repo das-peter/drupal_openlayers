@@ -18,13 +18,9 @@ define('OPENLAYERS_VIEWS_MAP_ID_PREFIX', 'openlayers-views-map-auto-id');
  * Implementation of hook_help().
  */
 function openlayers_views_help($path, $arg) {
-  $output = '';
-
   switch ($path) {
     case 'admin/help#openlayers_views':
-      $output = '<p>'. t('The OpenLayers Views module provides a set of plugins for Views.') .'</p>';
-      return $output;
-
+      return '<p>'. t('The OpenLayers Views module provides a set of plugins for Views.') .'</p>';
   }
 }
 
