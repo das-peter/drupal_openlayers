@@ -32,15 +32,13 @@ define('OPENLAYERS_MAP_ID_PREFIX', 'openlayers-map-auto-id');
  * Implementation of hook_help().
  */
 function openlayers_help($path, $arg) {
-  $output = '';
-
   switch ($path) {
     case 'admin/help#openlayers':
       $output = '<p>'. t('The OpenLayers module is the base module for the OpenLayer suite of modules, and provides the main API.') .'</p>';
-      return $output;
-
   }
+  return '';
 }
+
 
 /**
  * Implementation of hook_perm().
@@ -103,13 +101,10 @@ function openlayers_ctools_plugin_api($module, $api) {
     switch ($api) {
       case 'openlayers_presets':
         return array('version' => 1);
-        
       case 'openlayers_layers':
         return array('version' => 1);
-        
       case 'openlayers_styles':
         return array('version' => 1);
-        
     }
   }
 }
@@ -252,7 +247,6 @@ function openlayers_behaviors($reset = FALSE) {
 function openlayers_layers($reset = TRUE) {
   ctools_include('export');
   $layers = ctools_export_load_object('openlayers_layers', 'all', array(), $reset);
-    
   return $layers;
 }
 
@@ -759,14 +753,20 @@ interface openlayers_behavior_interface {
  * 
  * We define base classes in the core module.
  * All other parent classes can be autoloaded through ctools.
- * TODO: DOCUMENT!
  */
 class openlayers_behavior implements openlayers_behavior_interface {
   var $options, $map;
 
+  /**
+   * super-constructor for OpenLayers behaviors
+   * @param $options
+   *   Array of options to be set on the behavior
+   * @param $map
+   *   The map object which this behavior is set on
+   *
+   */
   function __construct($options = array(), $map = array()) {
-    $get_options = $this->options_init();
-    $this->options = (is_array($get_options) && is_array($options)) ? $options + $get_options : $options;
+    $this->options = $options + $this->options_init();
     $this->map = $map;
   }
 
