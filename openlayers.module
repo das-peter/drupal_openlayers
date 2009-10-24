@@ -58,7 +58,7 @@ function openlayers_theme($existing, $type, $theme, $path) {
       ),
       'file' => 'includes/openlayers.theme.inc',
     ),
-    'openlayers_vector_styles' => array(
+    'openlayers_styles' => array(
       'arguments' => array(
         'styles' => array(),
         'map' => array(),
@@ -696,44 +696,36 @@ function openlayers_openlayers_styles_info() {
 }
 
 /**
- * Implementation of hook_openlayers_presets().
+ * Implementation of hook_openlayers_presets()
  */
 function openlayers_openlayers_presets() {
+  // Create full preset array
   $default = new stdClass();
-
-  // Create map array
-  $default_map = array(
+  $default->api_version = 1;
+  $default->name = 'default';
+  $default->title = t('Default Map');
+  $default->description = t('This is the default map preset that comes with the OpenLayers module.');
+  $default->data = array(
     'projection' => '4326',
     'width' => 'auto',
     'default_layer' => 'openlayers_default_wms',
     'height' => '300px',
     'center' => array(
-      'lat' => '0',
-      'lon' => '0',
-      'zoom' => '2',
+      'initial' => array(
+        'centerpoint' => '0,0',
+        'zoom' => '1'
+      )
     ),
     'options' => array(
       'displayProjection' => '4326',
+      'maxExtent' => openlayers_get_extent('4326'),
     ),
     'behaviors' => array(
-      'openlayers_behavior_layerswitcher' => TRUE,
-      'openlayers_behavior_navigation' => TRUE,
-      'openlayers_behavior_panzoombar' => TRUE,
-      'openlayers_behavior_mouseposition' => TRUE,
+      'openlayers_behavior_panzoombar' => array(),
     ),
+    'layer_styles' => array(),
   );
-  
-  // Create full preset array
-  $default->api_version = 1;
-  $default->name = 'default';
-  $default->title = t('Default Map');
-  $default->description = t('This is the default map preset that comes with the OpenLayers module.');
-  $default->data = $default_map;
-
-  // Return preset(s) in an array
-  return array(
-    'default' => $default,
-  );
+  return array('default' => $default);
 }
 
 /**
