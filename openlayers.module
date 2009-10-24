@@ -485,7 +485,7 @@ function openlayers_merge_maps($map1 = array(), $map2 = array()) {
  * @return
  *   FALSE if passed. Array of descriptive errors if fail
  */
-function openlayers_error_check_map(&$map, $log_errors = TRUE) {
+function openlayers_error_check_map($map, $log_errors = TRUE) {
   // @TODO: Instead of manually specifying projections, we should do a lookup on the projections in a big table to get variables that it should be checked against.
   // @TODO: For next release, make hook
   $errors = array();
@@ -523,12 +523,6 @@ function openlayers_error_check_map(&$map, $log_errors = TRUE) {
     watchdog('openlayers', implode(', ', $errors), array(), WATCHDOG_ERROR);
   }
   
-  // Store the errors in our map array
-  if (count($errors) > 0) {
-    // Store the errors in our map array
-    $map['errors'] = $errors;
-  }
-
   // Check if errors and return
   return (count($errors) > 0) ? $errors : FALSE;
 }
@@ -633,11 +627,11 @@ function openlayers_get_resolutions($projection, $zoom_start = 0, $zoom_end = FA
 }
 
 /**
- * Implementation of hook_openlayers_layers_info().
+ * Implementation of hook_openlayers_layers_info.
  */
 function openlayers_openlayers_layers_info() {
   $layers = array();
-  
+
   $layer = new StdClass();
   $layer->api_version = 1;
   $layer->name = 'openlayers_default_wms';
@@ -648,9 +642,12 @@ function openlayers_openlayers_layers_info() {
     'baselayer' => TRUE,
     'type' => 'WMS',
     'url' => 'http://labs.metacarta.com/wms/vmap0',
-    'params' => array('layers' => 'basic')
+    'params' => array('layers' => 'basic'),
+    'options' => array(
+      'maxExtent' => openlayers_get_extent('4326'),
+    ),
+    'events' => array(),
   );
-  
   $layers[$layer->name] = $layer;
 
   return $layers;
