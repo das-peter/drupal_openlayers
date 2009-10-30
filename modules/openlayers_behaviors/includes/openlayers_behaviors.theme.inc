@@ -27,9 +27,11 @@ function theme_openlayers_behaviors_tooltip_container($behavior = array(), $map 
 
   // Create output
   $output = '
-    <div id="' . $behavior['container_id'] . '" class="openlayers-behaviors-tooltip">
-      ' . $point_image . '
-      <span id="' . $behavior['attribute_id'] . '"></span>
+    <div id="' . $behavior['container_id'] . '"  class="openlayers-behaviors-tooltip-container">
+      <div id="' . $behavior['tooltip_id'] . '" class="openlayers-behaviors-tooltip">
+        ' . $point_image . '
+        <span id="' . $behavior['attribute_id'] . '" class="openlayers-behaviors-tooltip-text"></span>
+      </div>
     </div>
   ';
   return $output;
