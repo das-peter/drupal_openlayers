@@ -24,12 +24,7 @@
  */
 
 /**
- * Map ID Prefix
- */
-define('OPENLAYERS_MAP_ID_PREFIX', 'openlayers-map-auto-id');
-
-/**
- * Implementation of hook_help().
+ * Implementation of hook_help
  */
 function openlayers_help($path, $arg) {
   switch ($path) {
@@ -37,14 +32,6 @@ function openlayers_help($path, $arg) {
       $output = '<p>'. t('The OpenLayers module is the base module for the OpenLayer suite of modules, and provides the main API.') .'</p>';
   }
   return '';
-}
-
-
-/**
- * Implementation of hook_perm().
- */
-function openlayers_perm() {
-  return array('administer openlayers');
 }
 
 /**
@@ -72,7 +59,6 @@ function openlayers_theme($existing, $type, $theme, $path) {
  * Implementation of hook_ctools_plugin_api().
  */
 function openlayers_ctools_plugin_api($module, $api) {
-  // Define plugins for OpenLayers plugins api
   if ($module == "openlayers") {
     switch ($api) {
       case 'openlayers_presets':
@@ -111,104 +97,61 @@ function openlayers_include() {
 }
 
 /**
- * Render Map
- *
- * Given perimeters, render an OpenLayers map
- *
- * @ingroup openlayers_api
- * @param $map
- *   Associative array of map paramters
- * @param $render
- *   Boolean whether to fully render (include theme and JS)
- *
- * @return
- *   Boolean if successful
+ * Prepare a map for rendering.
  */
-function openlayers_render_map($map = array(), $render = TRUE) {
-  // Check array
-  if (!is_array($map) && !is_string($map)) {
-    return FALSE;
-  }
-  
-  // If the map is an empty array or string, then load the default preset. 
-  if (empty($map)) {
-    $map = openlayers_get_default_map();
-  }
-  // If it's a non-empty string then load the preset specified.
-  elseif (is_string($map)) {
-    $preset = openlayers_preset_load($map);
-    $map = $preset->data;
-  }
-
-  // Intialize
+function openlayers_build_map($map = array()) {
   openlayers_include();
-
-  // Include extra rendering functions
   module_load_include('inc', 'openlayers', 'includes/openlayers.render');
-  
-  // Check ID
-  if (!$map['id']) {
-    $map['id'] = _openlayers_create_map_id();
-  }
-  
-  // Hook for map alteration
-  drupal_alter('openlayers_map_preprocess', $map);  
 
-  // Debug pre-render
-  _openlayers_render_debug_map('pre-render', $map);
-  
-  // Process layers
+  // If no map is specified, use the default preset.
+  if (empty($map)) {
+    if ($preset = openlayers_preset_load(variable_get('openlayers_default_preset', 'default'))) {
+      $map = $preset->data;
+    }
+  }
+
+  // Assign an ID
+  $map['id'] = !isset($map['id']) ? _openlayers_create_map_id() : $map['id'];
+
   $map['layers'] = _openlayers_layers_process($map['layers'], $map);
-  // Process behaviors
+
+  // Unset Map Arguments
+  unset($map['args']);
+
   $map['behaviors'] = _openlayers_behaviors_process($map['behaviors'], $map);
-  // Process styles
   $map['styles'] = _openlayers_styles_process($map['styles'], $map['layer_styles'], $map);
 
-  // Hook for one last alter (this should be changed to _postprocess for 2.x)
+  // Hook for one last alter
   drupal_alter('openlayers_map', $map);
 
-  // Check our map for errors. If we are rendering it, then log errors.
-  $errors = openlayers_error_check_map($map, $render);
-  
-  // Add JS and theme if no errors found
-  if (!$errors && $render) {
-    // Add map container to drupal JS settings
-    $openlayers = array(
-      'openlayers' => array(
-        'maps' => array(
-          $map['id'] => $map,
-        ),
-      ),
-    );
-    drupal_add_js($openlayers, 'setting');
+  // Check map for errors
+  $map['errors'] = openlayers_error_check_map($map);
 
-    // Add themed HTML (no need for it to go to JS)
-    $map['themed'] = theme('openlayers_map', $map);
-
-    // Debug post-render
-    _openlayers_render_debug_map('post-render', $map);
-  }
-  
-  // Return map with or without errors
   return $map;
 }
 
 /**
- * Get all behaviors.
+ * Render Map
  *
- * Use CTools to get all openlayers behaviors plugins
- * with context.
+ * Given parameters, render an OpenLayers map
  *
  * @ingroup openlayers_api
- * @param $reset
- *   Boolean whether to reset cache or not.
+ * @param $map
+ *   Associative array of map paramters
+ *
  * @return
- *   Array of behavior info.
+ *   Boolean if successful
  */
-function openlayers_behaviors($reset = FALSE) {
-  ctools_include('plugins');
-  ctools_include('context');
-  return ctools_get_plugins('openlayers', 'behaviors');
+function openlayers_render_map($map = array(), $preset_name = '') {
+  $map = openlayers_build_map($map);
+
+  // Return themed map if no errors found
+  if (empty($map['errors'])) {
+    $js = array('openlayers' => array('maps' => array($map['id'] => $map)));
+    drupal_add_js($js, 'setting');
+    return theme('openlayers_map', $map, $preset_name);
+  }
+  return '';
 }
 
 /**
@@ -226,7 +169,6 @@ function openlayers_layers($reset = TRUE) {
   return $layers;
 }
 
-//@@TODO: This seems really inefficient. Should we use ctools_export_load_object?  -- phayes
 /**
  * Menu loader for layers.
  */
@@ -244,6 +186,21 @@ function openlayers_layer_save($layer) {
     return $exists ? drupal_write_record('openlayers_layers', $layer, 'name') : drupal_write_record('openlayers_layers', $layer);
   }
   return FALSE;
+}
+
+/**
+ * Get all behaviors.
+ *
+ * @ingroup openlayers_api
+ * @param $reset
+ *   Boolean whether to reset cache or not.
+ * @return
+ *   Array of behavior info.
+ */
+function openlayers_behaviors($reset = FALSE) {
+  ctools_include('plugins');
+  ctools_include('context');
+  return ctools_get_plugins('openlayers', 'behaviors');
 }
 
 /**
@@ -297,9 +254,7 @@ function openlayers_presets($reset = FALSE) {
 }
 
 /**
- * OpenLayers Get Preset
- *
- * Given an a string, get full preset object
+ * Given a preset name, get full preset object.
  *
  * @ingroup openlayers_api
  * @param $name
@@ -307,7 +262,7 @@ function openlayers_presets($reset = FALSE) {
  * @param $reset
  *   Boolean whether to reset cache
  * @return
- *   Preset object or array
+ *   Preset object
  */
 function openlayers_preset_load($name = '', $reset = FALSE) {
   ctools_include('export');
@@ -316,136 +271,37 @@ function openlayers_preset_load($name = '', $reset = FALSE) {
 }
 
 /**
- * OpenLayers Save Preset
- *
- * Given a preset object, save
+ * Save a preset object to the database.
  *
  * @ingroup openlayers_api
  * @param $preset
- *   Preset object
+ *   Array of data for preset
  * @return
  *   Boolean of whether successful
  */
-function openlayers_save_preset($preset = array()) {
-  // Check name
+function openlayers_preset_save($preset) {
   if (!empty($preset->name)) {
-    // Check if preset exists
-    $query = "SELECT name FROM {openlayers_map_presets} WHERE name = '%s'";
-    $exists = db_result(db_query($query, $preset->name));
-    
-    // Write record depending on existence
+    $exists = db_result(db_query("SELECT name FROM {openlayers_map_presets} WHERE name = '%s'", $preset->name));
     return $exists ? drupal_write_record('openlayers_map_presets', $preset, 'name') : drupal_write_record('openlayers_map_presets', $preset);
   }
-  
   return FALSE;
 }
 
 /**
- * OpenLayers Get Map
- *
- * Given an a string or integer, get just map array
- *
- * @ingroup openlayers_api
- * @param $name
- *   The preset name
- * @return
- *   Array of preset data
- */
-function openlayers_get_map($name = '') {
-  // Get preset
-  $preset = openlayers_preset_load($name);
-
-  // Check for data
-  if (is_array($preset->data)) {
-    return $preset->data;
-  }
-  else {
-    return array();
-  }
-}
-
-/**
- * Get Preset Options
- * 
  * Get preset options in an array suitable for a FormAPI element.
  *
- * @ingroup openlayers_api
  * @param $reset
  *   Boolean whether to reset or not
  * @return
  *   Return formatted data
  */
 function openlayers_preset_options($reset = FALSE) {
-  $options = array();
-  
-  // Get all presets and get only name and title
   $presets = openlayers_presets($reset);
+  $options = array();
   foreach ($presets as $preset) {
     $options[$preset->name] = $preset->title;
   }
-  
   return $options;
-}
-
-/**
- * Get Default Map
- *
- * Gets default map as determined by admin setting
- *
- * @ingroup openlayers_api
- * @param $reset
- *   Boolean whether get cached version or not
- * @return
- *   Map array
- */
-function openlayers_get_default_map($reset = FALSE) {
-  static $preset = array();
-  static $searched = FALSE;
-
-  if (!$searched || $reset) {
-    // Get preset
-    $preset = openlayers_preset_load(variable_get('openlayers_default_preset', 'default'));
-    // If for some reason, we still dont have a map
-    // try to get just default
-    if (empty($preset)) {
-      $preset = openlayers_preset_load('default');
-    }
-    $searched = TRUE;
-  }
-
-  // Return map data
-  return $preset->data;
-}
-
-/**
- * Merge Maps
- *
- * Recursive function to merge maps.  PHP's array_merge_recursive
- * creates unnecesary arrays to values if keys are the same.  This
- * function simply overwrites a value, even if the key is numeric.
- *
- * @ingroup openlayers_api
- * @param $map1
- *   Map array that holds values that are not preferred
- * @param $map2
- *   Map array that holds values that are preferred
- * @return
- *   map array
- */
-function openlayers_merge_maps($map1 = array(), $map2 = array()) {
-  // Check maps
-  if (is_array($map1) && is_array($map2)) {
-    foreach ($map2 as $k => $v) {
-      if (isset($map1[$k]) && is_array($v) && is_array($map1[$k])) {
-        $map1[$k] = openlayers_merge_maps($map1[$k], $v);
-      }
-      else {
-        $map1[$k] = $v;
-      }
-    }
-  }
-
-  return $map1;
 }
 
 /**
@@ -498,33 +354,29 @@ function openlayers_error_check_map($map, $log_errors = TRUE) {
     // Log the Error(s)
     watchdog('openlayers', implode(', ', $errors), array(), WATCHDOG_ERROR);
   }
-  
+
   // Check if errors and return
   return (count($errors) > 0) ? $errors : FALSE;
 }
 
 /**
- * Implementation of hook_openlayers_layers_handler_info().
+ * Implementation of hook_openlayers_layers_handler_info
+ * @return array of relationships between layer types and javascript
+ * layer handlers
  */
 function openlayers_openlayers_layers_handler_info($map = array()) {
   return array(
-    'WMS' => array(
-      'layer_handler' => 'WMS',
-      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers.layers.js',
-    ),
-    'Vector' => array(
-      'layer_handler' => 'Vector',
-      'js_file' => drupal_get_path('module', 'openlayers') .'/js/openlayers.layers.js',
-    ),
+    'WMS' => array('layer_handler' => 'WMS'),
+    'TMS' => array('layer_handler' => 'TMS'),
+    'OSM' => array('layer_handler' => 'OSM'),
+    'Vector' => array('layer_handler' => 'Vector'),
   );
 }
-
 
 /**
  * Returns standard world-max-extents for common projections.
  * Layers implementing other projections and subsets of the world should define their
  * maxExtent in the layer array
- *
  * @param projection 900913, 4326
  * @return array of maxExtent in OpenLayers toArray() format
  */
@@ -540,8 +392,7 @@ function openlayers_get_extent($projection) {
 /**
  * Returns a default set of resolutions for standard TMS, WMS, etc servers
  * serving up common projections. Layers supporting less common projections and resolutions
- * can define custom resolutions arrays
- *
+ * can easily define custom resolutions arrays
  * @param projection as string specifying which projection this should take, like 900913
  * @return array of resolutions
  */
@@ -634,8 +485,7 @@ function openlayers_openlayers_layers_info() {
  */
 function openlayers_openlayers_styles_info() {
   $styles = array();
-  
-  // Default style
+
   $style = new stdClass();
   $style->api_version = 1;
   $style->name = 'default';
@@ -650,7 +500,6 @@ function openlayers_openlayers_styles_info() {
   );
   $styles[$style->name] = $style;
 
-  // Default select style
   $style = new stdClass();
   $style->api_version = 1;
   $style->name = 'default_select';
@@ -669,7 +518,7 @@ function openlayers_openlayers_styles_info() {
 }
 
 /**
- * Implementation of hook_openlayers_presets()
+ * Implementation of hook_openlayers_presets.
  */
 function openlayers_openlayers_presets() {
   // Create full preset array
@@ -702,34 +551,12 @@ function openlayers_openlayers_presets() {
 }
 
 /**
- * Interface for openlayers_behaviors.
- *
- * Interface for behavior classes.  TODO: DOCUMENT!
- */
-interface openlayers_behavior_interface {
-  function __construct($options = array(), $map = array());
-  function options_init();
-  function options_form();
-  function render(&$map);
-}
-
-/**
- * OpenLayers Behavior Base Class
- * 
  * We define base classes in the core module.
  * All other parent classes can be autoloaded through ctools.
  */
 class openlayers_behavior implements openlayers_behavior_interface {
   var $options, $map;
 
-  /**
-   * super-constructor for OpenLayers behaviors
-   * @param $options
-   *   Array of options to be set on the behavior
-   * @param $map
-   *   The map object which this behavior is set on
-   *
-   */
   function __construct($options = array(), $map = array()) {
     $this->options = $options + $this->options_init();
     $this->map = $map;
@@ -747,161 +574,162 @@ class openlayers_behavior implements openlayers_behavior_interface {
 }
 
 /**
+ * Interface for openlayers_behaviors.
+ */
+interface openlayers_behavior_interface {
+  function __construct($options = array(), $map = array());
+  function options_init();
+  function options_form();
+  function render(&$map);
+}
+
+/**
  * Implementation of hook_openlayers_behaviors().
+ *
  */
 function openlayers_openlayers_behaviors() {
-  $include_path = drupal_get_path('module', 'openlayers') .'/includes/behaviors';
-  $parent = $parent;
-
   return array(
     'openlayers_behavior_attribution' => array(
        'title' => t('Attribution'),
        'description' => t('Allows layers to provide attribution to the map if it exists.'),
        'type' => 'layer',
-       'path' => $include_path,
+       'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
+       'file' => 'openlayers_behavior_attribution.inc',
        'behavior' => array(
          'class' => 'openlayers_behavior_attribution',
-         'parent' => $parent,
+         'parent' => 'openlayers_behavior',
        ),
      ),
     'openlayers_behavior_keyboarddefaults' => array(
        'title' => t('Keyboard Defaults'),
        'description' => t('Provides a the ability to use the keyboard to pan and zoom map.'),
        'type' => 'layer',
-       'path' => $include_path,
+       'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
+       'file' => 'openlayers_behavior_keyboarddefaults.inc',
        'behavior' => array(
          'class' => 'openlayers_behavior_keyboarddefaults',
-         'parent' => $parent,
+         'parent' => 'openlayers_behavior',
        ),
      ),
     'openlayers_behavior_layerswitcher' => array(
        'title' => t('Layer Switcher'),
        'description' => t('Gives user ability to switch Layers in the map interface.'),
        'type' => 'map',
-       'path' => $include_path,
+       'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
+       'file' => 'openlayers_behavior_layerswitcher.inc',
        'behavior' => array(
          'class' => 'openlayers_behavior_layerswitcher',
-         'parent' => $parent,
+         'parent' => 'openlayers_behavior',
        ),
      ),
     'openlayers_behavior_mouseposition' => array(
        'title' => t('Mouse Position'),
        'description' => t('Gives a visual indication of the mouse position to the user.'),
        'type' => 'map',
-       'path' => $include_path,
+       'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
+       'file' => 'openlayers_behavior_mouseposition.inc',
        'behavior' => array(
          'class' => 'openlayers_behavior_mouseposition',
-         'parent' => $parent,
+         'parent' => 'openlayers_behavior',
        ),
      ),
     'openlayers_behavior_navigation' => array(
        'title' => t('Navigation'),
        'description' => t('Gives the user the ability to navigate the map interface.'),
        'type' => 'map',
-       'path' => $include_path,
+       'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
+       'file' => 'openlayers_behavior_navigation.inc',
        'behavior' => array(
          'class' => 'openlayers_behavior_navigation',
-         'parent' => $parent,
+         'parent' => 'openlayers_behavior',
        ),
      ),
      'openlayers_behavior_dragpan' => array(
       'title' => t('DragPan'),
       'description' => t('Gives user ability to pan in the map interface.'),
       'type' => 'map',
-      'path' => $include_path,
+      'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
+      'file' => 'openlayers_behavior_dragpan.inc',
       'behavior' => array(
         'class' => 'openlayers_behavior_dragpan',
-        'parent' => $parent,
+        'parent' => 'openlayers_behavior',
       ),
     ),
     'openlayers_behavior_panzoombar' => array(
       'title' => t('PanZoomBar'),
       'description' => t('Gives user ability to pan and zoom in the map interface.'),
       'type' => 'map',
-      'path' => $include_path,
+      'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
+      'file' => 'openlayers_behavior_panzoombar.inc',
       'behavior' => array(
         'class' => 'openlayers_behavior_panzoombar',
-        'parent' => $parent,
+        'parent' => 'openlayers_behavior',
       ),
     ),
     'openlayers_behavior_mapformvalues' => array(
       'title' => t('Map Form Values'),
       'description' => t('Private method for admin UI'),
       'type' => 'map',
-      'path' => $include_path,
+      'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
+      'file' => 'openlayers_behavior_mapformvalues.inc',
       'behavior' => array(
         'class' => 'openlayers_behavior_mapformvalues',
-        'parent' => $parent,
+        'parent' => 'openlayers_behavior',
       ),
     ),
     'openlayers_behavior_boxselect' => array(
       'title' => t('Boxselect'),
       'description' => t('Allows the selection and display of a box.'),
       'type' => 'map',
-      'path' => $include_path,
+      'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
+      'file' => 'openlayers_behavior_boxselect.inc',
       'behavior' => array(
         'class' => 'openlayers_behavior_boxselect',
-        'parent' => $parent,
-      ),
-    ),
-    'openlayers_behavior_crosshair' => array(
-      'title' => t('Crosshair'),
-      'description' => t('Creates a crosshair at the center of the map'),
-      'type' => 'map',
-      'path' => $include_path,
-      'behavior' => array(
-        'class' => 'openlayers_behavior_crosshair',
-        'parent' => $parent,
+        'parent' => 'openlayers_behavior',
       ),
     ),
     'openlayers_behavior_permalink' => array(
       'title' => t('Permalink'),
       'description' =>  t('Prvides a URL that will link to a specific map position.'),
       'type' => 'map',
-      'path' => $include_path,
+      'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
+      'file' => 'openlayers_behavior_permalink.inc',
       'behavior' => array(
         'class' => 'openlayers_behavior_permalink',
-        'parent' => $parent,
+        'parent' => 'openlayers_behavior',
       ),
     ),
     'openlayers_behavior_scaleline' => array(
       'title' => t('Scale Line'),
       'description' => t('Provides the user with a line of scale in the map interface.'),
       'type' => 'map',
-      'path' => $include_path,
+      'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
+      'file' => 'openlayers_behavior_scaleline.inc',
       'behavior' => array(
         'class' => 'openlayers_behavior_scaleline',
-        'parent' => $parent,
+        'parent' => 'openlayers_behavior',
       ),
     ),
     'openlayers_behavior_zoombox' => array(
       'title' => t('Zoom Box'),
       'description' => t('Allows user to draw a box on screen to zoom with Shift + Click.'),
       'type' => 'map',
-      'path' => $include_path,
+      'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
+      'file' => 'openlayers_behavior_zoombox.inc',
       'behavior' => array(
         'class' => 'openlayers_behavior_zoombox',
-        'parent' => $parent,
+        'parent' => 'openlayers_behavior',
       ),
     ),
     'openlayers_behavior_zoomtomaxextent' => array(
       'title' => t('Zoom to Max Extent'),
       'description' => t('Provides button to zoom to the maximum extent of the map.'),
       'type' => 'map',
-      'path' => $include_path,
+      'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
+      'file' => 'openlayers_behavior_zoomtomaxextent.inc',
       'behavior' => array(
         'class' => 'openlayers_behavior_zoomtomaxextent',
-        'parent' => $parent,
-      ),
-    ),
-    'openlayers_behavior_overviewmap' => array(
-      'title' => t('Overview Map (broken)'),
-      'description' => t('Provides an overview map (needs work).'),
-      'type' => 'map',
-      'path' => $include_path,
-      'behavior' => array(
-        'class' => 'openlayers_behavior_overviewmap',
-        'parent' => $parent,
+        'parent' => 'openlayers_behavior',
       ),
     ),
   );
