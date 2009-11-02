@@ -5,7 +5,7 @@
 /**
  * @file
  * This file holds the main javascript API for OpenLayers. It is 
- * responsible for loading and displaying the map.
+ * responsable for loading and displaying the map.
  *
  * @ingroup openlayers
  */
@@ -17,278 +17,229 @@
  */
 
 document.namespaces;
-/**
- * Global Object for Namespace
- */
-var OL = OL || {'Layers': {}, 'EventHandlers': {} ,'Behaviors': {}, 'maps': []};
 
 /**
  * Minimal OpenLayers map bootstrap.
  * All additional operations occur in additional Drupal behaviors.
  */
 Drupal.behaviors.openlayers = function(context) {
-  // Check that there is openlayers data sent from PHP, and
-  // there is maps data, and that we are not going
-  // through a map again
-  if (typeof(Drupal.settings.openlayers) == 'object' && (OL.isSet(Drupal.settings.openlayers.maps)) && !$(context).data('openlayers')) {
-    // Store rendered maps and other OpenLayer objects in OL object
-    // TODO: This should go away because the data gets passed
-    // along to DOM object
-    OL.mapDefs = Drupal.settings.openlayers.maps;
-    
-    // Get all non-processed maps
+  if (typeof(Drupal.settings.openlayers) === 'object' && Drupal.settings.openlayers.maps && !$(context).data('openlayers')) {
     $('.openlayers-map:not(.openlayers-processed)').each(function() {
-      var $map = $(this);
-      
-      // Mark as processed
-      $map.addClass('openlayers-processed');
+      $(this).addClass('openlayers-processed');
 
-      // Get map ID and check for map data
-      var map_id = $map.attr('id');
-      if (OL.isSet(Drupal.settings.openlayers.maps[map_id])) {
+      var map_id = $(this).attr('id');
+
+      if (Drupal.settings.openlayers.maps[map_id]) {
         var map = Drupal.settings.openlayers.maps[map_id];
-  
-        // Trigger beforeEverything event
-        var event = {'mapDef': map};
-        OL.triggerCustom(map, 'beforeEverything', event);
-      
-        // Add any custom controls
-        $map.after(Drupal.theme('mapControls', map_id, map.height));
         
-        // Set-up our registry of active OpenLayers javascript objects for this particular map.
-        OL.maps[map_id] = {};
-        // Set up places for us to store layers, controls, etc.
-        OL.maps[map_id].controls = [];
-        OL.maps[map_id].layers = [];
-        OL.maps[map_id].active = false;
-  
-        // Render Map
-        var rendered = OL.renderMap(map);
+        $(this)
+          // @TODO: move this into markup in theme function, doing this dynamically is a waste.
+          .css('width', map.width)
+          .css('height', map.height);
+
+        // Process map option settings and prepare params for OpenLayers.
+        if (map.options) {
+          var options = map.options;
+          options.projection = new OpenLayers.Projection('EPSG:' + map.projection);          
+          options.displayProjection = new OpenLayers.Projection('EPSG:' + map.displayProjection);
+          options.controls = [];
+        }
+        else {
+          var options = {};
+          options.projection = new OpenLayers.Projection('EPSG:' + map.projection);
+          options.displayProjection = new OpenLayers.Projection('EPSG:' + map.displayProjection);
+          if (map.projection === '900913') {
+            options.maxExtent = new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
+          }
+          if (map.projection === '4326') {
+            options.maxExtent = new OpenLayers.Bounds(-180, -90, 180, 90);
+          }
+          options.maxResolution = 1.40625;
+          options.controls = [];
+        }
+
+        // Change image path if specified
+        if (map.image_path) {
+          if (map.image_path.substr(map.image_path.length - 1) !== '/') {
+            map.image_path = map.image_path + '/';
+          }
+          if (map.image_path.indexOf('://') >= 0) {
+            OpenLayers.ImgPath = map.image_path;
+          }
+          else {
+            OpenLayers.ImgPath = Drupal.settings.basePath + map.image_path;
+          }
+        }
+
+        // Change css path if specified
+        if (map.css_path) {
+          if (map.css_path.indexOf('://') >= 0) {
+            options.theme = map.css_path;
+          }
+          else {
+            options.theme = Drupal.settings.basePath + map.css_path;
+          }
+        }
+
+        // Initialize openlayers map
+        var openlayers = new OpenLayers.Map(map.id, options);
+
+        // Run the layer addition first
+        Drupal.openlayers.addLayers(map, openlayers);
 
         // Attach data to map DOM object
-        $map.data('openlayers', {'map': map, 'openlayers': rendered});
+        $(this).data('openlayers', {'map': map, 'openlayers': openlayers});
 
         // Finally, attach behaviors
-        Drupal.attachBehaviors($map);
+        Drupal.attachBehaviors(this);
       }
     });
   }
 };
 
 /**
- * Render OpenLayers Map
- * 
- * The main function to go through all the steps nessisary for rendering a map.
- * 
- * @param map
- *   The map definition array.
- * @return
- *   The rendered map object
+ * Collection of helper methods.
  */
-OL.renderMap = function(map) {
-  // Create Projection objects
-  OL.maps[map.id].projection = new OpenLayers.Projection('EPSG:' + map.projection);
-  
-  if (OL.isSet(map.options)) {
-    OL.maps[map.id].displayProjection = new OpenLayers.Projection('EPSG:' + map.options.displayProjection);
-  
-    // Create base map options
-    var options = OL.createMapOptions(map.options, map.controls, map.id);
-  }
-  else {
-    OL.maps[map.id].displayProjection = OL.maps[map.id].projection;
-    var options = [];
-  }
+Drupal.openlayers = {
+  'addLayers': function(map, openlayers) {
+    for (var name in map.layers) {
+      var layer;      
+      var options = map['layers'][name];
+      if (Drupal.openlayers.layer[options['layer_handler']] !== undefined) {
+        var layer = Drupal.openlayers.layer[options['layer_handler']](name, map, options);
 
-  // Change image path if specified
-  if (OL.isSet(map.image_path) && map.image_path) {
-    OpenLayers.ImgPath = map.image_path;
-  }
-  
-  // Store map in our registry of active OpenLayers objects
-  OL.maps[map.id].map = new OpenLayers.Map(map.id, options);
-  
-  // Add ID to map.
-  OL.maps[map.id].map.mapid = map.id;
-  
-  // On MouseOver mark the map as "active".
-  $('#' + map.id).mouseover(function() {
-    OL.maps[map.id].active = true;
-  })
-  .mouseout(function() {
-    OL.maps[map.id].active = false;
-  });
+        layer.visibility = (!map['layer_activated'] || map['layer_activated'][name]);
 
-  // Trigger beforeLayers event
-  var event = {'mapDef': map, 'map': OL.maps[map.id].map};
-  OL.triggerCustom(map, 'beforeLayers', event);
-  
-  // We set up all our layers
-  OL.processLayers(map.layers, map.id);
-  
-  // Add layers to map
-  for (var l in OL.maps[map.id].layers) {
-    var layer =  OL.maps[map.id].layers[l];
-    OL.maps[map.id].map.addLayer(layer);
-  }
-  
-  // Trigger beforeCenter event
-  var event = {'mapDef': map, 'map': OL.maps[map.id].map};
-  OL.triggerCustom(map, 'beforeCenter', event);
-  
-  // Zoom to Center
-  // @@TODO: Do this in the map options -- As isthis will result in a bug in the zoom map helper in the map form
-  if (OL.isSet(map.center)) {
-    var center = new OpenLayers.LonLat(map.center.lon, map.center.lat);
-	  var zoom = parseInt(map.center.zoom);
-    OL.maps[map.id].map.setCenter(center, zoom, false, false);
-  }
-  
-  // Set our default base layer
-  OL.maps[map.id].map.setBaseLayer(OL.maps[map.id].layers[map.default_layer]);
-
-  // Trigger beforeControls event
-  var event = {'mapDef': map, 'map': OL.maps[map.id].map};
-  OL.triggerCustom(map, 'beforeControls', event);
-  
-  // Add controls to map
-  for (var c in OL.maps[map.id].controls) {
-    var control = OL.maps[map.id].controls[c];
-    OL.maps[map.id].map.addControl(control);
-    if (control.activeByDefault) {
-      control.activate();
+        if (map.center.wrapdateline === '1') {
+          // TODO: move into layer specific settings
+          layer.wrapDateLine = true;
+        }
+        openlayers.addLayer(layer);
+      }
     }
-  }
+    
+    // Set our default base layer
+    for (var layer in openlayers.layers) {      
+      if (openlayers.layers[layer].name === map.layers[map.default_layer].name) {
+        openlayers.setBaseLayer(openlayers.layers[layer]); 
+      }
+    }
+    
+    // Zoom & center
+    if (map.center.initial) {
+      var center = new OpenLayers.LonLat.fromString(map.center.initial.centerpoint).transform(new OpenLayers.Projection('EPSG:4326'), new OpenLayers.Projection('EPSG:' + map.projection));
+      var zoom = parseInt(map.center.initial.zoom, 10);
+      openlayers.setCenter(center, zoom, false, false);
+    }
 
-  // Trigger beforeEvents event
-  var event = {'mapDef': map, 'map': OL.maps[map.id].map};
-  OL.triggerCustom(map, 'beforeEvents', event);
-  
-  // Add events to the map 
-  OL.processEvents(map.events, map.id); 
+    // Set the restricted extent if wanted.
+    // Prevents the map from being panned outside of a specfic bounding box.
+    // TODO: needs to be aware of projection: currently the restrictedExtent string is always latlon
+    if (typeof map.center.restrict !== 'undefined') {
+      openlayers.restrictedExtent = new OpenLayers.Bounds.fromString(map.center.restrict.restrictedExtent);
+    }
+  },
 
-  // Trigger beforeBehaviors event
-  var event = {'mapDef': map, 'map': OL.maps[map.id].map};
-  OL.triggerCustom(map, 'beforeBehaviors', event);
-  
-  // Trigger mapReady event
-  var event = {'mapDef': map, 'map': OL.maps[map.id].map};
-  OL.triggerCustom(map, 'mapReady', event);
-      
-  // Mark as Rendered
-  OL.maps[map.id].rendered = true;
-  
-  // Return rendered map
-  return OL.maps[map.id].map;
-}
+  'addFeatures': function(map, layer, features) {
+    var wktFormat = new OpenLayers.Format.WKT();
+    var newFeatures = [];
 
-/**
- * Get OpenLayers Map Options
- *
- * @param options
- *   Object of options to include
- * @param controls
- *   Object of controls to add
- * @param mapid
- *   String Id of map
- * @return
- *   Object of processed options
- */
-OL.createMapOptions = function(options, controls, mapid) {
-  var returnOptions = {};
-  
-  // Projections 
-  if (OL.isSet(OL.maps[mapid].projection) && OL.isSet(OL.maps[mapid].displayProjection)) {
-    returnOptions.projection = OL.maps[mapid].projection;
-    returnOptions.displayProjection = OL.maps[mapid].displayProjection;
-  }
-  
-  // Max resolution and Extent
-  if (OL.isSet(options.maxResolution)) {
-    returnOptions.maxResolution = options.maxResolution;
-  }
-  if (typeof(options.maxExtent) != "undefined") {
-    returnOptions.maxExtent =  new OpenLayers.Bounds(
-      options.maxExtent.left,
-      options.maxExtent.bottom,
-      options.maxExtent.right,
-      options.maxExtent.top
-    );
-  }
- 
-  // Controls
-  if (OL.isSet(controls)) {
-    // @@TODO: This should be a little more dynamic
-    returnOptions.controls = [];
-    if (controls.LayerSwitcher)   returnOptions.controls.push( new OpenLayers.Control.LayerSwitcher() );
-    if (controls.Navigation)      returnOptions.controls.push( new OpenLayers.Control.Navigation() );
-    if (controls.Attribution)     returnOptions.controls.push( new OpenLayers.Control.Attribution() );
-    if (controls.PanZoomBar)      returnOptions.controls.push( new OpenLayers.Control.PanZoomBar() );
-    if (controls.PanZoom)         returnOptions.controls.push( new OpenLayers.Control.PanZoom() );
-    if (controls.MousePosition)   returnOptions.controls.push( new OpenLayers.Control.MousePosition() );
-    if (controls.Permalink)       returnOptions.controls.push( new OpenLayers.Control.Permalink() );
-    if (controls.ScaleLine)       returnOptions.controls.push( new OpenLayers.Control.ScaleLine() );
-    if (controls.KeyboardDefaults)returnOptions.controls.push( new OpenLayers.Control.KeyboardDefaults() );
-    if (controls.ZoomBox)         returnOptions.controls.push( new OpenLayers.Control.ZoomBox() );
-    if (controls.ZoomToMaxExtent) returnOptions.controls.push( new OpenLayers.Control.ZoomToMaxExtent() );
-  }
+    // Go through features
+    for (var key in features) {
+      var feature = features[key];
 
-  if(OL.isSet(options.fractionalZoom)) {
-    returnOptions.fractionalZoom = options.fractionalZoom;
-  }
-  
-  // Return processed options
-  return returnOptions;
-}
+      // Extract geometry either from wkt property or lon/lat properties
+      if (feature.wkt) {
+        // Check to see if it is a string of wkt, or an array for a multipart feature.
+        if (typeof(feature.wkt) === "string") {
+          var wkt = feature.wkt;
+        }
+        else if (typeof(feature.wkt) == "object" && feature.wkt !== null && feature.wkt.length !== 0) {
+          var wkt = "GEOMETRYCOLLECTION(" + feature.wkt.join(',') + ")";
+        }
+        var newFeatureObject = wktFormat.read(wkt);
+      }
+      else if (feature.lon) {
+        var newFeatureObject = wktFormat.read("POINT(" + feature.lon + " " + feature.lat + ")");
+      }
 
-/**
- * Process Layers
- *
- * Process the layers part of the map definition into OpenLayers layer objects
- * 
- * @param layers
- *   The layers section of the map definition array.
- * @param mapid
- *   The id of the map to which we will eventually add these layers.
- */
-OL.processLayers = function(layers, mapid) {
-  OL.maps[mapid].layers = [];
-  
-  // Go through layers
-  if (layers) {
-    for (var layer in layers) {
-      // Process layer, check for function
-      if (OL.isSet(OL.Layers) && typeof(OL.Layers[layers[layer].layer_handler]) == 'function') {
-        var newLayer = OL.Layers[layers[layer].layer_handler](layers[layer], mapid);
-        OL.maps[mapid].layers[layer] = newLayer;
-  
-        // Add our Drupal data to the layer
-        newLayer.drupalId = layer;
-        newLayer.drupalData = layers[layer];
-        
-        // Add events
-        for (var evtype in layers[layer].events){
-          for (var ev in layers[layer].events[evtype]) { 
-            newLayer.events.register(evtype, newLayer, OL.EventHandlers[layers[layer].events[evtype][ev]]);
+      // If we have successfully extracted geometry add additional
+      // properties and queue it for addition to the layer
+      if (newFeatureObject) {
+        var newFeatureSet = [];
+
+        // Check to see if it is a new feature, or an array of new features.
+        if (typeof(newFeatureObject[0]) === 'undefined'){
+          newFeatureSet[0] = newFeatureObject;
+        }
+        else{
+          newFeatureSet = newFeatureObject;
+        }
+
+        // Go through new features
+        for (var i in newFeatureSet) {
+          var newFeature = newFeatureSet[i];
+
+          // Transform the geometry if the 'projection' property is different from the map projection
+          if (feature.projection) {
+            if (feature.projection !== map.projection){
+              var featureProjection = new OpenLayers.Projection("EPSG:" + feature.projection);
+              var mapProjection = new OpenLayers.Projection("EPSG:" + map.projection);
+              newFeature.geometry.transform(featureProjection, mapProjection);
+            }
           }
+
+          // Add attribute data
+          if (feature.attributes){
+            newFeature.attributes = feature.attributes;
+            newFeature.data = feature.attributes;
+          }
+
+          // Add style information
+          if (feature.style) {
+            newFeature.style = jQuery.extend({}, OpenLayers.Feature.Vector.style['default'], feature.style);
+          }
+
+          // Push new features
+          newFeatures.push(newFeature);
         }
       }
     }
-  }
-}
 
-/**
- * Map Controls Theme Function
- *
- * @param mapid
- *   String of mapid
- * @param height
- *   String of the height of the map
- * @return
- *   Themed map control division
- */
-Drupal.theme.prototype.mapControls = function(mapid, height) {
-  var newcontainer = $('<div></div>');
-  newcontainer.addClass('openlayers-controls').attr('id', 'openlayers-controls-' + mapid).css('position', 'relative').css('top', '-' + height);
-  return newcontainer;
-}
+    // Add new features if there are any
+    if (newFeatures.length !== 0){
+      layer.addFeatures(newFeatures);
+    }
+  },
+
+  'getStyleMap': function(map, layername) {
+    if (map.styles) {
+      var stylesAdded = {};
+      // Grab and map base styles.
+      for (var style in map.styles) {
+        stylesAdded[style] = new OpenLayers.Style(map.styles[style]);
+      }
+      // Implement layer-specific styles.
+      if (map.layer_styles[layername]) {
+        var style = map.layer_styles[layername];
+        stylesAdded['default'] = new OpenLayers.Style(map.styles[style]);
+      }
+      return new OpenLayers.StyleMap(stylesAdded);
+    }
+    // Default styles
+    return new OpenLayers.StyleMap({
+      'default': new OpenLayers.Style({
+        pointRadius: 5,
+        fillColor: "#ffcc66",
+        strokeColor: "#ff9933",
+        strokeWidth: 4,
+        fillOpacity:0.5
+      }),
+      'select': new OpenLayers.Style({
+        fillColor: "#66ccff",
+        strokeColor: "#3399ff"
+      })
+    });
+  }
+};
+
