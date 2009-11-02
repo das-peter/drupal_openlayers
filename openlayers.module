@@ -69,30 +69,6 @@ function openlayers_theme($existing, $type, $theme, $path) {
 }
 
 /**
- * Implementation of hook_menu().
- */
-function openlayers_menu() {
-  $items = array();
-
-  $items['admin/settings/openlayers'] = array(
-    'title' => 'OpenLayers',
-    'description' => 'Main settings for OpenLayers.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('openlayers_admin_settings'),
-    'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
-    'type' => MENU_NORMAL_ITEM
-  );
-  $items['admin/settings/openlayers/settings'] = array(
-    'title' => 'Settings',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => -20,
-  );
-
-  return $items;
-}
-
-/**
  * Implementation of hook_ctools_plugin_api().
  */
 function openlayers_ctools_plugin_api($module, $api) {
