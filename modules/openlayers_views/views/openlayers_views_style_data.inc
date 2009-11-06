@@ -127,6 +127,7 @@ class openlayers_views_style_data extends views_plugin_style {
     
     // Separate mapping for grouped views.  Currently only adds name and count. 
     if (!empty($this->options['grouping'])) {
+      $this->view->row_index = 0;
       foreach ($records as $id => $record) {
         $feature = array();
         $feature['attributes']['name'] = $id;
@@ -164,8 +165,9 @@ class openlayers_views_style_data extends views_plugin_style {
         if (!empty($feature['wkt'])) {
           $features[] = $feature;
         }
+        $this->view->row_index++;
       }
-            
+      unset($this->view->row_index);
       return $features;
     }
     
