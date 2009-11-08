@@ -84,6 +84,10 @@ Drupal.behaviors.openlayers = function(context) {
           }
         }
 
+        if (map.proxy_host) {
+          OpenLayers.ProxyHost = map.proxy_host;
+        }
+
         // Initialize openlayers map
         var openlayers = new OpenLayers.Map(map.id, options);
 

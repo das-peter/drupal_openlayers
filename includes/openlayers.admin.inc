@@ -403,6 +403,13 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#default_value' => !empty($defaults['css_path']) ? $defaults['css_path'] : '',
   );
 
+  $form['info']['proxy_host'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Proxy Host'),
+    '#description' => t('A proxy (typically on the same domain as this site) which enables requests to cross-domain AJAX resources (including remote KML)'),
+    '#default_value' => !empty($defaults['proxy_host']) ? $defaults['proxy_host'] : '',
+  );
+
   // Center
   $form['center'] = array(
     '#title' => t('Center & Bounds'),
