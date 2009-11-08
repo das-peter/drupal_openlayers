@@ -116,6 +116,7 @@ function openlayers_build_map($map = array()) {
   $map['layers'] = _openlayers_layers_process($map['layers'], $map);
 
   // Unset Map Arguments
+  // @TODO: research and eliminate
   unset($map['args']);
 
   $map['behaviors'] = _openlayers_behaviors_process($map['behaviors'], $map);
@@ -155,6 +156,30 @@ function openlayers_render_map($map = array(), $preset_name = '') {
 }
 
 /**
+ * Get layer object
+ *
+ * @ingroup openlayers_api
+ * @param $reset
+ *   Boolean whether to reset cache or not
+ * @return
+ *   array of layer info
+ */
+function openlayers_get_layer_object($layer, $map = array()) {
+  // static cache because this function will possibly be called in big loops
+  static $layer_types;
+  if (!isset($layer_types)) {
+    $layer_types = openlayers_layer_types();
+  }
+  if (!isset($layer->data['layer_type'])) {
+    watchdog('openlayers', 'Layer does not have type correctly defined', WATCHDOG_ERROR);
+    return;
+  }
+  $class = ctools_plugin_get_class($layer_types[$layer->data['layer_type']], 'layer_type');
+  $layer_object = new $class($layer, $map);
+  return $layer_object;
+}
+
+/**
  * Get all openlayers layers.
  *
  * @ingroup openlayers_api
@@ -170,10 +195,42 @@ function openlayers_layers($reset = TRUE) {
 }
 
 /**
- * Menu loader for layers.
+ * Get all openlayers layers as objects.
+ *
+ * @ingroup openlayers_api
+ * @param $reset
+ *   Boolean whether to reset cache or not
+ * @return
+ *   array of layer info
+ */
+function openlayers_layer_objects($reset = TRUE) {
+  $layer_objects = array();
+
+  $layers = openlayers_layers($reset);
+  foreach($layers as $layer) {
+    $layer_objects[$layer->name] = openlayers_get_layer_object($layer);
+  }
+  return $layer_objects;
+}
+
+/**
+ * Menu loader for layers. (%openlayers_layer_export)
+ * Additional layer export loaders
+ * 
+ * This was created mainly because of openlayers_ui_delete, which 
+ * doesn't handle openlayers layer objects correctly. This might be removed when
+ * things are rewritten so that layer objects also include export data
+ */
+function openlayers_layer_export_load($name) {
+  $layers = openlayers_layers();
+  return !empty($layers[$name]) ? $layers[$name] : FALSE;
+}
+
+/**
+ * Menu loader for layers. (%openlayers_layer)
  */
 function openlayers_layer_load($name) {
-  $layers = openlayers_layers();
+  $layers = openlayers_layer_objects();
   return !empty($layers[$name]) ? $layers[$name] : FALSE;
 }
 
@@ -199,8 +256,21 @@ function openlayers_layer_save($layer) {
  */
 function openlayers_behaviors($reset = FALSE) {
   ctools_include('plugins');
-  ctools_include('context');
   return ctools_get_plugins('openlayers', 'behaviors');
+}
+
+/**
+ * Get all layer types.
+ *
+ * @ingroup openlayers_api
+ * @param $reset
+ *   Boolean whether to reset cache or not.
+ * @return
+ *   Array of behavior info.
+ */
+function openlayers_layer_types($reset = FALSE) {
+  ctools_include('plugins');
+  return ctools_get_plugins('openlayers', 'layer_types');
 }
 
 /**
@@ -224,6 +294,22 @@ function openlayers_styles($reset = FALSE) {
 function openlayers_style_load($name) {
   $styles = openlayers_styles();
   return !empty($styles[$name]) ? $styles[$name] : FALSE;
+}
+
+/**
+ * Menu loader for layer types.
+ *
+ * @param
+ *   layer type string
+ * @return
+ *   an instantiated layer type object
+ */
+function openlayers_layer_type_load($name) {
+  ctools_include('plugins');
+  if ($layer_type_class = ctools_plugin_load_class('openlayers', 'layer_types', $name, 'layer_type')) {
+    $layer_type = new $layer_type_class();
+    return $layer_type;
+  }
 }
 
 /**
@@ -322,14 +408,19 @@ function openlayers_error_check_map($map, $log_errors = TRUE) {
   // @TODO: For next release, make hook
   $errors = array();
 
-  // Check layer projections
-  foreach ($map['layers'] as $layer) {
-    if ($layer['projection']) {
-      if (!in_array($map['projection'], $layer['projection'])) {
-        $errors[] = t('The layer %layer_name cannot work with the map projection: EPSG: %map_proj', array(
-          '%layer_name' => $layer['name'],
-          '%map_proj' => $map['projection'],
-        ));
+  if (!is_array($map['layers'])) {
+    $errors[] = t('Map contains no renderable layers.');
+  }
+  else {
+    // Check layer projections
+    foreach ($map['layers'] as $layer) {
+      if ($layer->projection) {
+        if (!in_array($map['projection'], $layer->projection)) {
+          $errors[] = t('The layer %layer_name cannot work with the map projection: EPSG: %map_proj', array(
+            '%layer_name' => $layer->name,
+            '%map_proj' => $map['projection'],
+          ));
+        }
       }
     }
   }
@@ -360,20 +451,6 @@ function openlayers_error_check_map($map, $log_errors = TRUE) {
 }
 
 /**
- * Implementation of hook_openlayers_layers_handler_info
- * @return array of relationships between layer types and javascript
- * layer handlers
- */
-function openlayers_openlayers_layers_handler_info($map = array()) {
-  return array(
-    'WMS' => array('layer_handler' => 'WMS'),
-    'TMS' => array('layer_handler' => 'TMS'),
-    'OSM' => array('layer_handler' => 'OSM'),
-    'Vector' => array('layer_handler' => 'Vector'),
-  );
-}
-
-/**
  * Returns standard world-max-extents for common projections.
  * Layers implementing other projections and subsets of the world should define their
  * maxExtent in the layer array
@@ -381,7 +458,7 @@ function openlayers_openlayers_layers_handler_info($map = array()) {
  * @return array of maxExtent in OpenLayers toArray() format
  */
 function openlayers_get_extent($projection) {
-  switch($projection) {
+  switch ($projection) {
     case '900913':
       return array(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
     case '4326':
@@ -447,7 +524,7 @@ function openlayers_get_resolutions($projection, $zoom_start = 0, $zoom_end = FA
       $res = array();
       break;
   }
-  $length = ($zoom_end == FALSE) ? null : $zoom_end - $zoom_start;
+  $length = ($zoom_end == FALSE) ? NULL : $zoom_end - $zoom_start;
   // By default this will not actually clip the array
   $resolutions = array_slice($res, $zoom_start, $length);
   return $resolutions;
@@ -459,7 +536,7 @@ function openlayers_get_resolutions($projection, $zoom_start = 0, $zoom_end = FA
 function openlayers_openlayers_layers_info() {
   $layers = array();
 
-  $layer = new StdClass();
+  $layer = new stdClass();
   $layer->api_version = 1;
   $layer->name = 'openlayers_default_wms';
   $layer->title = t('Default OpenLayers WMS');
@@ -470,6 +547,7 @@ function openlayers_openlayers_layers_info() {
     'type' => 'WMS',
     'url' => 'http://labs.metacarta.com/wms/vmap0',
     'params' => array('layers' => 'basic'),
+    'layer_type' => 'openlayers_layer_type_wms',
     'options' => array(
       'maxExtent' => openlayers_get_extent('4326'),
     ),
@@ -574,6 +652,51 @@ class openlayers_behavior implements openlayers_behavior_interface {
 }
 
 /**
+ * We define base classes in the core module.
+ * All other parent classes can be autoloaded through ctools.
+ */
+class openlayers_layer_type implements openlayers_layer_type_interface {
+  var $options, $map;
+
+  function __construct($layer = array(), $map = array()) {
+    foreach(array('name', 'title', 'description', 'data') as $k) {
+      if (isset($layer->{$k})) {
+        $this->{$k} = $layer->{$k};
+      }
+    }
+    $this->map = $map;
+  }
+
+  function options_init() {
+    return array();
+  }
+
+  function options_form() {
+    return array();
+  }
+
+  function to_record() {
+    return array(
+      'name' => $this->name,
+      'description' => $this->description,
+      'title' => $this->title,
+      'data' => $this->data
+    );
+  }
+
+  function save() {
+    if (!empty($this->name)) {
+      $exists = db_result(db_query("SELECT name FROM {openlayers_layers} WHERE name = '%s'", $this->name));
+      return $exists ? 
+        drupal_write_record('openlayers_layers', $this->to_record(), 'name') : 
+        drupal_write_record('openlayers_layers', $this->to_record());
+    }
+  }
+
+  function render(&$map) {}
+}
+
+/**
  * Interface for openlayers_behaviors.
  */
 interface openlayers_behavior_interface {
@@ -581,6 +704,51 @@ interface openlayers_behavior_interface {
   function options_init();
   function options_form();
   function render(&$map);
+}
+
+/**
+ * Interface for openlayers_layer_types.
+ */
+interface openlayers_layer_type_interface {
+  function __construct($options = array(), $map = array());
+  function options_init();
+  function options_form();
+  function render(&$map);
+}
+
+function openlayers_openlayers_layer_types() {
+  return array(
+    'openlayers_layer_type_wms' => array(
+      'title' => t('WMS'),
+      'description' => t('Web Map Service'),
+      'layer_type' => array(
+        'path' => drupal_get_path('module', 'openlayers') .'/includes/layer_types',
+        'file' => 'wms.inc',
+        'class' => 'openlayers_layer_type_wms',
+        'parent' => 'openlayers_layer_type',
+      ),
+    ),
+    'openlayers_layer_type_tms' => array(
+      'title' => t('TMS'),
+      'description' => t('Tiled Map Service'),
+      'layer_type' => array(
+        'path' => drupal_get_path('module', 'openlayers') .'/includes/layer_types',
+        'file' => 'tms.inc',
+        'class' => 'openlayers_layer_type_tms',
+        'parent' => 'openlayers_layer_type',
+      ),
+    ),
+    'openlayers_layer_type_osm' => array(
+      'title' => t('OSM'),
+      'description' => t('OpenStreetMap Standard'),
+      'layer_type' => array(
+        'path' => drupal_get_path('module', 'openlayers') .'/includes/layer_types',
+        'file' => 'osm.inc',
+        'class' => 'openlayers_layer_type_osm',
+        'parent' => 'openlayers_layer_type',
+      ),
+    ),
+  );
 }
 
 /**

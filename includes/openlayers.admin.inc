@@ -196,57 +196,26 @@ function openlayers_ui_object_export(&$form_state, $type, $object) {
 /**
  * Layer add/edit form.
  */
-function openlayers_ui_layers_form(&$form_state, $layer = NULL, $edit = FALSE) {
+function openlayers_ui_layers_types(&$form_state, $layer = NULL, $edit = FALSE) {
+  $form = array();
+  $form['layer_types'] = openlayers_ui_get_layer_type_options('map', $defaults);
+  return $form;
+}
+
+
+/**
+ * Layer add/edit form.
+ */
+function openlayers_ui_layers_form(&$form_state, $layer = NULL) {
   $form = array();
 
-  $form['info'] = array(
-    '#type' => 'fieldset',
-    '#tree' => FALSE,
-  );
-  $form['info']['name'] = array(
-    '#title' => t('Name'),
-    '#type' => 'textfield',
-    '#required' => TRUE,
-    '#default_value' => !empty($layer->name) ? $layer->name : '',
-  );
-  $form['info']['title'] = array(
-    '#title' => t('Title'),
-    '#type' => 'textfield',
-    '#required' => TRUE,
-    '#default_value' => !empty($layer->title) ? $layer->title : '',
-  );
-  $form['info']['description'] = array(
-    '#title' => t('Description'),
-    '#type' => 'textfield',
-    '#default_value' => !empty($layer->description) ? $layer->description : '',
-  );
-
-  if (empty($layer) || (!empty($layer->data['type']) && $layer->data['type'] == "KMLHTTP")) {
-    $form['data'] = array('#type' => 'fieldset', '#tree' => TRUE);
-    $defaults = array(
-      'type' => 'KMLHTTP',
-      'projection' => array(4326, 900913),
-      'baselayer' => FALSE,
-      'options' => array('isBaseLayer' => FALSE),
-      'events' => array('loadend' => array()),
-    );
-    foreach ($defaults as $key => $value) {
-      $form['data'][$key] = array('#type' => 'value', '#value' => $value);
-    }
-    $form['data']['url'] = array(
-      '#title' => t('URL of KML feed'),
-      '#type' => 'textfield',
-      '#default_value' => !empty($layer->data['url']) ? $layer->data['url'] : '',
-    );
-  }
-  else if (!empty($layer)) {
-    $form['data'] = array('#type' => 'value', '#value' => $layer->data);
-  }
+  $form['layer'] = openlayers_ui_get_layer_form($layer);
 
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
   );
+
   return $form;
 }
 
@@ -255,17 +224,15 @@ function openlayers_ui_layers_form(&$form_state, $layer = NULL, $edit = FALSE) {
  */
 function openlayers_ui_layers_form_submit(&$form, &$form_state) {
   // Save preset
-  $layer = new stdClass();
+  $layer_class = $form_state['values']['data']['layer_type'];
+  $layer = openlayers_layer_type_load($layer_class);
+
   $layer->name = $form_state['values']['name'];
   $layer->title = $form_state['values']['title'];
   $layer->description = $form_state['values']['description'];
   $layer->data = $form_state['values']['data'];
 
-  // Doctor some values
-  $layer->data['id'] = $layer->name;
-  $layer->data['name'] = $layer->name;
-
-  $success = openlayers_layer_save($layer);
+  $success = $layer->save();
 
   // Redirect to edit page
   if ($success) {
@@ -520,10 +487,9 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   // Projection options
   $projections = array();
   foreach (openlayers_ui_get_projection_options() as $projection) {
-    $projection_layers = openlayers_ui_get_layer_options('baselayer', $projection);
+    $projection_layers = openlayers_ui_get_layer_options($projection);
     $projections[$projection] = theme('openlayers_ui_form_projection_description', $projection, array_keys($projection_layers));
   }
-  $projections['other'] = t("Other");
 
   $form['layerstyles']['projections'] = $base_fieldset;
   $form['layerstyles']['projections']['#collapsible'] = FALSE;
@@ -550,12 +516,6 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
       'method' => 'replace',
     ),
   );
-  $form['layerstyles']['projections']['projection'] = array(
-    '#type' => 'textfield',
-    '#attributes' => array('class' => 'openlayers-form-projection'),
-    '#default_value' => $defaults['projection'],
-    '#maxlength' => 16,
-  );
 
   // Map options properties
   $form['layerstyles']['projections']['displayProjection'] = array(
@@ -566,7 +526,9 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#maxlength' => 6
   );
 
-  /* Base layers */
+  /**
+   * Construct data for theme_openlayers_ui_presets_form_layers
+   */
   $form['layerstyles']['layers']['#tree'] = TRUE;
   $form['layerstyles']['layers']['baselabels'] = array();
   $base_options = openlayers_ui_get_layer_options('baselayer', $defaults['projection']);
@@ -637,7 +599,6 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#options' => openlayers_ui_get_style_options(),
     '#default_value' => !empty($defaults['styles']['temporary']) ? $defaults['styles']['temporary'] : NULL,
   );
-
 
   // End AHAH Wrapper
   $form['layerstyles']['ahah-end'] = array('#value' => '</div>');
@@ -829,6 +790,8 @@ function openlayers_ui_presets_form_process($values = array()) {
     'options',
   );
 
+  // TODO: eliminate this process, too much disconnect between
+  // forms and data
   $processed = array();
   foreach ($keys as $key) {
     switch ($key) {
@@ -843,13 +806,12 @@ function openlayers_ui_presets_form_process($values = array()) {
         }
         break;
       case 'projections':
-        $processed['projection'] = ($values['projections']['easy_projection'] != 'other') ? 
-          $values['projections']['easy_projection'] : 
-          $values['projections']['projection'];
+        $processed['projection'] = $values['projections']['easy_projection']; 
         $processed['displayProjection'] = $values['projections']['displayProjection'];
         break;
       case 'layers':
         // Put the default layer in the right place.
+        // TODO: finish port here
         $processed['default_layer'] = $values['layers']['default_layer'];
 
         // Merge our different layer sections together
@@ -872,6 +834,63 @@ function openlayers_ui_presets_form_process($values = array()) {
   }
 
   return $processed;
+}
+
+/**
+ * Get layer type options.
+ */
+function openlayers_ui_get_layer_type_options($type, $defaults) {
+  $form = array();
+  $form['layer_type_help'] = array(
+    '#type' => 'item',
+    '#value' => t('Select a layer type to create a new layer.')
+  );
+  foreach (openlayers_layer_types() as $key => $plugin) {
+    $class = ctools_plugin_get_class($plugin, 'layer_type');
+    if ($class) {
+      // Build form.
+      $form[$key] = array(
+        '#type' => 'item',
+        '#title' => l($plugin['title'], "admin/settings/openlayers/layers/add/{$key}"),
+        '#value' =>  $plugin['description'],
+      );
+    }
+  }
+  return $form;
+}
+
+/**
+ * Get an actual layer form
+ */
+function openlayers_ui_get_layer_form($type, $layer = false) {
+  $form = array();
+
+  $form['data'] = array(
+    '#tree' => TRUE,
+    '#type' => 'fieldset',
+    '#title' => $layer_type['title'],
+    '#description' => $layer_type['description'],
+  );
+  $form['name'] = array(
+    '#type' => 'textfield',
+    '#default_value' => isset($type->name) ? $type->name : '',
+    '#title' => t('Layer Name'),
+  );
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Layer Title'),
+    '#default_value' => isset($type->title) ? $type->title : '',
+  );
+  $form['description'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Layer Description'),
+    '#default_value' => isset($type->description) ? $type->description : '',
+  );
+
+  // Arrays merged in order so that options_form can override defaults
+  $form['data'] = $type->options_form() + $form['data'];
+
+  return $form;
 }
 
 /**
@@ -910,8 +929,11 @@ function openlayers_ui_get_behavior_options($type, $defaults) {
  */
 function openlayers_ui_get_layer_options($type = 'baselayer', $projection = NULL) {
   $options = array();
-      
-  foreach (openlayers_layers() as $key => $layer) {
+  $layers = array();
+  foreach(openlayers_layers() as $l) {
+    $layers[$l->name] = openlayers_get_layer_object($l);
+  }
+  foreach ($layers as $key => $layer) {
     if (!isset($projection) || (in_array($projection, $layer->data['projection']))) {
       if ($type == 'baselayer' && $layer->data['baselayer']) {
         $options[$key] = theme('openlayers_ui_form_layer_description', $layer->name, $layer->description);
@@ -932,9 +954,11 @@ function openlayers_ui_get_layer_options($type = 'baselayer', $projection = NULL
  */
 function openlayers_ui_get_projection_options() {
   $options = array();
-  foreach (openlayers_layers() as $key => $layer) {
-    foreach ($layer->data['projection'] as $projection) {
-      $options[$projection] = $projection;
+  foreach (openlayers_layer_objects() as $key => $layer) {
+    if($layer->data['projection']) {
+      foreach ($layer->data['projection'] as $projection) {
+        $options[$projection] = $projection;
+      }
     }
   }
   return $options;
@@ -1000,10 +1024,10 @@ function openlayers_ui_presets_form_center_map($defaults = array()) {
       'displayProjection' => $defaults['projection'],
       'maxResolution' => '1.40625',
       'maxExtent' => array(
-        'top' => 90,
-        'bottom' => -90,
-        'left' => -180,
-        'right' => 180
+        -180,
+        -90,
+        180,
+        90,
       ),
     ),
   );

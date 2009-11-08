@@ -42,12 +42,15 @@ Drupal.behaviors.openlayers = function(context) {
           var options = map.options;
           options.projection = new OpenLayers.Projection('EPSG:' + map.projection);          
           options.displayProjection = new OpenLayers.Projection('EPSG:' + map.displayProjection);
+          options.maxExtent = new OpenLayers.Bounds.fromArray(map.options.maxExtent);
           options.controls = [];
         }
         else {
           var options = {};
+          // This is necessary because the input JSON cannot contain objects
           options.projection = new OpenLayers.Projection('EPSG:' + map.projection);
           options.displayProjection = new OpenLayers.Projection('EPSG:' + map.displayProjection);
+          // TODO: work around this scary code
           if (map.projection === '900913') {
             options.maxExtent = new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
           }
@@ -105,8 +108,8 @@ Drupal.openlayers = {
     for (var name in map.layers) {
       var layer;      
       var options = map['layers'][name];
-      if (Drupal.openlayers.layer[options['layer_handler']] !== undefined) {
-        var layer = Drupal.openlayers.layer[options['layer_handler']](name, map, options);
+      if (Drupal.openlayers.layer[options.layer_handler] !== undefined) {
+        var layer = Drupal.openlayers.layer[options.layer_handler](name, map, options);
 
         layer.visibility = (!map['layer_activated'] || map['layer_activated'][name]);
 
@@ -127,7 +130,10 @@ Drupal.openlayers = {
     
     // Zoom & center
     if (map.center.initial) {
-      var center = new OpenLayers.LonLat.fromString(map.center.initial.centerpoint).transform(new OpenLayers.Projection('EPSG:4326'), new OpenLayers.Projection('EPSG:' + map.projection));
+      var center = new OpenLayers.LonLat.fromString(
+          map.center.initial.centerpoint).transform(
+            new OpenLayers.Projection('EPSG:4326'), 
+            new OpenLayers.Projection('EPSG:' + map.projection));
       var zoom = parseInt(map.center.initial.zoom, 10);
       openlayers.setCenter(center, zoom, false, false);
     }
@@ -136,7 +142,8 @@ Drupal.openlayers = {
     // Prevents the map from being panned outside of a specfic bounding box.
     // TODO: needs to be aware of projection: currently the restrictedExtent string is always latlon
     if (typeof map.center.restrict !== 'undefined') {
-      openlayers.restrictedExtent = new OpenLayers.Bounds.fromString(map.center.restrict.restrictedExtent);
+      openlayers.restrictedExtent = new OpenLayers.Bounds.fromString(
+          map.center.restrict.restrictedExtent);
     }
   },
 
@@ -154,7 +161,7 @@ Drupal.openlayers = {
         if (typeof(feature.wkt) === "string") {
           var wkt = feature.wkt;
         }
-        else if (typeof(feature.wkt) == "object" && feature.wkt !== null && feature.wkt.length !== 0) {
+        else if (typeof(feature.wkt) === "object" && feature.wkt !== null && feature.wkt.length !== 0) {
           var wkt = "GEOMETRYCOLLECTION(" + feature.wkt.join(',') + ")";
         }
         var newFeatureObject = wktFormat.read(wkt);
@@ -242,4 +249,3 @@ Drupal.openlayers = {
     });
   }
 };
-

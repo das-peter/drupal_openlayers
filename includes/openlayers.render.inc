@@ -27,77 +27,44 @@ function _openlayers_layers_process($layers = array(), &$map = array()) {
   if (!is_array($map)) {
     $map = array();
   }
-  $processed = array();
-  
-  // Get layer info array
-  $layer_info = openlayers_layers();
 
-  // Check to make sure our default layer is present, if it isn't then add it.
-  if (!array_key_exists($map['default_layer'], $layers) && ($map['default_layer'])) {
-    $layers[$map['default_layer']] = $map['default_layer'];
-  }
-
-  // Go through layers
-  foreach ($layers as $k => $layer) {
-    // Check if array, if array, just pass on
-    if (is_array($layer)) {
-      $processed[$k] = $layer;
+  foreach($layers as $layer) {
+    if ($layer_object = openlayers_layer_load($layer)) {
+      $layer_object->render($map);
+      $layer_data[$layer_object->name] = $layer_object->data;
     }
     else {
-      // If not array, we want to include the file and call the function
-      if (!empty($layer_info[$layer]) && $info = $layer_info[$layer]->data) {
-        $processed[$layer] = $info;
-        // Make sure layer title is set    
-        $processed[$layer]['title'] = $layer_info[$layer]->title;
-      }
+      watchdog('openlayers', 'Layer %layer not found while rendering map.', 
+        array('%layer' => $layer), WATCHDOG_ERROR);
     }
   }
 
-  // Add Handlers
-  $handlers = module_invoke_all('openlayers_layers_handler_info', $map);
-  
+  /*
   // Go through processed
-  foreach ($processed as $k => $l) {
-    
-    // Make sure layer name and title is set    
-
-    $processed[$k]['options']['title'] = $l['title'] ? $l['title'] : $k;  
-    $processed[$k]['name'] = $k; 
-  
-    
-    // Check for handler
-    if (is_string($handlers[$l['type']]['layer_handler'])) {
-      $processed[$k]['layer_handler'] = $handlers[$l['type']]['layer_handler'];
-
-      // Extra processing for views to include arguments and exposed filters
-      if (isset($l['views']['view'], $l['views']['display'])) {
-        if ($view = views_get_view($l['views']['view'])) {
-          $args = array();
-
-          // Retrieve args/filters from current view to pass on to our vector layer.
-          $current_view = views_get_current_view();
-          if ($current_view) {
-            $args = $current_view->args;
-            $view->set_exposed_input($current_view->exposed_input);
-          }
-
-          $view->execute_display($l['views']['display'], $args);
-          $view->init_style();
-          $processed[$k]['features'] = $view->style_plugin->pre_render($view->result);
-
-          $view->destroy();          
+  foreach ($layer_objects as $layer_name => $layer) {
+    // Allow the layer type class to modify the map object and do other things like add js
+    $layer->render($map);
+    // Extra processing for views to include arguments and exposed filters
+    // @TODO: move this to the render() function of the view layer type
+    /*
+    if (isset($layer['views']['view'], $layer['views']['display'])) {
+      if ($view = views_get_view($layer['views']['view'])) {
+        $args = array();
+        // Retrieve args/filters from current view to pass on to our vector layer.
+        $current_view = views_get_current_view();
+        if ($current_view) {
+          $args = $current_view->args;
+          $view->set_exposed_input($current_view->exposed_input);
         }
+        $view->execute_display($layer['views']['display'], $args);
+        $view->init_style();
+        $processed[$layer_name]['features'] = $view->style_plugin->pre_render($view->result);
+        $view->destroy();
       } 
-      
-      // Include JS file if there is one
-      if (is_string($handlers[$l['type']]['js_file'])) {
-        drupal_add_js($handlers[$l['type']]['js_file'], 'module');
-      }
     }
   }
-
-  // Return processed
-  return $processed;
+   */
+  return $layer_data;
 }
 
 /**
@@ -149,7 +116,7 @@ function _openlayers_styles_process($styles = array(), $layer_styles = array(), 
     if (is_array($style)) {
       $processed[$k] = $style;
     }
-    else if (!empty($styles_info[$style]) && $info = $styles_info[$style]->data) {
+    elseif (!empty($styles_info[$style]) && $info = $styles_info[$style]->data) {
       $processed[$k] = $info;
     }
   }
