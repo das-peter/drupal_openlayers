@@ -13,6 +13,7 @@
  * Provides an API and Modules to interface with OpenLayers.  Needs work...
  */
 
+
 /**
  * @file
  * Main OpenLayers API File
@@ -174,9 +175,12 @@ function openlayers_get_layer_object($layer, $map = array()) {
     watchdog('openlayers', 'Layer does not have type correctly defined', WATCHDOG_ERROR);
     return;
   }
-  $class = ctools_plugin_get_class($layer_types[$layer->data['layer_type']], 'layer_type');
-  $layer_object = new $class($layer, $map);
-  return $layer_object;
+  if ($class = ctools_plugin_get_class(
+    $layer_types[$layer->data['layer_type']], 
+    'layer_type')) {
+    $layer_object = new $class($layer, $map);
+    return $layer_object;
+  }
 }
 
 /**
@@ -663,6 +667,9 @@ class openlayers_layer_type implements openlayers_layer_type_interface {
       if (isset($layer->{$k})) {
         $this->{$k} = $layer->{$k};
       }
+    }
+    if (is_array($this->data)) {
+      $this->data += $this->options_init();
     }
     $this->map = $map;
   }
