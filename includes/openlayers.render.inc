@@ -39,31 +39,6 @@ function _openlayers_layers_process($layers = array(), &$map = array()) {
     }
   }
 
-  /*
-  // Go through processed
-  foreach ($layer_objects as $layer_name => $layer) {
-    // Allow the layer type class to modify the map object and do other things like add js
-    $layer->render($map);
-    // Extra processing for views to include arguments and exposed filters
-    // @TODO: move this to the render() function of the view layer type
-    /*
-    if (isset($layer['views']['view'], $layer['views']['display'])) {
-      if ($view = views_get_view($layer['views']['view'])) {
-        $args = array();
-        // Retrieve args/filters from current view to pass on to our vector layer.
-        $current_view = views_get_current_view();
-        if ($current_view) {
-          $args = $current_view->args;
-          $view->set_exposed_input($current_view->exposed_input);
-        }
-        $view->execute_display($layer['views']['display'], $args);
-        $view->init_style();
-        $processed[$layer_name]['features'] = $view->style_plugin->pre_render($view->result);
-        $view->destroy();
-      } 
-    }
-  }
-   */
   return $layer_data;
 }
 
