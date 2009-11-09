@@ -882,11 +882,13 @@ function openlayers_ui_get_layer_form($type, $layer = false) {
     '#type' => 'textfield',
     '#default_value' => isset($type->name) ? $type->name : '',
     '#title' => t('Layer Name'),
+    '#description' => t('This is the unique name of the layer. It must contain only alphanumeric characters and underscores.'),
   );
   $form['title'] = array(
     '#type' => 'textfield',
     '#title' => t('Layer Title'),
     '#default_value' => isset($type->title) ? $type->title : '',
+    '#description' => t('The friendly name of your layer, which will appear in the administration interface.'),
   );
   $form['description'] = array(
     '#type' => 'textfield',
