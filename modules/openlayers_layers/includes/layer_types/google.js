@@ -13,7 +13,7 @@ Drupal.openlayers.layer.google = function (name, map, options) {
   var styleMap = Drupal.openlayers.getStyleMap(map, options.name);
 
   google_type_map = {
-    "street": G_NORMAL_MAP,
+    "normal": G_NORMAL_MAP,
     "satellite": G_SATELLITE_MAP,
     "hybrid": G_HYBRID_MAP,
     "physical": G_PHYSICAL_MAP

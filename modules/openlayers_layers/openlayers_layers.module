@@ -35,7 +35,7 @@ function openlayers_layers_ctools_plugin_api($module, $api) {
   }
 }
 
-function openlayers_openlayers_layer_types() {
+function openlayers_layers_openlayers_layer_types() {
   return array(
     'openlayers_layers_google' => array(
       'title' => t('Google'),
@@ -81,8 +81,34 @@ function openlayers_openlayers_layer_types() {
 }
 
 /**
- * Implementation of hook_openlayers_layers_info().
+ * Implementation of hook_openlayers_layers_info.
  */
+function openlayers_layers_openlayers_layers_info() {
+  $layers = array();
+
+  $layer = new stdClass();
+  $layer->api_version = 1;
+  $layer->name = 'google_satellite';
+  $layer->title = t('Google Maps Satellite');
+  $layer->description = t('Google Maps Satellite Imagery. Legally encumbered.');
+  $layer->data = array(
+    'baselayer' => TRUE,
+    'type' => 'google',
+    'projection' => array('900913'),
+    'layer_type' => 'openlayers_layers_google',
+    'options' => array(
+      'type' => 'satellite',
+    ),
+    'events' => array(),
+  );
+  $layers[$layer->name] = $layer;
+
+  return $layers;
+}
+
+
+/**
+ * Implementation of hook_openlayers_layers_info().
 function openlayers_layers_openlayers_layers_info() {
   
   $file = drupal_get_path('module', 'openlayers_layers') .'/includes/openlayers_layers.layers.inc';
@@ -307,7 +333,6 @@ function openlayers_layers_openlayers_layers_info() {
     'file' => $file,
     'callback' => $callback,
   );
-   */
 
   // If Geo module is enabled, create layer for each geo table
   if (module_exists('geo_data')) {
@@ -330,3 +355,4 @@ function openlayers_layers_openlayers_layers_info() {
   
   return $info;
 }
+*/
