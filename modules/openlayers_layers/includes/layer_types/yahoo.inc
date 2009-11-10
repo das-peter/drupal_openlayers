@@ -13,13 +13,19 @@ class openlayers_layer_type_yahoo extends openlayers_layer_type {
    * Options form which generates layers
    */
   function options_form() {
+    return array();
+  }
+
+  function settings_form() {
     return array(
-      'base_url' => array(
+      'openlayers_layers_yahoo_api' => array(
         '#type' => 'textfield',
         '#title' => t('Yahoo API Key'),
+        '#default_value' => variable_get('openlayers_layers_yahoo_api', ''),
       )
     );
   }
+
 
   /**
    * Render.

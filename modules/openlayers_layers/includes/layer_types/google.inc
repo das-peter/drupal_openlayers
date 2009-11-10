@@ -21,9 +21,10 @@ class openlayers_layer_type_google extends openlayers_layer_type {
    */
   function settings_form() {
     return array(
-      'base_url' => array(
+      'openlayers_layers_google_api' => array(
         '#type' => 'textfield',
         '#title' => t('Google API Key'),
+        '#default_value' => variable_get('openlayers_layers_google_api', ''),
       )
     );
   }
