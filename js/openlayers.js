@@ -112,7 +112,7 @@ Drupal.openlayers = {
     for (var name in map.layers) {
       var layer;      
       var options = map['layers'][name];
-      if (Drupal.openlayers.layer[options.layer_handler] !== undefined) {
+      if (options.layer_handler !== undefined && Drupal.openlayers.layer[options.layer_handler] !== undefined) {
         var layer = Drupal.openlayers.layer[options.layer_handler](name, map, options);
 
         layer.visibility = (!map['layer_activated'] || map['layer_activated'][name]);
@@ -231,7 +231,7 @@ Drupal.openlayers = {
         stylesAdded[style] = new OpenLayers.Style(map.styles[style]);
       }
       // Implement layer-specific styles.
-      if (map.layer_styles[layername]) {
+      if (map.layer_styles !== undefined && map.layer_styles[layername]) {
         var style = map.layer_styles[layername];
         stylesAdded['default'] = new OpenLayers.Style(map.styles[style]);
       }
@@ -253,3 +253,5 @@ Drupal.openlayers = {
     });
   }
 };
+
+Drupal.openlayers.layer = {};
