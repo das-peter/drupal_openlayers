@@ -52,37 +52,47 @@ function openlayers_layers_ctools_plugin_api($module, $api) {
   }
 }
 
-/**
- * Implementation of hook_openlayers_layers_handler().
- */
-function openlayers_layers_openlayers_layers_handler_info($map = array()) {
-  // Define Layer Types that won't be used outside of this module
-  // such as Google Maps, Yahoo Maps, and MS Virtual Earth
-  $js_file = drupal_get_path('module', 'openlayers_layers') .'/js/openlayers_layers.layers.js';
+function openlayers_openlayers_layer_types() {
   return array(
-    'KML' => array(
-      'layer_handler' => 'KML',
-      'js_file' => $js_file,
+    'openlayers_layers_google' => array(
+      'title' => t('Google'),
+      'description' => t('Google Maps API Map'),
+      'layer_type' => array(
+        'path' => drupal_get_path('module', 'openlayers_layers') .'/includes/layer_types',
+        'file' => 'google.inc',
+        'class' => 'openlayers_layer_type_google',
+        'parent' => 'openlayers_layer_type',
+      ),
     ),
-    'XYZ' => array(
-      'layer_handler' => 'XYZ',
-      'js_file' => $js_file,
+    'openlayers_layers_yahoo' => array(
+      'title' => t('Yahoo'),
+      'description' => t('Yahoo Maps API Map'),
+      'layer_type' => array(
+        'path' => drupal_get_path('module', 'openlayers_layers') .'/includes/layer_types',
+        'file' => 'yahoo.inc',
+        'class' => 'openlayers_layer_type_yahoo',
+        'parent' => 'openlayers_layer_type',
+      ),
     ),
-    'Google' => array(
-      'layer_handler' => 'Google',
-      'js_file' => $js_file,
+    'openlayers_layers_virtualearth' => array(
+      'title' => t('Virtual Earth'),
+      'description' => t('Microsoft Virtual Earth'),
+      'layer_type' => array(
+        'path' => drupal_get_path('module', 'openlayers_layers') .'/includes/layer_types',
+        'file' => 'virtualearth.inc',
+        'class' => 'openlayers_layer_type_virtualearth',
+        'parent' => 'openlayers_layer_type',
+      ),
     ),
-    'VirtualEarth' => array(
-      'layer_handler' => 'VirtualEarth',
-      'js_file' => $js_file,
-    ),
-    'Yahoo' => array(
-      'layer_handler' => 'Yahoo',
-      'js_file' => $js_file,
-    ),
-    'CloudMade' => array(
-      'layer_handler' => 'CloudMade',
-      'js_file' => $js_file,
+    'openlayers_layers_cloudmade' => array(
+      'title' => t('CloudMade'),
+      'description' => t('CloudMade'),
+      'layer_type' => array(
+        'path' => drupal_get_path('module', 'openlayers_layers') .'/includes/layer_types',
+        'file' => 'cloudmade.inc',
+        'class' => 'openlayers_layer_type_cloudmade',
+        'parent' => 'openlayers_layer_type',
+      ),
     ),
   );
 }
@@ -98,7 +108,7 @@ function openlayers_layers_openlayers_layers_info() {
   $info = array();
 
   // Define info array
-
+  /*
   $info['openlayers_layers_nasa_daily_planet'] = new StdClass();
   $info['openlayers_layers_nasa_daily_planet']->api_version = 1;
   $info['openlayers_layers_nasa_daily_planet']->name = 'openlayers_layers_nasa_daily_planet';
@@ -222,7 +232,6 @@ function openlayers_layers_openlayers_layers_info() {
     'file' => $file,
     'callback' => $callback,
   );
-
   $info['openlayers_layers_virtual_earth_street'] = new StdClass();
   $info['openlayers_layers_virtual_earth_street']->api_version = 1;
   $info['openlayers_layers_virtual_earth_street']->name = 'openlayers_layers_virtual_earth_street';
@@ -264,7 +273,6 @@ function openlayers_layers_openlayers_layers_info() {
     'file' => $file,
     'callback' => $callback,
   );
-
   $info['openlayers_layers_osm_mapnik'] = new StdClass();
   $info['openlayers_layers_osm_mapnik']->api_version = 1;
   $info['openlayers_layers_osm_mapnik']->name = 'openlayers_layers_osm_mapnik';
@@ -316,21 +324,7 @@ function openlayers_layers_openlayers_layers_info() {
     'file' => $file,
     'callback' => $callback,
   );
-
-  // If KML module is enable, create layer for local KML feed
-  if (module_exists('kml')) {
-    $info['openlayers_layers_local_kml'] = new StdClass();
-    $info['openlayers_layers_local_kml']->api_version = 1;
-    $info['openlayers_layers_local_kml']->name = 'openlayers_layers_local_kml';
-    $info['openlayers_layers_local_kml']->title = t('Local KML Feed');
-    $info['openlayers_layers_local_kml']->description = t('KML produced by the kml module.');
-    $info['openlayers_layers_local_kml']->data = array (
-      'projection' => array('900919'),
-      'baselayer' => TRUE,
-      'type' => 'KML',
-      'url' => url('kml/node'),
-    );
-  }
+   */
 
   // If Geo module is enabled, create layer for each geo table
   if (module_exists('geo_data')) {
