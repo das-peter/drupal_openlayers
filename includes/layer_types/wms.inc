@@ -6,7 +6,8 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
   function options_init() {
     return array(
       'serverResolutions' => openlayers_get_resolutions('900913'),
-      'maxExtent' => openlayers_get_extent('900913')
+      'maxExtent' => openlayers_get_extent('900913'),
+      'layer_handler' => 'wms'
     );
   }
 
@@ -36,6 +37,7 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
    * Render.
    */
   function render(&$map) {
+    drupal_add_js(drupal_get_path('module', 'openlayers') .'/includes/layer_types/wms.js');
     return $this->options;
   }
 }
