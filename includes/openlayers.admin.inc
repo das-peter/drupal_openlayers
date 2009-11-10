@@ -279,7 +279,6 @@ function openlayers_ui_layers_settings_submit(&$form, &$form_state) {
   foreach ($form_state['values'] as $key => $value) {
     if (in_array($key, array_keys($layer_types))) {
       foreach ($value['settings'] as $k => $v) {
-        echo $v;
         variable_set($k, $v);
       }
     }

@@ -6,6 +6,7 @@ class openlayers_layer_type_yahoo extends openlayers_layer_type {
   function options_init() {
     return array(
       'layer_type' => 'yahoo',
+      'layer_handler' => 'yahoo',
     );
   }
 
@@ -31,6 +32,7 @@ class openlayers_layer_type_yahoo extends openlayers_layer_type {
    * Render.
    */
   function render(&$map) {
+    drupal_add_js(drupal_get_path('module', 'openlayers_layers') .'/includes/layer_types/yahoo.js');
     drupal_set_html_head('<script src="' . check_url("http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=" . variable_get('openlayers_layers_yahoo_api', '')) . '" type="text/javascript"></script>');
     return $this->options;
   }
