@@ -8,31 +8,21 @@
  * @return
  *   Valid OpenLayers layer
  */
-OL.Layers.Yahoo = function(layerOptions, mapid) {
-  var mapType;
-  if (layerOptions.params.type == "street") {
-    mapType = YAHOO_MAP_REG;
-  }
-  else if (layerOptions.params.type == "satellite") {
-   mapType = YAHOO_MAP_SAT;
-  }
-  else if (layerOptions.params.type == "hybrid") {
-    mapType = YAHOO_MAP_HYB;
-  }
-  
-  var mapOptions = {
-    type: mapType,
-    sphericalMercator: true,
-    maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34)
+
+Drupal.openlayers.layer.yahoo = function (name, map, options) {
+  var styleMap = Drupal.openlayers.getStyleMap(map, options.name);
+
+  yahoo_type_map = {
+    "street": YAHOO_MAP_REG,
+    "satellite": YAHOO_MAP_SAT,
+    "hybrid": YAHOO_MAP_HYB,
   };
-  
-  jQuery.extend(mapOptions, layerOptions.options);
-  
-  var yahooLayer = new OpenLayers.Layer.Yahoo(
-    layerOptions.name, 
-    mapOptions
-  );
-  return yahooLayer;
-}
 
+  options.sphericalMercator = true;
+  options.maxExtent = new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34);
+  options.type = yahoo_type_map[options.type];
 
+  var layer = new OpenLayers.Layer.Yahoo(name, options);
+  layer.styleMap = styleMap;
+  return layer;
+};

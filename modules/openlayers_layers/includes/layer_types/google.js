@@ -8,34 +8,22 @@
  * @return
  *   Valid OpenLayers layer
  */
-OL.Layers.Google = function(layerOptions, mapid) {
-  var mapType;
-  if (layerOptions.params.type == "street") {
-    mapType = G_NORMAL_MAP;
-  }
-  else if (layerOptions.params.type == "satellite") {
-   mapType = G_SATELLITE_MAP;
-  }
-  else if (layerOptions.params.type == "hybrid") {
-    mapType = G_HYBRID_MAP;
-  }
-  else if (layerOptions.params.type == "physical") {
-    mapType = G_PHYSICAL_MAP;
-  }
-  
-  var mapOptions = {
-    type: mapType,
-    sphericalMercator: true,
-    maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34)
+
+Drupal.openlayers.layer.google = function (name, map, options) {
+  var styleMap = Drupal.openlayers.getStyleMap(map, options.name);
+
+  google_type_map = {
+    "street": G_NORMAL_MAP,
+    "satellite": G_SATELLITE_MAP,
+    "hybrid": G_HYBRID_MAP,
+    "physical": G_PHYSICAL_MAP
   };
-  
-  jQuery.extend(mapOptions, layerOptions.options);
-  
-  var googleLayer = new OpenLayers.Layer.Google(
-    layerOptions.name, 
-    mapOptions
-  );
-  return googleLayer;
-}
 
+  options.sphericalMercator = true;
+  options.maxExtent = new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34);
+  options.type = google_type_map[options.type];
 
+  var layer = new OpenLayers.Layer.Google(name, options);
+  layer.styleMap = styleMap;
+  return layer;
+};

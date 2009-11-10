@@ -8,31 +8,20 @@
  * @return
  *   Valid OpenLayers layer
  */
-OL.Layers.VirtualEarth = function(layerOptions, mapid) {
-  var mapType;
-  if (layerOptions.params.type == "street") {
-    mapType = VEMapStyle.Road;
-  }
-  else if (layerOptions.params.type == "satellite") {
-   mapType = VEMapStyle.Aerial;
-  }
-  else if (layerOptions.params.type == "hybrid") {
-    mapType = VEMapStyle.Hybrid;
-  }
-  
-  var mapOptions = {
-    type: mapType,
-    sphericalMercator: true,
-    maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34)
+Drupal.openlayers.layer.virtualearth = function (name, map, options) {
+  var styleMap = Drupal.openlayers.getStyleMap(map, options.name);
+
+  virtualearth_type_map = {
+    "street": VEMapStyle.Road,
+    "satellite": VEMapStyle.Aerial,
+    "hybrid": VEMapStyle.Hybrid,
   };
-  
-  jQuery.extend(mapOptions, layerOptions.options);
-  
-  var virtualEarthLayer = new OpenLayers.Layer.VirtualEarth(
-    layerOptions.name, 
-    mapOptions
-  );
-  return virtualEarthLayer;
-}
 
+  options.sphericalMercator = true;
+  options.maxExtent = new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34);
+  options.type = virtualearth_type_map[options.type];
 
+  var layer = new OpenLayers.Layer.VirtualEarth(name, options);
+  layer.styleMap = styleMap;
+  return layer;
+};
