@@ -8,17 +8,13 @@
  * @return
  *   Valid OpenLayers layer
  */
-OL.Layers.CloudMade = function(layerOptions, mapid) {
-  // @@TODO: Check for CloudMade definition since it is in another file
-  // Make sure there is options for a key
-  if (OL.isSet(layerOptions.options)) {
-    if (OL.isSet(layerOptions.options.key)) {
-      var mapOptions = {
-      };
-      jQuery.extend(mapOptions, layerOptions.options);
-    
-      var cloudmade = new OpenLayers.Layer.CloudMade(layerOptions.name, layerOptions.options);
-      return cloudmade;
-    }
-  }
-}
+Drupal.openlayers.layer.cloudmade = function (name, map, options) {
+  var styleMap = Drupal.openlayers.getStyleMap(map, options.name);
+
+  options.sphericalMercator = true;
+  options.maxExtent = new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34);
+
+  var layer = new OpenLayers.Layer.CloudMade(name, options);
+  layer.styleMap = styleMap;
+  return layer;
+};

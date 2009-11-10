@@ -26,5 +26,3 @@ OL.Layers.KML = function(layerOptions, mapid) {
   
   return returnKML;
 }
-
-

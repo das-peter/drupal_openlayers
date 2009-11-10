@@ -8,15 +8,13 @@
  * @return
  *   Valid OpenLayers layer
  */
-OL.Layers.XYZ = function(layerOptions, mapid) {
-  var mapOptions = {
-    sphericalMercator: true,
-    maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34)
-  };
-  
-  jQuery.extend(mapOptions, layerOptions.options);
-  
-  var returnXYZ = new OpenLayers.Layer.XYZ(layerOptions.name, layerOptions.url, mapOptions);
-  return returnXYZ;
-}
+Drupal.openlayers.layer.xyz = function (name, map, options) {
+  var styleMap = Drupal.openlayers.getStyleMap(map, options.name);
 
+  options.sphericalMercator = true;
+  options.maxExtent = new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34);
+
+  var layer = new OpenLayers.Layer.XYZ(name, options.base_url, options);
+  layer.styleMap = styleMap;
+  return layer;
+};
