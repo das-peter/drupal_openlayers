@@ -10,57 +10,6 @@
  */
 
 /**
- * Process Layers
- *
- * Call back to process layers provided by the
- * openlayers_layers_openlayers_layers_info() function
- *
- * @param $layer
- *   String ID for the layer
- * @param $map
- *   Map array
- * @return
- *   Array formated for an OpenLayers map layer
- */
-function openlayers_layers_process_layers($info = NULL) {  
-  $layer = $info->data;
-  $layer['name'] = $info->title;
-
-  // Do some extra processing
-  switch ($layer['name']) {
-
-    case 'openlayers_layers_google_street':
-    case 'openlayers_layers_google_satellite':
-    case 'openlayers_layers_google_hybrid':
-    case 'openlayers_layers_google_physical':
-      _openlayers_layers_include_map_api('google');
-      break;
-
-    case 'openlayers_layers_yahoo_street':
-    case 'openlayers_layers_yahoo_satellite':
-    case 'openlayers_layers_yahoo_hybrid':
-      _openlayers_layers_include_map_api('yahoo');
-      break;
-
-    case 'openlayers_layers_virtual_earth_street':
-    case 'openlayers_layers_virtual_earth_satellite':
-    case 'openlayers_layers_virtual_earth_hybrid':
-      _openlayers_layers_include_map_api('virtual_earth');
-      break;
-
-    case 'openlayers_layers_cloudmade':
-      // Include JS
-      drupal_add_js(variable_get('openlayers_layers_cloudmade_js', ''));
-      break;
-
-    default:
-      break;
-  }
-
-  return $layer;
-}
-
-/**
  * Speicifc Layer Callback for Geo Table Layers
  *
  * This function handles the speicifc layer handling
@@ -112,47 +61,11 @@ function openlayers_layers_process_geo_data_layers($info = NULL) {
     );
   }
   
-  
-  
-  
   // Create layer data array
-  
   $layer = $info->data;
   $layer['id'] = $info->name;
   $layer['name'] = $info->title;
   $layer['features'] = $features;
   
   return $layer;
-}
-
-/**
- * Include Mapi API
- *
- * Function to include any third-party APIs for layers
- *
- * @param $type
- *   String of type to include
- */
-function _openlayers_layers_include_map_api($type = '') {
-  static $included = array();
-
-  // Check if already included
-  if (!$included[$type] && $type) {
-    switch ($type) {
-      case 'google':
-        // Include Google Map API JS (maybe getting key from GMap)
-        drupal_set_html_head('<script src="'. check_url("http://maps.google.com/maps?file=api&v=2&sensor=false&key=" . variable_get('openlayers_layers_google_api', variable_get('googlemap_api_key', ''))) . '" type="text/javascript"></script>');
-        break;
-
-      case 'yahoo':
-        drupal_set_html_head('<script src="' . check_url("http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=" . variable_get('openlayers_layers_yahoo_api', '')) . '" type="text/javascript"></script>');
-        break;
-
-      case 'virtual_earth':
-        drupal_set_html_head('<script src="' . check_url("http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.1") . '" type="text/javascript"></script>');
-        break;
-
-    }
-    $included[$type] = TRUE;
-  }
 }
