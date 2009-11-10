@@ -6,6 +6,7 @@ class openlayers_layer_type_virtualearth extends openlayers_layer_type {
   function options_init() {
     return array(
       'layer_type' => 'virtualearth',
+      'layer_handler' => 'virtualearth',
     );
   }
 
@@ -14,9 +15,19 @@ class openlayers_layer_type_virtualearth extends openlayers_layer_type {
    */
   function options_form() {
     return array(
-      'base_url' => array(
+      
+    );
+  }
+
+  /**
+   * Layer-type-wide settings form
+   */
+  function settings_form() {
+    return array(
+      'openlayers_layers_virtualearth_api' => array(
         '#type' => 'textfield',
         '#title' => t('VirtualEarth API Key'),
+        '#default_value' => variable_get('openlayers_layers_virtualearth_api', ''),
       )
     );
   }
@@ -25,6 +36,7 @@ class openlayers_layer_type_virtualearth extends openlayers_layer_type {
    * Render.
    */
   function render(&$map) {
+    drupal_add_js(drupal_get_path('module', 'openlayers_layers') .'/includes/layer_types/virtualearth.js');
     drupal_set_html_head('<script src="' . check_url("http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.1") . '" type="text/javascript"></script>');
     return $this->options;
   }

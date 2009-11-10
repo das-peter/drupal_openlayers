@@ -183,6 +183,49 @@ function openlayers_layers_openlayers_layers_info() {
     'events' => array(),
   );
   $layers[$layer->name] = $layer;
+  
+  $layer = new stdClass();
+  $layer->api_version = 1;
+  $layer->name = 'virtualearth_street';
+  $layer->title = t('Virtual Earth Street');
+  $layer->description = t('');
+  $layer->data = array(
+    'baselayer' => TRUE,
+    'type' => 'street',
+    'projection' => array('900913'),
+    'layer_type' => 'openlayers_layers_virtualearth',
+    'events' => array(),
+  );
+  $layers[$layer->name] = $layer;
+
+  $layer = new stdClass();
+  $layer->api_version = 1;
+  $layer->name = 'virtualearth_satellite';
+  $layer->title = t('Virtual Earth Satellite');
+  $layer->description = t('');
+  $layer->data = array(
+    'baselayer' => TRUE,
+    'type' => 'satellite',
+    'projection' => array('900913'),
+    'layer_type' => 'openlayers_layers_virtualearth',
+    'events' => array(),
+  );
+  $layers[$layer->name] = $layer;
+
+  $layer = new stdClass();
+  $layer->api_version = 1;
+  $layer->name = 'virtualearth_hybrid';
+  $layer->title = t('Virtual Earth Hybrid');
+  $layer->description = t('');
+  $layer->data = array(
+    'baselayer' => TRUE,
+    'type' => 'hybrid',
+    'projection' => array('900913'),
+    'layer_type' => 'openlayers_layers_virtualearth',
+    'events' => array(),
+  );
+  $layers[$layer->name] = $layer;
+
   return $layers;
 }
 
@@ -224,144 +267,6 @@ function openlayers_layers_openlayers_layers_info() {
     'params' => array('layers' => 'BMNG', 'format' => 'image/png'),
   );
 
-  $info['openlayers_layers_google_street'] = new StdClass();
-  $info['openlayers_layers_google_street']->api_version = 1;
-  $info['openlayers_layers_google_street']->name = 'openlayers_layers_google_street';
-  $info['openlayers_layers_google_street']->title = t('Google Street');
-  $info['openlayers_layers_google_street']->description = t('Street map by Google');
-  $info['openlayers_layers_google_street']->data = array (
-    'projection' => array('900919'),
-    'baselayer' => TRUE,
-    'type' => 'Google',
-    'params' => array('type' => 'street'),
-    'file' => $file,
-    'callback' => $callback,
-  );
-
-  $info['openlayers_layers_google_satellite'] = new StdClass();
-  $info['openlayers_layers_google_satellite']->api_version = 1;
-  $info['openlayers_layers_google_satellite']->name = 'openlayers_layers_google_satellite';
-  $info['openlayers_layers_google_satellite']->title = t('Google Satellite');
-  $info['openlayers_layers_google_satellite']->description = t('Satellite map by Google');
-  $info['openlayers_layers_google_satellite']->data = array (
-    'projection' => array('900919'),
-    'baselayer' => TRUE,
-    'type' => 'Google',
-    'params' => array('type' => 'satellite'),
-    'file' => $file,
-    'callback' => $callback,
-  );
-
-  $info['openlayers_layers_google_hybrid'] = new StdClass();
-  $info['openlayers_layers_google_hybrid']->api_version = 1;
-  $info['openlayers_layers_google_hybrid']->name = 'openlayers_layers_google_hybrid';
-  $info['openlayers_layers_google_hybrid']->title = t('Google Hybrid');
-  $info['openlayers_layers_google_hybrid']->description = t('A satellite map with place labels by Google');
-  $info['openlayers_layers_google_hybrid']->data = array (
-    'projection' => array('900919'),
-    'baselayer' => TRUE,
-    'type' => 'Google',
-    'params' => array('type' => 'hybrid'),
-    'file' => $file,
-    'callback' => $callback,
-  );
-  
-  $info['openlayers_layers_google_physical'] = new StdClass();
-  $info['openlayers_layers_google_physical']->api_version = 1;
-  $info['openlayers_layers_google_physical']->name = 'openlayers_layers_google_physical';
-  $info['openlayers_layers_google_physical']->title = t('Google Physical');
-  $info['openlayers_layers_google_physical']->description = t('A physical terrian by Google');
-  $info['openlayers_layers_google_physical']->data = array (
-    'projection' => array('900919'),
-    'baselayer' => TRUE,
-    'type' => 'Google',
-    'params' => array('type' => 'physical'),
-    'file' => $file,
-    'callback' => $callback,
-  );
-  
-  $info['openlayers_layers_yahoo_street'] = new StdClass();
-  $info['openlayers_layers_yahoo_street']->api_version = 1;
-  $info['openlayers_layers_yahoo_street']->name = 'openlayers_layers_yahoo_street';
-  $info['openlayers_layers_yahoo_street']->title = t('Yahoo Street');
-  $info['openlayers_layers_yahoo_street']->description = t('A sreet map by Yahoo');
-  $info['openlayers_layers_yahoo_street']->data = array (
-    'projection' => array('900919'),
-    'baselayer' => TRUE,
-    'type' => 'Yahoo',
-    'params' => array('type' => 'street'),
-    'file' => $file,
-    'callback' => $callback,
-  );
-
-  $info['openlayers_layers_yahoo_satellite'] = new StdClass();
-  $info['openlayers_layers_yahoo_satellite']->api_version = 1;
-  $info['openlayers_layers_yahoo_satellite']->name = 'openlayers_layers_yahoo_satellite';
-  $info['openlayers_layers_yahoo_satellite']->title = t('Yahoo Satellite');
-  $info['openlayers_layers_yahoo_satellite']->description = t('A satellite map by Yahoo');
-  $info['openlayers_layers_yahoo_satellite']->data = array (
-    'projection' => array('900919'),
-    'baselayer' => TRUE,
-    'type' => 'Yahoo',
-    'params' => array('type' => 'satellite'),
-    'file' => $file,
-    'callback' => $callback,
-  );
-
-  $info['openlayers_layers_yahoo_hybrid'] = new StdClass();
-  $info['openlayers_layers_yahoo_hybrid']->api_version = 1;
-  $info['openlayers_layers_yahoo_hybrid']->name = 'openlayers_layers_yahoo_hybrid';
-  $info['openlayers_layers_yahoo_hybrid']->title = t('Yahoo Hybrid');
-  $info['openlayers_layers_yahoo_hybrid']->description = t('A satellite map with place labels by Yahoo');
-  $info['openlayers_layers_yahoo_hybrid']->data = array (
-    'projection' => array('900919'),
-    'baselayer' => TRUE,
-    'type' => 'Yahoo',
-    'params' => array('type' => 'hybrid'),
-    'file' => $file,
-    'callback' => $callback,
-  );
-  $info['openlayers_layers_virtual_earth_street'] = new StdClass();
-  $info['openlayers_layers_virtual_earth_street']->api_version = 1;
-  $info['openlayers_layers_virtual_earth_street']->name = 'openlayers_layers_virtual_earth_street';
-  $info['openlayers_layers_virtual_earth_street']->title = t('Virtual Earth Street');
-  $info['openlayers_layers_virtual_earth_street']->description = t('A street map by Microsoft');
-  $info['openlayers_layers_virtual_earth_street']->data = array (
-    'projection' => array('900919'),
-    'baselayer' => TRUE,
-    'type' => 'VirtualEarth',
-    'params' => array('type' => 'street'),
-    'file' => $file,
-    'callback' => $callback,
-  );
-
-  $info['openlayers_layers_virtual_earth_satellite'] = new StdClass();
-  $info['openlayers_layers_virtual_earth_satellite']->api_version = 1;
-  $info['openlayers_layers_virtual_earth_satellite']->name = 'openlayers_layers_virtual_earth_satellite';
-  $info['openlayers_layers_virtual_earth_satellite']->title = t('Virtual Earth Satellite');
-  $info['openlayers_layers_virtual_earth_satellite']->description = t('A satellite map by Microsoft');
-  $info['openlayers_layers_virtual_earth_satellite']->data = array (
-    'projection' => array('900919'),
-    'baselayer' => TRUE,
-    'type' => 'VirtualEarth',
-    'params' => array('type' => 'satellite'),
-    'file' => $file,
-    'callback' => $callback,
-  );
-
-  $info['openlayers_layers_virtual_earth_hybrid'] = new StdClass();
-  $info['openlayers_layers_virtual_earth_hybrid']->api_version = 1;
-  $info['openlayers_layers_virtual_earth_hybrid']->name = 'openlayers_layers_virtual_earth_hybrid';
-  $info['openlayers_layers_virtual_earth_hybrid']->title = t('Virtual Earth Hybrid');
-  $info['openlayers_layers_virtual_earth_hybrid']->description = t('A satellite map with place labels by Microsoft');
-  $info['openlayers_layers_virtual_earth_hybrid']->data = array (
-    'projection' => array('900919'),
-    'baselayer' => TRUE,
-    'type' => 'VirtualEarth',
-    'params' => array('type' => 'hybrid'),
-    'file' => $file,
-    'callback' => $callback,
-  );
   $info['openlayers_layers_osm_mapnik'] = new StdClass();
   $info['openlayers_layers_osm_mapnik']->api_version = 1;
   $info['openlayers_layers_osm_mapnik']->name = 'openlayers_layers_osm_mapnik';
