@@ -95,6 +95,16 @@ function openlayers_ui_menu() {
     'file' => 'includes/openlayers.admin.inc',
     'type' => MENU_NORMAL_ITEM
   );
+  // Layer-type-wide settings form
+  $items['admin/settings/openlayers/layers/settings'] = array(
+    'title' => 'Settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_ui_layers_settings'),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => -10,
+  );
 
   // Styles.
   $items['admin/settings/openlayers/styles'] = array(
