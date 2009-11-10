@@ -67,13 +67,13 @@ function openlayers_layers_openlayers_layer_types() {
         'parent' => 'openlayers_layer_type',
       ),
     ),
-    'openlayers_layers_cloudmade' => array(
+    'openlayers_layers_type_cloudmade' => array(
       'title' => t('CloudMade'),
       'description' => t('CloudMade'),
       'layer_type' => array(
         'path' => drupal_get_path('module', 'openlayers_layers') .'/includes/layer_types',
         'file' => 'cloudmade.inc',
-        'class' => 'openlayers_layer_type_cloudmade',
+        'class' => 'openlayers_layers_type_cloudmade',
         'parent' => 'openlayers_layer_type',
       ),
     ),
