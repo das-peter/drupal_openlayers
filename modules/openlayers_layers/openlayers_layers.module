@@ -303,22 +303,6 @@ function openlayers_layers_openlayers_layers_info() {
     'url' => 'http://andy.sandbox.cloudmade.com/tiles/cycle/${z}/${x}/${y}.png',
   );
 
-  $info['openlayers_layers_cloudmade'] = new StdClass();
-  $info['openlayers_layers_cloudmade']->api_version = 1;
-  $info['openlayers_layers_cloudmade']->name = 'openlayers_layers_cloudmade';
-  $info['openlayers_layers_cloudmade']->title = t('CloudMade');
-  $info['openlayers_layers_cloudmade']->description = t('CloudMade tiles.  See <a href="http://www.cloudmade.com/">CloudMade</a>.');
-  $info['openlayers_layers_cloudmade']->data = array (
-    'projection' => array('900919'),
-    'baselayer' => TRUE,
-    'options' => array(
-      'key' => variable_get('openlayers_layers_cloudmade_api', ''),
-      'styleId' => variable_get('openlayers_layers_cloudmade_style', ''),
-    ),
-    'file' => $file,
-    'callback' => $callback,
-  );
-
   // If Geo module is enabled, create layer for each geo table
   if (module_exists('geo_data')) {
     // Get the data tables loaded from shapefiles, and include them as available layers

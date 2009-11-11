@@ -190,6 +190,14 @@ function openlayers_layers($reset = TRUE) {
 }
 
 /**
+ * Menu loader for layers. (%openlayers_layer)
+ */
+function openlayers_layer_load($name) {
+  $layers = openlayers_layer_objects();
+  return !empty($layers[$name]) ? $layers[$name] : FALSE;
+}
+
+/**
  * Get all openlayers layers as objects.
  *
  * @ingroup openlayers_api
@@ -198,10 +206,9 @@ function openlayers_layers($reset = TRUE) {
  * @return
  *   array of layer info
  */
-function openlayers_layer_objects($reset = TRUE) {
+function openlayers_layer_objects($name) {
   $layer_objects = array();
-
-  $layers = openlayers_layers($reset);
+  $layers = openlayers_layer_load($name);
   foreach($layers as $layer) {
     $layer_objects[$layer->name] = openlayers_get_layer_object($layer);
   }
@@ -220,15 +227,6 @@ function openlayers_layer_export_load($name) {
   $layers = openlayers_layers();
   return !empty($layers[$name]) ? $layers[$name] : FALSE;
 }
-
-/**
- * Menu loader for layers. (%openlayers_layer)
- */
-function openlayers_layer_load($name) {
-  $layers = openlayers_layer_objects();
-  return !empty($layers[$name]) ? $layers[$name] : FALSE;
-}
-
 /**
  * Save layer.
  */
@@ -552,6 +550,145 @@ function openlayers_openlayers_layers_info() {
   );
   $layers[$layer->name] = $layer;
 
+  $layer = new stdClass();
+  $layer->api_version = 1;
+  $layer->name = 'google_satellite';
+  $layer->title = t('Google Maps Satellite');
+  $layer->description = t('Google Maps Satellite Imagery. Legally encumbered.');
+  $layer->data = array(
+    'baselayer' => TRUE,
+    'type' => 'satellite',
+    'projection' => array('900913'),
+    'layer_type' => 'openlayers_layers_google',
+    'events' => array(),
+  );
+  $layers[$layer->name] = $layer;
+
+  $layer = new stdClass();
+  $layer->api_version = 1;
+  $layer->name = 'google_hybrid';
+  $layer->title = t('Google Maps Hybrid');
+  $layer->description = t('Google Maps with roads and terrain.');
+  $layer->data = array(
+    'baselayer' => TRUE,
+    'type' => 'hybrid',
+    'projection' => array('900913'),
+    'layer_type' => 'openlayers_layers_google',
+    'events' => array(),
+  );
+  $layers[$layer->name] = $layer;
+
+  $layer = new stdClass();
+  $layer->api_version = 1;
+  $layer->name = 'google_normal';
+  $layer->title = t('Google Maps Normal');
+  $layer->description = t('Standard Google Maps Roads');
+  $layer->data = array(
+    'baselayer' => TRUE,
+    'type' => 'normal',
+    'projection' => array('900913'),
+    'layer_type' => 'openlayers_layers_google',
+    'events' => array(),
+  );
+  $layers[$layer->name] = $layer;
+
+  $layer = new stdClass();
+  $layer->api_version = 1;
+  $layer->name = 'google_physical';
+  $layer->title = t('Google Maps Physical');
+  $layer->description = t('Google Maps Hillshades');
+  $layer->data = array(
+    'baselayer' => TRUE,
+    'type' => 'physical',
+    'projection' => array('900913'),
+    'layer_type' => 'openlayers_layers_google',
+    'events' => array(),
+  );
+  $layers[$layer->name] = $layer;
+
+  $layer = new stdClass();
+  $layer->api_version = 1;
+  $layer->name = 'yahoo_satellite';
+  $layer->title = t('Yahoo Maps Satellite');
+  $layer->description = t('');
+  $layer->data = array(
+    'baselayer' => TRUE,
+    'type' => 'satellite',
+    'projection' => array('900913'),
+    'layer_type' => 'openlayers_layers_yahoo',
+    'events' => array(),
+  );
+  $layers[$layer->name] = $layer;
+
+  $layer = new stdClass();
+  $layer->api_version = 1;
+  $layer->name = 'yahoo_street';
+  $layer->title = t('Yahoo Maps Street');
+  $layer->description = t('');
+  $layer->data = array(
+    'baselayer' => TRUE,
+    'type' => 'street',
+    'projection' => array('900913'),
+    'layer_type' => 'openlayers_layers_yahoo',
+    'events' => array(),
+  );
+  $layers[$layer->name] = $layer;
+
+  $layer = new stdClass();
+  $layer->api_version = 1;
+  $layer->name = 'yahoo_hybrid';
+  $layer->title = t('Yahoo Maps Hybrid');
+  $layer->description = t('');
+  $layer->data = array(
+    'baselayer' => TRUE,
+    'type' => 'hybrid',
+    'projection' => array('900913'),
+    'layer_type' => 'openlayers_layers_yahoo',
+    'events' => array(),
+  );
+  $layers[$layer->name] = $layer;
+  
+  $layer = new stdClass();
+  $layer->api_version = 1;
+  $layer->name = 'virtualearth_street';
+  $layer->title = t('Virtual Earth Street');
+  $layer->description = t('');
+  $layer->data = array(
+    'baselayer' => TRUE,
+    'type' => 'street',
+    'projection' => array('900913'),
+    'layer_type' => 'openlayers_layers_virtualearth',
+    'events' => array(),
+  );
+  $layers[$layer->name] = $layer;
+
+  $layer = new stdClass();
+  $layer->api_version = 1;
+  $layer->name = 'virtualearth_satellite';
+  $layer->title = t('Virtual Earth Satellite');
+  $layer->description = t('');
+  $layer->data = array(
+    'baselayer' => TRUE,
+    'type' => 'satellite',
+    'projection' => array('900913'),
+    'layer_type' => 'openlayers_layers_virtualearth',
+    'events' => array(),
+  );
+  $layers[$layer->name] = $layer;
+
+  $layer = new stdClass();
+  $layer->api_version = 1;
+  $layer->name = 'virtualearth_hybrid';
+  $layer->title = t('Virtual Earth Hybrid');
+  $layer->description = t('');
+  $layer->data = array(
+    'baselayer' => TRUE,
+    'type' => 'hybrid',
+    'projection' => array('900913'),
+    'layer_type' => 'openlayers_layers_virtualearth',
+    'events' => array(),
+  );
+  $layers[$layer->name] = $layer;
   return $layers;
 }
 
@@ -728,6 +865,46 @@ function openlayers_openlayers_layer_types() {
         'path' => drupal_get_path('module', 'openlayers') .'/includes/layer_types',
         'file' => 'osm.inc',
         'class' => 'openlayers_layer_type_osm',
+        'parent' => 'openlayers_layer_type',
+      ),
+    ),
+    'openlayers_layers_google' => array(
+      'title' => t('Google'),
+      'description' => t('Google Maps API Map'),
+      'layer_type' => array(
+        'path' => drupal_get_path('module', 'openlayers_layers') .'/includes/layer_types',
+        'file' => 'google.inc',
+        'class' => 'openlayers_layer_type_google',
+        'parent' => 'openlayers_layer_type',
+      ),
+    ),
+    'openlayers_layers_yahoo' => array(
+      'title' => t('Yahoo'),
+      'description' => t('Yahoo Maps API Map'),
+      'layer_type' => array(
+        'path' => drupal_get_path('module', 'openlayers_layers') .'/includes/layer_types',
+        'file' => 'yahoo.inc',
+        'class' => 'openlayers_layer_type_yahoo',
+        'parent' => 'openlayers_layer_type',
+      ),
+    ),
+    'openlayers_layers_virtualearth' => array(
+      'title' => t('Virtual Earth'),
+      'description' => t('Microsoft Virtual Earth'),
+      'layer_type' => array(
+        'path' => drupal_get_path('module', 'openlayers_layers') .'/includes/layer_types',
+        'file' => 'virtualearth.inc',
+        'class' => 'openlayers_layer_type_virtualearth',
+        'parent' => 'openlayers_layer_type',
+      ),
+    ),
+    'openlayers_layers_type_cloudmade' => array(
+      'title' => t('CloudMade'),
+      'description' => t('CloudMade'),
+      'layer_type' => array(
+        'path' => drupal_get_path('module', 'openlayers_layers') .'/includes/layer_types',
+        'file' => 'cloudmade.inc',
+        'class' => 'openlayers_layers_type_cloudmade',
         'parent' => 'openlayers_layer_type',
       ),
     ),
