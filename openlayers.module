@@ -631,7 +631,7 @@ function openlayers_openlayers_presets() {
  * We define base classes in the core module.
  * All other parent classes can be autoloaded through ctools.
  */
-class openlayers_behavior implements openlayers_behavior_interface {
+class openlayers_behavior {
   var $options, $map;
 
   function __construct($options = array(), $map = array()) {
@@ -654,7 +654,7 @@ class openlayers_behavior implements openlayers_behavior_interface {
  * We define base classes in the core module.
  * All other parent classes can be autoloaded through ctools.
  */
-class openlayers_layer_type implements openlayers_layer_type_interface {
+class openlayers_layer_type {
   var $options, $map;
 
   function __construct($layer = array(), $map = array()) {
@@ -697,26 +697,6 @@ class openlayers_layer_type implements openlayers_layer_type_interface {
   }
 
   function render(&$map) {}
-}
-
-/**
- * Interface for openlayers_behaviors.
- */
-interface openlayers_behavior_interface {
-  function __construct($options = array(), $map = array());
-  function options_init();
-  function options_form();
-  function render(&$map);
-}
-
-/**
- * Interface for openlayers_layer_types.
- */
-interface openlayers_layer_type_interface {
-  function __construct($options = array(), $map = array());
-  function options_init();
-  function options_form();
-  function render(&$map);
 }
 
 function openlayers_openlayers_layer_types() {
