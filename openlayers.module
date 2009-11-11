@@ -600,8 +600,17 @@ class openlayers_layer_type {
  * Implementation of hook_openlayers_layers_info.
  */
 function openlayers_openlayers_layers_info() {
-  module_load_include('inc', 'openlayers', 'includes/openlayers.layers.inc');
+  module_load_include('inc', 'openlayers', 'includes/openlayers.layers');
   return _openlayers_openlayers_layers_info();
+}
+
+/**
+ * Implementation of hook_openlayers_behaviors().
+ *
+ */
+function openlayers_openlayers_behaviors() {
+  module_load_include('inc', 'openlayers', 'includes/openlayers.behaviors');
+  return _openlayers_openlayers_behaviors();
 }
 
 /**
@@ -749,13 +758,4 @@ function openlayers_openlayers_layer_types() {
       ),
     ),
   );
-}
-
-/**
- * Implementation of hook_openlayers_behaviors().
- *
- */
-function openlayers_openlayers_behaviors() {
-  module_load_include('inc', 'openlayers', 'includes/openlayers.behaviors.inc');
-  return _openlayers_openlayers_behaviors();
 }
