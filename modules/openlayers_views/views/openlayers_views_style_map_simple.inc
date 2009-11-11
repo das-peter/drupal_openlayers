@@ -10,8 +10,7 @@
 
 /**
  * @class
- * Extension of the Views Plugin Syle for OpenLayers. This is the simple passthrough
- * version used by dev seed.
+ * Extension of the Views Plugin Syle for OpenLayers.
  *
  * This class extended the default views plugin class to provide
  * a style plugin for the Open Layers module.
