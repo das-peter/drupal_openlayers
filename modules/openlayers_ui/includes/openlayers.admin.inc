@@ -68,7 +68,7 @@ function openlayers_ui_object_list($type) {
       $objects = openlayers_styles(TRUE);
       break;
     case 'layers':
-      $objects = openlayers_layers(TRUE);
+      $objects = openlayers_layers_load(TRUE);
       break;
     case 'presets':
       $objects = openlayers_presets(TRUE);
@@ -981,7 +981,7 @@ function openlayers_ui_get_behavior_options($type, $defaults) {
 function openlayers_ui_get_layer_options($type = 'baselayer', $projection = NULL) {
   $options = array();
   $layers = array();
-  foreach(openlayers_layers() as $l) {
+  foreach(openlayers_layers_load() as $l) {
     $layers[$l->name] = openlayers_get_layer_object($l);
   }
   foreach ($layers as $key => $layer) {
