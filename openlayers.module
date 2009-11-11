@@ -594,6 +594,11 @@ class openlayers_layer_type {
     return array();
   }
 
+  /**
+   * @return
+   *   A version of this layer_type which can be saved,
+   *   when attempting to save a modified layer
+   */
   function to_record() {
     return array(
       'name' => $this->name,
@@ -603,6 +608,10 @@ class openlayers_layer_type {
     );
   }
 
+  /**
+   * @return
+   *   Success value on saving this layer
+   */
   function save() {
     if (!empty($this->name)) {
       $exists = db_result(db_query("SELECT name FROM {openlayers_layers} WHERE name = '%s'", $this->name));

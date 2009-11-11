@@ -366,8 +366,8 @@ function openlayers_ui_styles_form_submit(&$form, &$form_state) {
  */
 function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE) {
   openlayers_include();
-  drupal_add_js(drupal_get_path('module', 'openlayers') .'/includes/openlayers.admin.js', 'module');
-  drupal_add_css(drupal_get_path('module', 'openlayers') .'/includes/openlayers.admin.css');
+  drupal_add_js(drupal_get_path('module', 'openlayers_ui') .'/includes/openlayers.admin.js', 'module');
+  drupal_add_css(drupal_get_path('module', 'openlayers_ui') .'/includes/openlayers.admin.css');
 
   // If cloning or editing, attempt to get preset
   if (empty($preset)) {
@@ -1005,7 +1005,7 @@ function openlayers_ui_get_layer_options($type = 'baselayer', $projection = NULL
  */
 function openlayers_ui_get_projection_options() {
   $options = array();
-  foreach (openlayers_layer_objects() as $key => $layer) {
+  foreach (openlayers_layers_load() as $key => $layer) {
     if($layer->data['projection']) {
       foreach ($layer->data['projection'] as $projection) {
         $options[$projection] = $projection;
