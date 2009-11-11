@@ -173,16 +173,32 @@ function openlayers_get_layer_object($layer, $map = array()) {
   }
 }
 
+
+/**
+ * Menu loader for layers. %openlayers_layer_export
+ * @ingroup openlayers_api
+ *
+ * @param $name
+ *   Layer name
+ * @return
+ *   Layer export
+ */
+function openlayers_layer_export_load($name) {
+  ctools_include('export');
+  $layers = ctools_export_load_object('openlayers_layers', 'all', array($name), $reset);
+  return !empty($layers[$name]) ? $layers[$name] : FALSE;
+}
+
 /**
  * Get all openlayers layers.
- *
  * @ingroup openlayers_api
+ *
  * @param $reset
  *   Boolean whether to reset cache or not
  * @return
- *   array of layer info
+ *   layer exports
  */
-function openlayers_layers($reset = TRUE) {
+function openlayers_layers_export_load($reset = TRUE) {
   ctools_include('export');
   $layers = ctools_export_load_object('openlayers_layers', 'all', array(), $reset);
   return $layers;
@@ -190,24 +206,32 @@ function openlayers_layers($reset = TRUE) {
 
 /**
  * Menu loader for layers. (%openlayers_layer)
+ * @ingroup openlayers_api
+ *
+ * @param $name
+ *   Layer name
+ * @return
+ *   Layer export
  */
 function openlayers_layer_load($name) {
-  $layers = openlayers_layer_objects();
-  return !empty($layers[$name]) ? $layers[$name] : FALSE;
+  ctools_include('export');
+  $layer = ctools_export_load_object('openlayers_layers', 'all', array($name), $reset);
+  return openlayers_get_layer_object($layer);
 }
 
 /**
  * Get all openlayers layers as objects.
- *
  * @ingroup openlayers_api
+ *
  * @param $reset
  *   Boolean whether to reset cache or not
  * @return
  *   array of layer info
  */
-function openlayers_layer_objects($name) {
+function openlayers_layers_load() {
+  ctools_include('export');
   $layer_objects = array();
-  $layers = openlayers_layer_load($name);
+  $layers = ctools_export_load_object('openlayers_layers', 'all', array(), $reset);
   foreach($layers as $layer) {
     $layer_objects[$layer->name] = openlayers_get_layer_object($layer);
   }
@@ -215,19 +239,13 @@ function openlayers_layer_objects($name) {
 }
 
 /**
- * Menu loader for layers. (%openlayers_layer_export)
- * Additional layer export loaders
- * 
- * This was created mainly because of openlayers_ui_delete, which 
- * doesn't handle openlayers layer objects correctly. This might be removed when
- * things are rewritten so that layer objects also include export data
- */
-function openlayers_layer_export_load($name) {
-  $layers = openlayers_layers();
-  return !empty($layers[$name]) ? $layers[$name] : FALSE;
-}
-/**
  * Save layer.
+ * @ingroup openlayers_api
+ *
+ * @param $layer
+ *   Layer object
+ * @return
+ *   bool for success in saving
  */
 function openlayers_layer_save($layer) {
   if (!empty($layer->name)) {
@@ -362,7 +380,9 @@ function openlayers_preset_load($name = '', $reset = FALSE) {
 function openlayers_preset_save($preset) {
   if (!empty($preset->name)) {
     $exists = db_result(db_query("SELECT name FROM {openlayers_map_presets} WHERE name = '%s'", $preset->name));
-    return $exists ? drupal_write_record('openlayers_map_presets', $preset, 'name') : drupal_write_record('openlayers_map_presets', $preset);
+    return $exists ? 
+      drupal_write_record('openlayers_map_presets', $preset, 'name') : 
+      drupal_write_record('openlayers_map_presets', $preset);
   }
   return FALSE;
 }
@@ -721,7 +741,7 @@ function openlayers_openlayers_layer_types() {
       'title' => t('Google'),
       'description' => t('Google Maps API Map'),
       'layer_type' => array(
-        'path' => drupal_get_path('module', 'openlayers_layers') .'/includes/layer_types',
+        'path' => drupal_get_path('module', 'openlayers') .'/includes/layer_types',
         'file' => 'google.inc',
         'class' => 'openlayers_layer_type_google',
         'parent' => 'openlayers_layer_type',
@@ -731,7 +751,7 @@ function openlayers_openlayers_layer_types() {
       'title' => t('Yahoo'),
       'description' => t('Yahoo Maps API Map'),
       'layer_type' => array(
-        'path' => drupal_get_path('module', 'openlayers_layers') .'/includes/layer_types',
+        'path' => drupal_get_path('module', 'openlayers') .'/includes/layer_types',
         'file' => 'yahoo.inc',
         'class' => 'openlayers_layer_type_yahoo',
         'parent' => 'openlayers_layer_type',
@@ -741,7 +761,7 @@ function openlayers_openlayers_layer_types() {
       'title' => t('Virtual Earth'),
       'description' => t('Microsoft Virtual Earth'),
       'layer_type' => array(
-        'path' => drupal_get_path('module', 'openlayers_layers') .'/includes/layer_types',
+        'path' => drupal_get_path('module', 'openlayers') .'/includes/layer_types',
         'file' => 'virtualearth.inc',
         'class' => 'openlayers_layer_type_virtualearth',
         'parent' => 'openlayers_layer_type',
@@ -751,7 +771,7 @@ function openlayers_openlayers_layer_types() {
       'title' => t('CloudMade'),
       'description' => t('CloudMade'),
       'layer_type' => array(
-        'path' => drupal_get_path('module', 'openlayers_layers') .'/includes/layer_types',
+        'path' => drupal_get_path('module', 'openlayers') .'/includes/layer_types',
         'file' => 'cloudmade.inc',
         'class' => 'openlayers_layers_type_cloudmade',
         'parent' => 'openlayers_layer_type',
