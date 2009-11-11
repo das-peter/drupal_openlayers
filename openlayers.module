@@ -3,16 +3,7 @@
 
 /**
  * @defgroup openlayers OpenLayers: Provides an API and Modules to interface with OpenLayers
- *
- * Provides an API and Modules to interface with OpenLayers.  Needs work...
  */
-
-/**
- * @defgroup openlayers_api OpenLayers API: Specific functions that are part of the OpenLayers API
- *
- * Provides an API and Modules to interface with OpenLayers.  Needs work...
- */
-
 
 /**
  * @file
