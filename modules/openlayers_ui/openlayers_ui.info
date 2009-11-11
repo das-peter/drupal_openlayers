@@ -1,6 +1,6 @@
 ; $Id$
-name = OpenLayers UI
-description = Provides a user interface to create OpenLayers objects.
-core = 6.x
-package = OpenLayers
-dependencies[] = openlayers
+name = "OpenLayers UI"
+description = "Provides a user interface to manage OpenLayers maps."
+core = "6.x"
+package = "OpenLayers"
+dependencies[] = "openlayers"

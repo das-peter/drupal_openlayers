@@ -2,27 +2,243 @@
 // $Id$
 
 /**
- * @file
- * Main OpenLayers UI Hook Implemntations
- *
- * This file holds the main Drupal hook functions,
- * for the OpenLayers UI module.
- *
- * @ingroup openlayers
- */
-
-/**
- * Implementation of hook_help().
+ * Implementation of hook_help
  */
 function openlayers_ui_help($path, $arg) {
-  $output = '';
-
   switch ($path) {
     case 'admin/help#openlayers_ui':
-      $output = '<p>'. t('The OpenLayers UI module provides a User Interface to create map objects.') .'</p>';
-      return $output;
-
+      $output = '<p>'. t('Provides a user interface to manage OpenLayers maps.') .'</p>';
   }
+
+  return $output;
+}
+
+/**
+ * Implementation of hook_menu
+ */
+function openlayers_ui_menu() {
+  $items = array();
+
+  // Core OpenLayers settings pages.
+  $items['admin/settings/openlayers'] = array(
+    'title' => 'OpenLayers',
+    'description' => t('Main settings for OpenLayers.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_admin_settings'),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_NORMAL_ITEM
+  );
+  $items['admin/settings/openlayers/settings'] = array(
+    'title' => 'Settings',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -20,
+  );
+
+  // Layers.
+  $items['admin/settings/openlayers/layers'] = array(
+    'title' => 'Layers',
+    'page callback' => 'openlayers_ui_object_list',
+    'page arguments' => array(3),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => -10,
+  );
+  $items['admin/settings/openlayers/layers/list'] = array(
+    'title' => 'List',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -20,
+  );
+  // Layer type drilldown
+  $items['admin/settings/openlayers/layers/add'] = array(
+    'title' => 'Add',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_ui_layers_types'),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => -10,
+  );
+  // Actual add-layer form
+  $items['admin/settings/openlayers/layers/add/%openlayers_layer_type'] = array(
+    'title' => 'Add',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_ui_layers_form', 5),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => -15,
+  );
+  // Edit-layer form
+  $items['admin/settings/openlayers/layers/%openlayers_layer/edit'] = array(
+    'title' => 'Edit layer',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_ui_layers_form', 4),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_NORMAL_ITEM
+  );
+  $items['admin/settings/openlayers/layers/%openlayers_layer_export/delete'] = array(
+    'title' => 'Delete layer',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_ui_object_delete', 3, 4),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_NORMAL_ITEM
+  );
+  $items['admin/settings/openlayers/layers/%openlayers_layer/export'] = array(
+    'title' => 'Export layer',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_ui_object_export', 3, 4),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_NORMAL_ITEM
+  );
+  // Layer-type-wide settings form
+  $items['admin/settings/openlayers/layers/settings'] = array(
+    'title' => 'Settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_ui_layers_settings'),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => -10,
+  );
+
+  // Styles.
+  $items['admin/settings/openlayers/styles'] = array(
+    'title' => 'Styles',
+    'page callback' => 'openlayers_ui_object_list',
+    'page arguments' => array(3),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => -10,
+  );
+  $items['admin/settings/openlayers/styles/list'] = array(
+    'title' => 'List',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -20,
+  );
+  $items['admin/settings/openlayers/styles/add'] = array(
+    'title' => 'Add',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_ui_styles_form'),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => -10,
+  );
+  $items['admin/settings/openlayers/styles/add/%openlayers_style'] = array(
+    'title' => 'Add',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_ui_styles_form', 5),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => -10,
+  );
+  $items['admin/settings/openlayers/styles/%openlayers_style/edit'] = array(
+    'title' => 'Edit style',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_ui_styles_form', 4, TRUE),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_NORMAL_ITEM
+  );
+  $items['admin/settings/openlayers/styles/%openlayers_style/delete'] = array(
+    'title' => 'Delete style',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_ui_object_delete', 3, 4),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_NORMAL_ITEM
+  );
+  $items['admin/settings/openlayers/styles/%openlayers_style/export'] = array(
+    'title' => 'Export style',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_ui_object_export', 3, 4),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_NORMAL_ITEM
+  );
+
+  // Presets.
+  $items['admin/settings/openlayers/presets'] = array(
+    'title' => 'Presets',
+    'description' => t('Create OpenLayers map presets.'),
+    'page callback' => 'openlayers_ui_object_list',
+    'page arguments' => array(3),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => -10,
+  );
+  $items['admin/settings/openlayers/presets/list'] = array(
+    'title' => 'List',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -20,
+  );
+  $items['admin/settings/openlayers/presets/add'] = array(
+    'title' => 'Add',
+    'description' => t('Add OpenLayers map preset.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_ui_presets_form'),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => -10,
+  );
+  $items['admin/settings/openlayers/presets/add/%openlayers_preset'] = array(
+    'title' => 'Clone Preset',
+    'description' => t('Add OpenLayers map preset.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_ui_presets_form', 5),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => -10,
+  );
+  $items['admin/settings/openlayers/presets/%openlayers_preset/edit'] = array(
+    'title' => 'Edit preset',
+    'description' => 'Edit OpenLayers map preset.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_ui_presets_form', 4, TRUE),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+    'tab_parent' => 'admin/settings/openlayers/presets',
+  );
+  $items['admin/settings/openlayers/presets/%openlayers_preset/delete'] = array(
+    'title' => 'Delete preset',
+    'description' => 'Delete OpenLayers map preset.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_ui_object_delete', 3, 4),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+    'tab_parent' => 'admin/settings/openlayers/presets',
+  );
+  $items['admin/settings/openlayers/presets/%openlayers_preset/export'] = array(
+    'title' => 'Export preset',
+    'description' => t('Export OpenLayers map preset.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_ui_object_export', 3, 4),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+    'tab_parent' => 'admin/settings/openlayers/presets',
+  );
+  $items['openlayers/ahah/preset'] = array(
+    'title' => 'OpenLayers AHAH',
+    'page callback' => 'openlayers_ui_preset_ahah',
+    'access callback' => TRUE,
+    'file' => 'includes/openlayers.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
 }
 
 /**
@@ -35,7 +251,7 @@ function openlayers_ui_theme($existing, $type, $theme, $path) {
         'layer_title' => '',
         'layer_description' => '',
       ),
-      'file' => 'includes/openlayers_ui.theme.inc',
+      'file' => 'includes/openlayers.admin_theme.inc',
     ),
     'openlayers_ui_form_projection_description' => array(
       'arguments' => array(
@@ -43,129 +259,15 @@ function openlayers_ui_theme($existing, $type, $theme, $path) {
         'available_layers' => array(),
         'layers' => array(),
       ),
-      'file' => 'includes/openlayers_ui.theme.inc',
+      'file' => 'includes/openlayers.admin_theme.inc',
     ),
     'openlayers_ui_presets_form' => array(
-      'arguments' => array(
-        'form' => array()
-      ),
-      'file' => 'includes/openlayers_ui.theme.inc',
+      'arguments' => array('form' => array()),
+      'file' => 'includes/openlayers.admin_theme.inc',
     ),
     'openlayers_ui_presets_form_layers' => array(
-      'arguments' => array(
-        'form' => array()
-      ),
-      'file' => 'includes/openlayers_ui.theme.inc',
+      'arguments' => array('form' => array()),
+      'file' => 'includes/openlayers.admin_theme.inc',
     ),
   );
-}
-
-/**
- * Implementation of hook_menu().
- */
-function openlayers_ui_menu() {
-  $items = array();
-  // Note how menu system translate.  Some good, some bad.
-  $object_types = array(
-    'presets' => array(
-      'name' => 'Presets',
-      'single' => 'preset',
-    ),
-    'layers' => array(
-      'name' => 'Layers',
-      'single' => 'layer',
-    ),
-    'styles' => array(
-      'name' => 'Styles',
-      'single' => 'style',
-    ),
-  );
-  
-  // Since all objects have the same basic interfaces
-  foreach ($object_types as $type => $t) {
-    // List
-    $items['admin/settings/openlayers/' . $type] = array(
-      'title' => $t['name'],
-      'description' => 'Create OpenLayers '. $t['name'],
-      'page callback' => 'openlayers_ui_object_list',
-      'page arguments' => array(3),
-      'access arguments' => array('administer openlayers'),
-      'file' => 'includes/openlayers_ui.ui.inc',
-      'type' => MENU_LOCAL_TASK,
-      'weight' => -10,
-    );
-    $items['admin/settings/openlayers/' . $type . '/list'] = array(
-      'title' => 'List',
-      'type' => MENU_DEFAULT_LOCAL_TASK,
-      'weight' => -20,
-    );
-    // Add new
-    $items['admin/settings/openlayers/' . $type . '/add'] = array(
-      'title' => 'Add',
-      'description' => 'Add OpenLayers '. $t['name'],
-      'page callback' => 'drupal_get_form',
-      'page arguments' => array('openlayers_ui_' . $type .'_form'),
-      'access arguments' => array('administer openlayers'),
-      'file' => 'includes/openlayers_ui.ui.inc',
-      'type' => MENU_LOCAL_TASK,
-      'weight' => -10,
-    );
-    // Clone
-    $items['admin/settings/openlayers/' . $type . '/add/%openlayers_' . $t['single']] = array(
-      'title' => 'Clone',
-      'description' => 'Add OpenLayers '. $t['name'],
-      'page callback' => 'drupal_get_form',
-      'page arguments' => array('openlayers_ui_' . $type . '_form', 5),
-      'access arguments' => array('administer openlayers'),
-      'file' => 'includes/openlayers_ui.ui.inc',
-      'type' => MENU_NORMAL_ITEM,
-      'weight' => -10,
-    );
-    // Edit
-    $items['admin/settings/openlayers/' . $type . '/%openlayers_' . $t['single'] . '/edit'] = array(
-      'title' => 'Edit',
-      'description' => 'Edit OpenLayers '. $t['name'],
-      'page callback' => 'drupal_get_form',
-      'page arguments' => array('openlayers_ui_' . $type . '_form', 4, TRUE),
-      'access arguments' => array('administer openlayers'),
-      'file' => 'includes/openlayers_ui.ui.inc',
-      'type' => MENU_LOCAL_TASK,
-      'tab_parent' => 'admin/settings/openlayers/' . $type,
-    );
-    // Delete
-    $items['admin/settings/openlayers/' . $type . '/%openlayers_' . $t['single'] . '/delete'] = array(
-      'title' => 'Delete',
-      'description' => 'Delete OpenLayers '. $t['name'],
-      'page callback' => 'drupal_get_form',
-      'page arguments' => array('openlayers_ui_object_delete', 3, 4),
-      'access arguments' => array('administer openlayers'),
-      'file' => 'includes/openlayers_ui.ui.inc',
-      'type' => MENU_LOCAL_TASK,
-      'tab_parent' => 'admin/settings/openlayers/' . $type,
-    );
-    // Export
-    $items['admin/settings/openlayers/' . $type . '/%openlayers_' . $t['single'] . '/export'] = array(
-      'title' => 'Export',
-      'description' => 'Export OpenLayers '. $t['name'],
-      'page callback' => 'drupal_get_form',
-      'page arguments' => array('openlayers_ui_object_export', 3, 4),
-      'access arguments' => array('administer openlayers'),
-      'file' => 'includes/openlayers_ui.ui.inc',
-      'type' => MENU_LOCAL_TASK,
-      'tab_parent' => 'admin/settings/openlayers/' . $type,
-    );
-    
-    // TODO: ADD Import
-  }
-  
-  // AHAH Callback for presets
-  $items['openlayers/ahah/preset'] = array(
-    'title' => 'OpenLayers AHAH',
-    'page callback' => 'openlayers_ui_preset_ahah',
-    'access callback' => TRUE,
-    'file' => 'includes/openlayers_ui.ui.inc',
-    'type' => MENU_CALLBACK,
-  );
-
-  return $items;
 }
