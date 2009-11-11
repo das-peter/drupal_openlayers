@@ -1,7 +1,7 @@
 <?php
 
 
-function _openlayers_layers_openlayers_layers_info() {
+function _openlayers_openlayers_layers_info() {
   $layers = array();
 
   $layer = new stdClass();
