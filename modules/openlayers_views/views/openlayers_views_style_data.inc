@@ -133,8 +133,8 @@ class openlayers_views_style_data extends views_plugin_style {
         $feature['attributes']['name'] = $id;
         $lat_field = $fields[$data_source['other_lat']]['field_alias'];
         $lon_field = $fields[$data_source['other_lon']]['field_alias'];
-        $lon = $record[0]->$lon_field;
-        $lat = $record[0]->$lat_field;
+        $lon = current($record)->$lon_field;
+        $lat = current($record)->$lat_field;
         if (!empty($lat) && !empty($lon)) {
           $feature['wkt'] = 'POINT(' . $lon . ' ' . $lat . ')';
           $feature['projection'] = '4326';
