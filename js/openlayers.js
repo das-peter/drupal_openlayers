@@ -99,6 +99,10 @@ Drupal.behaviors.openlayers = function(context) {
 
         // Finally, attach behaviors
         Drupal.attachBehaviors(this);
+
+        if($.browser.msie) {
+          Drupal.openlayers.redrawVectors();
+        }
       }
     });
   }
@@ -108,6 +112,24 @@ Drupal.behaviors.openlayers = function(context) {
  * Collection of helper methods.
  */
 Drupal.openlayers = {
+  /**
+   * Redraw Vectors.
+   * This is necessary because various version of IE cannot draw vectors on
+   * $(document).ready()
+   */
+  'redrawVectors': function() {
+    $(window).load(
+      function() {
+        for(map in Drupal.settings.openlayers.maps) {
+          $.each($('#'+map).data('openlayers').openlayers.getLayersByClass('OpenLayers.Layer.Vector'), 
+            function(i, layer) {
+              layer.redraw();
+            }
+          );
+        }
+      }
+    );
+  },
   'addLayers': function(map, openlayers) {
     for (var name in map.layers) {
       var layer;      
@@ -150,7 +172,11 @@ Drupal.openlayers = {
           map.center.restrict.restrictedExtent);
     }
   },
-
+  /**
+   * Abstraction of OpenLayer's feature adding syntax to work with Drupal output.
+   * Ideally this should be rolled into the PHP code, because we don't want to manually
+   * parse WKT
+   */
   'addFeatures': function(map, layer, features) {
     var wktFormat = new OpenLayers.Format.WKT();
     var newFeatures = [];
@@ -222,7 +248,9 @@ Drupal.openlayers = {
       layer.addFeatures(newFeatures);
     }
   },
-
+  /**
+   * getStyleMap
+   */
   'getStyleMap': function(map, layername) {
     if (map.styles) {
       var stylesAdded = {};
