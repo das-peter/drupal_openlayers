@@ -1,6 +1,7 @@
 // $Id$
 /*jslint white: false */
-/*global OpenLayers Drupal $ document jQuery */
+/*jslint forin: true */
+/*global OpenLayers Drupal $ document jQuery window */
 
 /**
  * @file
@@ -120,6 +121,7 @@ Drupal.openlayers = {
   'redrawVectors': function() {
     $(window).load(
       function() {
+        var map;
         for(map in Drupal.settings.openlayers.maps) {
           $.each($('#'+map).data('openlayers').openlayers.getLayersByClass('OpenLayers.Layer.Vector'), 
             function(i, layer) {
@@ -133,11 +135,11 @@ Drupal.openlayers = {
   'addLayers': function(map, openlayers) {
     for (var name in map.layers) {
       var layer;      
-      var options = map['layers'][name];
+      var options = map.layers[name];
       if (options.layer_handler !== undefined && Drupal.openlayers.layer[options.layer_handler] !== undefined) {
         var layer = Drupal.openlayers.layer[options.layer_handler](name, map, options);
 
-        layer.visibility = (!map['layer_activated'] || map['layer_activated'][name]);
+        layer.visibility = (!map.layer_activated || map.layer_activated[name]);
 
         if (map.center.wrapdateline === '1') {
           // TODO: move into layer specific settings
