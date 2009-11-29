@@ -328,12 +328,11 @@ function openlayers_cck_wkt_element_process($element, $edit, &$form_state, &$for
   $field = $form['#field_info'][$element['#parents'][0]];
   $delta = $element['#delta'];
   $field_name = $field['field_name'];
-  $widget = $field['widget'];
-  $field_label = $widget['label'];
   $field_key = $element['#columns'][0];
 
   // Make map for input
-  $rendered_map = _openlayers_cck_render_element_map($field_name, $field_label, $element['#value'], $field);
+  $rendered_map = _openlayers_cck_render_element_map(
+    $field_name, $field['widget']['label'], $element['#value'], $field);
   // Create map element
   $element['map'] = array(
     '#value' => theme('openlayers_cck_map', $field, $rendered_map),
@@ -482,7 +481,8 @@ function theme_openlayers_cck_formatter_default($element) {
   // Create array of $features
   foreach (element_children($element) as $delta) {
     // First look in the 'wkt' key (where geo stores it), then look in 'openlayers_wkt' key (where the non-spatial openlayers wkt field stores it).
-    $features[$delta] = $element[$delta]['#item']['wkt'] ? $element[$delta]['#item']['wkt'] : $element[$delta]['#item']['openlayers_wkt'];
+    $features[$delta] = $element[$delta]['#item']['wkt'] ?
+      $element[$delta]['#item']['wkt'] : $element[$delta]['#item']['openlayers_wkt'];
   }
   
   // Clean features array of empty and null values
@@ -494,6 +494,7 @@ function theme_openlayers_cck_formatter_default($element) {
       // There are multiple features, so output either a multipart feature or a geometrycollection.
       // Check to see if all the feature types are the same.
       $samefeaturetype = TRUE;
+      // Holy crap, this needs to be rewritten
       foreach ($features as $feature) {
         foreach ($features as $checkfeature) {
           if (substr($feature, 0, 5) != substr($checkfeature, 0, 5)) {
@@ -504,9 +505,12 @@ function theme_openlayers_cck_formatter_default($element) {
       }
       if ($samefeaturetype) {
         // All the same feature types, output a multipart feature.
-        if (substr($features[0], 0, 5) == 'POINT')        $output = 'MULTIPOINT(' . str_replace('POINT', '', implode(',', $features)) . ')';
-        if (substr($features[0], 0, 10) == 'LINESTRING')  $output = 'MULTILINESTRING(' . str_replace('LINESTRING', '', implode(',', $features)) . ')';
-        if (substr($features[0], 0, 7) == 'POLYGON')      $output = 'MULTIPOLYGON(' . str_replace('POLYGON', '', implode(',', $features)) . ')';        
+        if (substr($features[0], 0, 5) == 'POINT')
+          $output = 'MULTIPOINT(' . str_replace('POINT', '', implode(',', $features)) . ')';
+        if (substr($features[0], 0, 10) == 'LINESTRING')
+          $output = 'MULTILINESTRING(' . str_replace('LINESTRING', '', implode(',', $features)) . ')';
+        if (substr($features[0], 0, 7) == 'POLYGON')
+          $output = 'MULTIPOLYGON(' . str_replace('POLYGON', '', implode(',', $features)) . ')';        
       }
       else {
         // Different feature types, output a geometrycollection.
@@ -645,25 +649,22 @@ function openlayers_cck_gis_input_info($gis_type = NULL) {
 function _openlayers_cck_render_element_map($field_name = '', $field_label = '', $values = array(), $field = array()) {
   $field_name_html = str_replace('_', '-', $field_name);
   $map_id = OPENLAYERS_CCK_WIDGET_MAP_ID_PREFIX . '-' . $field_name;
-  $field_type = $field['type'];
   $widget = $field['widget'];
   $field_container = 'edit-' . $field_name_html . '-openlayers-wkt-wrapper';
   $field_id = 'edit-' . $field_name_html . '-openlayers-wkt';
   $hidden_field_id = 'edit-' . $field_name_html . '-openlayers-wkt-hidden';
   
   // Get map to use for field
-  if (isset($widget['openlayers_cck_preset_map'])) {
-    $map = openlayers_get_map($widget['openlayers_cck_preset_map']);
+  if (isset($field['widget']['openlayers_cck_preset_map'])) {
+    $preset = openlayers_preset_load($field['widget']['openlayers_cck_preset_map']);
+    $map = openlayers_build_map($preset->data);
   }
   else {
-    $map = openlayers_get_default_map();
+    $map = openlayers_build_map();
   }
 
   // Put together map
   $map['id'] = $map_id;
-
-  // Add main event for CCK processing
-  $map['events']['beforeBehaviors'] = array('CCKProcess');
 
   // Make sure that our display projection matches the database projection
   $map['options']['displayProjection'] = ($field['srid'] != 0) ? $field['srid'] : '4326';
@@ -680,17 +681,8 @@ function _openlayers_cck_render_element_map($field_name = '', $field_label = '',
     ),
   );
 
-  // Create base behavior array
-  $behavior_base = array(
-    'type' => 'openlayers_behaviors_draw_features',
-    'layer' => 'openlayers_cck_vector',
-    'featureadded_handler' => array('OL.CCK.featureAdded'),
-    'featuremodified_handler' => array('OL.CCK.featureModified'),
-    'featureremoved_handler' => array('OL.CCK.featureRemoved'),
-  );
-
   // Look for geo type
-  if ($field_type == 'geo' && isset($field['geo_type'])) {
+  if ($field['type'] == 'geo' && isset($field['geo_type'])) {
     
     // Feature types are named slightly different for lines ('linestring' vs. 'path') so we need to check.
     $type = ($field['geo_type'] == 'linestring') ? 'path' : $field['geo_type'];
@@ -705,15 +697,7 @@ function _openlayers_cck_render_element_map($field_name = '', $field_label = '',
   else {
     // Check which feature types are available
     if ($field['openlayers_cck_feature_types']) {
-      foreach ($field['openlayers_cck_feature_types'] as $type) {
-        if (!empty($type)) {
-          $map['behaviors']['openlayers_cck_edit_' . $type] = $behavior_base +
-            array(
-              'id' => 'openlayers_cck_edit_' . $type,
-              'feature_type' => $type,
-            );
-        }
-      }
+      
     }
     else {
       // @@TODO: Allow default values using a map
@@ -727,8 +711,6 @@ function _openlayers_cck_render_element_map($field_name = '', $field_label = '',
   
   // Check errors
   if (!$rendered_map['errors']) {
-    // Add JS
-    drupal_add_js(drupal_get_path('module', 'openlayers_cck') .'/js/openlayers_cck.js');
     //Add CSS
     drupal_add_css(drupal_get_path('module', 'openlayers_cck') .'/openlayers_cck.css', 'module');
 
