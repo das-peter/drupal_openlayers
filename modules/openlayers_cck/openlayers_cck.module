@@ -19,12 +19,10 @@ define('OPENLAYERS_CCK_FORMATTER_MAP_ID_PREFIX', 'openlayers-cck-formatter-map')
  * Implementation of hook_help().
  */
 function openlayers_cck_help($path, $arg) {
-  $output = '';
-
   switch ($path) {
     case 'admin/help#openlayers_cck':
-      $output = '<p>'. t('The openlayers_cck module provides fields and widgets that interface with OpenLayers.') .'</p>';
-      return $output;
+      return '<p>'. t('The openlayers_cck module provides 
+        fields and widgets that interface with OpenLayers.') .'</p>';
       
   }
 }
@@ -101,7 +99,8 @@ function openlayers_cck_field_settings($op, $field) {
         '#description' => t('Choose the features that are allowed to be inputed on the map.'),
         '#options' => $features,
         '#required' => TRUE,
-        '#default_value' => is_array($field['openlayers_cck_feature_types']) ? $field['openlayers_cck_feature_types'] : array('point', 'path', 'polygon'),
+        '#default_value' => is_array($field['openlayers_cck_feature_types']) ?
+          $field['openlayers_cck_feature_types'] : array('point', 'path', 'polygon'),
       );
       
       return $form;
@@ -151,10 +150,7 @@ function openlayers_cck_field($op, &$node, $field, &$items, $teaser, $page) {
  * Implementation of hook_content_is_empty().
  */
 function openlayers_cck_content_is_empty($item, $field) {
-  if (empty($item['openlayers_wkt'])) {
-    return TRUE;
-  }
-  return FALSE;
+  return empty($item['openlayers_wkt']);
 }
 
 /**
@@ -489,40 +485,28 @@ function theme_openlayers_cck_formatter_default($element) {
   $features = array_filter($features);
   
   // Check count and build geomtry collection
-  if (count($features) > 0) {
-    if (count($features) > 1) {
-      // There are multiple features, so output either a multipart feature or a geometrycollection.
-      // Check to see if all the feature types are the same.
-      $samefeaturetype = TRUE;
-      // Holy crap, this needs to be rewritten
-      foreach ($features as $feature) {
-        foreach ($features as $checkfeature) {
-          if (substr($feature, 0, 5) != substr($checkfeature, 0, 5)) {
-            $samefeaturetype = FALSE;
-            break 2;
-          }
-        }
-      }
-      if ($samefeaturetype) {
-        // All the same feature types, output a multipart feature.
-        if (substr($features[0], 0, 5) == 'POINT')
-          $output = 'MULTIPOINT(' . str_replace('POINT', '', implode(',', $features)) . ')';
-        if (substr($features[0], 0, 10) == 'LINESTRING')
-          $output = 'MULTILINESTRING(' . str_replace('LINESTRING', '', implode(',', $features)) . ')';
-        if (substr($features[0], 0, 7) == 'POLYGON')
-          $output = 'MULTIPOLYGON(' . str_replace('POLYGON', '', implode(',', $features)) . ')';        
-      }
-      else {
-        // Different feature types, output a geometrycollection.
-        $output = 'GEOMETRYCOLLECTION(' . implode(',', $features) . ')';
-      }
+  if (count($features) == 1) {
+    $output = $features[0];
+  }
+  else {
+    // There are multiple features, so output either a multipart feature or a geometrycollection.
+    // Check to see if all the feature types are the same.
+    $feature_types = array_unique(array_map('substr', $features, array(0, 5)));
+
+    if (count($feature_types) > 1) {
+      // All the same feature types, output a multipart feature.
+      if (substr($features[0], 0, 5) == 'POINT')
+        $output = 'MULTIPOINT(' . str_replace('POINT', '', implode(',', $features)) . ')';
+      if (substr($features[0], 0, 10) == 'LINESTRING')
+        $output = 'MULTILINESTRING(' . str_replace('LINESTRING', '', implode(',', $features)) . ')';
+      if (substr($features[0], 0, 7) == 'POLYGON')
+        $output = 'MULTIPOLYGON(' . str_replace('POLYGON', '', implode(',', $features)) . ')';        
     }
     else {
-      // Only one feature.
-      $output = $features[0];
+      // Different feature types, output a geometrycollection.
+      $output = 'GEOMETRYCOLLECTION(' . implode(',', $features) . ')';
     }
   }
-
   return $output;
 }
 
