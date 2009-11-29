@@ -21,18 +21,18 @@
  */
 function openlayers_behaviors_process_zoom_to_layer($behavior, &$map) {
   // Check to make sure the layer attribute is properly set.
-  if ($behavior['layer']){
+  if ($behavior['layer']) {
     // If it's a sting, check to make sure the layer exists.
-    if (is_string($behavior['layer'])){
+    if (is_string($behavior['layer'])) {
       if ($map['layers'][$behavior['layer']]) {
         return $behavior;
       }
     }
     // If it's an array, check to make sure all layers exist.
     if (is_array($behavior['layer'])) {
-      $pass = true;
+      $pass = FALSE;
       foreach ($behavior['layer'] as $layer) {
-        if (!$map['layers'][$layer]) $pass = false;
+        if (!$map['layers'][$layer]) $pass = TRUE;
       }
       if ($pass) {
         return $behavior;

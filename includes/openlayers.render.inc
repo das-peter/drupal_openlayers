@@ -28,7 +28,7 @@ function _openlayers_layers_process($layers = array(), &$map = array()) {
     $map = array();
   }
 
-  foreach($layers as $layer) {
+  foreach ($layers as $layer) {
     if ($layer_object = openlayers_layer_load($layer)) {
       $layer_object->render($map);
       $layer_data[$layer_object->name] = $layer_object->data;

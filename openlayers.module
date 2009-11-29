@@ -232,7 +232,7 @@ function openlayers_layers_load() {
   ctools_include('export');
   $layer_objects = array();
   $layers = ctools_export_load_object('openlayers_layers', 'all', array(), $reset);
-  foreach($layers as $layer) {
+  foreach ($layers as $layer) {
     $layer_objects[$layer->name] = openlayers_get_layer_object($layer);
   }
   return $layer_objects;
@@ -575,7 +575,7 @@ class openlayers_layer_type {
   var $options, $map;
 
   function __construct($layer = array(), $map = array()) {
-    foreach(array('name', 'title', 'description', 'data') as $k) {
+    foreach (array('name', 'title', 'description', 'data') as $k) {
       if (isset($layer->{$k})) {
         $this->{$k} = $layer->{$k};
       }

@@ -1,4 +1,12 @@
 <?php
+// $Id$
+
+/**
+ * @file
+ * TMS Layer Type
+ */
+ 
+
 class openlayers_layer_type_tms extends openlayers_layer_type {
 
   function __construct($layer = array(), $map = array()) {

@@ -97,7 +97,7 @@ function openlayers_ui_menu() {
   );
   // Layer-type-wide settings form
   $items['admin/settings/openlayers/layers/settings'] = array(
-    'title' => 'Settings',
+    'title' => 'API Keys',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_layers_settings'),
     'access arguments' => array('administer openlayers'),

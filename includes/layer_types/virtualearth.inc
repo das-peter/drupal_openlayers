@@ -1,4 +1,12 @@
 <?php
+// $Id$
+
+/**
+ * @file
+ *
+ * OpenLayers VirtualEarth layer type
+ */
+
 class openlayers_layer_type_virtualearth extends openlayers_layer_type {
   /**
    * Provide initial values for options.

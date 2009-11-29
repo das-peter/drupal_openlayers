@@ -252,7 +252,7 @@ function openlayers_ui_layers_settings(&$form_state, $layer = NULL) {
   $form = array();
   $layer_types = openlayers_layer_types();
 
-  foreach($layer_types as $name => $type_def) {
+  foreach ($layer_types as $name => $type_def) {
     $type = openlayers_layer_type_load($name);
     if (method_exists($type, 'settings_form')) {
       $form[$name] = array(
@@ -911,7 +911,7 @@ function openlayers_ui_get_layer_type_options($type, $defaults) {
 /**
  * Get an actual layer form
  */
-function openlayers_ui_get_layer_form($type, $layer = false) {
+function openlayers_ui_get_layer_form($type, $layer = FALSE) {
   $form = array();
 
   $form['data'] = array(
@@ -981,7 +981,7 @@ function openlayers_ui_get_behavior_options($type, $defaults) {
 function openlayers_ui_get_layer_options($type = 'baselayer', $projection = NULL) {
   $options = array();
   $layers = array();
-  foreach(openlayers_layers_load() as $l) {
+  foreach (openlayers_layers_load() as $l) {
     $layers[$l->name] = openlayers_get_layer_object($l);
   }
   foreach ($layers as $key => $layer) {
@@ -989,7 +989,7 @@ function openlayers_ui_get_layer_options($type = 'baselayer', $projection = NULL
       if ($type == 'baselayer' && $layer->data['baselayer']) {
         $options[$key] = theme('openlayers_ui_form_layer_description', $layer->name, $layer->description);
       }
-      else if ($type != 'baselayer' && empty($layer->data['baselayer'])) {
+      elseif ($type != 'baselayer' && empty($layer->data['baselayer'])) {
         $options[$key] = theme('openlayers_ui_form_layer_description', $layer->name, $layer->description);
       }
     }
@@ -1006,7 +1006,7 @@ function openlayers_ui_get_layer_options($type = 'baselayer', $projection = NULL
 function openlayers_ui_get_projection_options() {
   $options = array();
   foreach (openlayers_layers_load() as $key => $layer) {
-    if($layer->data['projection']) {
+    if ($layer->data['projection']) {
       foreach ($layer->data['projection'] as $projection) {
         $options[$projection] = $projection;
       }

@@ -1,4 +1,11 @@
 <?php
+// $Id$
+
+/**
+ * @file
+ *
+ * OpenLayers default packaged layers
+ */
 
 function _openlayers_openlayers_layers_info() {
   $layers = array();

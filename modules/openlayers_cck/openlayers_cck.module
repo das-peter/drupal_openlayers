@@ -278,7 +278,7 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
       }
     }
     
-    $element['geo'] = array_merge($info['element'], array (
+    $element['geo'] = array_merge($info['element'], array(
       '#default_value' => isset($items[$delta]) ? $items[$delta] : '',
       '#gis_type' => $field['geo_type'],
       '#gis_input' => $info['gis input'], // The format expected by the element.
@@ -408,10 +408,14 @@ function openlayers_cck_validate($element, &$form_state) {
   form_set_value($element, $items, $form_state);
   
   // Check we don't exceed the allowed number of values.
-  if ($field['multiple'] >= 2) {
+  if ($field['multiple'] > 1) {
     if (count($items) > $field['multiple']) {
       $field_key  = $element['#columns'][0];
-      form_error($element[$field_key], t('%name: this field cannot hold more than @count values.', array('%name' => t($field['widget']['label']), '@count' => $field['multiple'])));
+      form_error($element[$field_key], 
+        t('%name: this field cannot hold more than @count values.',
+        array(
+          '%name' => t($field['widget']['label']), 
+          '@count' => $field['multiple'])));
     }
   }
 }
@@ -541,7 +545,8 @@ function theme_openlayers_cck_formatter_map($element) {
   else {
     $formatter_count[$field['field_name']] = 0;
   }
-  $map['id'] = OPENLAYERS_CCK_FORMATTER_MAP_ID_PREFIX .'-'. str_replace('_','-',$field['field_name']) .'-'. $formatter_count[$field['field_name']];
+  $map['id'] = OPENLAYERS_CCK_FORMATTER_MAP_ID_PREFIX .'-'. 
+    str_replace('_', '-', $field['field_name']) .'-'. $formatter_count[$field['field_name']];
   $formatter_count++;
   
   // Add features and vector layer
@@ -733,4 +738,39 @@ function _openlayers_cck_generate_pair() {
   $lat = (float)((mt_rand(0, 120000) - 60000)/1000);
   $lon = (float)((mt_rand(0, 360000) - 180000)/1000);
   return ((string) $lon) . ' ' . ((string) $lat);
+}
+
+/**
+ * Implementation of hook_openlayers_presets.
+ */
+function openlayers_cck_openlayers_presets() {
+  // Create full preset array
+  $default = new stdClass();
+  $default->api_version = 1;
+  $default->name = 'cck_widget';
+  $default->title = t('CCK Map');
+  $default->description = t('Map preset for small form input widgets');
+  $default->data = array(
+    'projection' => '4326',
+    'width' => 'auto',
+    'default_layer' => 'openlayers_default_wms',
+    'height' => '300px',
+    'center' => array(
+      'initial' => array(
+        'centerpoint' => '0,0',
+        'zoom' => '1'
+      )
+    ),
+    'options' => array(
+      'displayProjection' => '4326',
+      'maxExtent' => openlayers_get_extent('4326'),
+    ),
+    'behaviors' => array(
+      'openlayers_behavior_panzoombar' => array(),
+    ),
+    'layer_styles' => array(
+      'openlayers_default_wms' => 'default'
+    ),
+  );
+  return array('default' => $default);
 }

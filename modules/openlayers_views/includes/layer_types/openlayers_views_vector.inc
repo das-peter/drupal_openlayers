@@ -1,4 +1,11 @@
 <?php
+// $Id$
+
+/**
+ * @file
+ * OpenLayers Views Vector Layer Type
+ */
+ 
 
 class openlayers_layer_type_openlayers_views_vector extends openlayers_layer_type {
   /**

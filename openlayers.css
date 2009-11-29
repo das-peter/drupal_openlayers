@@ -9,6 +9,7 @@
  * @ingroup openlayers
  */
 
+.openlayers-cck-feature-selected { border: 2px solid blue; }
 
 .openlayers-map {
   z-index:0;

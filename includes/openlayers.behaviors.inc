@@ -1,4 +1,10 @@
 <?php
+// $Id$
+
+/**
+ * @file
+ * OpenLayers default packaged behaviors
+ */
 
 /**
  * Implementation of hook_openlayers_behaviors().
