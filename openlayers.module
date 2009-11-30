@@ -140,7 +140,12 @@ function openlayers_render_map($map = array(), $preset_name = '') {
   // Return themed map if no errors found
   if (empty($map['errors'])) {
     $js = array('openlayers' => array('maps' => array($map['id'] => $map)));
-    drupal_add_js($js, 'setting');
+    if (function_exists('json_encode')) {
+      drupal_add_js('Drupal.settings.openlayers = ' . json_encode($js['openlayers']) . ';', 'inline', 'header', TRUE);
+    }
+    else {
+      drupal_add_js($js, 'setting');
+    }
     return theme('openlayers_map', $map, $preset_name);
   }
   return '';
