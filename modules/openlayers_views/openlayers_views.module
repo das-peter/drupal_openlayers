@@ -57,6 +57,15 @@ function openlayers_views_openlayers_layers_handler_info($map = array()) {
 function openlayers_views_openlayers_layers_info() {
   $layers = array();
 
+  // Attempt to load information from cache.
+  // For now use a arg based check for skipping cache.
+  if (arg(0) != 'admin') {
+    $cache = cache_get('openlayers_views');
+    if (isset($cache->data)) {
+      return $cache->data;
+    }
+  }
+
   $views = views_get_all_views();
   /**
    * Loop through views for displays generatd by the openlayers data style plugin.  Provide each as
@@ -68,12 +77,13 @@ function openlayers_views_openlayers_layers_info() {
    */
   foreach ($views as $view) {
     foreach ($view->display as $display => $data) {
-      if ($data->display_options['style_plugin'] == 'openlayers_data') {        
+      $view->set_display($display);
+      if ($view->display_handler->get_option('style_plugin') == 'openlayers_data') {
         //Build Layer
         $layer = new StdClass();
         $layer->api_version = 1;
         $layer->name = $view->name . '_' . $display;
-        $layer->title = $data->display_options['title'] ? $data->display_options['title'] : $view->display['default']->display_options['title'];
+        $layer->title = $view->display_handler->get_option('title');
         $layer->description = $view->description . ' - ' . $data->display_title;
         $layer->data = array(
           'layer_type' => 'openlayers_views_vector',
@@ -87,9 +97,10 @@ function openlayers_views_openlayers_layers_info() {
         );
         $layers[$layer->name] = $layer;
       }
-    }
-  }
-
+    }  
+    $view->destroy();
+  }  
+  cache_set('openlayers_views', $layers);
   return $layers;
 } 
 
