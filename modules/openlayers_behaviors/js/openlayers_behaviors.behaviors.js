@@ -310,7 +310,7 @@ OL.Behaviors.zoomToLayer = function(event) {
       map.setCenter(center); 
     }
   }
-  else {
+  else if (featureCount != 0) {
     // Zoom the map to the bounds of the layer(s)
     map.zoomToExtent(extentToZoom);
   }
