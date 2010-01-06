@@ -112,11 +112,11 @@ function openlayers_test_page() {
 
   // Render maps
   $render_default = openlayers_render_map();
-  $render_default_test = openlayers_render_map('default_test');
-  $render_behaviors_test = openlayers_render_map('behaviors_test');
+  //$render_default_test = openlayers_render_map('default_test');
+  //$render_behaviors_test = openlayers_render_map('behaviors_test');
 
   // Create collapsed fieldset
-  $render_fieldset = openlayers_render_map();
+  //$render_fieldset = openlayers_render_map();
   $element = array(
     '#value' => $render_fieldset['themed'],
     '#title' => t('Fieldset Example'),
@@ -128,13 +128,13 @@ function openlayers_test_page() {
   // Create output
   $output .= '
     <h3>' . t('Default Map') . '</h3>
-     ' . $render_default['themed'] . '
+     ' . $render_default . '
 
     <h3>' . t('Default Test Map') . '</h3>
-     ' . $render_default_test['themed'] . '
+     ' . $render_default_test . '
 
     <h3>' . t('Behaviors Test Map') . '</h3>
-     ' . $render_behaviors_test['themed'] . '
+     ' . $render_behaviors_test . '
 
     <!-- Not including fieldset cause its broken -->
   ';

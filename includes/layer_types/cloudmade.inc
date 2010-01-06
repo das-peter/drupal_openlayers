@@ -7,7 +7,7 @@
  * OpenLayers CloudMade layer type
  */
 
-class openlayers_layers_type_cloudmade extends openlayers_layer_type {
+class openlayers_layer_type_cloudmade extends openlayers_layer_type {
   /**
    * Provide initial values for options.
    */

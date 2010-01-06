@@ -161,20 +161,26 @@ function openlayers_render_map($map = array(), $preset_name = '') {
  *   array of layer info
  */
 function openlayers_get_layer_object($layer, $map = array()) {
-  // static cache because this function will possibly be called in big loops
+  // Static cache because this function will possibly be called in big loops
   static $layer_types;
   if (!isset($layer_types)) {
     $layer_types = openlayers_layer_types();
   }
+  
+  // Check that a type is defined
   if (!isset($layer->data['layer_type'])) {
     watchdog('openlayers', 'Layer does not have type correctly defined', WATCHDOG_ERROR);
     return;
   }
-  if ($class = ctools_plugin_get_class(
-    $layer_types[$layer->data['layer_type']], 
-    'layer_type')) {
+
+  // Attempt to get ctool class
+  $class = ctools_plugin_get_class($layer_types[$layer->data['layer_type']], 'layer_type');
+  if ($class) {
     $layer_object = new $class($layer, $map);
     return $layer_object;
+  }
+  else {
+    return FALSE;
   }
 }
 
@@ -188,7 +194,7 @@ function openlayers_get_layer_object($layer, $map = array()) {
  * @return
  *   Layer export
  */
-function openlayers_layer_export_load($name) {
+function openlayers_layer_export_load($name, $reset = TRUE) {
   ctools_include('export');
   $layers = ctools_export_load_object('openlayers_layers', 'all', array($name), $reset);
   return !empty($layers[$name]) ? $layers[$name] : FALSE;
@@ -218,10 +224,10 @@ function openlayers_layers_export_load($reset = TRUE) {
  * @return
  *   Layer export
  */
-function openlayers_layer_load($name) {
+function openlayers_layer_load($name, $reset = FALSE) {
   ctools_include('export');
-  $layer = ctools_export_load_object('openlayers_layers', 'all', array($name), $reset);
-  return openlayers_get_layer_object($layer);
+  $layer = ctools_export_load_object('openlayers_layers', 'names', array($name), $reset);
+  return openlayers_get_layer_object($layer[$name]);
 }
 
 /**
@@ -233,7 +239,7 @@ function openlayers_layer_load($name) {
  * @return
  *   array of layer info
  */
-function openlayers_layers_load() {
+function openlayers_layers_load($reset = FALSE) {
   ctools_include('export');
   $layer_objects = array();
   $layers = ctools_export_load_object('openlayers_layers', 'all', array(), $reset);
@@ -697,12 +703,12 @@ function openlayers_openlayers_presets() {
   $default->data = array(
     'projection' => '4326',
     'width' => 'auto',
-    'default_layer' => 'openlayers_default_wms',
-    'height' => '300px',
+    'default_layer' => 'osm_mapnik',
+    'height' => '400px',
     'center' => array(
       'initial' => array(
         'centerpoint' => '0,0',
-        'zoom' => '1'
+        'zoom' => '2'
       )
     ),
     'options' => array(
@@ -711,10 +717,17 @@ function openlayers_openlayers_presets() {
     ),
     'behaviors' => array(
       'openlayers_behavior_panzoombar' => array(),
+      'openlayers_behavior_layerswitcher' => array(),
+      'openlayers_behavior_attribution' => array(),
+      'openlayers_behavior_keyboarddefaults' => array(),
+      'openlayers_behavior_navigation' => array(),
     ),
     'layer_styles' => array(
       'openlayers_default_wms' => 'default'
     ),
+    'layers' => array(
+      'osm_mapnik',
+    )
   );
   return array('default' => $default);
 }
@@ -751,7 +764,7 @@ function openlayers_openlayers_layer_types() {
         'parent' => 'openlayers_layer_type',
       ),
     ),
-    'openlayers_layers_google' => array(
+    'openlayers_layer_type_google' => array(
       'title' => t('Google'),
       'description' => t('Google Maps API Map'),
       'layer_type' => array(
@@ -761,7 +774,7 @@ function openlayers_openlayers_layer_types() {
         'parent' => 'openlayers_layer_type',
       ),
     ),
-    'openlayers_layers_yahoo' => array(
+    'openlayers_layer_type_yahoo' => array(
       'title' => t('Yahoo'),
       'description' => t('Yahoo Maps API Map'),
       'layer_type' => array(
@@ -771,7 +784,7 @@ function openlayers_openlayers_layer_types() {
         'parent' => 'openlayers_layer_type',
       ),
     ),
-    'openlayers_layers_virtualearth' => array(
+    'openlayers_layer_type_virtualearth' => array(
       'title' => t('Virtual Earth'),
       'description' => t('Microsoft Virtual Earth'),
       'layer_type' => array(
@@ -781,13 +794,23 @@ function openlayers_openlayers_layer_types() {
         'parent' => 'openlayers_layer_type',
       ),
     ),
-    'openlayers_layers_type_cloudmade' => array(
+    'openlayers_layer_type_cloudmade' => array(
       'title' => t('CloudMade'),
       'description' => t('CloudMade'),
       'layer_type' => array(
         'path' => drupal_get_path('module', 'openlayers') .'/includes/layer_types',
         'file' => 'cloudmade.inc',
-        'class' => 'openlayers_layers_type_cloudmade',
+        'class' => 'openlayers_layer_type_cloudmade',
+        'parent' => 'openlayers_layer_type',
+      ),
+    ),
+    'openlayers_layer_type_xyz' => array(
+      'title' => t('XYZ'),
+      'description' => t('XYZ'),
+      'layer_type' => array(
+        'path' => drupal_get_path('module', 'openlayers') .'/includes/layer_types',
+        'file' => 'xyz.inc',
+        'class' => 'openlayers_layer_type_xyz',
         'parent' => 'openlayers_layer_type',
       ),
     ),

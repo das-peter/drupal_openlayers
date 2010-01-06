@@ -20,15 +20,18 @@
  * @return
  *   Array of processed layers
  */
-function _openlayers_layers_process($layers = array(), &$map = array()) {  
-  if (!$layers) {
+function _openlayers_layers_process($layers = array(), &$map = array()) {
+  // Check parameters
+  if (!is_array($layers)) {
     $layers = array();
   }
   if (!is_array($map)) {
     $map = array();
   }
 
+  // Go through layers
   foreach ($layers as $layer) {
+    // Check each layer by loading it
     if ($layer_object = openlayers_layer_load($layer)) {
       $layer_object->render($map);
       $layer_data[$layer_object->name] = $layer_object->data;
