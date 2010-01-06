@@ -39,7 +39,7 @@ function openlayers_filters_filter($op, $delta = 0, $format = -1, $text = '', $c
     case 0:
       switch ($op) {
         case 'description':
-          return t('Substitutes a macro text like !macro_example into a the appropriate rendered OpenLayers map.',
+          return t('Substitutes a macro text like !macro_example into an appropriate rendered OpenLayers map.',
             array(
               '!macro_example' => '[openlayers preset_name]',
             )
@@ -60,19 +60,19 @@ function openlayers_filters_filter($op, $delta = 0, $format = -1, $text = '', $c
               if ($exploded[0] == 'openlayers') {
                 // Check for preset name
                 if ($preset = check_plain($exploded[1])) {
-                  $map = openlayers_get_map($preset);
+                  $map = openlayers_preset_load($preset);
                 }
                 else {
-                  $map = openlayers_get_default_map();
+                  $map = openlayers_preset_load(variable_get('openlayers_default_preset', 'default'));
                 }
 
                 // Check map
-                if (!empty($map)) {
+                if (!empty($map->data) && is_array($map->data)) {
                   // Render map
-                  $rendered = openlayers_render_map($map);
+                  $rendered = openlayers_render_map($map->data);
 
                   // Replace text
-                  $text = str_replace($matches[0][$i], $rendered['themed'], $text);
+                  $text = str_replace($matches[0][$i], $rendered, $text);
                 }
               }
             }
