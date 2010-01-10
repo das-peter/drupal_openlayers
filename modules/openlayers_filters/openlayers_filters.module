@@ -38,6 +38,10 @@ function openlayers_filters_filter($op, $delta = 0, $format = -1, $text = '', $c
   switch ($delta) {
     case 0:
       switch ($op) {
+        case 'no cache':
+          // No caching
+          return TRUE;
+
         case 'description':
           return t('Substitutes a macro text like !macro_example into an appropriate rendered OpenLayers map.',
             array(
