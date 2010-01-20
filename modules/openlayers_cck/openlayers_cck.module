@@ -73,7 +73,6 @@ function openlayers_cck_field_info() {
         'tables' => CONTENT_CALLBACK_DEFAULT,
         'arguments' => CONTENT_CALLBACK_DEFAULT,
       ),
-      // TODO: ,'content_icon' => '',
     ),
   );
 }
@@ -406,13 +405,12 @@ function openlayers_cck_validate($element, &$form_state) {
   $items = _openlayers_cck_convert_form_data($element, $field);
   // Set value in form
   form_set_value($element, $items, $form_state);
-  
+
   // Check we don't exceed the allowed number of values.
-  if ($field['multiple'] > 1) {
-    if (count($items) > $field['multiple']) {
-      $field_key  = $element['#columns'][0];
-      form_error($element[$field_key], 
-        t('%name: this field cannot hold more than @count values.',
+  if ($field['multiple'] > 1 && count($items) > $field['multiple']) {
+    $field_key  = $element['#columns'][0];
+    form_error($element[$field_key], 
+      t('%name: this field cannot hold more that @count values.', 
         array(
           '%name' => t($field['widget']['label']), 
           '@count' => $field['multiple'])));
@@ -577,31 +575,8 @@ function theme_openlayers_cck_formatter_map($element) {
  * Theme function for openlayers_cck_map
  */
 function theme_openlayers_cck_map($field = array(), $map = array()) {
-  $title = check_plain(t($field['widget']['label']));
-  $description = content_filter_xss(t($field['widget']['description']));
-  $output = '';
-
-  // Check for errors
-  if (!empty($map['errors'])) {
-    return $output;
-  }
-
-  $output = '
-    <div id="openlayers-cck-map-container-' . $map['id'] . '" class="form-item openlayers-cck-map-container">
-      <label for="openlayers-cck-map-' . $map['id'] . '">' . $title . ':</label>
-      ' . $map['themed'] . '
-      <div class="description openlayers-cck-map-instructions">
-        ' . t('Click the tools in the upper right-hand corner of the map to switch between draw mode and zoom/pan mode. Draw your shape, double-clicking to finish. You may edit your shape using the control points. To delete a shape, select it and press the delete key. To delete a vertex hover over it and press the d key.') . '
-      </div>
-      <div class="description openlayers-cck-map-description">
-        ' . $description . '
-      </div>
-      <div class="openlayers-cck-actions">
-        <a href="#" id="' . $map['id'] . '-wkt-switcher" rel="' . $map['id'] . '">' . t('Show/Hide WKT Fields') . '</a>
-      </div>
-    </div>
-  ';
-  return $output;
+  // TODO: fix
+  return $map;
 }
 
 /**
