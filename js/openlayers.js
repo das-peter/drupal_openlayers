@@ -19,6 +19,9 @@
 
 document.namespaces;
 
+Drupal.settings.openlayers = {};
+Drupal.settings.openlayers.maps = {};
+
 /**
  * Minimal OpenLayers map bootstrap.
  * All additional operations occur in additional Drupal behaviors.
