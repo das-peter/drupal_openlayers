@@ -34,6 +34,7 @@ function _openlayers_layers_process($layers = array(), &$map = array()) {
     // Check each layer by loading it
     if ($layer_object = openlayers_layer_load($layer)) {
       $layer_object->render($map);
+      $layer_object->data['title'] = $layer_object->title;
       $layer_data[$layer_object->name] = $layer_object->data;
     }
     else {
