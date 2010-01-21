@@ -222,7 +222,7 @@ function openlayers_cck_widget_info() {
   return array(
     'openlayers_wkt_widget' => array(
       'label' => t('OpenLayers Map'),
-      'field types' => array('openlayers_wkt', 'geo'),
+      'field types' => array('openlayers_wkt'),
       'multiple values' => CONTENT_HANDLE_MODULE,
       'callbacks' => array(
         'default value' => CONTENT_CALLBACK_DEFAULT,
@@ -263,36 +263,6 @@ function openlayers_cck_widget_settings($op, $widget) {
  */
 function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0) {
   $element = array();
-  
-  if ($field['type'] == 'geo') {
-    // If we are using this widget for a geo field...
-    $info = module_invoke_all('gis_input_info');
-    $info = $info[$field['widget']['type']];
-    
-    foreach ($items as $key => $item) {
-      // Convert from the storage format (wkb) to the element's expected format (wkt).
-      if ($info['gis input']) {
-        $data = geo_wkb_get_data($item['wkb'], $info['gis input']);
-        $items[$key] = $data['value'];
-      }
-    }
-    
-    $element['geo'] = array_merge($info['element'], array(
-      '#default_value' => isset($items[$delta]) ? $items[$delta] : '',
-      '#gis_type' => $field['geo_type'],
-      '#gis_input' => $info['gis input'], // The format expected by the element.
-      '#gis_output' => 'wkt', // The format expected by geo_field's storage.
-      '#delta' => $delta,
-      '#title' => t($field['widget']['label']),
-      '#required' => $field['required'],
-      '#description' => $field['widget']['description'],
-    ));
-    
-    if (!isset($element['geo']['#after_build'])) {
-      $element['geo']['#after_build'] = array();
-    }
-  }
-  
   switch ($field['widget']['type']) {
     case 'openlayers_wkt_widget':
       $element['#type'] = 'openlayers_wkt_widget';
@@ -455,7 +425,7 @@ function openlayers_cck_field_formatter_info() {
   foreach (openlayers_preset_options() as $name => $title) {
     $formatters['openlayers_map_' . $name] = array(
       'label' => t('OpenLayers Map: @preset', array('@preset' => check_plain($title))),
-      'field types' => array('geo', 'openlayers_wkt'),
+      'field types' => array('openlayers_wkt'),
       'multiple values' => CONTENT_HANDLE_MODULE,
       'gis types' => array('point', 'linestring', 'polygon'),
       'gis input' => 'wkt',
@@ -647,29 +617,14 @@ function _openlayers_cck_render_element_map($field_name = '', $field_label = '',
     ),
   );
 
-  // Look for geo type
-  if ($field['type'] == 'geo' && isset($field['geo_type'])) {
-    
-    // Feature types are named slightly different for lines ('linestring' vs. 'path') so we need to check.
-    $type = ($field['geo_type'] == 'linestring') ? 'path' : $field['geo_type'];
-    
-    $map['behaviors']['openlayers_cck_edit_' . $type] = $behavior_base +
-      array(
-        'id' => 'openlayers_cck_edit_' . $type,
-        'feature_type' => $type,
-    );
+  // Check which feature types are available
+  if ($field['openlayers_cck_feature_types']) {
     
   }
   else {
-    // Check which feature types are available
-    if ($field['openlayers_cck_feature_types']) {
-      
-    }
-    else {
-      // @@TODO: Allow default values using a map
-      // We are in the widget settings screen and it wants default values
-      return FALSE;
-    }
+    // @@TODO: Allow default values using a map
+    // We are in the widget settings screen and it wants default values
+    return FALSE;
   }
   
   // Render Map
