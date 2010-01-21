@@ -1,4 +1,11 @@
 <?php
+// $Id$
+
+/**
+ * @file
+ * 
+ * Google Layer Type
+ */
 class openlayers_layer_type_google extends openlayers_layer_type {
   /**
    * Provide initial values for options.

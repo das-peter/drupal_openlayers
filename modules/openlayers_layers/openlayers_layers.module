@@ -17,7 +17,7 @@ function openlayers_layers_help($path, $arg) {
 
   switch ($path) {
     case 'admin/help#openlayers_layers':
-      $output = '<p>'. t('Provides a wide variety of freely available layers.') .'</p>';
+      $output = '<p>'. t('Provides a wide variety of freely available layers. ') . '</p>';
       return $output;
 
   }
@@ -35,49 +35,54 @@ function openlayers_layers_ctools_plugin_api($module, $api) {
   }
 }
 
+/**
+ * Implementation of hook_openlayers_layer_type().
+ */
 function openlayers_layers_openlayers_layer_types() {
-  return array(
-    'openlayers_layers_google' => array(
+  $types = array(
+    'openlayers_layer_type_google' => array(
       'title' => t('Google'),
       'description' => t('Google Maps API Map'),
       'layer_type' => array(
-        'path' => drupal_get_path('module', 'openlayers_layers') .'/includes/layer_types',
+        'path' => drupal_get_path('module', 'openlayers_layers') . '/includes/layer_types',
         'file' => 'google.inc',
         'class' => 'openlayers_layer_type_google',
         'parent' => 'openlayers_layer_type',
       ),
     ),
-    'openlayers_layers_yahoo' => array(
+    'openlayers_layer_type_yahoo' => array(
       'title' => t('Yahoo'),
       'description' => t('Yahoo Maps API Map'),
       'layer_type' => array(
-        'path' => drupal_get_path('module', 'openlayers_layers') .'/includes/layer_types',
+        'path' => drupal_get_path('module', 'openlayers_layers') . '/includes/layer_types',
         'file' => 'yahoo.inc',
         'class' => 'openlayers_layer_type_yahoo',
         'parent' => 'openlayers_layer_type',
       ),
     ),
-    'openlayers_layers_virtualearth' => array(
+    'openlayers_layer_type_virtualearth' => array(
       'title' => t('Virtual Earth'),
       'description' => t('Microsoft Virtual Earth'),
       'layer_type' => array(
-        'path' => drupal_get_path('module', 'openlayers_layers') .'/includes/layer_types',
+        'path' => drupal_get_path('module', 'openlayers_layers') . '/includes/layer_types',
         'file' => 'virtualearth.inc',
         'class' => 'openlayers_layer_type_virtualearth',
         'parent' => 'openlayers_layer_type',
       ),
     ),
-    'openlayers_layers_type_cloudmade' => array(
+    'openlayers_layer_type_cloudmade' => array(
       'title' => t('CloudMade'),
       'description' => t('CloudMade'),
       'layer_type' => array(
-        'path' => drupal_get_path('module', 'openlayers_layers') .'/includes/layer_types',
+        'path' => drupal_get_path('module', 'openlayers_layers') . '/includes/layer_types',
         'file' => 'cloudmade.inc',
-        'class' => 'openlayers_layers_type_cloudmade',
+        'class' => 'openlayers_layer_type_cloudmade',
         'parent' => 'openlayers_layer_type',
       ),
     ),
   );
+  
+  return $types;
 }
 
 /**
@@ -85,17 +90,17 @@ function openlayers_layers_openlayers_layer_types() {
  */
 function openlayers_layers_openlayers_layers_info() {
   $layers = array();
-
+  
   $layer = new stdClass();
   $layer->api_version = 1;
   $layer->name = 'google_satellite';
   $layer->title = t('Google Maps Satellite');
-  $layer->description = t('Google Maps Satellite Imagery. Legally encumbered.');
+  $layer->description = t('Google Maps Satellite Imagery. Legally encumbered. ');
   $layer->data = array(
     'baselayer' => TRUE,
     'type' => 'satellite',
     'projection' => array('900913'),
-    'layer_type' => 'openlayers_layers_google',
+    'layer_type' => 'openlayers_layer_type_google',
     'events' => array(),
   );
   $layers[$layer->name] = $layer;
@@ -104,12 +109,12 @@ function openlayers_layers_openlayers_layers_info() {
   $layer->api_version = 1;
   $layer->name = 'google_hybrid';
   $layer->title = t('Google Maps Hybrid');
-  $layer->description = t('Google Maps with roads and terrain.');
+  $layer->description = t('Google Maps with roads and terrain. ');
   $layer->data = array(
     'baselayer' => TRUE,
     'type' => 'hybrid',
     'projection' => array('900913'),
-    'layer_type' => 'openlayers_layers_google',
+    'layer_type' => 'openlayers_layer_type_google',
     'events' => array(),
   );
   $layers[$layer->name] = $layer;
@@ -123,7 +128,7 @@ function openlayers_layers_openlayers_layers_info() {
     'baselayer' => TRUE,
     'type' => 'normal',
     'projection' => array('900913'),
-    'layer_type' => 'openlayers_layers_google',
+    'layer_type' => 'openlayers_layer_type_google',
     'events' => array(),
   );
   $layers[$layer->name] = $layer;
@@ -137,7 +142,7 @@ function openlayers_layers_openlayers_layers_info() {
     'baselayer' => TRUE,
     'type' => 'physical',
     'projection' => array('900913'),
-    'layer_type' => 'openlayers_layers_google',
+    'layer_type' => 'openlayers_layer_type_google',
     'events' => array(),
   );
   $layers[$layer->name] = $layer;
@@ -151,7 +156,7 @@ function openlayers_layers_openlayers_layers_info() {
     'baselayer' => TRUE,
     'type' => 'satellite',
     'projection' => array('900913'),
-    'layer_type' => 'openlayers_layers_yahoo',
+    'layer_type' => 'openlayers_layer_type_yahoo',
     'events' => array(),
   );
   $layers[$layer->name] = $layer;
@@ -165,7 +170,7 @@ function openlayers_layers_openlayers_layers_info() {
     'baselayer' => TRUE,
     'type' => 'street',
     'projection' => array('900913'),
-    'layer_type' => 'openlayers_layers_yahoo',
+    'layer_type' => 'openlayers_layer_type_yahoo',
     'events' => array(),
   );
   $layers[$layer->name] = $layer;
@@ -179,7 +184,7 @@ function openlayers_layers_openlayers_layers_info() {
     'baselayer' => TRUE,
     'type' => 'hybrid',
     'projection' => array('900913'),
-    'layer_type' => 'openlayers_layers_yahoo',
+    'layer_type' => 'openlayers_layer_type_yahoo',
     'events' => array(),
   );
   $layers[$layer->name] = $layer;
@@ -193,7 +198,7 @@ function openlayers_layers_openlayers_layers_info() {
     'baselayer' => TRUE,
     'type' => 'street',
     'projection' => array('900913'),
-    'layer_type' => 'openlayers_layers_virtualearth',
+    'layer_type' => 'openlayers_layer_type_virtualearth',
     'events' => array(),
   );
   $layers[$layer->name] = $layer;
@@ -207,7 +212,7 @@ function openlayers_layers_openlayers_layers_info() {
     'baselayer' => TRUE,
     'type' => 'satellite',
     'projection' => array('900913'),
-    'layer_type' => 'openlayers_layers_virtualearth',
+    'layer_type' => 'openlayers_layer_type_virtualearth',
     'events' => array(),
   );
   $layers[$layer->name] = $layer;
@@ -221,7 +226,7 @@ function openlayers_layers_openlayers_layers_info() {
     'baselayer' => TRUE,
     'type' => 'hybrid',
     'projection' => array('900913'),
-    'layer_type' => 'openlayers_layers_virtualearth',
+    'layer_type' => 'openlayers_layer_type_virtualearth',
     'events' => array(),
   );
   $layers[$layer->name] = $layer;
@@ -234,7 +239,7 @@ function openlayers_layers_openlayers_layers_info() {
  * Implementation of hook_openlayers_layers_info().
 function openlayers_layers_openlayers_layers_info() {
   
-  $file = drupal_get_path('module', 'openlayers_layers') .'/includes/openlayers_layers.layers.inc';
+  $file = drupal_get_path('module', 'openlayers_layers') . '/includes/openlayers_layers.layers.inc';
   $callback = 'openlayers_layers_process_layers';
   
   $info = array();
@@ -271,7 +276,7 @@ function openlayers_layers_openlayers_layers_info() {
   $info['openlayers_layers_osm_mapnik']->api_version = 1;
   $info['openlayers_layers_osm_mapnik']->name = 'openlayers_layers_osm_mapnik';
   $info['openlayers_layers_osm_mapnik']->title = t('OSM Mapnik');
-  $info['openlayers_layers_osm_mapnik']->description = t('A \'Mapnik style\' free and opensource street map by OpenStreetMap.');
+  $info['openlayers_layers_osm_mapnik']->description = t('A \'Mapnik style\' free and opensource street map by OpenStreetMap. ');
   $info['openlayers_layers_osm_mapnik']->data = array (
     'projection' => array('900919'),
     'baselayer' => TRUE,
@@ -283,7 +288,7 @@ function openlayers_layers_openlayers_layers_info() {
   $info['openlayers_layers_osm_tah']->api_version = 1;
   $info['openlayers_layers_osm_tah']->name = 'openlayers_layers_osm_tah';
   $info['openlayers_layers_osm_tah']->title = t('OSM Tiles@Home');
-  $info['openlayers_layers_osm_tah']->description = t('Tiles@Home map by OpenStreetMap.');
+  $info['openlayers_layers_osm_tah']->description = t('Tiles@Home map by OpenStreetMap. ');
   $info['openlayers_layers_osm_tah']->data = array (
     'projection' => array('900919'),
     'type' => 'XYZ',
@@ -295,7 +300,7 @@ function openlayers_layers_openlayers_layers_info() {
   $info['openlayers_layers_osm_cycle']->api_version = 1;
   $info['openlayers_layers_osm_cycle']->name = 'openlayers_layers_osm_cycle';
   $info['openlayers_layers_osm_cycle']->title = t('OSM Cycling Map');
-  $info['openlayers_layers_osm_cycle']->description = t('A cycling map using data from OpenStreetMap. Brought to you by CloudMade.');
+  $info['openlayers_layers_osm_cycle']->description = t('A cycling map using data from OpenStreetMap. Brought to you by CloudMade. ');
   $info['openlayers_layers_osm_cycle']->data = array (
     'projection' => array('900919'),
     'type' => 'XYZ',

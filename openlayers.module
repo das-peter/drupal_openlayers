@@ -2,7 +2,8 @@
 // $Id$
 
 /**
- * @defgroup openlayers OpenLayers: Provides an API and Modules to interface with OpenLayers
+ * @defgroup openlayers OpenLayers provides an API and 
+ * Modules to interface with OpenLayers
  */
 
 /**
@@ -55,10 +56,13 @@ function openlayers_ctools_plugin_api($module, $api) {
     switch ($api) {
       case 'openlayers_presets':
         return array('version' => 1);
+
       case 'openlayers_layers':
         return array('version' => 1);
+
       case 'openlayers_styles':
         return array('version' => 1);
+
     }
   }
 }
@@ -77,20 +81,30 @@ function openlayers_include() {
     $path = check_plain(variable_get('openlayers_source', 'http://openlayers.org/dev/OpenLayers.js'));
     // Check for full URL and include it manually if external.
     if (valid_url($path, TRUE)) {
-      drupal_set_html_head('<script src="'. check_url($path) .'" type="text/javascript"></script>');
+      drupal_set_html_head('<script src="' . check_url($path) . '" type="text/javascript"></script>');
     }
     else {
       drupal_add_js($path);
     }
-    drupal_add_css(drupal_get_path('module', 'openlayers') .'/openlayers.css', 'module');
-    drupal_add_js(drupal_get_path('module', 'openlayers') .'/js/openlayers.js', 'module');
+    drupal_add_css(drupal_get_path('module', 'openlayers') . '/openlayers.css', 'module');
+    drupal_add_js(drupal_get_path('module', 'openlayers') . '/js/openlayers.js', 'module');
   }
 }
 
 /**
  * Prepare a map for rendering.
+ *
+ * Takes a map array and ensures that the array is
+ * filled properly.
+ *
+ * @ingroup openlayers_api
+ * @param $map
+ *   Array of map settings
+ * @return
+ *   Filled in map array.
  */
 function openlayers_build_map($map = array()) {
+  // Get the necessary parts
   openlayers_include();
   module_load_include('inc', 'openlayers', 'includes/openlayers.render');
 
@@ -103,17 +117,18 @@ function openlayers_build_map($map = array()) {
 
   // Assign an ID
   $map['id'] = !isset($map['id']) ? _openlayers_create_map_id() : $map['id'];
-
+  // Process layers
   $map['layers'] = _openlayers_layers_process($map['layers'], $map);
 
   // Unset Map Arguments
   // @TODO: research and eliminate
   unset($map['args']);
 
+  // Process behaviors and stules
   $map['behaviors'] = _openlayers_behaviors_process($map['behaviors'], $map);
   $map['styles'] = _openlayers_styles_process($map['styles'], $map['layer_styles'], $map);
 
-  // Hook for one last alter
+  // Hook to alter map
   drupal_alter('openlayers_map', $map);
 
   // Check map for errors
@@ -130,25 +145,31 @@ function openlayers_build_map($map = array()) {
  * @ingroup openlayers_api
  * @param $map
  *   Associative array of map paramters
- *
  * @return
  *   Boolean if successful
  */
 function openlayers_render_map($map = array(), $preset_name = '') {
+  $output = '';
+
+  // Run map through build process
   $map = openlayers_build_map($map);
 
   // Return themed map if no errors found
   if (empty($map['errors'])) {
     $js = array('openlayers' => array('maps' => array($map['id'] => $map)));
+    // Try to use more efficient json_encode function, if available
     if (function_exists('json_encode')) {
       drupal_add_js('Drupal.settings.openlayers.maps["' . $map['id'] . '"] = ' . json_encode($map) . ';', 'inline', 'header', TRUE);
     }
     else {
       drupal_add_js($js, 'setting');
     }
-    return theme('openlayers_map', $map, $preset_name);
+    
+    // Push map through theme function and return
+    $output = theme('openlayers_map', $map, $preset_name);
   }
-  return '';
+
+  return $output;
 }
 
 /**
@@ -166,10 +187,10 @@ function openlayers_get_layer_object($layer, $map = array()) {
   if (!isset($layer_types)) {
     $layer_types = openlayers_layer_types();
   }
-  
+
   // Check that a type is defined
   if (!isset($layer->data['layer_type'])) {
-    watchdog('openlayers', 'Layer does not have type correctly defined', WATCHDOG_ERROR);
+    watchdog('openlayers', 'Layer does not have type correctly defined', array(), WATCHDOG_ERROR);
     return;
   }
 
@@ -183,7 +204,6 @@ function openlayers_get_layer_object($layer, $map = array()) {
     return FALSE;
   }
 }
-
 
 /**
  * Menu loader for layers. %openlayers_layer_export
@@ -269,20 +289,6 @@ function openlayers_layer_save($layer) {
 }
 
 /**
- * Get all behaviors.
- *
- * @ingroup openlayers_api
- * @param $reset
- *   Boolean whether to reset cache or not.
- * @return
- *   Array of behavior info.
- */
-function openlayers_behaviors($reset = FALSE) {
-  ctools_include('plugins');
-  return ctools_get_plugins('openlayers', 'behaviors');
-}
-
-/**
  * Get all layer types.
  *
  * @ingroup openlayers_api
@@ -294,6 +300,36 @@ function openlayers_behaviors($reset = FALSE) {
 function openlayers_layer_types($reset = FALSE) {
   ctools_include('plugins');
   return ctools_get_plugins('openlayers', 'layer_types');
+}
+
+/**
+ * Menu loader for layer types.
+ *
+ * @param
+ *   layer type string
+ * @return
+ *   an instantiated layer type object
+ */
+function openlayers_layer_type_load($name) {
+  ctools_include('plugins');
+  if ($layer_type_class = ctools_plugin_load_class('openlayers', 'layer_types', $name, 'layer_type')) {
+    $layer_type = new $layer_type_class();
+    return $layer_type;
+  }
+}
+
+/**
+ * Get all behaviors.
+ *
+ * @ingroup openlayers_api
+ * @param $reset
+ *   Boolean whether to reset cache or not.
+ * @return
+ *   Array of behavior info.
+ */
+function openlayers_behaviors($reset = FALSE) {
+  ctools_include('plugins');
+  return ctools_get_plugins('openlayers', 'behaviors');
 }
 
 /**
@@ -317,22 +353,6 @@ function openlayers_styles($reset = FALSE) {
 function openlayers_style_load($name) {
   $styles = openlayers_styles();
   return !empty($styles[$name]) ? $styles[$name] : FALSE;
-}
-
-/**
- * Menu loader for layer types.
- *
- * @param
- *   layer type string
- * @return
- *   an instantiated layer type object
- */
-function openlayers_layer_type_load($name) {
-  ctools_include('plugins');
-  if ($layer_type_class = ctools_plugin_load_class('openlayers', 'layer_types', $name, 'layer_type')) {
-    $layer_type = new $layer_type_class();
-    return $layer_type;
-  }
 }
 
 /**
@@ -433,6 +453,7 @@ function openlayers_error_check_map($map, $log_errors = TRUE) {
   // @TODO: For next release, make hook
   $errors = array();
 
+  // Check for layers
   if (!is_array($map['layers'])) {
     $errors[] = t('Map contains no renderable layers.');
   }
@@ -477,25 +498,33 @@ function openlayers_error_check_map($map, $log_errors = TRUE) {
 
 /**
  * Returns standard world-max-extents for common projections.
- * Layers implementing other projections and subsets of the world should define their
- * maxExtent in the layer array
- * @param projection 900913, 4326
+ * Layers implementing other projections and subsets of the 
+ * world should define their maxExtent in the layer array
+ *
+ * @param $projection 
+ *   Currently supports 900913, 4326
  * @return array of maxExtent in OpenLayers toArray() format
  */
 function openlayers_get_extent($projection) {
   switch ($projection) {
     case '900913':
       return array(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
+      
     case '4326':
       return array(-180, -90, 180, 90);
+
   }
 }
 
 /**
- * Returns a default set of resolutions for standard TMS, WMS, etc servers
- * serving up common projections. Layers supporting less common projections and resolutions
+ * Returns a default set of resolutions for standard 
+ * TMS, WMS, etc servers serving up common projections. 
+ * Layers supporting less common projections and resolutions
  * can easily define custom resolutions arrays
- * @param projection as string specifying which projection this should take, like 900913
+ *
+ * @param $projection
+ *   string specifying which projection this should take, like 900913
+ * @param ??
  * @return array of resolutions
  */
 function openlayers_get_resolutions($projection, $zoom_start = 0, $zoom_end = FALSE) {
@@ -626,7 +655,8 @@ class openlayers_layer_type {
   function save() {
     if (!empty($this->name)) {
       $exists = db_result(db_query("SELECT name FROM {openlayers_layers} WHERE name = '%s'", $this->name));
-      // If this layer exists, specify that 'name' is the primary key for the layer which will be updated
+      // If this layer exists, specify that 'name' is 
+      // the primary key for the layer which will be updated
       return $exists ? 
         drupal_write_record('openlayers_layers', $this->to_record(), 'name') : 
         drupal_write_record('openlayers_layers', $this->to_record());
@@ -637,7 +667,7 @@ class openlayers_layer_type {
 }
 
 /**
- * Implementation of hook_openlayers_layers_info.
+ * Implementation of hook_openlayers_layers_info().
  */
 function openlayers_openlayers_layers_info() {
   module_load_include('inc', 'openlayers', 'includes/openlayers.layers');
@@ -654,7 +684,7 @@ function openlayers_openlayers_behaviors() {
 }
 
 /**
- * Implementation of hook_openlayers_styles_info
+ * Implementation of hook_openlayers_styles_info().
  */
 function openlayers_openlayers_styles_info() {
   $styles = array();
@@ -691,7 +721,7 @@ function openlayers_openlayers_styles_info() {
 }
 
 /**
- * Implementation of hook_openlayers_presets.
+ * Implementation of hook_openlayers_presets().
  */
 function openlayers_openlayers_presets() {
   // Create full preset array
@@ -722,9 +752,6 @@ function openlayers_openlayers_presets() {
       'openlayers_behavior_keyboarddefaults' => array(),
       'openlayers_behavior_navigation' => array(),
     ),
-    'layer_styles' => array(
-      'openlayers_default_wms' => 'default'
-    ),
     'layers' => array(
       'osm_mapnik',
     )
@@ -732,13 +759,16 @@ function openlayers_openlayers_presets() {
   return array('default' => $default);
 }
 
+/**
+ * Implementation of hook_openlayers_layer_types().
+ */
 function openlayers_openlayers_layer_types() {
   return array(
     'openlayers_layer_type_wms' => array(
       'title' => t('WMS'),
       'description' => t('Web Map Service'),
       'layer_type' => array(
-        'path' => drupal_get_path('module', 'openlayers') .'/includes/layer_types',
+        'path' => drupal_get_path('module', 'openlayers') . '/includes/layer_types',
         'file' => 'wms.inc',
         'class' => 'openlayers_layer_type_wms',
         'parent' => 'openlayers_layer_type',
@@ -748,7 +778,7 @@ function openlayers_openlayers_layer_types() {
       'title' => t('TMS'),
       'description' => t('Tiled Map Service'),
       'layer_type' => array(
-        'path' => drupal_get_path('module', 'openlayers') .'/includes/layer_types',
+        'path' => drupal_get_path('module', 'openlayers') . '/includes/layer_types',
         'file' => 'tms.inc',
         'class' => 'openlayers_layer_type_tms',
         'parent' => 'openlayers_layer_type',
@@ -758,49 +788,9 @@ function openlayers_openlayers_layer_types() {
       'title' => t('OSM'),
       'description' => t('OpenStreetMap Standard'),
       'layer_type' => array(
-        'path' => drupal_get_path('module', 'openlayers') .'/includes/layer_types',
+        'path' => drupal_get_path('module', 'openlayers') . '/includes/layer_types',
         'file' => 'osm.inc',
         'class' => 'openlayers_layer_type_osm',
-        'parent' => 'openlayers_layer_type',
-      ),
-    ),
-    'openlayers_layer_type_google' => array(
-      'title' => t('Google'),
-      'description' => t('Google Maps API Map'),
-      'layer_type' => array(
-        'path' => drupal_get_path('module', 'openlayers') .'/includes/layer_types',
-        'file' => 'google.inc',
-        'class' => 'openlayers_layer_type_google',
-        'parent' => 'openlayers_layer_type',
-      ),
-    ),
-    'openlayers_layer_type_yahoo' => array(
-      'title' => t('Yahoo'),
-      'description' => t('Yahoo Maps API Map'),
-      'layer_type' => array(
-        'path' => drupal_get_path('module', 'openlayers') .'/includes/layer_types',
-        'file' => 'yahoo.inc',
-        'class' => 'openlayers_layer_type_yahoo',
-        'parent' => 'openlayers_layer_type',
-      ),
-    ),
-    'openlayers_layer_type_virtualearth' => array(
-      'title' => t('Virtual Earth'),
-      'description' => t('Microsoft Virtual Earth'),
-      'layer_type' => array(
-        'path' => drupal_get_path('module', 'openlayers') .'/includes/layer_types',
-        'file' => 'virtualearth.inc',
-        'class' => 'openlayers_layer_type_virtualearth',
-        'parent' => 'openlayers_layer_type',
-      ),
-    ),
-    'openlayers_layer_type_cloudmade' => array(
-      'title' => t('CloudMade'),
-      'description' => t('CloudMade'),
-      'layer_type' => array(
-        'path' => drupal_get_path('module', 'openlayers') .'/includes/layer_types',
-        'file' => 'cloudmade.inc',
-        'class' => 'openlayers_layer_type_cloudmade',
         'parent' => 'openlayers_layer_type',
       ),
     ),
@@ -808,7 +798,7 @@ function openlayers_openlayers_layer_types() {
       'title' => t('XYZ'),
       'description' => t('XYZ'),
       'layer_type' => array(
-        'path' => drupal_get_path('module', 'openlayers') .'/includes/layer_types',
+        'path' => drupal_get_path('module', 'openlayers') . '/includes/layer_types',
         'file' => 'xyz.inc',
         'class' => 'openlayers_layer_type_xyz',
         'parent' => 'openlayers_layer_type',

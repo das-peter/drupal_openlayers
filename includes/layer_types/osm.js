@@ -1,3 +1,13 @@
+// $Id$
+
+/**
+ * @file
+ * Layer handler for OSM layers
+ */
+
+/**
+ * Openlayer layer handler for OSM layer
+ */
 Drupal.openlayers.layer.osm = function (name, map, options) {
   var styleMap = Drupal.openlayers.getStyleMap(map, options.name);
     if (options.maxExtent !== undefined) {

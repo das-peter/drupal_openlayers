@@ -1,3 +1,13 @@
+// $Id$
+
+/**
+ * @file
+ * Layer handler for WMS layers
+ */
+
+/**
+ * Openlayer layer handler for WMS layer
+ */
 Drupal.openlayers.layer.wms = function (name, map, options) {
   var styleMap = Drupal.openlayers.getStyleMap(map, name);
   if (options.maxExtent !== undefined) {

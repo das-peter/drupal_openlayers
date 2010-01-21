@@ -1,6 +1,6 @@
 ; $Id$
 name = OpenLayers Layers
-description = Provides many layers for the OpenLayers module. 
+description = Provides many layers for the OpenLayers module, including Google, Yahoo, and Virtual Earth 
 core = 6.x
 package = OpenLayers
 dependencies[] = openlayers

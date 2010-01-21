@@ -1,4 +1,11 @@
 <?php
+// $Id$
+
+/**
+ * @file
+ *
+ * Yahoo Layer Type
+ */
 class openlayers_layer_type_yahoo extends openlayers_layer_type {
   /**
    * Provide initial values for options.

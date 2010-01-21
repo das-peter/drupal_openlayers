@@ -1,3 +1,13 @@
+// $Id$
+
+/**
+ * @file
+ * Layer handler for TMS layers
+ */
+
+/**
+ * Openlayer layer handler for TMS layer
+ */
 Drupal.openlayers.layer.tms = function (name, map, options) {
   var styleMap = Drupal.openlayers.getStyleMap(map, options.name);
     if (options.maxExtent !== undefined) {

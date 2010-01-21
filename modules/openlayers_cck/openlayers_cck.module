@@ -413,8 +413,10 @@ function openlayers_cck_validate($element, &$form_state) {
       t('%name: this field cannot hold more that @count values.', 
         array(
           '%name' => t($field['widget']['label']), 
-          '@count' => $field['multiple'])));
-    }
+          '@count' => $field['multiple']
+        )
+      )
+    );
   }
 }
 

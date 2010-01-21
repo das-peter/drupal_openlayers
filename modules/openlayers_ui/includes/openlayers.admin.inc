@@ -15,7 +15,7 @@
  */
 function openlayers_admin_settings() {
   $source_description = t('The source for the OpenLayers library can be one of two things:')
-    .'<ul><li>'
+    . '<ul><li>'
     . t('URL: This means that the OpenLayers JS library is not 
     hosted on this site.  OpenLayers provides a hosted JS file.  
     By default the Open Layers module will use this, since the 
@@ -24,7 +24,7 @@ function openlayers_admin_settings() {
     Also, depending on how the OpenLayers JS API changes, this module 
     may not be compatible with this version.', 
     array('@ol_api_url' => 'http://openlayers.org/api/OpenLayers.js'))
-    .'</li><li>'
+    . '</li><li>'
     . t('Drupal Path: This is a path relative to the Drupal base.  
     For instance, if you <a href="!ol_url">Download OpenLayers</a> 
     manually to the OpenLayers module folder and extract it, 
@@ -34,7 +34,7 @@ function openlayers_admin_settings() {
         '@suggested_path' => drupal_get_path('module', 'openlayers') . '/OpenLayers-2.7/OpenLayers.js',
       )
     )
-    .'</li></ul>';
+    . '</li></ul>';
 
   // Define Form
   $form['openlayers_source'] = array(
@@ -981,9 +981,11 @@ function openlayers_ui_get_behavior_options($type, $defaults) {
 function openlayers_ui_get_layer_options($type = 'baselayer', $projection = NULL) {
   $options = array();
   $layers = array();
+
   foreach (openlayers_layers_load() as $l) {
     $layers[$l->name] = openlayers_get_layer_object($l);
   }
+  
   foreach ($layers as $key => $layer) {
     if (!isset($projection) || (in_array($projection, $layer->data['projection']))) {
       if ($type == 'baselayer' && $layer->data['baselayer']) {
@@ -1054,16 +1056,17 @@ function openlayers_ui_presets_form_center_map($defaults = array()) {
   $centermap_def = array(
     'id' => 'openlayers-center-helpmap',
     'projection' => '4326',
-    'default_layer' => 'openlayers_default_wms',
+    'default_layer' => 'osm_mapnik',
     'width' => '500px',
     'height' => '300px',
     'center' => array(
-      'lat' => ($defaults['center']['lat']) ? $defaults['center']['lat'] : 0,
-      'lon' => ($defaults['center']['lon']) ? $defaults['center']['lon'] : 0,
-      'zoom' => ($defaults['center']['zoom']) ? $defaults['center']['zoom'] : 2,
+      'initial' => array(
+        'centerpoint' => (($defaults['center']['lat']) ? $defaults['center']['lat'] : 0) . ',' . (($defaults['center']['lon']) ? $defaults['center']['lon'] : 0),
+        'zoom' => ($defaults['center']['zoom']) ? $defaults['center']['zoom'] : 2,
+      ),
     ),
     'layers' => array(
-      'openlayers_default_wms',
+      'osm_mapnik',
     ),
     'behaviors' => array(
       'openlayers_behavior_panzoombar' => array(),
@@ -1072,14 +1075,18 @@ function openlayers_ui_presets_form_center_map($defaults = array()) {
       'openlayers_behavior_boxselect' => array(),
     ),
     'options' => array(
-      'displayProjection' => $defaults['projection'],
-      'maxResolution' => '1.40625',
-      'maxExtent' => array(
-        -180,
-        -90,
-        180,
-        90,
-      ),
+      'displayProjection' => '4326',
+      'maxExtent' => openlayers_get_extent('4326'),
+    ),
+    'projection' => '4326',
+    'width' => 'auto',
+    'default_layer' => 'osm_mapnik',
+    'height' => '400px',
+    'center' => array(
+      'initial' => array(
+        'centerpoint' => '0,0',
+        'zoom' => '2'
+      )
     ),
   );
   return openlayers_render_map($centermap_def);
