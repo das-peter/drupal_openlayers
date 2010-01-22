@@ -7,6 +7,15 @@
  */
  
 class openlayers_layer_type_osm extends openlayers_layer_type {
+  function __construct($layer = array(), $map = array()) {
+    parent::__construct($layer, $map);
+    if ($this->data) {
+      $this->data += $this->options_init();
+    }
+    else {
+      $this->data = $this->options_init();
+    }
+  }
   /**
    * Provide initial values for options.
    */
