@@ -114,6 +114,7 @@ function openlayers_cck_field_settings($op, $field) {
       $columns = array(
         'openlayers_wkt' => array(
           'type' => 'text',
+          'size' => 'big',
           'not null' => FALSE,
           'sortable' => TRUE,
           'views' => TRUE,
