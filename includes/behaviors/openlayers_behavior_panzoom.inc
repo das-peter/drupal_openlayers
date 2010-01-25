@@ -9,7 +9,7 @@
 /**
  * Pan Zoom Bar Behavior
  */
-class openlayers_behavior_panzoomextends openlayers_behavior {
+class openlayers_behavior_panzoom extends openlayers_behavior {
   /**
    * Provide initial values for options.
    */
