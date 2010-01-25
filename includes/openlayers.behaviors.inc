@@ -78,9 +78,20 @@ function _openlayers_openlayers_behaviors() {
         'parent' => 'openlayers_behavior',
       ),
     ),
+    'openlayers_behavior_panzoom' => array(
+      'title' => t('PanZoom'),
+      'description' => t('Gives user ability to pan and zoom in the map interface.'),
+      'type' => 'map',
+      'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
+      'file' => 'openlayers_behavior_panzoom.inc',
+      'behavior' => array(
+        'class' => 'openlayers_behavior_panzoom',
+        'parent' => 'openlayers_behavior',
+      ),
+    ),
     'openlayers_behavior_panzoombar' => array(
       'title' => t('PanZoomBar'),
-      'description' => t('Gives user ability to pan and zoom in the map interface.'),
+      'description' => t('Gives user ability to pan and zoom, with a zoom bar, in the map interface.'),
       'type' => 'map',
       'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
       'file' => 'openlayers_behavior_panzoombar.inc',
