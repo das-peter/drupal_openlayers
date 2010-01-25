@@ -615,7 +615,7 @@ class openlayers_layer_type {
   var $options, $map;
 
   function __construct($layer = array(), $map = array()) {
-    foreach (array('name', 'title', 'description', 'data') as $k) {
+    foreach (array('name', 'title', 'description', 'data', 'export_type') as $k) {
       if (isset($layer->{$k})) {
         $this->{$k} = $layer->{$k};
       }
