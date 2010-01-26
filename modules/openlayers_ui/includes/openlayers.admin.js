@@ -12,7 +12,6 @@
  */
 Drupal.behaviors.openlayers_ui = function(context) {
 
-  console.log($("#openlayers-center-helpmap")[0].outerHTML.slice(0, 200));
   // Panels
   $("ul#openlayers-panel-links li a:not(.openlayers-ui-processed)").each(function() {
     $(this).addClass('openlayers-ui-processed');
@@ -55,7 +54,6 @@ Drupal.behaviors.openlayers_ui = function(context) {
     });
   });
 
-  console.log($("#openlayers-center-helpmap")[0].outerHTML.slice(0, 200));
   // Run once on load.
   Drupal.openlayers_ui.updateMapCenter();
 }

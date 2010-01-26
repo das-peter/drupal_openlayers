@@ -157,8 +157,7 @@ Drupal.openlayers = {
     
     // Zoom & center
     if (map.center.initial) {
-      var center = new OpenLayers.LonLat.fromString(
-          map.center.initial.centerpoint).transform(
+      var center = new OpenLayers.LonLat.fromString(map.center.initial.centerpoint).transform(
             new OpenLayers.Projection('EPSG:4326'), 
             new OpenLayers.Projection('EPSG:' + map.projection));
       var zoom = parseInt(map.center.initial.zoom, 10);

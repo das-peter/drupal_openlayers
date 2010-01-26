@@ -11,7 +11,9 @@
 Drupal.behaviors.openlayers_behavior_mapformvalues = function(context) {
   var data = $(context).data('openlayers');
   function updateForm(evt) {
-    center = evt.object.getCenter().toShortString();
+    center = evt.object.getCenter().transform(
+      evt.object.projection, 
+      new OpenLayers.Projection('EPSG:4326')).toShortString();
     zoom = evt.object.getZoom();
     $('#edit-center-initial-centerpoint').val(center);
     $('#edit-center-initial-zoom').val(zoom);
