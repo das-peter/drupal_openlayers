@@ -22,6 +22,15 @@ document.namespaces;
 Drupal.settings.openlayers = {};
 Drupal.settings.openlayers.maps = {};
 
+function relate_path(path, base_path) {
+  if (path.indexOf('://') >= 0) {
+    return path;
+  }
+  else {
+    return base_path + path;
+  }
+}
+
 /**
  * Minimal OpenLayers map bootstrap.
  * All additional operations occur in additional Drupal behaviors.
@@ -67,25 +76,12 @@ Drupal.behaviors.openlayers = function(context) {
 
         // Change image path if specified
         if (map.image_path) {
-          if (map.image_path.substr(map.image_path.length - 1) !== '/') {
-            map.image_path = map.image_path + '/';
-          }
-          if (map.image_path.indexOf('://') >= 0) {
-            OpenLayers.ImgPath = map.image_path;
-          }
-          else {
-            OpenLayers.ImgPath = Drupal.settings.basePath + map.image_path;
-          }
+          OpenLayers.ImgPath = relate_path(map.image_path, Drupal.settings.basePath);
         }
 
         // Change css path if specified
         if (map.css_path) {
-          if (map.css_path.indexOf('://') >= 0) {
-            options.theme = map.css_path;
-          }
-          else {
-            options.theme = Drupal.settings.basePath + map.css_path;
-          }
+          options.theme = relate_path(map.css_path, Drupal.settings.basePath);
         }
 
         if (map.proxy_host) {
@@ -110,6 +106,7 @@ Drupal.behaviors.openlayers = function(context) {
       }
     });
   }
+  console.log($("#openlayers-center-helpmap")[0].outerHTML.slice(0, 200));
 };
 
 /**

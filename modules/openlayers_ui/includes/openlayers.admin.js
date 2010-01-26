@@ -11,6 +11,8 @@
  * Drupal behaviors for OpenLayers UI form.
  */
 Drupal.behaviors.openlayers_ui = function(context) {
+
+  console.log($("#openlayers-center-helpmap")[0].outerHTML.slice(0, 200));
   // Panels
   $("ul#openlayers-panel-links li a:not(.openlayers-ui-processed)").each(function() {
     $(this).addClass('openlayers-ui-processed');
@@ -53,6 +55,7 @@ Drupal.behaviors.openlayers_ui = function(context) {
     });
   });
 
+  console.log($("#openlayers-center-helpmap")[0].outerHTML.slice(0, 200));
   // Run once on load.
   Drupal.openlayers_ui.updateMapCenter();
 }
@@ -84,13 +87,10 @@ Drupal.openlayers_ui = {
     if (data) {
       var projection = $('#edit-projections-projection').val();
       var zoom = $('#edit-center-zoom').val();
-      var lat = $('#edit-center-lat').val();
-      var lon = $('#edit-center-lon').val();
-
-      // Check for lat and lon
-      if (lat != '' && lon != '') {
+      var lonlat = $('#edit-center-initial-centerpoint').val();
+      if (typeof lonlat == Array) {
         // Create new center
-        var center = new OpenLayers.LonLat(lon, lat);
+        var center = new OpenLayers.LonLat(parseFloat(lonlat[0]), parseFloat(lonlat[1]));
         // Transform for projection
         center.transform(new OpenLayers.Projection('EPSG:' + projection), new OpenLayers.Projection('EPSG:4326'));
         // Set center of map.
