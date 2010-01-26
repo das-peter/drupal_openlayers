@@ -536,7 +536,8 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   // Projection options
   $projections = array();
   foreach (openlayers_ui_get_projection_options() as $projection) {
-    $projection_layers = openlayers_ui_get_layer_options($projection);
+    $projection_layers = array_merge(openlayers_ui_get_layer_options('baselayer', $projection),
+                                     openlayers_ui_get_layer_options('overlay', $projection));
     $projections[$projection] = theme('openlayers_ui_form_projection_description', $projection, array_keys($projection_layers));
   }
 
