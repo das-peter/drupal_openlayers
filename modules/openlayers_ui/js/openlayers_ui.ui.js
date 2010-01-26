@@ -77,11 +77,6 @@ Drupal.behaviors.OLUI = function(context) {
   // Trigger change
   $autoOptionsCheck.trigger('change');
   
-  // Change event for helper map inputs
-  $('#edit-center-lat').change(OL.updateHelpmapCenter);
-  $('#edit-center-lon').change(OL.updateHelpmapCenter);
-  $('#edit-center-zoom').change(OL.updateHelpmapCenter);
-  
   // @@TODO: Reproject lat/lon values of center map. On the first load
   // this is redundent, but it is important for ahah updates so that when
   // the projection changes the lat/lon changes to fit the new units.
