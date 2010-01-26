@@ -106,7 +106,6 @@ Drupal.behaviors.openlayers = function(context) {
       }
     });
   }
-  console.log($("#openlayers-center-helpmap")[0].outerHTML.slice(0, 200));
 };
 
 /**
