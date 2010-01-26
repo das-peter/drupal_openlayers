@@ -1079,9 +1079,7 @@ function openlayers_ui_presets_form_center_map($defaults = array()) {
       'maxExtent' => openlayers_get_extent('4326'),
     ),
     'projection' => '4326',
-    'width' => 'auto',
     'default_layer' => 'osm_mapnik',
-    'height' => '400px',
     'center' => array(
       'initial' => array(
         'centerpoint' => '0,0',

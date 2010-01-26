@@ -24,3 +24,10 @@
 	z-index:1000;
 }
 
+/**
+ * This is a 'sensible default' for a weird decision
+ * by OpenLayers to make 404 tiles pink.
+ */
+.olImageLoadError {
+  background: transparent;
+}
