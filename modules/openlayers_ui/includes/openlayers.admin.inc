@@ -94,7 +94,7 @@ function openlayers_ui_object_list($type) {
       $links[] = l(t('Delete'), "admin/settings/openlayers/{$type}/{$object->name}/delete");
     }
     $links[] = l(t('Export'), "admin/settings/openlayers/{$type}/{$object->name}/export");
-    $links[] = l(t('Clone'), "admin/settings/openlayers/{$type}/add/{$object->name}");
+    $links[] = l(t('Clone'), "admin/settings/openlayers/{$type}/clone/{$object->name}");
     $row[] = implode(' | ', $links);
     $rows[] = $row;
   }
@@ -915,11 +915,12 @@ function openlayers_ui_get_layer_type_options($type, $defaults) {
 function openlayers_ui_get_layer_form($type, $layer = FALSE) {
   $form = array();
 
+  // @TODO: clarify use of data, and of layer_type in overriding it
   $form['data'] = array(
     '#tree' => TRUE,
     '#type' => 'fieldset',
-    '#title' => $layer_type['title'],
-    '#description' => $layer_type['description'],
+    '#title' => '',
+    '#description' => '',
   );
   $form['name'] = array(
     '#type' => 'textfield',

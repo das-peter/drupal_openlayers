@@ -23,7 +23,12 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
    * Options form which generates layers
    */
   function options_form() {
-    return array();
+    return array(
+      'base_url' => array(
+        '#type' => 'textfield',
+        '#title' => t('Base URL'),
+      )
+    );
   }
 
   /**
