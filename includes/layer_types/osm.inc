@@ -36,6 +36,10 @@ class openlayers_layer_type_osm extends openlayers_layer_type {
       'base_url' => array(
         '#type' => 'textfield',
         '#title' => t('Base URL'),
+      ),
+      'layer_type' => array(
+        '#type' => 'hidden',
+        '#value' => 'openlayers_layer_type_osm'
       )
     );
   }
