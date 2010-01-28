@@ -125,7 +125,7 @@ function openlayers_build_map($map = array()) {
   unset($map['args']);
 
   // Process behaviors and stules
-  $map['behaviors'] = _openlayers_behaviors_process($map['behaviors'], $map);
+  $map['behaviors'] = _openlayers_behaviors_render($map['behaviors'], $map);
   $map['styles'] = _openlayers_styles_process($map['styles'], $map['layer_styles'], $map);
 
   // Hook to alter map
@@ -414,7 +414,9 @@ function openlayers_style_load($name) {
 function openlayers_style_save($style) {
   if (!empty($style->name)) {
     $exists = db_result(db_query("SELECT name FROM {openlayers_styles} WHERE name = '%s'", $style->name));
-    return $exists ? drupal_write_record('openlayers_styles', $style, 'name') : drupal_write_record('openlayers_styles', $style);
+    return $exists ? 
+      drupal_write_record('openlayers_styles', $style, 'name') : 
+      drupal_write_record('openlayers_styles', $style);
   }
   return FALSE;
 }

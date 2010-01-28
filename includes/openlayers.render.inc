@@ -47,7 +47,7 @@ function _openlayers_layers_process($layers = array(), &$map = array()) {
 }
 
 /**
- * Process Behaviors
+ * Render Behaviors
  *
  * Execute render() method for all enabled behaviors.
  *
@@ -56,15 +56,15 @@ function _openlayers_layers_process($layers = array(), &$map = array()) {
  * @param $map
  *   Map array
  */
-function _openlayers_behaviors_process($behaviors = array(), &$map = array()) {
-  $processed = array();
+function _openlayers_behaviors_render($behaviors = array(), &$map = array()) {
+  $rendered = array();
   foreach (openlayers_behaviors() as $key => $plugin) {
     if (isset($behaviors[$key]) && $class = ctools_plugin_get_class($plugin, 'behavior')) {
       $behavior = new $class($behaviors[$key], $map);     
-      $processed[$key] = $behavior->render($map);
+      $rendered[$key] = $behavior->render($map);
     }
   }
-  return $processed;
+  return $rendered;
 }
 
 /**
