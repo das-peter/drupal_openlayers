@@ -106,6 +106,7 @@ function openlayers_include() {
 function openlayers_build_map($map = array()) {
   // Get the necessary parts
   openlayers_include();
+
   module_load_include('inc', 'openlayers', 'includes/openlayers.render');
 
   // If no map is specified, use the default preset.
@@ -117,14 +118,8 @@ function openlayers_build_map($map = array()) {
 
   // Assign an ID
   $map['id'] = !isset($map['id']) ? _openlayers_create_map_id() : $map['id'];
-  // Process layers
+
   $map['layers'] = _openlayers_layers_process($map['layers'], $map);
-
-  // Unset Map Arguments
-  // @TODO: research and eliminate
-  unset($map['args']);
-
-  // Process behaviors and stules
   $map['behaviors'] = _openlayers_behaviors_render($map['behaviors'], $map);
   $map['styles'] = _openlayers_styles_process($map['styles'], $map['layer_styles'], $map);
 
@@ -133,7 +128,6 @@ function openlayers_build_map($map = array()) {
 
   // Check map for errors
   $map['errors'] = openlayers_error_check_map($map);
-
   return $map;
 }
 
@@ -149,8 +143,6 @@ function openlayers_build_map($map = array()) {
  *   Boolean if successful
  */
 function openlayers_render_map($map = array(), $preset_name = '') {
-  $output = '';
-
   // Run map through build process
   $map = openlayers_build_map($map);
 
@@ -164,11 +156,9 @@ function openlayers_render_map($map = array(), $preset_name = '') {
     else {
       drupal_add_js($js, 'setting');
     }
-    
     // Push map through theme function and return
     $output = theme('openlayers_map', $map, $preset_name);
   }
-
   return $output;
 }
 
