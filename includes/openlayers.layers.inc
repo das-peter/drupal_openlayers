@@ -17,9 +17,15 @@ function _openlayers_openlayers_layers_info() {
   $layer->description = t('OSM Mapnik.  Needs better description.');
   $layer->data = array(
     'baselayer' => TRUE,
+    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> 2010 
+      <a href="@openstreetmap">OpenStreetMap.org</a> contributors',
+      array(
+        '@openstreetmap' => 'http://www.openstreetmap.org/',
+        '@ccbysa' => 'http://creativecommons.org/licenses/by-sa/2.0/',
+      )
+    ),
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_xyz',
-    'events' => array(),
     'url' => 'http://tile.openstreetmap.org/${z}/${x}/${y}.png',
   );
   $layers[$layer->name] = $layer;
@@ -32,9 +38,15 @@ function _openlayers_openlayers_layers_info() {
   $layer->description = t('OSM Tiles@Home.  Needs better description.');
   $layer->data = array(
     'baselayer' => TRUE,
+    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> 2010 
+      <a href="@openstreetmap">OpenStreetMap.org</a> contributors',
+      array(
+        '@openstreetmap' => 'http://www.openstreetmap.org/',
+        '@ccbysa' => 'http://creativecommons.org/licenses/by-sa/2.0/',
+      )
+    ),
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_xyz',
-    'events' => array(),
     'url' => 'http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png',
   );
   $layers[$layer->name] = $layer;
@@ -47,9 +59,15 @@ function _openlayers_openlayers_layers_info() {
   $layer->description = t('OSM Cycling Map.  Needs better description.');
   $layer->data = array(
     'baselayer' => TRUE,
+    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> 2010 
+      <a href="@openstreetmap">OpenStreetMap.org</a> contributors',
+      array(
+        '@openstreetmap' => 'http://www.openstreetmap.org/',
+        '@ccbysa' => 'http://creativecommons.org/licenses/by-sa/2.0/',
+      )
+    ),
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_xyz',
-    'events' => array(),
     'url' => 'http://andy.sandbox.cloudmade.com/tiles/cycle/${z}/${x}/${y}.png',
   );
   $layers[$layer->name] = $layer;
@@ -62,6 +80,13 @@ function _openlayers_openlayers_layers_info() {
   $layer->description = t('Semi-transparent hybrid overlay. Projected into WSG84 for use on non spherical-mercator maps.');
   $layer->data = array(
     'baselayer' => FALSE,
+    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> 2010 
+      <a href="@openstreetmap">OpenStreetMap.org</a> contributors',
+      array(
+        '@openstreetmap' => 'http://www.openstreetmap.org/',
+        '@ccbysa' => 'http://creativecommons.org/licenses/by-sa/2.0/',
+      )
+    ),
     'projection' => array('4326'),
     'layer_type' => 'openlayers_layer_type_wms',
     'events' => array(),
