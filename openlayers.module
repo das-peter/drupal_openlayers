@@ -188,12 +188,6 @@ function openlayers_get_layer_object($layer, $map = array()) {
     $layer_types = openlayers_layer_types();
   }
 
-  // Check that a type is defined
-  if (!isset($layer->data['layer_type'])) {
-    watchdog('openlayers', 'Layer does not have type correctly defined', array(), WATCHDOG_ERROR);
-    return;
-  }
-
   // Attempt to get ctool class
   $class = ctools_plugin_get_class($layer_types[$layer->data['layer_type']], 'layer_type');
   if ($class) {
@@ -247,7 +241,9 @@ function openlayers_layers_export_load($reset = TRUE) {
 function openlayers_layer_load($name, $reset = FALSE) {
   ctools_include('export');
   $layer = ctools_export_load_object('openlayers_layers', 'names', array($name), $reset);
-  return openlayers_get_layer_object($layer[$name]);
+  if (openlayers_layer_sanity_check($layer[$name])) {
+    return openlayers_get_layer_object($layer[$name]);
+  }
 }
 
 /**
@@ -263,11 +259,68 @@ function openlayers_layers_load($reset = FALSE) {
   ctools_include('export');
   $layer_objects = array();
   $layers = ctools_export_load_object('openlayers_layers', 'all', array(), $reset);
+  $layers = array_filter($layers, 'openlayers_layer_sanity_check');
   foreach ($layers as $layer) {
     $layer_objects[$layer->name] = openlayers_get_layer_object($layer);
   }
   return $layer_objects;
 }
+
+/**
+ * Check layer to determine whether it has all the
+ * necessary attributes to be rendered. This is necessary
+ * because of API changes, and is a consolidation from other
+ * layer-error-checking in this module
+ *
+ * @param $layer
+ *  Layer object
+ * @param $projection
+ *  Projection number (EPSG) to check compatibility with
+ * @param $strict
+ *  reject invalid layers
+ * @return boolean
+ *  layer validity if strict is set, otherwise always true
+ */
+function openlayers_layer_sanity_check($layer, $projection = FALSE, $strict = FALSE) {
+  // Handle layers after they've been rendered for a map
+  $layer = (is_array($layer)) ? (object) $layer : $layer;
+
+  if (!isset($layer->data['projection'])) {
+    watchdog('openlayers', 'Layer %name does not have a projection set.',
+      array('%name' => $layer->name));
+    drupal_set_message(
+      t('OpenLayers layers failed the sanity check. See the 
+      <a href="@drupallog">Drupal log</a> for details',
+      array('@drupallog' => url('admin/reports/dblog')))
+    );
+    return !$strict;
+  }
+
+  if (!isset($layer->data['layer_type'])) {
+    watchdog('openlayers', 'Layer %name does not have its layer_type set.',
+      array('%name' => $layer->name));
+    drupal_set_message(
+      t('OpenLayers layers failed the sanity check. See the 
+      <a href="@drupallog">Drupal log</a> for details',
+      array('@drupallog' => url('admin/reports/dblog')))
+    );
+    return !$strict;
+  }
+
+  if ($projection && (!in_array($projection, $layer->data['projection']))) {
+    watchdog('openlayers', 
+      'The layer %layer_name cannot work with the map projection: EPSG: %map_proj', 
+      array(
+        '%layer_name' => $layer->name,
+        '%map_proj' => $map['projection'],
+      )
+    );
+    return !$strict;
+  }
+
+  return true;
+}
+
 
 /**
  * Save layer.
@@ -460,14 +513,7 @@ function openlayers_error_check_map($map, $log_errors = TRUE) {
   else {
     // Check layer projections
     foreach ($map['layers'] as $layer) {
-      if ($layer->projection) {
-        if (!in_array($map['projection'], $layer->projection)) {
-          $errors[] = t('The layer %layer_name cannot work with the map projection: EPSG: %map_proj', array(
-            '%layer_name' => $layer->name,
-            '%map_proj' => $map['projection'],
-          ));
-        }
-      }
+      openlayers_layer_sanity_check(array('data' => $layer), $map['projection'], TRUE);
     }
   }
 
@@ -512,7 +558,6 @@ function openlayers_get_extent($projection) {
       
     case '4326':
       return array(-180, -90, 180, 90);
-
   }
 }
 
