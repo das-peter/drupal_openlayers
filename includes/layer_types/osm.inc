@@ -40,7 +40,14 @@ class openlayers_layer_type_osm extends openlayers_layer_type {
       'layer_type' => array(
         '#type' => 'hidden',
         '#value' => 'openlayers_layer_type_osm'
-      )
+      ),
+      'resolutions' => array(
+        '#type' => 'select',
+        '#multiple' => TRUE,
+        '#options' => array_combine(openlayers_get_resolutions('900913'), range(0, 18)),
+        '#title' => t('Zoom Level Range'),
+        '#default_value' => $this->data['resolutions'],
+      ),
     );
   }
 

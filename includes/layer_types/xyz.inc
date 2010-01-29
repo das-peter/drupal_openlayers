@@ -27,10 +27,25 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
       'base_url' => array(
         '#type' => 'textfield',
         '#title' => t('Base URL'),
+        '#default_value' => $this->data['base_url']
       ),
       'layer_type' => array(
         '#type' => 'hidden',
         '#value' => 'openlayers_layer_type_xyz'
+      ),
+      'resolutions' => array(
+        '#type' => 'select',
+        '#multiple' => TRUE,
+        '#options' => array_combine(openlayers_get_resolutions('900913'), range(0, 18)),
+        '#title' => t('Zoom Level Range'),
+        '#default_value' => $this->data['resolutions'],
+      ),
+      'projection' =>
+        array(
+         '0' => array(
+          '#type' => 'hidden',
+          '#value' => '900913',
+        ),
       )
     );
   }
