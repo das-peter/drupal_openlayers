@@ -42,6 +42,8 @@ Drupal.behaviors.openlayers = function(context) {
 
       var map_id = $(this).attr('id');
 
+      try {
+
       if (Drupal.settings.openlayers.maps[map_id]) {
         var map = Drupal.settings.openlayers.maps[map_id];
         
@@ -102,6 +104,13 @@ Drupal.behaviors.openlayers = function(context) {
 
         if($.browser.msie) {
           Drupal.openlayers.redrawVectors();
+        }
+      }
+      } catch(e) {
+        if (console) {
+          console.log(e);
+        } else {
+          $(this).text('Error during map rendering.');
         }
       }
     });
