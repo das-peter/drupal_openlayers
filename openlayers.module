@@ -314,7 +314,7 @@ function openlayers_layer_sanity_check($layer, $projection = FALSE, $strict = FA
     return !$strict;
   }
 
-  return true;
+  return TRUE;
 }
 
 
