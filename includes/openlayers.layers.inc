@@ -13,7 +13,7 @@ function _openlayers_openlayers_layers_info() {
   $layer->api_version = 1;
   $layer->name = 'google_satellite';
   $layer->title = t('Google Maps Satellite');
-  $layer->description = t('Google Maps Satellite Imagery. Legally encumbered.');
+  $layer->description = t('Google Maps Satellite Imagery.');
   $layer->data = array(
     'baselayer' => TRUE,
     'type' => 'satellite',
