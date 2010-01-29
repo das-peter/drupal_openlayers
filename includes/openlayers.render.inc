@@ -31,15 +31,10 @@ function _openlayers_layers_process($layers = array(), &$map = array()) {
 
   // Go through layers
   foreach ($layers as $layer) {
-    // Check each layer by loading it
     if ($layer_object = openlayers_layer_load($layer)) {
       $layer_object->render($map);
       $layer_object->data['title'] = $layer_object->title;
       $layer_data[$layer_object->name] = $layer_object->data;
-    }
-    else {
-      watchdog('openlayers', 'Layer %layer not found while rendering map.', 
-        array('%layer' => $layer), WATCHDOG_ERROR);
     }
   }
 

@@ -18,13 +18,13 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
       $this->data = $this->options_init();
     }
   }
+
   /**
    * Provide initial values for options.
    */
   function options_init() {
     return array(
       'serverResolutions' => openlayers_get_resolutions('900913'),
-      'resolutions' => openlayers_get_resolutions('900913'),
       'maxExtent' => openlayers_get_extent('900913'),
       'projection' => array('900913'),
       'baselayer' => TRUE,
@@ -47,9 +47,22 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
         '#title' => t('Layer Name'),
         '#default_value' => $this->data['layername']
       ),
+      'resolutions' => array(
+        '#type' => 'select',
+        '#multiple' => TRUE,
+        '#options' => array_combine(openlayers_get_resolutions('900913'), openlayers_get_resolutions('900913')),
+        '#title' => t('Zoom Level Range'),
+        '#default_value' => $this->data['resolutions'],
+      ),
       'layer_type' => array(
         '#type' => 'hidden',
         '#value' => 'openlayers_layer_type_tms'
+      ),
+      'projection' => array(
+        array(
+        '#type' => 'hidden',
+        '#value' => '900913'
+        )
       )
     );
   }

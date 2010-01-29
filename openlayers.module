@@ -231,8 +231,14 @@ function openlayers_layers_export_load($reset = TRUE) {
 function openlayers_layer_load($name, $reset = FALSE) {
   ctools_include('export');
   $layer = ctools_export_load_object('openlayers_layers', 'names', array($name), $reset);
-  if (openlayers_layer_sanity_check($layer[$name])) {
-    return openlayers_get_layer_object($layer[$name]);
+  if ($layer) {
+    if (openlayers_layer_sanity_check($layer[$name])) {
+      return openlayers_get_layer_object($layer[$name]);
+    }
+  }
+  else {
+    watchdog('openlayers', 'Layer %layer not found.', 
+      array('%layer' => $layer), WATCHDOG_ERROR);
   }
 }
 
@@ -275,7 +281,7 @@ function openlayers_layer_sanity_check($layer, $projection = FALSE, $strict = FA
   // Handle layers after they've been rendered for a map
   $layer = (is_array($layer)) ? (object) $layer : $layer;
 
-  if (!isset($layer->data['projection'])) {
+  if (!isset($layer->data['projection']) || !is_array($layer->data['projection'])) {
     watchdog('openlayers', 'Layer %name does not have a projection set.',
       array('%name' => $layer->name));
     drupal_set_message(

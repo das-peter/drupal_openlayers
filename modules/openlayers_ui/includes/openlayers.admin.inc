@@ -231,6 +231,8 @@ function openlayers_ui_layers_form_submit(&$form, &$form_state) {
   $layer->title = $form_state['values']['title'];
   $layer->description = $form_state['values']['description'];
   $layer->data = $form_state['values']['data'];
+  $layer->data['resolutions'] = array_map("floatval", array_keys($layer->data['resolutions']));
+  rsort($layer->data['resolutions']); 
 
   $success = $layer->save();
 
