@@ -484,7 +484,8 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#attributes' => array('class' => 'openlayers-form-zoom'),
     '#size' => 25,
   );
-  
+
+  ctools_include('dependent');
 
   $form['center']['restrict'] = array(
     '#type' => 'fieldset',
@@ -493,6 +494,7 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   $form['center']['restrict']['restrictextent'] = array(
     '#type' => 'checkbox',
     '#title' => t('Restrict Extent'),
+    '#id' => 'restrictextent',
     '#default_value' => $defaults['center']['restrict']['restrictextent'],
   );
   $form['center']['restrict']['restrictedExtent'] = array(
@@ -502,6 +504,8 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#default_value' => $defaults['center']['restrict']['restrictedExtent'],
     '#attributes' => array('class' => 'openlayers-form-restrictedExtent'), 
     '#size' => 25,
+    '#process' => array('ctools_dependent_process'),
+    '#dependency' => array('restrictextent' => array(1)),
   );
 
   // Behaviors

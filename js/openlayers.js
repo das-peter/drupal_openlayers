@@ -176,7 +176,7 @@ Drupal.openlayers = {
     // Set the restricted extent if wanted.
     // Prevents the map from being panned outside of a specfic bounding box.
     // TODO: needs to be aware of projection: currently the restrictedExtent string is always latlon
-    if (typeof map.center.restrict !== 'undefined') {
+    if (typeof map.center.restrict !== 'undefined' && map.center.restrict.restrictextent) {
       openlayers.restrictedExtent = new OpenLayers.Bounds.fromString(
           map.center.restrict.restrictedExtent);
     }
