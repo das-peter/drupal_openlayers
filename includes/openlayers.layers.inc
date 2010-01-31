@@ -69,7 +69,7 @@ function _openlayers_openlayers_layers_info() {
   $layer->api_version = 1;
   $layer->name = 'yahoo_satellite';
   $layer->title = t('Yahoo Maps Satellite');
-  $layer->description = t('');
+  $layer->description = t('Yahoo satellite imagery tiles.');
   $layer->data = array(
     'baselayer' => TRUE,
     'type' => 'satellite',
@@ -83,7 +83,7 @@ function _openlayers_openlayers_layers_info() {
   $layer->api_version = 1;
   $layer->name = 'yahoo_street';
   $layer->title = t('Yahoo Maps Street');
-  $layer->description = t('');
+  $layer->description = t('Yahoo streets tiles.');
   $layer->data = array(
     'baselayer' => TRUE,
     'type' => 'street',
@@ -97,7 +97,7 @@ function _openlayers_openlayers_layers_info() {
   $layer->api_version = 1;
   $layer->name = 'yahoo_hybrid';
   $layer->title = t('Yahoo Maps Hybrid');
-  $layer->description = t('');
+  $layer->description = t('Yahoo hybrid of streets and satellite tiles.');
   $layer->data = array(
     'baselayer' => TRUE,
     'type' => 'hybrid',
@@ -111,7 +111,7 @@ function _openlayers_openlayers_layers_info() {
   $layer->api_version = 1;
   $layer->name = 'virtualearth_street';
   $layer->title = t('Virtual Earth Street');
-  $layer->description = t('');
+  $layer->description = t('Virtual Earth (Bing) street tiles.');
   $layer->data = array(
     'baselayer' => TRUE,
     'type' => 'street',
@@ -125,7 +125,7 @@ function _openlayers_openlayers_layers_info() {
   $layer->api_version = 1;
   $layer->name = 'virtualearth_satellite';
   $layer->title = t('Virtual Earth Satellite');
-  $layer->description = t('');
+  $layer->description = t('Virtual Earth (Bing) satellite tiles.');
   $layer->data = array(
     'baselayer' => TRUE,
     'type' => 'satellite',
@@ -139,7 +139,7 @@ function _openlayers_openlayers_layers_info() {
   $layer->api_version = 1;
   $layer->name = 'virtualearth_hybrid';
   $layer->title = t('Virtual Earth Hybrid');
-  $layer->description = t('');
+  $layer->description = t('Virtual Earth (Bing) hybrid of streets and satellite tiles.');
   $layer->data = array(
     'baselayer' => TRUE,
     'type' => 'hybrid',

@@ -3,55 +3,49 @@
 
 /**
  * @file
- * This file contains styles instances used for defaults
+ * This file contains styles implementations
  *
  * @ingroup openlayers
  */
 
 /**
- * Process Styles
+ * Style Implementation
  *
- * Call back to process styles provided by the
- * openlayers_openlayers_styles_info() function
+ * Internal callback for openlayers style implementation.
  *
- * @param $style
- *   String ID for the style
- * @param $map
- *   Array of current map being processed
  * @return
- *   Array formated for an OpenLayers map style
+ *   Array of styles for an OpenLayers map
  */
-function openlayers_process_styles($style = NULL, $map = array()) {
-  $style_data = array();
+function _openlayers_openlayers_styles_info() {
+  $styles = array();
 
-  // Make sure layer is a string
-  if (!is_string($style)) {
-    return FALSE;
-  }
+  $style = new stdClass();
+  $style->api_version = 1;
+  $style->name = 'default';
+  $style->title = t('Default style');
+  $style->description = t('Basic default style.');
+  $style->data = array(
+    'pointRadius' => 5,
+    'fillColor' => '#FFCC66',
+    'strokeColor' => '#FF9933',
+    'strokeWidth' => 4,
+    'fillOpacity' => 0.5
+  );
+  $styles[$style->name] = $style;
 
-  // Determine what data to send back
-  switch ($style) {
-    case 'default':
-      $style_data = array(
-        'pointRadius' => 5,
-        'fillColor' => '#FFCC66',
-        'strokeColor' => '#FF9933',
-        'strokeWidth' => 2,
-        'fillOpacity' => 0.5
-      );
-      break;
+  $style = new stdClass();
+  $style->api_version = 1;
+  $style->name = 'default_select';
+  $style->title = t('Default select style');
+  $style->description = t('Default style for selected geometries');
+  $style->data = array(
+    'pointRadius' => 5,
+    'fillColor' => '#66CCFF',
+    'strokeColor' => '#3399FF',
+    'strokeWidth' => 4,
+    'fillOpacity' => 0.5
+  );
+  $styles[$style->name] = $style;
 
-    case 'default_select':
-      $style_data = array(
-        'pointRadius' => 5,
-        'fillColor' => '#66CCFF',
-        'strokeColor' => '#3399FF',
-        'strokeWidth' => 2,
-        'fillOpacity' => 0.5
-      );
-      break;
-
-  }
-
-  return $style_data;
+  return $styles;
 }
