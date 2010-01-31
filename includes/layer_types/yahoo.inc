@@ -5,7 +5,10 @@
  * @file
  * Yahoo Layer Type
  */
- 
+
+/**
+ * OpenLayers Yahoo Layer Type class
+ */
 class openlayers_layer_type_yahoo extends openlayers_layer_type {
   /**
    * Provide initial values for options.

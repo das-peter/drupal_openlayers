@@ -5,7 +5,10 @@
  * @file
  * Yahoo Layer Type
  */
- 
+
+/**
+ * OpenLayers OSM Layer Type class
+ */
 class openlayers_layer_type_osm extends openlayers_layer_type {
   function __construct($layer = array(), $map = array()) {
     parent::__construct($layer, $map);
@@ -16,6 +19,7 @@ class openlayers_layer_type_osm extends openlayers_layer_type {
       $this->data = $this->options_init();
     }
   }
+
   /**
    * Provide initial values for options.
    */
@@ -45,12 +49,10 @@ class openlayers_layer_type_osm extends openlayers_layer_type {
         '#type' => 'select',
         '#multiple' => TRUE,
         '#options' => array_combine(
-          array_map(strval, openlayers_get_resolutions('900913')), 
+          array_map(strval, openlayers_get_resolutions('900913')),
           range(0, 18)),
         '#title' => t('Zoom Level Range'),
-        '#default_value' => ($this->data['resolutions']) ? 
-                              $this->data['resolutions'] : 
-                              array_map(strval, openlayers_get_resolutions('900913'))
+        '#default_value' => ($this->data['resolutions']) ? $this->data['resolutions'] : array_map(strval, openlayers_get_resolutions('900913'))
       ),
     );
   }

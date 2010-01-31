@@ -6,7 +6,10 @@
  * XYZ Layer Type
  * http://dev.openlayers.org/docs/files/OpenLayers/Layer/XYZ-js.html
  */
- 
+
+/**
+ * OpenLayers XYZ Layer Type class
+ */
 class openlayers_layer_type_xyz extends openlayers_layer_type {
   /**
    * Provide initial values for options.
@@ -37,12 +40,12 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
         '#type' => 'select',
         '#multiple' => TRUE,
         '#options' => array_combine(
-          array_map(strval, openlayers_get_resolutions('900913')), 
+          array_map(strval, openlayers_get_resolutions('900913')),
           range(0, 18)),
         '#title' => t('Zoom Level Range'),
-        '#default_value' => ($this->data['resolutions']) ? 
-                              $this->data['resolutions'] : 
-                              array_map(strval, openlayers_get_resolutions('900913'))
+        '#default_value' => ($this->data['resolutions']) ?
+          $this->data['resolutions'] :
+          array_map(strval, openlayers_get_resolutions('900913'))
       ),
       'projection' =>
         array(

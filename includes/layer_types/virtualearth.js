@@ -1,3 +1,5 @@
+// $Id$
+
 /**
  * Process MS Virtual Earth Layers
  *

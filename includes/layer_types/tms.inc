@@ -5,8 +5,10 @@
  * @file
  * TMS Layer Type
  */
- 
 
+/**
+ * OpenLayers TMS Layer Type class
+ */
 class openlayers_layer_type_tms extends openlayers_layer_type {
 
   function __construct($layer = array(), $map = array()) {
@@ -51,13 +53,13 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
         '#type' => 'select',
         '#multiple' => TRUE,
         '#options' => array_combine(
-          array_map(strval, openlayers_get_resolutions('900913')), 
+          array_map(strval, openlayers_get_resolutions('900913')),
           range(0, 18)
         ),
         '#title' => t('Zoom Level Range'),
-        '#default_value' => ($this->data['resolutions']) ? 
-                              $this->data['resolutions'] : 
-                              array_map(strval, openlayers_get_resolutions('900913'))
+        '#default_value' => ($this->data['resolutions']) ?
+          $this->data['resolutions'] :
+          array_map(strval, openlayers_get_resolutions('900913'))
       ),
       'layer_type' => array(
         '#type' => 'hidden',

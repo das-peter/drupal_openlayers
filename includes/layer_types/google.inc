@@ -5,7 +5,10 @@
  * @file
  * Google Layer Type
  */
- 
+
+/**
+ * OpenLayers Google Layer Type class
+ */
 class openlayers_layer_type_google extends openlayers_layer_type {
   /**
    * Provide initial values for options.

@@ -1,12 +1,14 @@
 <?php
-
 // $Id$
 
 /**
  * @file
  * WMS Layer Type
  */
- 
+
+/**
+ * OpenLayers WMS Layer Type class
+ */
 class openlayers_layer_type_wms extends openlayers_layer_type {
   /**
    * Provide initial values for options.

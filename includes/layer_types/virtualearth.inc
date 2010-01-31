@@ -7,6 +7,9 @@
  * OpenLayers VirtualEarth layer type
  */
 
+/**
+ * OpenLayers VirtualEarth Layer Type class
+ */
 class openlayers_layer_type_virtualearth extends openlayers_layer_type {
   /**
    * Provide initial values for options.
@@ -23,7 +26,7 @@ class openlayers_layer_type_virtualearth extends openlayers_layer_type {
    */
   function options_form() {
     return array(
-      
+
     );
   }
 
