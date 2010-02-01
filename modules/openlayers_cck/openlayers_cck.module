@@ -50,6 +50,25 @@ function openlayers_cck_ctools_plugin_api($module, $api) {
 }
 
 /**
+ * Implementation of hook_openlayers_behaviors
+ */
+function openlayers_cck_openlayers_behaviors() {
+  return array(
+    'openlayers_cck_drawfeature' => array(
+       'title' => t('Draw Feature for CCK'),
+       'description' => t('Allows layers to provide attribution to the map if it exists.'),
+       'type' => 'layer',
+       'path' => drupal_get_path('module', 'openlayers_cck') .'/includes/behaviors',
+       'file' => 'openlayers_cck_drawfeature.inc',
+       'behavior' => array(
+         'class' => 'openlayers_cck_drawfeature',
+         'parent' => 'openlayers_behavior',
+       ),
+     ),
+   );
+}
+
+/**
  * Implementation of hook_theme().
  */
 function openlayers_cck_theme($existing, $type, $theme, $path) {
@@ -298,19 +317,14 @@ function openlayers_cck_wkt_element_process($element, $edit, &$form_state, &$for
 
 /**
  * FAPI validate function for custom element
+ * @ TODO: validation, etc
  */
 function openlayers_cck_validate($element, &$form_state) {
-  // Transpose selections from field => delta to delta => field,
-  // turning multiple selected options into multiple parent elements.
-  // Immediate parent is the delta, need to get back to parent's parent
-  // to create multiple elements.
-  
-  // Get field array
-  $field = $form_state['#field_info'][$element['#field_name']];
-  // Convert data to array of values
-  // Set value in form
-  form_set_value($element, $items, $form_state);
-  // TODO: write validation for CCK fields
+  $field_key = $element['#columns'][0];
+  $wkt_value = $element['#value']['openlayers_wkt'];
+  $value = content_transpose_array_rows_cols(array($field_key => array($wkt_value)));
+
+  form_set_value($element, $value, $form_state);
 }
 
 /**
@@ -373,77 +387,8 @@ function _openlayers_cck_render_element_map($field_name = '', $field_label = '',
   // TODO: rewrite
   $map['options']['displayProjection'] = ($field['srid'] != 0) ? $field['srid'] : '4326';
 
-  // Check which feature types are available
-  if ($field['openlayers_cck_feature_types']) {
-    
-  }
-  else {
-    // @@TODO: Allow default values using a map
-    // We are in the widget settings screen and it wants default values
-    return FALSE;
-  }
-
-  $map['behaviors']['openlayers_cck_drawfeature'] = array();
+  $map['behaviors']['openlayers_cck_drawfeature'] = array('wkt_field_id' => $field_id);
   
-  $rendered_map = openlayers_render_map($map);
-  
-  // Check errors
-  if (!$rendered_map['errors']) {
-    return $rendered_map;
-  }
+  return openlayers_render_map($map);
 }
 
-function openlayers_cck_openlayers_presets() {
-  // Create full preset array
-  $default = new stdClass();
-  $default->api_version = 1;
-  $default->name = 'default';
-  $default->title = t('Default Map');
-  $default->description = t('This is the default map preset that comes with the OpenLayers module.');
-  $default->data = array(
-    'projection' => '4326',
-    'width' => 'auto',
-    'default_layer' => 'osm_mapnik',
-    'height' => '400px',
-    'center' => array(
-      'initial' => array(
-        'centerpoint' => '0,0',
-        'zoom' => '2'
-      )
-    ),
-    'options' => array(
-      'displayProjection' => '4326',
-      'maxExtent' => openlayers_get_extent('4326'),
-    ),
-    'behaviors' => array(
-      'openlayers_behavior_panzoombar' => array(),
-      'openlayers_behavior_layerswitcher' => array(),
-      'openlayers_behavior_attribution' => array(),
-      'openlayers_behavior_keyboarddefaults' => array(),
-      'openlayers_behavior_navigation' => array(),
-    ),
-    'layers' => array(
-      'osm_mapnik',
-    )
-  );
-  return array('default' => $default);
-}
-
-/**
- * Implementation of hook_openlayers_behaviors
- */
-function openlayers_cck_openlayers_behaviors() {
-  return array(
-    'openlayers_cck_drawfeature' => array(
-       'title' => t('Draw Feature for CCK'),
-       'description' => t('Allows layers to provide attribution to the map if it exists.'),
-       'type' => 'layer',
-       'path' => drupal_get_path('module', 'openlayers_cck') .'/includes/behaviors',
-       'file' => 'openlayers_cck_drawfeature.inc',
-       'behavior' => array(
-         'class' => 'openlayers_cck_drawfeature',
-         'parent' => 'openlayers_behavior',
-       ),
-     ),
-   );
-}

@@ -18,43 +18,17 @@ function theme_openlayers_wkt_widget($element) {
  */
 function theme_openlayers_cck_formatter_default($element) {
   $features = array();
-  $output = '';
 
   // Create array of $features
   foreach (element_children($element) as $delta) {
     // First look in the 'wkt' key (where geo stores it), 
     // then look in 'openlayers_wkt' key (where the non-spatial openlayers wkt field stores it).
-    $features[$delta] = $element[$delta]['#item']['wkt'] ?
-      $element[$delta]['#item']['wkt'] : $element[$delta]['#item']['openlayers_wkt'];
+    $features[$delta] = $element[$delta]['#item']['openlayers_wkt'];
   }
   
   // Clean features array of empty and null values
   $features = array_filter($features);
-  
-  // Check count and build geomtry collection
-  if (count($features) == 1) {
-    $output = $features[0];
-  }
-  else {
-    // There are multiple features, so output either a multipart feature or a geometrycollection.
-    // Check to see if all the feature types are the same.
-    $feature_types = array_unique(array_map('substr', $features, array(0, 5)));
-
-    if (count($feature_types) > 1) {
-      // All the same feature types, output a multipart feature.
-      if (substr($features[0], 0, 5) == 'POINT')
-        $output = 'MULTIPOINT(' . str_replace('POINT', '', implode(',', $features)) . ')';
-      if (substr($features[0], 0, 10) == 'LINESTRING')
-        $output = 'MULTILINESTRING(' . str_replace('LINESTRING', '', implode(',', $features)) . ')';
-      if (substr($features[0], 0, 7) == 'POLYGON')
-        $output = 'MULTIPOLYGON(' . str_replace('POLYGON', '', implode(',', $features)) . ')';        
-    }
-    else {
-      // Different feature types, output a geometrycollection.
-      $output = 'GEOMETRYCOLLECTION(' . implode(',', $features) . ')';
-    }
-  }
-  return $output;
+  return array_pop($features);
 }
 
 /**
@@ -68,9 +42,7 @@ function theme_openlayers_cck_formatter_map($element) {
   foreach (element_children($element) as $delta) {
     $features['openlayers_cck_vector_feature_' . $delta] = array(
       // First look for geo_field data, then for openlayers wkt data
-      'wkt' => $element[$delta]['#item']['wkt'] ? 
-        $element[$delta]['#item']['wkt'] : 
-        $element[$delta]['#item']['openlayers_wkt'],
+      'wkt' => $element[$delta]['#item']['openlayers_wkt'],
       'projection' => $element[$delta]['#item']['srid'] ? 
         $element[$delta]['#item']['srid'] : 
         '4326',

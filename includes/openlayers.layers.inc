@@ -249,7 +249,7 @@ function _openlayers_openlayers_layers_info() {
   $layer->title = t('Default OpenLayers WMS');
   $layer->description = t('A simple basemap to get you started');
   $layer->data = array(
-    'projection' => array('4326', '900913', '4269'),
+    'projection' => array('4326'),
     'baselayer' => TRUE,
     'layer_type' => 'openlayers_layer_type_wms',
     'url' => 'http://labs.metacarta.com/wms/vmap0',

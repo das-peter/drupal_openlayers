@@ -65,6 +65,8 @@ function openlayers_test_openlayers_presets() {
     ),
     'options' => array(
       'displayProjection' => '4326',
+      'projection' => '4326',
+      'maxExtent' => openlayers_get_extent('4326'),
     ),
     'behaviors' => array(
       'openlayers_behavior_layerswitcher' => array(),
@@ -76,6 +78,7 @@ function openlayers_test_openlayers_presets() {
       'openlayers_default_wms'
     )
   );
+
   // Map with some behaviors
   $behaviors_test = new stdClass();
   $behaviors_test->api_version = 1;

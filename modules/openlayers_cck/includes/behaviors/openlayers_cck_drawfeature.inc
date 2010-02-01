@@ -15,7 +15,7 @@ class openlayers_cck_drawfeature extends openlayers_behavior {
    */
   function options_init() {
     return array(
-      'wkt_field_id' => 'edit-field-loc-openlayers-wkt',
+      'wkt_field_id' => '',
     );
   }
 
