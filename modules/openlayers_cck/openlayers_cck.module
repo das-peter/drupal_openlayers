@@ -31,6 +31,25 @@ function openlayers_cck_help($path, $arg) {
 }
 
 /**
+ * Implementation of hook_ctools_plugin_api().
+ */
+function openlayers_cck_ctools_plugin_api($module, $api) {
+  if ($module == "openlayers") {
+    switch ($api) {
+      case 'openlayers_presets':
+        return array('version' => 1);
+
+      case 'openlayers_layers':
+        return array('version' => 1);
+
+      case 'openlayers_styles':
+        return array('version' => 1);
+
+    }
+  }
+}
+
+/**
  * Implementation of hook_theme().
  */
 function openlayers_cck_theme($existing, $type, $theme, $path) {
@@ -421,29 +440,15 @@ function _openlayers_cck_render_element_map($field_name = '', $field_label = '',
   // Get map to use for field
   if (isset($field['widget']['openlayers_cck_preset_map'])) {
     $preset = openlayers_preset_load($field['widget']['openlayers_cck_preset_map']);
-    $map = openlayers_build_map($preset->data);
-  }
-  else {
-    $map = openlayers_build_map();
+    $map = $preset->data;
   }
 
   // Put together map
   $map['id'] = $map_id;
 
   // Make sure that our display projection matches the database projection
+  // TODO: rewrite
   $map['options']['displayProjection'] = ($field['srid'] != 0) ? $field['srid'] : '4326';
-
-  // Define a vector layer for our features
-  $map['layers']['openlayers_cck_vector'] = array(
-    'id' => 'openlayers_cck_vector',
-    'type' => 'Vector',
-    'name' => $field_label,
-    'options' => array(),
-    'events' => array(
-      'featureselected' => array('CCKFeaturesSelected'),
-      'featureunselected' => array('CCKFeaturesUnselected'),
-    ),
-  );
 
   // Check which feature types are available
   if ($field['openlayers_cck_feature_types']) {
@@ -454,6 +459,8 @@ function _openlayers_cck_render_element_map($field_name = '', $field_label = '',
     // We are in the widget settings screen and it wants default values
     return FALSE;
   }
+
+  $map['behaviors']['openlayers_cck_drawfeature'] = array();
   
   // Render Map
   $rendered_map = openlayers_render_map($map);
@@ -488,25 +495,22 @@ function _openlayers_cck_render_element_map($field_name = '', $field_label = '',
   return $rendered_map;
 }
 
-/**
- * Implementation of hook_openlayers_presets.
- */
 function openlayers_cck_openlayers_presets() {
   // Create full preset array
   $default = new stdClass();
   $default->api_version = 1;
-  $default->name = 'cck_widget';
-  $default->title = t('CCK Map');
-  $default->description = t('Map preset for small form input widgets');
+  $default->name = 'default';
+  $default->title = t('Default Map');
+  $default->description = t('This is the default map preset that comes with the OpenLayers module.');
   $default->data = array(
     'projection' => '4326',
     'width' => 'auto',
-    'default_layer' => 'openlayers_default_wms',
-    'height' => '300px',
+    'default_layer' => 'osm_mapnik',
+    'height' => '400px',
     'center' => array(
       'initial' => array(
         'centerpoint' => '0,0',
-        'zoom' => '1'
+        'zoom' => '2'
       )
     ),
     'options' => array(
@@ -515,10 +519,33 @@ function openlayers_cck_openlayers_presets() {
     ),
     'behaviors' => array(
       'openlayers_behavior_panzoombar' => array(),
+      'openlayers_behavior_layerswitcher' => array(),
+      'openlayers_behavior_attribution' => array(),
+      'openlayers_behavior_keyboarddefaults' => array(),
+      'openlayers_behavior_navigation' => array(),
     ),
-    'layer_styles' => array(
-      'openlayers_default_wms' => 'default'
-    ),
+    'layers' => array(
+      'osm_mapnik',
+    )
   );
   return array('default' => $default);
+}
+
+/**
+ * Implementation of hook_openlayers_behaviors
+ */
+function openlayers_cck_openlayers_behaviors() {
+  return array(
+    'openlayers_cck_drawfeature' => array(
+       'title' => t('Draw Feature for CCK'),
+       'description' => t('Allows layers to provide attribution to the map if it exists.'),
+       'type' => 'layer',
+       'path' => drupal_get_path('module', 'openlayers_cck') .'/includes/behaviors',
+       'file' => 'openlayers_cck_drawfeature.inc',
+       'behavior' => array(
+         'class' => 'openlayers_cck_drawfeature',
+         'parent' => 'openlayers_behavior',
+       ),
+     ),
+   );
 }
