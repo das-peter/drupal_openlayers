@@ -282,39 +282,12 @@ function openlayers_cck_wkt_element_process($element, $edit, &$form_state, &$for
     '#columns' => $element['#columns'],
   );
 
-  // Make default value.  It will be stored in hidden field
-  $default_value = '';
-  if (is_array($element['#value'])  && count($element['#value']) > 0) {
-    // Look for actual values
-    $values = array();
-    foreach ($element['#value'] as $id => $data) {
-      if (is_array($data)) {
-        // Openlayers WKT
-        $values[$id] = $data['openlayers_wkt'];
-      }
-      elseif (is_string($data)) {
-        // Geo WKT
-        $values[$id] = $data;
-      }
-    }
-    // Create string
-    if (is_array($values)  && count($values) > 0) {
-      $default_value = implode('||', $values);
-    }
-  }
-  
-  // Hidden element.  This is used to store a more distinctly
-  // delimited dataset
-  $element['openlayers_wkt_hidden'] = array(
-    '#type' => 'hidden',
-    '#default_value' => $default_value,
-  );
-
   // Set #element_validate in a way that it will not wipe out other
   // validation functions already set by other modules.
   if (empty($element['#element_validate'])) {
     $element['#element_validate'] = array();
   }
+
   array_unshift($element['#element_validate'], 'openlayers_cck_validate');
 
   // Make sure field info will be available to the validator which
@@ -335,38 +308,9 @@ function openlayers_cck_validate($element, &$form_state) {
   // Get field array
   $field = $form_state['#field_info'][$element['#field_name']];
   // Convert data to array of values
-  $items = _openlayers_cck_convert_form_data($element, $field);
   // Set value in form
   form_set_value($element, $items, $form_state);
-
-  // Check we don't exceed the allowed number of values.
-  if ($field['multiple'] > 1 && count($items) > $field['multiple']) {
-    $field_key  = $element['#columns'][0];
-    form_error($element[$field_key], 
-      t('%name: this field cannot hold more that @count values.', 
-        array(
-          '%name' => t($field['widget']['label']), 
-          '@count' => $field['multiple']
-        )
-      )
-    );
-  }
-}
-
-/**
- *
- */
-function _openlayers_cck_convert_form_data($element, $field) {
-  $field_key = $element['#columns'][0];
-  //$items = explode('||', $element['#value'][$field_key . '_hidden']);
-  $items = explode('||', $element['#value']['openlayers_wkt_hidden']);
-  $result = array();
-
-  if (empty($items)) {
-    $items[] = NULL;
-  }
-  $result = content_transpose_array_rows_cols(array($field_key => $items));
-  return $result;
+  // TODO: write validation for CCK fields
 }
 
 /**
@@ -397,26 +341,6 @@ function openlayers_cck_field_formatter_info() {
   return $formatters;
 }
 
-
-/**
- * Implementation of hook_gis_input_info().
- */
-function openlayers_cck_gis_input_info($gis_type = NULL) {
-  $inputs = array(
-    'openlayers_wkt_widget' => array(
-      'label' => t('OpenLayers Map'),
-      'gis input' => 'wkt',
-      'safe reverse' => TRUE,
-      'gis types' => array('point', 'linestring', 'polygon'),
-      'element' => array(
-        '#type' => 'openlayers_wkt',
-      ),
-    ),
-  );
-  return $inputs;
-}
-
-
 /**
  * Render Map for Widget
  *
@@ -435,7 +359,6 @@ function _openlayers_cck_render_element_map($field_name = '', $field_label = '',
   $widget = $field['widget'];
   $field_container = 'edit-' . $field_name_html . '-openlayers-wkt-wrapper';
   $field_id = 'edit-' . $field_name_html . '-openlayers-wkt';
-  $hidden_field_id = 'edit-' . $field_name_html . '-openlayers-wkt-hidden';
   
   // Get map to use for field
   if (isset($field['widget']['openlayers_cck_preset_map'])) {
@@ -462,37 +385,12 @@ function _openlayers_cck_render_element_map($field_name = '', $field_label = '',
 
   $map['behaviors']['openlayers_cck_drawfeature'] = array();
   
-  // Render Map
   $rendered_map = openlayers_render_map($map);
   
   // Check errors
   if (!$rendered_map['errors']) {
-    //Add CSS
-    drupal_add_css(drupal_get_path('module', 'openlayers_cck') .'/openlayers_cck.css', 'module');
-
-    // Put together array for JS
-    $openlayers_cck = array(
-      'openlayers_cck' => array(
-        'maps' => array(
-          $map_id => array(
-            'field_name' => $field_name,
-            'field_data' => $field,
-            'field_name_js' => $field_name_html,
-            'field_container' => $field_container,
-            'field_items' => $items,
-            'field_id' => $field_id,
-            'hidden_field_id' => $hidden_field_id,
-            'map_container' => 'openlayers-cck-map-container-' . $map_id,
-          ),
-        ),
-      ),
-    );
-
-    // Add JS settings
-    drupal_add_js($openlayers_cck, 'setting');
+    return $rendered_map;
   }
-
-  return $rendered_map;
 }
 
 function openlayers_cck_openlayers_presets() {
