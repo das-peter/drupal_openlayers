@@ -194,6 +194,64 @@ function openlayers_ui_object_export(&$form_state, $type, $object) {
 }
 
 /**
+ * Import a preset from cut & paste
+ */
+function openlayers_ui_import_page(&$form_state) {
+  $form['name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Preset name'),
+    '#description' => t('Enter the name to use for this preset if it is different from the source preset. Leave blank to use the name of the preset.'),
+  );
+
+  $form['view'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Paste preset code here'),
+    '#required' => TRUE,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Import'),
+    '#submit' => array('openlayers_ui_import_submit'),
+    '#validate' => array('openlayers_ui_import_validate'),
+  );
+  return $form;
+}
+
+/**
+ * Validate handler to import a view
+ */
+function openlayers_ui_import_validate($form, &$form_state) {
+  $view = '';
+  ob_start();
+  eval($form_state['values']['preset']);
+  ob_end_clean();
+
+  if (!is_object($preset)) {
+    return form_error($form['view'], t('Unable to interpret preset code.'));
+  }
+
+  // View name must be alphanumeric or underscores, no other punctuation.
+  if (!empty($form_state['values']['name']) && preg_match('/[^a-zA-Z0-9_]/', $form_state['values']['name'])) {
+    form_error($form['name'], t('Preset name must be alphanumeric or underscores only.'));
+  }
+
+  if ($form_state['values']['name']) {
+    $preset->name = $form_state['values']['name'];
+  }
+
+  $test = openlayers_preset_load($preset->name);
+  if ($test && $test->type != t('Default')) {
+    form_set_error('', t('A preset by that name already exists; please choose a different name'));
+  }
+
+  // TODO: The import process should test layer existence
+
+  $form_state['preset'] = &$preset;
+}
+
+
+/**
  * Layer add/edit form.
  */
 function openlayers_ui_layers_types(&$form_state, $layer = NULL, $edit = FALSE) {

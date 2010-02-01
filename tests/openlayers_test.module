@@ -67,10 +67,10 @@ function openlayers_test_openlayers_presets() {
       'displayProjection' => '4326',
     ),
     'behaviors' => array(
-      'openlayers_behavior_layerswitcher' => TRUE,
-      'openlayers_behavior_navigation' => TRUE,
-      'openlayers_behavior_panzoombar' => TRUE,
-      'openlayers_behavior_mouseposition' => TRUE,
+      'openlayers_behavior_layerswitcher' => array(),
+      'openlayers_behavior_navigation' => array(),
+      'openlayers_behavior_panzoombar' => array(),
+      'openlayers_behavior_mouseposition' => array(),
     ),
   );
   // Map with some behaviors
