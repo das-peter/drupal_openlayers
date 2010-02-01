@@ -72,6 +72,9 @@ function openlayers_test_openlayers_presets() {
       'openlayers_behavior_panzoombar' => array(),
       'openlayers_behavior_mouseposition' => array(),
     ),
+    'layers' => array(
+      'openlayers_default_wms'
+    )
   );
   // Map with some behaviors
   $behaviors_test = new stdClass();

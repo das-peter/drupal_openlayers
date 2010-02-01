@@ -242,5 +242,25 @@ function _openlayers_openlayers_layers_info() {
   );
   $layers[$layer->name] = $layer;
 
+
+  $layer = new StdClass();
+  $layer->api_version = 1;
+  $layer->name = 'openlayers_default_wms';
+  $layer->title = t('Default OpenLayers WMS');
+  $layer->description = t('A simple basemap to get you started');
+  $layer->data = array(
+    'projection' => array('4326', '900913', '4269'),
+    'baselayer' => TRUE,
+    'layer_type' => 'openlayers_layer_type_wms',
+    'url' => 'http://labs.metacarta.com/wms/vmap0',
+    'params' => array('layers' => 'basic'),
+    'options' => array(
+      'maxExtent' => openlayers_get_extent('4326'),
+    ),
+    'events' => array(),
+  );
+  $layers[$layer->name] = $layer;
+  
+
   return $layers;
 }
