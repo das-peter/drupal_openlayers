@@ -24,9 +24,9 @@ function openlayers_ui_menu() {
     'title' => 'OpenLayers',
     'description' => t('Main settings for OpenLayers.'),
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('openlayers_admin_settings'),
+    'page arguments' => array('openlayers_ui_admin_settings'),
     'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
+    'file' => 'includes/openlayers_ui.admin.inc',
     'type' => MENU_NORMAL_ITEM
   );
   $items['admin/settings/openlayers/settings'] = array(
@@ -41,7 +41,7 @@ function openlayers_ui_menu() {
     'page callback' => 'openlayers_ui_object_list',
     'page arguments' => array(3),
     'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
+    'file' => 'includes/openlayers_ui.layers.inc',
     'type' => MENU_LOCAL_TASK,
     'weight' => -10,
   );
@@ -56,7 +56,7 @@ function openlayers_ui_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_layers_types'),
     'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
+    'file' => 'includes/openlayers_ui.layers.inc',
     'type' => MENU_LOCAL_TASK,
     'weight' => -10,
   );
@@ -66,18 +66,8 @@ function openlayers_ui_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_layers_form', 5),
     'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
+    'file' => 'includes/openlayers_ui.layers.inc',
     'type' => MENU_LOCAL_TASK,
-    'weight' => -15,
-  );
-  // Actual add-layer form
-  $items['admin/settings/openlayers/layers/clone/%openlayers_layer'] = array(
-    'title' => 'Add',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('openlayers_ui_layers_form', 5),
-    'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
-    'type' => MENU_NORMAL_ITEM,
     'weight' => -15,
   );
   // Edit-layer form
@@ -86,7 +76,7 @@ function openlayers_ui_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_layers_form', 4),
     'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
+    'file' => 'includes/openlayers_ui.layers.inc',
     'type' => MENU_NORMAL_ITEM
   );
   $items['admin/settings/openlayers/layers/%openlayers_layer_export/delete'] = array(
@@ -94,7 +84,7 @@ function openlayers_ui_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_object_delete', 3, 4),
     'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
+    'file' => 'includes/openlayers_ui.layers.inc',
     'type' => MENU_NORMAL_ITEM
   );
   $items['admin/settings/openlayers/layers/%openlayers_layer/export'] = array(
@@ -102,7 +92,7 @@ function openlayers_ui_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_object_export', 3, 4),
     'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
+    'file' => 'includes/openlayers_ui.layers.inc',
     'type' => MENU_NORMAL_ITEM
   );
   // Layer-type-wide settings form
@@ -111,7 +101,7 @@ function openlayers_ui_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_layers_settings'),
     'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
+    'file' => 'includes/openlayers_ui.layers.inc',
     'type' => MENU_LOCAL_TASK,
     'weight' => -10,
   );
@@ -122,7 +112,7 @@ function openlayers_ui_menu() {
     'page callback' => 'openlayers_ui_object_list',
     'page arguments' => array(3),
     'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
+    'file' => 'includes/openlayers_ui.styles.inc',
     'type' => MENU_LOCAL_TASK,
     'weight' => -10,
   );
@@ -136,7 +126,7 @@ function openlayers_ui_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_styles_form'),
     'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
+    'file' => 'includes/openlayers_ui.styles.inc',
     'type' => MENU_LOCAL_TASK,
     'weight' => -10,
   );
@@ -145,7 +135,7 @@ function openlayers_ui_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_styles_form', 5),
     'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
+    'file' => 'includes/openlayers_ui.styles.inc',
     'type' => MENU_LOCAL_TASK,
     'weight' => -10,
   );
@@ -154,7 +144,7 @@ function openlayers_ui_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_styles_form', 4, TRUE),
     'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
+    'file' => 'includes/openlayers_ui.styles.inc',
     'type' => MENU_NORMAL_ITEM
   );
   $items['admin/settings/openlayers/styles/%openlayers_style/delete'] = array(
@@ -162,7 +152,7 @@ function openlayers_ui_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_object_delete', 3, 4),
     'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
+    'file' => 'includes/openlayers_ui.styles.inc',
     'type' => MENU_NORMAL_ITEM
   );
   $items['admin/settings/openlayers/styles/%openlayers_style/export'] = array(
@@ -170,7 +160,7 @@ function openlayers_ui_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_object_export', 3, 4),
     'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
+    'file' => 'includes/openlayers_ui.styles.inc',
     'type' => MENU_NORMAL_ITEM
   );
 
@@ -181,7 +171,7 @@ function openlayers_ui_menu() {
     'page callback' => 'openlayers_ui_object_list',
     'page arguments' => array(3),
     'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
+    'file' => 'includes/openlayers_ui.presets.inc',
     'type' => MENU_LOCAL_TASK,
     'weight' => -10,
   );
@@ -196,7 +186,7 @@ function openlayers_ui_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_presets_form'),
     'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
+    'file' => 'includes/openlayers_ui.presets.inc',
     'type' => MENU_LOCAL_TASK,
     'weight' => -10,
   );
@@ -206,7 +196,7 @@ function openlayers_ui_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_presets_form', 5),
     'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
+    'file' => 'includes/openlayers_ui.presets.inc',
     'type' => MENU_NORMAL_ITEM,
     'weight' => -10,
   );
@@ -216,17 +206,7 @@ function openlayers_ui_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_presets_form', 4, TRUE),
     'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
-    'type' => MENU_LOCAL_TASK,
-    'tab_parent' => 'admin/settings/openlayers/presets',
-  );
-  $items['admin/settings/openlayers/presets/clone/%openlayers_preset'] = array(
-    'title' => 'Clone preset',
-    'description' => 'Clone OpenLayers map preset.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('openlayers_ui_presets_form', 5, TRUE),
-    'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
+    'file' => 'includes/openlayers_ui.presets.inc',
     'type' => MENU_LOCAL_TASK,
     'tab_parent' => 'admin/settings/openlayers/presets',
   );
@@ -236,7 +216,7 @@ function openlayers_ui_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_object_delete', 3, 4),
     'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
+    'file' => 'includes/openlayers_ui.presets.inc',
     'type' => MENU_LOCAL_TASK,
     'tab_parent' => 'admin/settings/openlayers/presets',
   );
@@ -246,7 +226,7 @@ function openlayers_ui_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_object_export', 3, 4),
     'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers.admin.inc',
+    'file' => 'includes/openlayers_ui.presets.inc',
     'type' => MENU_LOCAL_TASK,
     'tab_parent' => 'admin/settings/openlayers/presets',
   );
@@ -254,7 +234,7 @@ function openlayers_ui_menu() {
     'title' => 'OpenLayers AHAH',
     'page callback' => 'openlayers_ui_preset_ahah',
     'access callback' => TRUE,
-    'file' => 'includes/openlayers.admin.inc',
+    'file' => 'includes/openlayers_ui.presets.inc',
     'type' => MENU_CALLBACK,
   );
 
@@ -271,7 +251,7 @@ function openlayers_ui_theme($existing, $type, $theme, $path) {
         'layer_title' => '',
         'layer_description' => '',
       ),
-      'file' => 'includes/openlayers.admin_theme.inc',
+      'file' => 'includes/openlayers_ui.theme.inc',
     ),
     'openlayers_ui_form_projection_description' => array(
       'arguments' => array(
@@ -279,15 +259,268 @@ function openlayers_ui_theme($existing, $type, $theme, $path) {
         'available_layers' => array(),
         'layers' => array(),
       ),
-      'file' => 'includes/openlayers.admin_theme.inc',
+      'file' => 'includes/openlayers_ui.theme.inc',
     ),
     'openlayers_ui_presets_form' => array(
       'arguments' => array('form' => array()),
-      'file' => 'includes/openlayers.admin_theme.inc',
+      'file' => 'includes/openlayers_ui.theme.inc',
     ),
     'openlayers_ui_presets_form_layers' => array(
       'arguments' => array('form' => array()),
-      'file' => 'includes/openlayers.admin_theme.inc',
+      'file' => 'includes/openlayers_ui.theme.inc',
     ),
   );
+}
+
+/**
+ * Menu callback for Layers.
+ */
+function openlayers_ui_object_list($type) {
+  $rows = array();
+
+  switch ($type) {
+    case 'styles':
+      $objects = openlayers_styles(TRUE);
+      break;
+    case 'layers':
+      $objects = openlayers_layers_load(TRUE);
+      break;
+    case 'presets':
+      $objects = openlayers_presets(TRUE);
+      break;
+  }
+
+  // Make table of presets and actions
+  $header = array(t('Title'), t('Description'), t('Actions'));
+
+  // Create table rows
+  foreach ($objects as $object) {
+    $row = array();
+    $links = array();
+    $row[] = $object->title;
+    $row[] = $object->description;
+    // Check preset type and create links accordingly.
+    if ($object->export_type == (EXPORT_IN_CODE | EXPORT_IN_DATABASE)) {
+      $links[] = l(t('Edit'), "admin/settings/openlayers/{$type}/{$object->name}/edit");
+      $links[] = l(t('Revert'), "admin/settings/openlayers/{$type}/{$object->name}/delete");
+    }
+    elseif ($object->export_type == EXPORT_IN_DATABASE) {
+      $links[] = l(t('Edit'), "admin/settings/openlayers/{$type}/{$object->name}/edit");
+      $links[] = l(t('Delete'), "admin/settings/openlayers/{$type}/{$object->name}/delete");
+    }
+    $links[] = l(t('Export'), "admin/settings/openlayers/{$type}/{$object->name}/export");
+    $links[] = l(t('Clone'), "admin/settings/openlayers/{$type}/clone/{$object->name}");
+    $row[] = implode(' | ', $links);
+    $rows[] = $row;
+  }
+
+  // Output themed table
+  $output = theme('table', $header, $rows);
+  return $output;
+}
+
+/**
+ * Menu callback for object delete form.
+ */
+function openlayers_ui_object_delete(&$form_state, $type, $object) {
+  if ($object->export_type & EXPORT_IN_DATABASE) {
+    // Create delete form
+    $form = array(
+      'type' => array('#type' => 'value', '#value' => $type),
+      'object' => array('#type' => 'value', '#value' => $object),
+    );
+    $message = ($object->export_type & EXPORT_IN_CODE) ?
+      t('Are you sure you want to revert %object?', array('%object' => $object->title)) :
+      t('Are you sure you want to delete %object?', array('%object' => $object->title));
+    return confirm_form($form, $message, 'admin/settings/openlayers/'. $type);
+  }
+}
+
+/**
+ * Form Submit Callback for Preset Delete Form
+ */
+function openlayers_ui_object_delete_submit($form, &$form_state) {
+  $type = $form_state['values']['type'];
+  $object = $form_state['values']['object'];
+
+  switch ($type) {
+    case 'styles':
+      $result = db_query("DELETE FROM {openlayers_styles} WHERE name = '%s'", $object->name);
+      break;
+    case 'layers':
+      $result = db_query("DELETE FROM {openlayers_layers} WHERE name = '%s'", $object->name);
+      break;
+    case 'presets':
+      $result = db_query("DELETE FROM {openlayers_map_presets} WHERE name = '%s'", $object->name);
+      break;
+  }
+
+  // Check query results
+  if ($result) {
+    drupal_set_message(t('%name was deleted.', array('%name' => $object->name)));
+  }
+  else {
+    drupal_set_message(t('Error when attempting to delete %name.', array('%name' => $object->name)), 'error');
+  }
+
+  // Redirect
+  $form_state['redirect'] = 'admin/settings/openlayers/'. $type;
+}
+
+/**
+ * Menu callback for object export form.
+ */
+function openlayers_ui_object_export(&$form_state, $type, $object) {
+  // Determine type
+  switch ($type) {
+    case 'styles':
+      $api = 'openlayers_styles';
+      break;
+      
+    case 'layers':
+      $api = 'openlayers_layers';
+      break;
+      
+    case 'presets':
+      $api = 'openlayers_map_presets';
+      break;
+
+  }
+  
+  // Use CTools to create export code
+  ctools_include('export');
+  $code = '$items = array();' ."\n";
+  $code .= ctools_export_object($api, $object, '');
+  $code .= '$items["'. $object->name .'"] = $' . $api . ';' ."\n";
+  $code .= 'return $items;';
+  $rows = substr_count($code, "\n") + 1;
+
+  // Create form
+  $form = array();
+  $form['export'] = array(
+    '#type' => 'textarea',
+    '#default_value' => $code,
+    '#rows' => $rows,
+    '#resizable' => FALSE,
+  );
+  $form['done'] = array(
+    '#type' => 'submit',
+    '#value' => t('Done'),
+  );
+  $form['#redirect'] = 'admin/settings/openlayers/' . $type;
+
+  return $form;
+}
+
+/**
+ * Import a preset from cut & paste
+ */
+function openlayers_ui_import_page(&$form_state) {
+  $form['name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Preset name'),
+    '#description' => t('Enter the name to use for this preset if it is different from the source preset. Leave blank to use the name of the preset.'),
+  );
+
+  $form['view'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Paste preset code here'),
+    '#required' => TRUE,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Import'),
+    '#submit' => array('openlayers_ui_import_submit'),
+    '#validate' => array('openlayers_ui_import_validate'),
+  );
+  return $form;
+}
+
+/**
+ * Validate handler to import a view
+ */
+function openlayers_ui_import_validate($form, &$form_state) {
+  $view = '';
+  ob_start();
+  eval($form_state['values']['preset']);
+  ob_end_clean();
+
+  if (!is_object($preset)) {
+    return form_error($form['view'], t('Unable to interpret preset code.'));
+  }
+
+  // View name must be alphanumeric or underscores, no other punctuation.
+  if (!empty($form_state['values']['name']) && preg_match('/[^a-zA-Z0-9_]/', $form_state['values']['name'])) {
+    form_error($form['name'], t('Preset name must be alphanumeric or underscores only.'));
+  }
+
+  if ($form_state['values']['name']) {
+    $preset->name = $form_state['values']['name'];
+  }
+
+  $test = openlayers_preset_load($preset->name);
+  if ($test && $test->type != t('Default')) {
+    form_set_error('', t('A preset by that name already exists; please choose a different name'));
+  }
+
+  // TODO: The import process should test layer existence
+
+  $form_state['preset'] = &$preset;
+}
+
+/**
+ * Get projection options.
+ *
+ * @return
+ *   Array of projection options suitable for use in a FormAPI element.
+ */
+function openlayers_ui_get_projection_options() {
+  $options = array();
+  foreach (openlayers_layers_load() as $key => $layer) {
+    if ($layer->data['projection']) {
+      foreach ($layer->data['projection'] as $projection) {
+        $options[$projection] = $projection;
+      }
+    }
+  }
+  return $options;
+}
+
+/**
+ * Get layer options.
+ */
+function openlayers_ui_get_layer_options($type = 'baselayer', $projection = NULL) {
+  $options = array();
+  $layers = array();
+
+  foreach (openlayers_layers_load() as $l) {
+    $layers[$l->name] = openlayers_get_layer_object($l);
+  }
+  
+  foreach ($layers as $key => $layer) {
+    if (!isset($projection) || (in_array($projection, $layer->data['projection']))) {
+      if ($type == 'baselayer' && $layer->data['baselayer']) {
+        $options[$key] = theme('openlayers_ui_form_layer_description', $layer->name, $layer->description);
+      }
+      elseif ($type != 'baselayer' && empty($layer->data['baselayer'])) {
+        $options[$key] = theme('openlayers_ui_form_layer_description', $layer->name, $layer->description);
+      }
+    }
+  }
+  return $options;
+}
+
+/**
+ * Get style options.
+ *
+ * @return
+ *   Array of style options suitable for use in a FormAPI element.
+ */
+function openlayers_ui_get_style_options() {
+  $options = array();
+  foreach (openlayers_styles() as $key => $style) {
+    $options[$key] = $style->name;
+  }
+  return $options;
 }
