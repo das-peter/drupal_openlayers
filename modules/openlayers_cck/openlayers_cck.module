@@ -91,6 +91,11 @@ function openlayers_cck_theme($existing, $type, $theme, $path) {
       'gis input' => 'wkt',
       'file' => 'openlayers_cck_theme.inc',
     ),
+    'openlayers_cck_formatter_map' => array(
+      'arguments' => array('element' => NULL),
+      'gis input' => 'wkt',
+      'file' => 'openlayers_cck_theme.inc',
+    ),
   );
 
   // Create formatter theme functions

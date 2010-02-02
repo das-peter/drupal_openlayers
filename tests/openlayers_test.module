@@ -59,9 +59,10 @@ function openlayers_test_openlayers_presets() {
     'default_layer' => 'openlayers_default_wms',
     'height' => '300px',
     'center' => array(
-      'lat' => '0',
-      'lon' => '0',
-      'zoom' => '2',
+      'initial' => array(
+        'centerpoint' => '0,0',
+        'zoom' => '2',
+      ),
     ),
     'options' => array(
       'displayProjection' => '4326',

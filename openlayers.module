@@ -140,7 +140,7 @@ function openlayers_build_map($map = array()) {
  * @param $map
  *   Associative array of map paramters
  * @return
- *   Boolean if successful
+ *   Map HTML
  */
 function openlayers_render_map($map = array(), $preset_name = '') {
   // Run map through build process

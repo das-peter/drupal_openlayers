@@ -49,7 +49,7 @@ function theme_openlayers_cck_formatter_map($element) {
     );
   }
 
-  // Get preset name from formatter. Strip off 'openlayers_cck_formatter_' and 'openlayers_map_' from the begginging.
+  // Get preset name from formatter. Strip off 'openlayers_cck_formatter_' and 'openlayers_map_' from the beginning.
   if (substr($element['#formatter'], 25) == 'openlayers_cck_formatter_') {
     $preset_name = substr($element['#formatter'], 25);
   }
@@ -58,8 +58,9 @@ function theme_openlayers_cck_formatter_map($element) {
   }
 
   // Get map preset
-  $map = openlayers_get_map($preset_name);
+  $preset = openlayers_preset_load($preset_name);
 
+  /*
   // Set map ID
   static $formatter_count = array();
   if (isset($formatter_count[$field['field_name']])) {
@@ -83,17 +84,10 @@ function theme_openlayers_cck_formatter_map($element) {
     );
     $map['options']['displayProjection'] = ($field['srid'] != 0) ? $field['srid'] : '4326';
   }
+   */
   
   // Render map
-  $rendered = openlayers_render_map($map);
-  
-  // Check for output
-  if (!$map['errors'] && !empty($map['width'])) {
-    return $rendered['themed'];
-  }
-  else {
-    return '';
-  }
+  return openlayers_render_map(array(), $preset);
 }
 
 /**

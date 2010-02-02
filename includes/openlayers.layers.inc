@@ -242,7 +242,6 @@ function _openlayers_openlayers_layers_info() {
   );
   $layers[$layer->name] = $layer;
 
-
   $layer = new StdClass();
   $layer->api_version = 1;
   $layer->name = 'openlayers_default_wms';
