@@ -63,7 +63,7 @@ class openlayers_layer_type_cloudmade extends openlayers_layer_type {
    * Render.
    */
   function render(&$map) {
-    drupal_add_js(drupal_get_path('module', 'openlayers_layers') .'/includes/layer_types/cloudmade.js');
+    drupal_add_js(drupal_get_path('module', 'openlayers') .'/includes/layer_types/cloudmade.js');
     drupal_add_js(variable_get('openlayers_layers_cloudmade_js', ''));
     return $this->options;
   }

@@ -44,7 +44,7 @@ class openlayers_layer_type_google extends openlayers_layer_type {
    * Render.
    */
   function render(&$map) {
-    drupal_add_js(drupal_get_path('module', 'openlayers_layers') .'/includes/layer_types/google.js');
+    drupal_add_js(drupal_get_path('module', 'openlayers') .'/includes/layer_types/google.js');
     drupal_set_html_head('<script src="'. check_url("http://maps.google.com/maps?file=api&v=2&sensor=false&key=" . variable_get('openlayers_layers_google_api', variable_get('googlemap_api_key', ''))) . '" type="text/javascript"></script>');
     return $this->options;
   }
