@@ -53,6 +53,7 @@ class openlayers_views_style_data extends views_plugin_style {
 
     // Default data source
     $data_source_options['other_latlon'] = t('Other: Lat/Lon Point');
+    $data_source_options['openlayers_wkt'] = t('OpenLayers WKT');
 
     // Data Source options
     $form['data_source'] = array(
@@ -90,6 +91,16 @@ class openlayers_views_style_data extends views_plugin_style {
         '#process' => array('views_process_dependency'),
         '#dependency' => array('edit-style-options-data-source-value' => array('other_latlon')),
       );
+      $form['data_source']['openlayers_wkt'] = array(
+        '#type' => 'select',
+        '#title' => t('WKT Field'),
+        '#description' => t('Choose the OpenLayers WKT field.'),
+        '#options' => $fields,
+        '#default_value' => $this->options['data_source']['openlayers_wkt'],
+        '#process' => array('views_process_dependency'),
+        '#dependency' => array('edit-style-options-data-source-value' => array('openlayers_wkt')),
+      );
+
     }
     $form['data_source']['name_field'] = array(
         '#type' => 'select',
@@ -131,13 +142,23 @@ class openlayers_views_style_data extends views_plugin_style {
       foreach ($records as $id => $record) {
         $feature = array();
         $feature['attributes']['name'] = $id;
-        $lat_field = $fields[$data_source['other_lat']]['field_alias'];
-        $lon_field = $fields[$data_source['other_lon']]['field_alias'];
-        $lon = current($record)->$lon_field;
-        $lat = current($record)->$lat_field;
-        if (!empty($lat) && !empty($lon)) {
-          $feature['wkt'] = 'POINT(' . $lon . ' ' . $lat . ')';
-          $feature['projection'] = '4326';
+        if ($data_source['value']['other_latlon']) {
+          $lat_field = $fields[$data_source['other_lat']]['field_alias'];
+          $lon_field = $fields[$data_source['other_lon']]['field_alias'];
+          $lon = current($record)->$lon_field;
+          $lat = current($record)->$lat_field;
+          if (!empty($lat) && !empty($lon)) {
+            $feature['wkt'] = 'POINT(' . $lon . ' ' . $lat . ')';
+            $feature['projection'] = '4326';
+          }
+        }
+        elseif ($data_source['value']['openlayers_wkt']) {
+          $wkt_field = $fields[$data_source['openlayers_wkt']]['field_alias'];
+          $wkt = current($record)->$wkt_field;
+          if ($wkt) {
+            $feature['wkt'] = $wkt;
+            $feature['projection'] = '4326';
+          }
         }
 
         $descriptions = array();
@@ -181,13 +202,23 @@ class openlayers_views_style_data extends views_plugin_style {
           $rendered_record[$handler->field_alias] = $handler->advanced_render($record);
         }
                 
-        $lat_field = $fields[$data_source['other_lat']]['field_alias'];
-        $lon_field = $fields[$data_source['other_lon']]['field_alias'];
-        $lon = $record->$lon_field;
-        $lat = $record->$lat_field;
-        if (!empty($lat) && !empty($lon)) {
-          $feature['wkt'] = 'POINT(' . $lon . ' ' . $lat . ')';
-          $feature['projection'] = '4326';
+        if ($data_source['value']['other_latlon']) {
+          $lat_field = $fields[$data_source['other_lat']]['field_alias'];
+          $lon_field = $fields[$data_source['other_lon']]['field_alias'];
+          $lon = $record->$lon_field;
+          $lat = $record->$lat_field;
+          if (!empty($lat) && !empty($lon)) {
+            $feature['wkt'] = 'POINT(' . $lon . ' ' . $lat . ')';
+            $feature['projection'] = '4326';
+          }
+        }
+        elseif ($data_source['value']['openlayers_wkt']) {
+          $wkt_field = $fields[$data_source['openlayers_wkt']]['field_alias'];
+          $wkt = $record->$wkt_field;
+          if ($wkt) {
+            $feature['wkt'] = $wkt;
+            $feature['projection'] = '4326';
+          }
         }
 
         // Fill in all attributes
