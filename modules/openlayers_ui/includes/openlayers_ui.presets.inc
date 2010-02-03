@@ -564,7 +564,7 @@ function openlayers_ui_get_behavior_options($type, $defaults) {
 
       $options = isset($defaults['behaviors'][$key]) ? $defaults['behaviors'][$key] : array();
       $behavior = new $class($options, $defaults);
-      $form[$key]['options'] = $behavior->options_form();
+      $form[$key]['options'] = $behavior->options_form($options);
     }
   }
   return $form;

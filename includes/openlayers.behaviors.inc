@@ -188,5 +188,16 @@ function _openlayers_openlayers_behaviors() {
         'parent' => 'openlayers_behavior',
       ),
     ),
+    'openlayers_behavior_zoomtolayer' => array(
+      'title' => t('Zoom to Layer'),
+      'description' => t('Zooms to the extent of a given layer on map loading.'),
+      'type' => 'layer',
+      'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
+      'file' => 'openlayers_behavior_zoomtolayer.inc',
+      'behavior' => array(
+        'class' => 'openlayers_behavior_zoomtolayer',
+        'parent' => 'openlayers_behavior',
+      ),
+    ),
   );
 }
