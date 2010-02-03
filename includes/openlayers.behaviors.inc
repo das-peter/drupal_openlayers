@@ -34,6 +34,18 @@ function _openlayers_openlayers_behaviors() {
          'parent' => 'openlayers_behavior',
        ),
      ),
+     'openlayers_behavior_tooltip' => array(
+       'title' => t('Tooltip'),
+       'description' => t('Adds info boxes on hover to points or shapes on maps.'),
+       'type' => 'layer',
+       'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
+       'file' => 'openlayers_behavior_tooltip.inc',
+       'behavior' => array(
+         'class' => 'openlayers_behavior_tooltip',
+         'parent' => 'openlayers_behavior',
+       ),
+     ),
+
     'openlayers_behavior_fullscreen' => array(
        'title' => t('Fullscreen'),
        'description' => t('Adds a toggle to maps which makes them fill the browser window.'),
