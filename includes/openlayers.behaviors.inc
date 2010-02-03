@@ -23,6 +23,17 @@ function _openlayers_openlayers_behaviors() {
          'parent' => 'openlayers_behavior',
        ),
      ),
+     'openlayers_behavior_popup' => array(
+       'title' => t('Pop Up'),
+       'description' => t('Adds clickable info boxes to points or shapes on maps.'),
+       'type' => 'layer',
+       'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
+       'file' => 'openlayers_behavior_popup.inc',
+       'behavior' => array(
+         'class' => 'openlayers_behavior_popup',
+         'parent' => 'openlayers_behavior',
+       ),
+     ),
     'openlayers_behavior_fullscreen' => array(
        'title' => t('Fullscreen'),
        'description' => t('Adds a toggle to maps which makes them fill the browser window.'),
