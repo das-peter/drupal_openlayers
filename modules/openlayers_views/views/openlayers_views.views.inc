@@ -14,6 +14,19 @@
 function openlayers_views_views_plugins() {
   return array(
     'module' => 'openlayers_views',
+    'display' => array(
+      'openlayers' => array(
+        'title' => t('OpenLayers Data'),
+        'help' => t('Data layer for OpenLayers maps.'),
+        'handler' => 'openlayers_views_plugin_display_openlayers',
+        'path' => drupal_get_path('module', 'openlayers_views') .'/views',
+        'uses hook menu' => FALSE,
+        'use ajax' => FALSE,
+        'use pager' => FALSE,
+        'accept attachments' => FALSE,
+        'admin' => t('OpenLayers Data'),
+      ),
+    ),
     'style' => array(
       'openlayers_map' => array(
         'title' => t('OpenLayers Map'),
@@ -37,10 +50,10 @@ function openlayers_views_views_plugins() {
         'theme path' => drupal_get_path('module', 'openlayers_views') .'/views',
         'path' => drupal_get_path('module', 'openlayers_views') .'/views',
         'uses fields' => TRUE,
-        'uses row plugin' => TRUE,
+        'uses row plugin' => FALSE,
         'uses options' => TRUE,
         'uses grouping' => TRUE,
-        'type' => 'normal',
+        'type' => 'openlayers',
         'even empty' => TRUE,
       ),
     ),

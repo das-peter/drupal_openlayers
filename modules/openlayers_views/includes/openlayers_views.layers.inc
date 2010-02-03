@@ -34,15 +34,11 @@ function openlayers_views_process_layers($info = NULL) {
         $args = $current_view->args;
         $view->set_exposed_input($current_view->exposed_input);
       }
-    
-      $view->execute_display($l['views']['display'], $args);
-      $view->init_style();
-      
-      $layer['features'] = $view->style_plugin->pre_render($view->result);
-      
-      $view->destroy();          
-     }
-   }
+
+      $processed[$k]['features'] = $view->execute_display($l['views']['display'], $args);
+      $view->destroy();
+    }
+  }
   return $layer;
 
 }

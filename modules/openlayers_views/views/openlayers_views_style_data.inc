@@ -248,32 +248,16 @@ class openlayers_views_style_data extends views_plugin_style {
   }
 
   /**
-   * Returns an array of features for the map (data for an OL map view)
+   * Render the map features.
    */
-  function pre_render() {
-    // Group the rows according to the grouping field, if specified.
-    $grouped = !empty($this->options['grouping']) ? TRUE : FALSE;
-    $sets = $this->render_grouping($this->view->result, $this->options['grouping']);
-    
-    $features = array();
-    $features = $this->map_features($sets);                
-    return $features;
-  }
-  
-  /**
-   * Called by view_ui, do some basic checks
-   */
-  function render() {
+  function render($result) {
     // Check for live preview.
     if (!empty($this->view->live_preview)) {
       return t('OpenLayers views are not compatible with live preview.');
     }
-    
-    // Check row plugin if using it.
-    if (empty($this->row_plugin)) {
-      drupal_set_message("Mising Row Plug-in", "error");
-      vpr('views_plugin_style_default: Missing row plugin');
-      return;
-    }
+
+    // Group the rows according to the grouping field, if specified.
+    $sets = $this->render_grouping($result, $this->options['grouping']);
+    return $this->map_features($sets);
   }
 }
