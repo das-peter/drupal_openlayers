@@ -70,6 +70,15 @@ function openlayers_ui_menu() {
     'type' => MENU_LOCAL_TASK,
     'weight' => -15,
   );
+  $items['admin/settings/openlayers/layers/clone/%openlayers_layer'] = array( 	 
+    'title' => 'Clone layer', 	 
+    'page callback' => 'drupal_get_form', 	 
+    'page arguments' => array('openlayers_ui_layers_form', 5), 	 
+    'access arguments' => array('administer openlayers'), 	 
+    'file' => 'includes/openlayers_ui.layers.inc', 	 	  
+    'type' => MENU_NORMAL_ITEM, 
+    'tab_parent' => 'admin/settings/openlayers/layers',
+  );
   // Edit-layer form
   $items['admin/settings/openlayers/layers/%openlayers_layer/edit'] = array(
     'title' => 'Edit layer',
@@ -136,8 +145,16 @@ function openlayers_ui_menu() {
     'page arguments' => array('openlayers_ui_styles_form', 5),
     'access arguments' => array('administer openlayers'),
     'file' => 'includes/openlayers_ui.styles.inc',
-    'type' => MENU_LOCAL_TASK,
+    'type' => MENU_NORMAL_ITEM,
     'weight' => -10,
+  );
+  $items['admin/settings/openlayers/styles/clone/%openlayers_layer'] = array( 	 
+    'title' => 'Clone style', 	 
+    'page callback' => 'drupal_get_form', 	 
+    'page arguments' => array('openlayers_ui_styles_form', 5), 	 
+    'access arguments' => array('administer openlayers'), 	 
+    'file' => 'includes/openlayers_ui.styles.inc', 	 	  
+    'type' => MENU_LOCAL_TASK, 
   );
   $items['admin/settings/openlayers/styles/%openlayers_style/edit'] = array(
     'title' => 'Edit style',
@@ -145,7 +162,7 @@ function openlayers_ui_menu() {
     'page arguments' => array('openlayers_ui_styles_form', 4, TRUE),
     'access arguments' => array('administer openlayers'),
     'file' => 'includes/openlayers_ui.styles.inc',
-    'type' => MENU_NORMAL_ITEM
+    'type' => MENU_LOCAL_TASK
   );
   $items['admin/settings/openlayers/styles/%openlayers_style/delete'] = array(
     'title' => 'Delete style',
@@ -153,7 +170,7 @@ function openlayers_ui_menu() {
     'page arguments' => array('openlayers_ui_object_delete', 3, 4),
     'access arguments' => array('administer openlayers'),
     'file' => 'includes/openlayers_ui.styles.inc',
-    'type' => MENU_NORMAL_ITEM
+    'type' => MENU_LOCAL_TASK
   );
   $items['admin/settings/openlayers/styles/%openlayers_style/export'] = array(
     'title' => 'Export style',
@@ -161,7 +178,7 @@ function openlayers_ui_menu() {
     'page arguments' => array('openlayers_ui_object_export', 3, 4),
     'access arguments' => array('administer openlayers'),
     'file' => 'includes/openlayers_ui.styles.inc',
-    'type' => MENU_NORMAL_ITEM
+    'type' => MENU_LOCAL_TASK
   );
 
   // Presets.
@@ -199,6 +216,15 @@ function openlayers_ui_menu() {
     'file' => 'includes/openlayers_ui.presets.inc',
     'type' => MENU_NORMAL_ITEM,
     'weight' => -10,
+  );
+  $items['admin/settings/openlayers/presets/clone/%openlayers_preset'] = array(
+    'title' => 'Clone preset',
+    'description' => 'Clone OpenLayers map preset.', 	 
+    'page callback' => 'drupal_get_form', 	 
+    'page arguments' => array('openlayers_ui_presets_form', 5, TRUE), 	 
+    'access arguments' => array('administer openlayers'), 	 
+    'file' => 'includes/openlayers_ui.presets.inc', 	 
+    'type' => MENU_LOCAL_TASK, 
   );
   $items['admin/settings/openlayers/presets/%openlayers_preset/edit'] = array(
     'title' => 'Edit preset',
