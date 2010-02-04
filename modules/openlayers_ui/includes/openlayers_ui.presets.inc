@@ -594,10 +594,10 @@ function openlayers_ui_presets_form_center_map($defaults = array()) {
   // even if the user is using screwed up map settings, this map will still function.
   $centermap_def = array(
     'id' => 'openlayers-center-helpmap',
-    'projection' => '4326',
+    'projection' => '900913',
     'default_layer' => 'osm_mapnik',
     'width' => '500px',
-    'height' => '300px',
+    'height' => '400px',
     'center' => array(
       'initial' => array(
         'centerpoint' => (($defaults['center']['lat']) ? $defaults['center']['lat'] : 0) . ',' . (($defaults['center']['lon']) ? $defaults['center']['lon'] : 0),
@@ -616,16 +616,6 @@ function openlayers_ui_presets_form_center_map($defaults = array()) {
     'options' => array(
       'displayProjection' => '4326',
       'maxExtent' => openlayers_get_extent('4326'),
-    ),
-    'projection' => '4326',
-    'width' => 'auto',
-    'default_layer' => 'osm_mapnik',
-    'height' => '400px',
-    'center' => array(
-      'initial' => array(
-        'centerpoint' => '0,0',
-        'zoom' => '2'
-      )
     ),
   );
   return openlayers_render_map($centermap_def);
