@@ -15,7 +15,8 @@ class openlayers_behavior_mapformvalues extends openlayers_behavior {
    */
   function options_init() {
     return array(
-      'zoombox' => '',
+      'center_form' => '#edit-center-initial-centerpoint',
+      'zoom_form' => '#edit-center-initial-zoom'
     );
   }
 
