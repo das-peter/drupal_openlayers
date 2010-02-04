@@ -589,19 +589,19 @@ function openlayers_ui_presets_form_center_map($defaults = array()) {
   );
   drupal_add_js($pass_values, 'setting');
 
-  // Set up our map to help set center lat, lon and zoom
-  // This map will always be projected as 4326 and use just the basic layer so that
-  // even if the user is using screwed up map settings, this map will still function.
+  // centerpoint & zoom of this preset are overridden
+  // by the mapformvalues behavior on page load
   $centermap_def = array(
     'id' => 'openlayers-center-helpmap',
     'projection' => '900913',
+    'displayProjection' => '900913',
     'default_layer' => 'osm_mapnik',
     'width' => '500px',
     'height' => '400px',
     'center' => array(
       'initial' => array(
-        'centerpoint' => (($defaults['center']['lat']) ? $defaults['center']['lat'] : 0) . ',' . (($defaults['center']['lon']) ? $defaults['center']['lon'] : 0),
-        'zoom' => ($defaults['center']['zoom']) ? $defaults['center']['zoom'] : 2,
+        'centerpoint' => "0, 0",
+        'zoom' => 2,
       ),
     ),
     'layers' => array(
@@ -612,10 +612,6 @@ function openlayers_ui_presets_form_center_map($defaults = array()) {
       'openlayers_behavior_dragpan' => array(),
       'openlayers_behavior_mapformvalues' => array(),
       'openlayers_behavior_boxselect' => array(),
-    ),
-    'options' => array(
-      'displayProjection' => '4326',
-      'maxExtent' => openlayers_get_extent('4326'),
     ),
   );
   return openlayers_render_map($centermap_def);

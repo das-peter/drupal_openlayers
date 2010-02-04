@@ -22,7 +22,11 @@ Drupal.behaviors.openlayers_behavior_mapformvalues = function(context) {
     // Add control
     center_point = $('#edit-center-initial-centerpoint').val();
     zoom = $('#edit-center-initial-zoom').val();
-    data.openlayers.setCenter(new OpenLayers.LonLat.fromString(center_point));
+    data.openlayers.setCenter(
+      OpenLayers.LonLat.fromString(center_point).transform(
+        new OpenLayers.Projection('EPSG:4326'),
+        data.openlayers.projection)
+      );
     data.openlayers.zoomTo(parseInt(zoom));
     data.openlayers.events.on({'moveend': updateForm});
   }

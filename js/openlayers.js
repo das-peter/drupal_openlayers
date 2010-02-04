@@ -166,7 +166,7 @@ Drupal.openlayers = {
     
     // Zoom & center
     if (map.center.initial) {
-      var center = new OpenLayers.LonLat.fromString(map.center.initial.centerpoint).transform(
+      var center = OpenLayers.LonLat.fromString(map.center.initial.centerpoint).transform(
             new OpenLayers.Projection('EPSG:4326'), 
             new OpenLayers.Projection('EPSG:' + map.projection));
       var zoom = parseInt(map.center.initial.zoom, 10);
@@ -177,7 +177,7 @@ Drupal.openlayers = {
     // Prevents the map from being panned outside of a specfic bounding box.
     // TODO: needs to be aware of projection: currently the restrictedExtent string is always latlon
     if (typeof map.center.restrict !== 'undefined' && map.center.restrict.restrictextent) {
-      openlayers.restrictedExtent = new OpenLayers.Bounds.fromString(
+      openlayers.restrictedExtent = OpenLayers.Bounds.fromString(
           map.center.restrict.restrictedExtent);
     }
   },
