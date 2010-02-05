@@ -14,7 +14,7 @@
  */
 function openlayers_ui_layers_types(&$form_state, $layer = NULL, $edit = FALSE) {
   $form = array();
-  $form['layer_types'] = openlayers_ui_get_layer_type_options('map', $defaults);
+  $form['layer_types'] = openlayers_ui_get_layer_type_options('map');
   return $form;
 }
 
@@ -143,7 +143,7 @@ function openlayers_ui_get_layer_form($type, $layer = FALSE) {
 /**
  * Get layer type options.
  */
-function openlayers_ui_get_layer_type_options($type, $defaults) {
+function openlayers_ui_get_layer_type_options($type) {
   $form = array();
   $form['layer_type_help'] = array(
     '#type' => 'item',
