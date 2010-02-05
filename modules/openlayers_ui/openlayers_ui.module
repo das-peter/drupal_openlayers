@@ -7,10 +7,8 @@
 function openlayers_ui_help($path, $arg) {
   switch ($path) {
     case 'admin/help#openlayers_ui':
-      $output = '<p>'. t('Provides a user interface to manage OpenLayers maps.') .'</p>';
+      return '<p>'. t('Provides a user interface to manage OpenLayers maps.') .'</p>';
   }
-
-  return $output;
 }
 
 /**
