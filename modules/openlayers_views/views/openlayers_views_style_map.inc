@@ -56,6 +56,6 @@ class openlayers_views_style_map extends views_plugin_style {
     $preset = openlayers_preset_load($this->options['preset']);
              
     $map = openlayers_render_map($preset->data, $preset->name);  
-    return theme($this->theme_functions(), $this->view, $this->options, $map, $group_name);
+    return theme($this->theme_functions(), $this->view, $this->options, $map);
   }
 }

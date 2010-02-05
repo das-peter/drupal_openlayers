@@ -544,7 +544,7 @@ function openlayers_ui_get_layer_options($type = 'baselayer', $projection = NULL
 function openlayers_ui_get_style_options() {
   $options = array();
   foreach (openlayers_styles() as $key => $style) {
-    $options[$key] = $style->name;
+    $options[$key] = $style->title;
   }
   return $options;
 }
