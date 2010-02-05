@@ -33,21 +33,21 @@ class openlayers_layer_type_openlayers_views_vector extends openlayers_layer_typ
    * @return array of features
    */
   function get_features($view_name, $display_name) {
-    $features = array();
     if ($view = views_get_view($view_name)) {
       $args = array();
-      // Retrieve args/filters from current view to pass on to our vector layer.
+      // Retrieve args/filters from current view 
+      // to pass on to our vector layer.
       $current_view = views_get_current_view();
-      if ($current_view) {
+      if (isset($current_view)) {
         $args = $current_view->args;
-        $view->set_exposed_input($current_view->exposed_input);
+        if (isset($current_view->exposed_input)) {
+          $view->set_exposed_input($current_view->exposed_input);
+        }
       }
-      $view->execute_display($display_name, $args);
-      $view->init_style();
-      $features = $view->style_plugin->pre_render($view->result);
+      $features = $view->execute_display($display_name);
       $view->destroy();
     } 
-    return $features;
+    return isset($features) ? $features : array();
   }
 
   /**

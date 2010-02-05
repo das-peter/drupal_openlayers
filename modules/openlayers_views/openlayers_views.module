@@ -78,7 +78,7 @@ function openlayers_views_openlayers_layers_info() {
   foreach ($views as $view) {
     foreach ($view->display as $display => $data) {
       $view->set_display($display);
-      if ($view->display_handler->get_option('style_plugin') == 'openlayers_data') {
+      if ($data->display_plugin == 'openlayers') {
         //Build Layer
         $layer = new StdClass();
         $layer->api_version = 1;
