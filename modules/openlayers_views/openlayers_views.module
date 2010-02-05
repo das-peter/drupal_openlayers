@@ -83,7 +83,7 @@ function openlayers_views_openlayers_layers_info() {
         $layer = new StdClass();
         $layer->api_version = 1;
         $layer->name = $view->name . '_' . $display;
-        $layer->title = $view->display_handler->get_option('title');
+        $layer->title = $view->name;
         $layer->description = $view->description . ' - ' . $data->display_title;
         $layer->data = array(
           'layer_type' => 'openlayers_views_vector',

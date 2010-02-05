@@ -21,6 +21,12 @@ class openlayers_behavior_zoomtolayer extends openlayers_behavior {
 
   function options_form($defaults) {
     return array(
+      'zoomtolayer' => array(
+        '#type' => 'select',
+        '#options' => $this->map['layers'],
+        '#description' => t('Select layer to zoom to when the map is loaded'),
+        '#default_value' => isset($defaults['zoomtolayer']) ? $defaults['zoomtolayer'] : NULL
+      ),
       'point_zoom_level' => array(
         '#type' => 'textfield',
         '#default_value' => (isset($defaults['point_zoom_level'])) ? 
