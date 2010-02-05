@@ -141,13 +141,13 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#type' => 'checkbox',
     '#title' => t('Restrict Extent'),
     '#id' => 'restrictextent',
-    '#default_value' => $defaults['center']['restrict']['restrictextent'],
+    '#default_value' => isset($defaults['center']['restrict']['restrictextent']) ? $defaults['center']['restrict']['restrictextent'] : '',
   );
   $form['center']['restrict']['restrictedExtent'] = array(
     '#type' => 'textfield',
     '#title' => t('Restricted Extent'),
     '#description' => t('Prevents users from panning outside of a specific bounding box'),
-    '#default_value' => $defaults['center']['restrict']['restrictedExtent'],
+    '#default_value' => isset($defaults['center']['restrict']['restrictedExtent']) ? $defaults['center']['restrict']['restrictedExtent'] : '',
     '#attributes' => array('class' => 'openlayers-form-restrictedExtent'), 
     '#size' => 25,
     '#process' => array('ctools_dependent_process'),
@@ -193,7 +193,7 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     $projections[$projection] = theme('openlayers_ui_form_projection_description', $projection, array_keys($projection_layers));
   }
 
-  $form['layerstyles']['projections'] = $base_fieldset;
+  // $form['layerstyles']['projections'] = $base_fieldset;
   $form['layerstyles']['projections']['#collapsible'] = FALSE;
   $form['layerstyles']['projections']['#tree'] = TRUE;
 
