@@ -462,7 +462,7 @@ function openlayers_ui_import_page(&$form_state) {
 }
 
 /**
- * Validate handler to import a view
+ * Validate handler to import a preset
  */
 function openlayers_ui_import_validate($form, &$form_state) {
   $view = '';
