@@ -25,9 +25,9 @@ function _openlayers_openlayers_styles_info() {
   $style->title = t('Invisible style');
   $style->description = t('Invisible default style.');
   $style->data = array(
-    'pointRadius' => 0,
-    'strokeWidth' => 0,
-    'fillOpacity' => 0
+    'pointRadius' => '0',
+    'strokeWidth' => '0',
+    'fillOpacity' => '0'
   );
   $styles[$style->name] = $style;
 
@@ -37,11 +37,11 @@ function _openlayers_openlayers_styles_info() {
   $style->title = t('Default style');
   $style->description = t('Basic default style.');
   $style->data = array(
-    'pointRadius' => 5,
+    'pointRadius' => '5',
     'fillColor' => '#FFCC66',
     'strokeColor' => '#FF9933',
-    'strokeWidth' => 4,
-    'fillOpacity' => 0.5
+    'strokeWidth' => '4',
+    'fillOpacity' => '0.5'
   );
   $styles[$style->name] = $style;
 
@@ -51,11 +51,11 @@ function _openlayers_openlayers_styles_info() {
   $style->title = t('Default select style');
   $style->description = t('Default style for selected geometries');
   $style->data = array(
-    'pointRadius' => 5,
+    'pointRadius' => '5',
     'fillColor' => '#66CCFF',
     'strokeColor' => '#3399FF',
-    'strokeWidth' => 4,
-    'fillOpacity' => 0.5
+    'strokeWidth' => '4',
+    'fillOpacity' => '0.5'
   );
   $styles[$style->name] = $style;
 

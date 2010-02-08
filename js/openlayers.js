@@ -27,7 +27,7 @@ Drupal.settings.openlayers.maps = {};
   * and get docs.
  */
 function relate_path(path, base_path) {
-  // Check for a full URL or an absoulte path.
+  // Check for a full URL or an absolute path.
   if (path.indexOf('://') >= 0 || path.indexOf('/') == 0) {
     return path;
   }
