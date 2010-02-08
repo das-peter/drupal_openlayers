@@ -180,11 +180,9 @@ function openlayers_schema() {
 }
 
 /**
- * Implementation of hook_update_n()
- *
- * Updates OpenLayers from 6-1.x to 6-2.x
+ * Adjust presets table.
  */
-function openlayers_update_6200() {
+function openlayers_update_6001() {
   $ret = array();
 
   // Alter presets table.
@@ -205,14 +203,20 @@ function openlayers_update_6200() {
     array('type' => 'text', 'not null' => TRUE),
     array()
   );
+  return $ret;
+}
 
-  // Ensure that all tables are installed
+/**
+ * Add any new tables.
+ */
+function openlayers_update_6002() {
+  $ret = array();
+
   $schema = drupal_get_schema_unprocessed('openlayers');
   foreach ($schema as $name => $table) {
     if (!db_table_exists($name)) {
       db_create_table($ret, $name, $table);
     }
   }
-
   return $ret;
 }
