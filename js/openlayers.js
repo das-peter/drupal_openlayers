@@ -37,6 +37,9 @@ function relate_path(path, base_path) {
 }
 
 /**
+ * object from feature
+ */
+/**
  * Minimal OpenLayers map bootstrap.
  * All additional operations occur in additional Drupal behaviors.
  */
@@ -145,6 +148,12 @@ Drupal.openlayers = {
       }
     );
   },
+  /**
+   * Add layers to the map
+   *
+   * @param map Drupal settings object for the map
+   * @param openlayers OpenLayers Map Object
+   */
   'addLayers': function(map, openlayers) {
     for (var name in map.layers) {
       var layer;      
@@ -192,27 +201,12 @@ Drupal.openlayers = {
    * parse WKT
    */
   'addFeatures': function(map, layer, features) {
-    var wktFormat = new OpenLayers.Format.WKT();
     var newFeatures = [];
 
     // Go through features
     for (var key in features) {
       var feature = features[key];
-
-      // Extract geometry either from wkt property or lon/lat properties
-      if (feature.wkt) {
-        // Check to see if it is a string of wkt, or an array for a multipart feature.
-        if (typeof(feature.wkt) === "string") {
-          var wkt = feature.wkt;
-        }
-        else if (typeof(feature.wkt) === "object" && feature.wkt !== null && feature.wkt.length !== 0) {
-          var wkt = "GEOMETRYCOLLECTION(" + feature.wkt.join(',') + ")";
-        }
-        var newFeatureObject = wktFormat.read(wkt);
-      }
-      else if (feature.lon) {
-        var newFeatureObject = wktFormat.read("POINT(" + feature.lon + " " + feature.lat + ")");
-      }
+      var newFeatureObject = this.objectFromFeature(feature);
 
       // If we have successfully extracted geometry add additional
       // properties and queue it for addition to the layer
@@ -293,6 +287,24 @@ Drupal.openlayers = {
         strokeColor: "#3399ff"
       })
     });
+  },
+  'objectFromFeature': function(feature) {
+    var wktFormat = new OpenLayers.Format.WKT();
+    // Extract geometry either from wkt property or lon/lat properties
+    if (feature.wkt) {
+      // Check to see if it is a string of wkt, or an array for a multipart feature.
+      // TODO is this necessary? We shouldn't have arrays coming in here
+      if (typeof(feature.wkt) === "string") {
+        var wkt = feature.wkt;
+      }
+      else if (typeof(feature.wkt) === "object" && feature.wkt !== null && feature.wkt.length !== 0) {
+        var wkt = "GEOMETRYCOLLECTION(" + feature.wkt.join(',') + ")";
+      }
+      return wktFormat.read(wkt);
+    }
+    else if (feature.lon) {
+      return wktFormat.read("POINT(" + feature.lon + " " + feature.lat + ")");
+    }
   }
 };
 
