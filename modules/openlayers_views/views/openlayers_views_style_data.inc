@@ -53,6 +53,7 @@ class openlayers_views_style_data extends views_plugin_style {
 
     // Default data source
     $data_source_options['other_latlon'] = t('Other: Lat/Lon Point');
+    $data_source_options['other_boundingbox'] = t('Other: Bounding Box');
     $data_source_options['openlayers_wkt'] = t('OpenLayers WKT');
 
     // Data Source options
@@ -91,6 +92,8 @@ class openlayers_views_style_data extends views_plugin_style {
         '#process' => array('views_process_dependency'),
         '#dependency' => array('edit-style-options-data-source-value' => array('other_latlon')),
       );
+
+      // Other: WKT
       $form['data_source']['openlayers_wkt'] = array(
         '#type' => 'select',
         '#title' => t('WKT Field'),
@@ -101,6 +104,43 @@ class openlayers_views_style_data extends views_plugin_style {
         '#dependency' => array('edit-style-options-data-source-value' => array('openlayers_wkt')),
       );
 
+      // Other: Bounding Box
+      $form['data_source']['other_top'] = array(
+        '#type' => 'select',
+        '#title' => t('Top Field'),
+        '#description' => t('Choose a field for Top.  This should be a field that is a decimal or float value.'),
+        '#options' => $fields,
+        '#default_value' => $this->options['data_source']['other_top'],
+        '#process' => array('views_process_dependency'),
+        '#dependency' => array('edit-style-options-data-source-value' => array('other_boundingbox')),
+      );
+      $form['data_source']['other_right'] = array(
+        '#type' => 'select',
+        '#title' => t('Right Field'),
+        '#description' => t('Choose a field for Right.  This should be a field that is a decimal or float value.'),
+        '#options' => $fields,
+        '#default_value' => $this->options['data_source']['other_right'],
+        '#process' => array('views_process_dependency'),
+        '#dependency' => array('edit-style-options-data-source-value' => array('other_boundingbox')),
+      );
+      $form['data_source']['other_bottom'] = array(
+        '#type' => 'select',
+        '#title' => t('Bottom Field'),
+        '#description' => t('Choose a field for Bottom.  This should be a field that is a decimal or float value.'),
+        '#options' => $fields,
+        '#default_value' => $this->options['data_source']['other_bottom'],
+        '#process' => array('views_process_dependency'),
+        '#dependency' => array('edit-style-options-data-source-value' => array('other_boundingbox')),
+      );
+      $form['data_source']['other_left'] = array(
+        '#type' => 'select',
+        '#title' => t('Left Field'),
+        '#description' => t('Choose a field for Left.  This should be a field that is a decimal or float value.'),
+        '#options' => $fields,
+        '#default_value' => $this->options['data_source']['other_left'],
+        '#process' => array('views_process_dependency'),
+        '#dependency' => array('edit-style-options-data-source-value' => array('other_boundingbox')),
+      );
     }
     $form['data_source']['name_field'] = array(
         '#type' => 'select',
@@ -157,6 +197,23 @@ class openlayers_views_style_data extends views_plugin_style {
           $wkt = current($record)->$wkt_field;
           if ($wkt) {
             $feature['wkt'] = $wkt;
+            $feature['projection'] = '4326';
+          }
+        }
+        elseif ($data_source['value']['other_boundingbox']) {
+          $top_field = $fields[$data_source['other_top']]['field_alias'];
+          $right_field = $fields[$data_source['other_right']]['field_alias'];
+          $left_field = $fields[$data_source['other_left']]['field_alias'];
+          $bottom_field = $fields[$data_source['other_bottom']]['field_alias'];
+          $top = current($record)->$top_field;
+          $right = current($record)->$right_field;
+          $left = current($record)->$left_field;
+          $bottom = current($record)->$bottom_field;
+          if (!empty($lat) && !empty($lon)) {
+            $feature['wkt'] = 'MULTIPOLYGON(' . $top . ' ' . $left . ', ' +
+              $top . ' ' . $right . ', ' +
+              $bottom . ' ' . $right . ', ' +
+              $bottom . ' ' . $left . ')';
             $feature['projection'] = '4326';
           }
         }
@@ -220,6 +277,24 @@ class openlayers_views_style_data extends views_plugin_style {
             $feature['projection'] = '4326';
           }
         }
+        elseif ($data_source['value']['other_boundingbox']) {
+          $top_field = $fields[$data_source['other_top']]['field_alias'];
+          $right_field = $fields[$data_source['other_right']]['field_alias'];
+          $left_field = $fields[$data_source['other_left']]['field_alias'];
+          $bottom_field = $fields[$data_source['other_bottom']]['field_alias'];
+          $top = $record->$top_field;
+          $right = $record->$right_field;
+          $left = $record->$left_field;
+          $bottom = $record->$bottom_field;
+          if (!empty($top) && !empty($left)) {
+            $feature['wkt'] = 'MULTIPOLYGON(' . $top . ' ' . $left . ', ' .
+              $top . ' ' . $right . ', ' .
+              $bottom . ' ' . $right . ', ' .
+              $bottom . ' ' . $left . ')';
+            $feature['projection'] = '4326';
+          }
+        }
+
 
         // Fill in all attributes
         foreach ($fields as $fid => $field) {

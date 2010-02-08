@@ -21,6 +21,18 @@ function _openlayers_openlayers_styles_info() {
 
   $style = new stdClass();
   $style->api_version = 1;
+  $style->name = 'invisible';
+  $style->title = t('Invisible style');
+  $style->description = t('Invisible default style.');
+  $style->data = array(
+    'pointRadius' => 0,
+    'strokeWidth' => 0,
+    'fillOpacity' => 0
+  );
+  $styles[$style->name] = $style;
+
+  $style = new stdClass();
+  $style->api_version = 1;
   $style->name = 'default';
   $style->title = t('Default style');
   $style->description = t('Basic default style.');
