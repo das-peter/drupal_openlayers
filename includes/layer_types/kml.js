@@ -12,7 +12,6 @@ Drupal.openlayers.layer.kml = function(name, map, options) {
   // Get styles
   var styleMap = Drupal.openlayers.getStyleMap(map, name);
   
-console.log(options);
   // Format options
   if (options.maxExtent !== undefined) {
     options.maxExtent = new OpenLayers.Bounds.fromArray(options.maxExtent) || new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
