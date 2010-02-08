@@ -203,7 +203,8 @@ function openlayers_get_layer_object($layer, $map = array()) {
  */
 function openlayers_layer_export_load($name, $reset = TRUE) {
   ctools_include('export');
-  $layers = ctools_export_load_object('openlayers_layers', 'all', array($name), $reset);
+  if ($reset) ctools_export_load_object_reset('openlayers_layers');
+  $layers = ctools_export_load_object('openlayers_layers', 'all', array($name));
   return !empty($layers[$name]) ? $layers[$name] : FALSE;
 }
 
@@ -218,7 +219,8 @@ function openlayers_layer_export_load($name, $reset = TRUE) {
  */
 function openlayers_layers_export_load($reset = TRUE) {
   ctools_include('export');
-  $layers = ctools_export_load_object('openlayers_layers', 'all', array(), $reset);
+  if ($reset) ctools_export_load_object_reset('openlayers_layers');
+  $layers = ctools_export_load_object('openlayers_layers', 'all', array());
   return $layers;
 }
 
@@ -233,7 +235,8 @@ function openlayers_layers_export_load($reset = TRUE) {
  */
 function openlayers_layer_load($name, $reset = FALSE) {
   ctools_include('export');
-  $layer = ctools_export_load_object('openlayers_layers', 'names', array($name), $reset);
+  if ($reset) ctools_export_load_object_reset('openlayers_layers');
+  $layer = ctools_export_load_object('openlayers_layers', 'names', array($name));
   if ($layer) {
     if (openlayers_layer_sanity_check($layer[$name])) {
       return openlayers_get_layer_object($layer[$name]);
@@ -257,7 +260,8 @@ function openlayers_layer_load($name, $reset = FALSE) {
 function openlayers_layers_load($reset = FALSE) {
   ctools_include('export');
   $layer_objects = array();
-  $layers = ctools_export_load_object('openlayers_layers', 'all', array(), $reset);
+  if ($reset) ctools_export_load_object_reset('openlayers_layers');
+  $layers = ctools_export_load_object('openlayers_layers', 'all', array());
   $layers = array_filter($layers, 'openlayers_layer_sanity_check');
   foreach ($layers as $layer) {
     $layer_objects[$layer->name] = openlayers_get_layer_object($layer);
@@ -395,7 +399,8 @@ function openlayers_behaviors($reset = FALSE) {
  */
 function openlayers_styles($reset = FALSE) {
   ctools_include('export');
-  $styles = ctools_export_load_object('openlayers_styles', 'all', array(), $reset);
+  if ($reset) ctools_export_load_object_reset('openlayers_styles');
+  $styles = ctools_export_load_object('openlayers_styles', 'all', array());
   return $styles;
 }
 
@@ -432,7 +437,8 @@ function openlayers_style_save($style) {
  */
 function openlayers_presets($reset = FALSE) {
   ctools_include('export');
-  $presets = ctools_export_load_object('openlayers_map_presets', 'all', array(), $reset);
+  if ($reset) ctools_export_load_object_reset('openlayers_map_presets');
+  $presets = ctools_export_load_object('openlayers_map_presets', 'all', array());
   return $presets;
 }
 
@@ -449,7 +455,8 @@ function openlayers_presets($reset = FALSE) {
  */
 function openlayers_preset_load($name = '', $reset = FALSE) {
   ctools_include('export');
-  $presets = ctools_export_load_object('openlayers_map_presets', 'names', array($name), $reset);
+  if ($reset) ctools_export_load_object_reset('openlayers_map_presets');
+  $presets = ctools_export_load_object('openlayers_map_presets', 'names', array($name));
   return !empty($presets[$name]) ? $presets[$name] : FALSE;
 }
 
