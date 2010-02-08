@@ -482,6 +482,7 @@ function openlayers_ui_presets_form_process($values = array()) {
     'height',
     'image_path',
     'css_path',
+    'proxy_host',
     'center',
     'behaviors',
     'layers',
