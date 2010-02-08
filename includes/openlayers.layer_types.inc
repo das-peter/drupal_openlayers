@@ -98,5 +98,15 @@ function _openlayers_openlayers_layer_types() {
         'parent' => 'openlayers_layer_type',
       ),
     ),
+    'openlayers_layer_type_kml' => array(
+      'title' => t('KML'),
+      'description' => t('<a href="!url">KML</a> overlay.', array('!url' => 'http://en.wikipedia.org/wiki/Keyhole_Markup_Language')),
+      'layer_type' => array(
+        'path' => drupal_get_path('module', 'openlayers') . '/includes/layer_types',
+        'file' => 'kml.inc',
+        'class' => 'openlayers_layer_type_kml',
+        'parent' => 'openlayers_layer_type',
+      ),
+    ),
   );
 }
