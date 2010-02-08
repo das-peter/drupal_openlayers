@@ -22,8 +22,13 @@ document.namespaces;
 Drupal.settings.openlayers = {};
 Drupal.settings.openlayers.maps = {};
 
+/**
+ * This should move down and be a part of another object
+  * and get docs.
+ */
 function relate_path(path, base_path) {
-  if (path.indexOf('://') >= 0) {
+  // Check for a full URL or an absoulte path.
+  if (path.indexOf('://') >= 0 || path.indexOf('/') == 0) {
     return path;
   }
   else {
@@ -87,7 +92,7 @@ Drupal.behaviors.openlayers = function(context) {
         }
 
         if (map.proxy_host) {
-          OpenLayers.ProxyHost = map.proxy_host;
+          OpenLayers.ProxyHost = relate_path(map.proxy_host, Drupal.settings.basePath);
         }
 
         // Initialize openlayers map

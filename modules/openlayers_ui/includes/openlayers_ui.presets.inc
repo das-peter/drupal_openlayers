@@ -82,21 +82,21 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   $form['info']['image_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Image Path'),
-    '#description' => t('The path to a directory for OpenLayers to look for UI graphics. If blank, default graphics are used.'),
+    '#description' => t('The path to a directory for OpenLayers to look for UI graphics. If blank, default graphics are used.  Use either a Drupal path (and the appropriate base path will be prepended), an absolute path (such as !ab_example), or a full URL.', array('!ab_example' => '/path/to/images/')),
     '#default_value' => !empty($defaults['image_path']) ? $defaults['image_path'] : '',
   );
 
   $form['info']['css_path'] = array(
     '#type' => 'textfield',
     '#title' => t('CSS Path'),
-    '#description' => t('Path for where OpenLayers should look for its theme CSS file. The default hosted OpenLayers URL is http://openlayers.org/api/theme/default/style.css'),
+    '#description' => t('Path for where OpenLayers should look for its theme CSS file. The default hosted OpenLayers URL is http://openlayers.org/api/theme/default/style.css.  Use either a Drupal path (and the appropriate base path will be prepended), an absolute path (such as !ab_example), or a full URL.', array('!ab_example' => '/path/to/css/')),
     '#default_value' => !empty($defaults['css_path']) ? $defaults['css_path'] : '',
   );
 
   $form['info']['proxy_host'] = array(
     '#type' => 'textfield',
     '#title' => t('Proxy Host'),
-    '#description' => t('A proxy (typically on the same domain as this site) which enables requests to cross-domain AJAX resources (including remote KML)'),
+    '#description' => t('A proxy (typically on the same domain as this site) which enables requests to cross-domain AJAX resources (including remote KML).  Use either a Drupal path (and the appropriate base path will be prepended), an absolute path (such as !ab_example), or a full URL.', array('!ab_example' => '/cgi_proxy?request=')),
     '#default_value' => !empty($defaults['proxy_host']) ? $defaults['proxy_host'] : '',
   );
 
