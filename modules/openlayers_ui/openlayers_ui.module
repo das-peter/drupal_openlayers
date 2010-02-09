@@ -15,6 +15,10 @@ function openlayers_ui_help($path, $arg) {
         fill color, border, and radius of points or polygons, so they are used 
         on overlays more often than base layers, which are not affected by vector 
         styles.', array("@ols" => 'http://trac.openlayers.org/wiki/Styles')) .'</p>';
+    case 'admin/settings/openlayers/styles/add':
+      return '<p>'. t('The name, title, and description you give a style is for Drupal\'s 
+        interal storage. The rest of the properties are documented on openlayers.org')
+        . '</p>';
     case 'admin/settings/openlayers/presets':
       return '<p>'. t('Presets are combinations of the layers, styles, and behaviors 
         which constitute maps. They also contain basic configuration like the 

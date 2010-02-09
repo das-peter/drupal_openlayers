@@ -38,21 +38,51 @@ function openlayers_ui_styles_form(&$form_state, $style = NULL, $edit = FALSE) {
   );
 
   $form['data'] = array('#type' => 'fieldset', '#tree' => TRUE);
-  $defaults = array(
-    'externalGraphic' => '',
-    'pointRadius' => 5,
-    'fillColor' => '#FFFFFF',
-    'strokeColor' => '#FFFFFF',
-    'strokeWidth' => 5,
-    'fillOpacity' => 0.5,
+  
+  $form['data']['externalGraphic'] = array(
+    '#title' => 'externalGraphic',
+    '#type' => 'textfield',
+    '#description' => t('The URL of an icon for points in a layer.'),
+    '#default_value' => isset($style->data['externalGraphic']) ? 
+      $style->data['externalGraphic'] : '',
   );
-  foreach ($defaults as $key => $value) {
-    $form['data'][$key] = array(
-      '#title' => $key,
-      '#type' => 'textfield',
-      '#default_value' => isset($style->data[$key]) ? $style->data[$key] : $value,
-    );
-  }
+  $form['data']['pointRadius'] = array(
+    '#title' => 'pointRadius',
+    '#type' => 'textfield',
+    '#description' => t('The radius of a vector point or the size of 
+      an icon. Note that, when using icons, this value should be half the 
+      width of the icon image.'),
+    '#default_value' => isset($style->data['pointRadius']) ? 
+      $style->data['pointRadius'] : 5,
+  );
+  $form['data']['fillColor'] = array(
+    '#title' => 'fillColor',
+    '#type' => 'textfield',
+    '#default_value' => isset($style->data['fillColor']) ? 
+      $style->data['fillColor'] : "#FFFFFF",
+  );
+  $form['data']['strokeColor'] = array(
+    '#title' => 'strokeColor',
+    '#type' => 'textfield',
+    '#description' => t('The color of the border around a vector 
+      point'),
+    '#default_value' => isset($style->data['strokeColor']) ? 
+      $style->data['strokeColor'] : "#FFFFFF",
+  );
+  $form['data']['strokeWidth'] = array(
+    '#title' => 'strokeWidth',
+    '#type' => 'textfield',
+    '#description' => t('The width of the border around a vector 
+      point'),
+    '#default_value' => isset($style->data['strokeWidth']) ? 
+      $style->data['strokeWidth'] : 5,
+  );
+  $form['data']['fillOpacity'] = array(
+    '#title' => 'fillOpacity',
+    '#type' => 'textfield',
+    '#default_value' => isset($style->data['fillOpacity']) ? 
+      $style->data['fillOpacity'] : 0.5,
+  );
 
   $form['submit'] = array(
     '#type' => 'submit',
