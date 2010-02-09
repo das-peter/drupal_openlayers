@@ -50,6 +50,8 @@ class openlayers_layer_type_cloudmade extends openlayers_layer_type {
         '#type' => 'textfield',
         '#title' => t('CloudMade API Key'),
         '#default_value' => variable_get('openlayers_layers_cloudmade_api', ''),
+        '#description' => t('<a href="@cloudmade">Get a CloudMade account and API Key</a>',
+          array('@cloudmade' => 'http://cloudmade.com/user/show'))
       ),
       'openlayers_layers_cloudmade_js' => array(
         '#type' => 'textfield',

@@ -36,6 +36,8 @@ class openlayers_layer_type_google extends openlayers_layer_type {
         '#type' => 'textfield',
         '#title' => t('Google API Key'),
         '#default_value' => variable_get('openlayers_layers_google_api', ''),
+        '#description' => t('<a href="@google">Obtain an API key from Google for your domain</a>',
+          array('@google' => 'http://code.google.com/apis/maps/signup.html'))
       )
     );
   }

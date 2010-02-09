@@ -39,6 +39,8 @@ class openlayers_layer_type_virtualearth extends openlayers_layer_type {
         '#type' => 'textfield',
         '#title' => t('VirtualEarth API Key'),
         '#default_value' => variable_get('openlayers_layers_virtualearth_api', ''),
+        '#description' => t('<a href="@microsoft">Get a Virtual Earth API Key</a>',
+          array('@microsoft' => 'http://www.microsoft.com/maps/developers/'))
       )
     );
   }
