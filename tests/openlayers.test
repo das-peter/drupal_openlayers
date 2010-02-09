@@ -28,7 +28,7 @@ class OpenLayersPresetsHook extends DrupalWebTestCase {
 
   function setUp() {
     // Install modules
-    parent::setUp('openlayers', 'openlayers_presets_ui', 'openlayers_test');
+    parent::setUp('openlayers', 'ctools', 'openlayers_ui', 'openlayers_test');
   }
 
   /**
@@ -39,11 +39,48 @@ class OpenLayersPresetsHook extends DrupalWebTestCase {
     $this->drupalLogin($user);
 
     // Go to preset page
-    $this->drupalGet('admin/settings/openlayers/presets/list');
-    $this->assertResponse(200, t('Assert that user can reach and access preset list.'));
+    $this->drupalGet('admin/settings/openlayers/presets');
+    $this->assertResponse(200, t('User can reach preset list.'));
 
     // Ensure that the default test is listed
-    $this->assertText(t('Default Test Map'), t('Assert that the default test preset\'s title appears.'));
-    $this->assertText(t('This is a test preset.'), t('Assert that the default test preset\'s description appears.'));
+    $this->assertText(t('Default Test Map'), 
+      t('Assert that the default test preset\'s title appears.'));
+    $this->assertText(t('This is a test preset.'), 
+      t('Assert that the default test preset\'s description appears.'));
+
+    // Presets
+    $this->drupalGet('admin/settings/openlayers/default/export');
+    $this->assertResponse(200, t('User can reach default preset export page.'));
+
+    $this->drupalGet('admin/settings/openlayers/default/clone');
+    $this->assertResponse(200, t('User can reach default preset clone page.'));
+
+    $this->drupalGet('admin/settings/openlayers/presets/add');
+    $this->assertResponse(200, t('User can reach preset add page.'));
+
+    // Styles
+    $this->drupalGet('admin/settings/openlayers/styles/default/export');
+    $this->assertResponse(200, t('User can reach default style export page.'));
+
+    $this->drupalGet('admin/settings/openlayers/styles/add');
+    $this->assertResponse(200, t('User can reach preset add page.'));
+
+    $new_style = array(
+      'name' => 'UnitStyle',
+      'title' => 'Unit Style',
+      'description' => 'Unit Style for Drupal',
+    );
+
+    $this->drupalPost('admin/settings/openlayers/styles/add', $new_style, t('Save'));
+    $this->assertText(t('Style saved.'), 
+      t('The style was successfully saved.'));
+
+    $this->drupalGet('admin/settings/openlayers/styles');
+    $this->assertRaw(t('UnitStyle'),
+      t('A new style has been added by the test'));
+
+    // Layers
+    $this->drupalGet('admin/settings/openlayers/layers/add');
+    $this->assertResponse(200, t('User can reach preset add page.'));
   }
 }

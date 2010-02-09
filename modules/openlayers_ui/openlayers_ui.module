@@ -12,6 +12,13 @@ function openlayers_ui_help($path, $arg) {
 }
 
 /**
+ * Implementation of hook_perm
+ */
+function openlayers_ui_perm() {
+  return array('administer openlayers');
+}
+
+/**
  * Implementation of hook_menu
  */
 function openlayers_ui_menu() {
