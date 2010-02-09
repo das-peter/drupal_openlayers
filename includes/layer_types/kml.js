@@ -14,7 +14,7 @@ Drupal.openlayers.layer.kml = function(name, map, options) {
   
   // Format options
   if (options.maxExtent !== undefined) {
-    options.maxExtent = new OpenLayers.Bounds.fromArray(options.maxExtent) || new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
+    options.maxExtent = OpenLayers.Bounds.fromArray(options.maxExtent) || new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
   }
   options.format = OpenLayers.Format.KML;
   var layer_projection = options.custom_projection || options.projection;

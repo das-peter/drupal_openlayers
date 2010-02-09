@@ -41,7 +41,7 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
       'formatOptions' => array(
         'extractStyles' => array(
           '#type' => 'checkbox',
-          '#title' => t('Extract Stlyes'),
+          '#title' => t('Extract Styles'),
           '#description' => t('Extract styles from KML.'),
           '#default_value' => isset($this->data['extractStyles']) ? $this->data['extractStyles'] : TRUE,
         ),
