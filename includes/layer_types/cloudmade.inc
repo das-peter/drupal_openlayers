@@ -36,7 +36,7 @@ class openlayers_layer_type_cloudmade extends openlayers_layer_type {
       ),
       'layer_type' => array(
         '#type' => 'hidden',
-        '#value' => 'openlayers_layers_type_cloudmade'
+        '#value' => 'openlayers_layer_type_cloudmade'
       ),
     );
   }
