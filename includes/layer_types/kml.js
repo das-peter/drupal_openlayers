@@ -17,11 +17,12 @@ Drupal.openlayers.layer.kml = function(name, map, options) {
     options.maxExtent = OpenLayers.Bounds.fromArray(options.maxExtent) || new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
   }
   options.format = OpenLayers.Format.KML;
+  options.formatOptions = {extractStyles: true, extractAttributes: true};
   var layer_projection = options.custom_projection || options.projection;
   options.projection = new OpenLayers.Projection('EPSG:' + layer_projection);
   
   // Create layer
-  var layer = new OpenLayers.Layer.GML('KML', options.url, options);
+  var layer = new OpenLayers.Layer.GML(name, options.url, options);
   layer.styleMap = styleMap;
   return layer;
 };
