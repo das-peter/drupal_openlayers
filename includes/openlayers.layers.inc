@@ -154,7 +154,7 @@ function _openlayers_openlayers_layers_info() {
   $layer->api_version = 1;
   $layer->name = 'osm_mapnik';
   $layer->title = t('OSM Mapnik');
-  $layer->description = t('OSM Mapnik.  Needs better description.');
+  $layer->description = t('The main OpenStreetMap map');
   $layer->data = array(
     'baselayer' => TRUE,
     'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> 2010 
@@ -175,7 +175,7 @@ function _openlayers_openlayers_layers_info() {
   $layer->api_version = 1;
   $layer->name = 'openlayers_layers_osm_tah';
   $layer->title = t('OSM Tiles@Home');
-  $layer->description = t('OSM Tiles@Home.  Needs better description.');
+  $layer->description = t('Alternative, community-rendered OpenStreetMap');
   $layer->data = array(
     'baselayer' => TRUE,
     'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> 2010 
@@ -196,7 +196,7 @@ function _openlayers_openlayers_layers_info() {
   $layer->api_version = 1;
   $layer->name = 'openlayers_layers_osm_cycle';
   $layer->title = t('OSM Cycling Map');
-  $layer->description = t('OSM Cycling Map.  Needs better description.');
+  $layer->description = t('OpenStreetMap with highlighted bike lanes');
   $layer->data = array(
     'baselayer' => TRUE,
     'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> 2010 
@@ -246,7 +246,7 @@ function _openlayers_openlayers_layers_info() {
   $layer->api_version = 1;
   $layer->name = 'openlayers_default_wms';
   $layer->title = t('Default OpenLayers WMS');
-  $layer->description = t('A simple basemap to get you started');
+  $layer->description = t('MetaCarta basemap of province and water boundaries');
   $layer->data = array(
     'projection' => array('4326'),
     'baselayer' => TRUE,
