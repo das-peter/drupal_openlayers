@@ -210,10 +210,11 @@ class openlayers_views_style_data extends views_plugin_style {
           $left = current($record)->$left_field;
           $bottom = current($record)->$bottom_field;
           if (!empty($lat) && !empty($lon)) {
-            $feature['wkt'] = 'MULTIPOLYGON(' . $top . ' ' . $left . ', ' +
-              $top . ' ' . $right . ', ' +
-              $bottom . ' ' . $right . ', ' +
-              $bottom . ' ' . $left . ')';
+            $feature['wkt'] = 'MULTIPOLYGON(' . 
+              $left . ' ' . $top . ', ' .
+              $right . ' ' . $top . ', ' .
+              $right . ' ' . $bottom . ', ' .
+              $left . ' ' . $bottom . ')';
             $feature['projection'] = '4326';
           }
         }
@@ -287,10 +288,11 @@ class openlayers_views_style_data extends views_plugin_style {
           $left = $record->$left_field;
           $bottom = $record->$bottom_field;
           if (!empty($top) && !empty($left)) {
-            $feature['wkt'] = 'MULTIPOLYGON(' . $top . ' ' . $left . ', ' .
-              $top . ' ' . $right . ', ' .
-              $bottom . ' ' . $right . ', ' .
-              $bottom . ' ' . $left . ')';
+            $feature['wkt'] = 'MULTIPOLYGON(' . 
+              $left . ' ' . $top . ', ' .
+              $right . ' ' . $top . ', ' .
+              $right . ' ' . $bottom . ', ' .
+              $left . ' ' . $bottom . ')';
             $feature['projection'] = '4326';
           }
         }
