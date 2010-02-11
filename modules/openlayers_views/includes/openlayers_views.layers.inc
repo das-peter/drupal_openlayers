@@ -10,9 +10,9 @@
  */
 
 /**
- * Speicifc Layer Callback for Views Layers
+ * Specific Layer Callback for Views Layers
  *
- * This function handles the speicifc layer handling
+ * This function handles the specific layer handling
  * of views data layers
  *
  * @param $layer
