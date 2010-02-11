@@ -44,7 +44,7 @@ class openlayers_layer_type_openlayers_views_vector extends openlayers_layer_typ
           $view->set_exposed_input($current_view->exposed_input);
         }
       }
-      $features = $view->execute_display($display_name);
+      $features = $view->execute_display($display_name, $args);
       $view->destroy();
     } 
     return isset($features) ? $features : array();
