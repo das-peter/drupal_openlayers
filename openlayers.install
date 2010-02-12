@@ -180,43 +180,23 @@ function openlayers_schema() {
 }
 
 /**
- * Adjust presets table.
+ * Implmentation of hook_update_N().
  */
-function openlayers_update_6001() {
+function openlayers_update_6200() {
   $ret = array();
-
-  // Alter presets table.
-  db_drop_field($ret, 'openlayers_map_presets', 'preset_id');
-  db_change_field($ret, 'openlayers_map_presets', 'preset_name', 'name',
-    array('type' => 'varchar', 'length' => 255, 'not null' => TRUE),
-    array('primary key' => array('name'))
-  );
-  db_change_field($ret, 'openlayers_map_presets', 'preset_title', 'title',
-    array('type' => 'varchar', 'length' => 255, 'not null' => TRUE),
-    array()
-  );
-  db_change_field($ret, 'openlayers_map_presets', 'preset_description', 'description',
-    array('type' => 'text', 'not null' => TRUE),
-    array()
-  );
-  db_change_field($ret, 'openlayers_map_presets', 'preset_data', 'data',
-    array('type' => 'text', 'not null' => TRUE),
-    array()
-  );
-  return $ret;
-}
-
-/**
- * Add any new tables.
- */
-function openlayers_update_6002() {
-  $ret = array();
-
-  $schema = drupal_get_schema_unprocessed('openlayers');
-  foreach ($schema as $name => $table) {
-    if (!db_table_exists($name)) {
-      db_create_table($ret, $name, $table);
-    }
+  $version = drupal_get_installed_schema_version('openlayers');
+  
+  // Because we already have two different versions of this
+  // module that are not meant to be compatible, we have to
+  // check what version we are coming from and do the correct
+  // update.
+  if ($version > 6000 && $version < 6100) {
+    // 0.x to 2.x update.  Nothing to do.
   }
+  else {
+    // 1.x to 2.x update.
+    // TO DO: make magic happen.
+  } 
+  
   return $ret;
 }
