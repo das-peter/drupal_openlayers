@@ -173,7 +173,7 @@ function _openlayers_openlayers_layers_info() {
   // OpenStreetMap Tiles @ Home
   $layer = new stdClass();
   $layer->api_version = 1;
-  $layer->name = 'openlayers_layers_osm_tah';
+  $layer->name = 'osm_tah';
   $layer->title = t('OSM Tiles@Home');
   $layer->description = t('Alternative, community-rendered OpenStreetMap');
   $layer->data = array(
@@ -194,7 +194,7 @@ function _openlayers_openlayers_layers_info() {
   // OpenStreetMap Cycling Map
   $layer = new stdClass();
   $layer->api_version = 1;
-  $layer->name = 'openlayers_layers_osm_cycle';
+  $layer->name = 'osm_cycle';
   $layer->title = t('OSM Cycling Map');
   $layer->description = t('OpenStreetMap with highlighted bike lanes');
   $layer->data = array(
@@ -215,7 +215,7 @@ function _openlayers_openlayers_layers_info() {
   // OpenStreetMap 426 hybrid overlay
   $layer = new stdClass();
   $layer->api_version = 1;
-  $layer->name = 'openlayers_layers_osm_4326_hybrid';
+  $layer->name = 'osm_4326_hybrid';
   $layer->title = t('OSM Overlay');
   $layer->description = t('Semi-transparent hybrid overlay. Projected into WSG84 for use on non spherical-mercator maps.');
   $layer->data = array(
@@ -244,7 +244,7 @@ function _openlayers_openlayers_layers_info() {
 
   $layer = new StdClass();
   $layer->api_version = 1;
-  $layer->name = 'openlayers_default_wms';
+  $layer->name = 'wms_default';
   $layer->title = t('Default OpenLayers WMS');
   $layer->description = t('MetaCarta basemap of province and water boundaries');
   $layer->data = array(
