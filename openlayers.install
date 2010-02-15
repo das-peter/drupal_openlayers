@@ -184,16 +184,15 @@ function openlayers_schema() {
  */
 function openlayers_update_6200(&$sandbox) {
   $ret = array();
-  $version = drupal_get_installed_schema_version('openlayers');
   
   // Because we already have two different versions of this
   // module that are not meant to be compatible, we have to
   // check what version we are coming from and do the correct
-  // update.
-  if ($version > 6000 && $version < 6100) {
-    // 0.x to 2.x upgrade.  Nothing to do.
-  }
-  else {
+  // update.  Unfortunately Drupal will not tell us what schema
+  // we are coming from, so we have set a variable in the 1.x
+  // modules.
+  $openlayers_version = variable_get('openlayers_schema_version', NULL);
+  if (!empty($openlayers_version) && $openlayers_version >= 6100 && $openlayers_version < 6200) {
     // 1.x to 2.x upgrade.
     $ret = _openlayers_upgrade_1xto2x();
   } 
@@ -213,7 +212,7 @@ function _openlayers_upgrade_1xto2x() {
   // Add simple note
   $ret[] = array(
     'success' => TRUE,
-    'query' => t('Upgrading OpenLayers from 1.x to 2.x'),
+    'query' => 'Upgrading OpenLayers from 1.x to 2.x',
   );
   
   // Update preset table
@@ -266,7 +265,7 @@ function _openlayers_upgrade_1xto2x() {
     // Add some output to user.
     $ret[] = array(
       'success' => $result,
-      'query' => t('Updated preset: %preset. Please ensure to read handbook pages on Drupal.org for manual changes when upgrading.', array('%preset' => $row['name'])),
+      'query' => 'Updated preset: ' . $row['name'] . '. Please ensure to read handbook pages on Drupal.org for manual changes when upgrading.',
       'rows' => 1,
     );
   }
@@ -481,7 +480,7 @@ function _openlayers_upgrade_1xto2x_convert_styles(&$map = array(), &$ret = arra
         $success = drupal_write_record('openlayers_styles', $style);
         $ret[] = array(
           'success' => ($success) ? TRUE : FALSE,
-          'query' => t('Attempt to save style: %style', array('%style' => $id)),
+          'query' => 'Attempt to save style: ' . $id,
         );
         // Now put back in map array
         if ($success) {
