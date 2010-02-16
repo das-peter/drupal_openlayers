@@ -169,6 +169,18 @@ function openlayers_ui_menu() {
     'type' => MENU_LOCAL_TASK,
     'weight' => -10,
   );
+  /*
+   * Feature not completed
+  $items['admin/settings/openlayers/styles/import'] = array(
+    'title' => 'Import',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_ui_styles_import_form'),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers_ui.styles.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => -10,
+  );
+   */
   $items['admin/settings/openlayers/styles/add/%openlayers_style'] = array(
     'title' => 'Add',
     'page callback' => 'drupal_get_form',

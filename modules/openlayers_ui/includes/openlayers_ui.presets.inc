@@ -393,6 +393,10 @@ function openlayers_ui_presets_form_validate($form, &$form_state) {
 
   // If found error, rebuild form
   if ($found_error) {
+    // Add OpenLayers CSS & Javascript, because the form function will not be run on rebuild
+    openlayers_include();
+    drupal_add_js(drupal_get_path('module', 'openlayers_ui') . '/js/openlayers_ui.presets.js', 'module');
+    drupal_add_css(drupal_get_path('module', 'openlayers_ui') . '/openlayers_ui.css');
     $form_state['rebuild'] = TRUE;
   }
 }

@@ -112,3 +112,64 @@ function openlayers_ui_styles_form_submit(&$form, &$form_state) {
     form_set_error('openlayers', t('Error trying to save style.'));
   }
 }
+
+// /**
+//  * Import a preset from cut & paste
+//  */
+// function openlayers_ui_styles_import_form(&$form_state) {
+//   $form['name'] = array(
+//     '#type' => 'textfield',
+//     '#title' => t('Style name'),
+//     '#description' => t('Enter the name to use for this style if it is different from the source style. Leave blank to use the name of the style.'),
+//   );
+// 
+//   $form['style'] = array(
+//     '#type' => 'textarea',
+//     '#title' => t('Paste style code here'),
+//     '#required' => TRUE,
+//   );
+// 
+//   $form['submit'] = array(
+//     '#type' => 'submit',
+//     '#value' => t('Import'),
+//     '#submit' => array('openlayers_ui_style_import_submit'),
+//     '#validate' => array('openlayers_ui_style_import_validate'),
+//   );
+//   return $form;
+// }
+// 
+// /**
+//  * Validate handler to import a preset
+//  */
+// function openlayers_ui_styles_import_validate($form, &$form_state) {
+//   $view = '';
+//   ob_start();
+//   eval($form_state['values']['style']);
+//   ob_end_clean();
+// 
+//   if (!is_object($style)) {
+//     return form_error($form['style'], t('Unable to interpret preset code.'));
+//   }
+// 
+//   // View name must be alphanumeric or underscores, no other punctuation.
+//   if (!empty($form_state['values']['name']) && preg_match('/[^a-zA-Z0-9_]/', $form_state['values']['name'])) {
+//     form_error($form['name'], t('Preset name must be alphanumeric or underscores only.'));
+//   }
+// 
+//   if ($form_state['values']['name']) {
+//     $preset->name = $form_state['values']['name'];
+//   }
+// 
+//   /*
+//    * TODO: replace with style code
+//   if ($test && $test->type != t('Default')) {
+//     form_set_error('', t('A preset by that name already exists; please choose a different name'));
+//   }
+//   */
+// 
+//   // TODO: The import process should test layer existence
+//   $form_state['style'] = &$style;
+//   $a = array();
+//   $form = openlayers_ui_styles_form($a);
+//   openlayers_ui_styles_form_submit(&$form, &$form_state);
+// }
