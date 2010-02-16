@@ -16,6 +16,7 @@ function openlayers_behavior_popup_popup_content(feature) {
          "<div class='openlayers-popup'>" + feature.attributes.description +"</div>";
 }
 
+var openlayers_behavior_popup_popup_select, openlayers_behavior_popup_selected_feature;
 
 /**
  * OpenLayers Popup Behavior
@@ -37,9 +38,16 @@ Drupal.behaviors.openlayers_behavior_popup = function(context) {
                 null,
                 openlayers_behavior_popup_popup_content(feature),
                 null, 
-                true);
+                true,
+                function(evt) {
+                  openlayers_behavior_popup_popup_select.unselect(
+                    openlayers_behavior_popup_selected_feature
+                  );
+                }
+              );
               feature.popup = popup;
               feature.layer.map.addPopup(popup);
+              openlayers_behavior_popup_selected_feature = feature;
           },
           onUnselect: function(feature) {
             feature.layer.map.removePopup(feature.popup);
@@ -50,5 +58,6 @@ Drupal.behaviors.openlayers_behavior_popup = function(context) {
       );
     map.addControl(popup_select);
     popup_select.activate();
+    openlayers_behavior_popup_popup_select = popup_select;
   }
 }
