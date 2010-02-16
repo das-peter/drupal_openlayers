@@ -16,6 +16,7 @@
 
 /**
  * Test OpenLayers presets.
+ * @TODO split up and rename
  */
 class OpenLayersPresetsHook extends DrupalWebTestCase {
   public static function getInfo() {
@@ -82,5 +83,21 @@ class OpenLayersPresetsHook extends DrupalWebTestCase {
     // Layers
     $this->drupalGet('admin/settings/openlayers/layers/add');
     $this->assertResponse(200, t('User can reach preset add page.'));
+
+    $new_style = array(
+      'name' => 'UnitLayerOSM',
+      'title' => 'Unit Layer',
+      'description' => 'Unit Layer for Drupal',
+    );
+
+    $this->drupalPost('admin/settings/openlayers/layers/add/openlayers_layer_type_osm', $new_style, t('Save'));
+    $this->assertText(t('Style saved.'), 
+      t('The style was successfully saved.'));
+
+    $this->drupalGet('admin/settings/openlayers/styles');
+    $this->assertRaw(t('UnitStyle'),
+      t('A new style has been added by the test'));
+
+
   }
 }

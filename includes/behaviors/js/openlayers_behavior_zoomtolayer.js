@@ -10,15 +10,13 @@ Drupal.behaviors.openlayers_zoomtolayer = function(context) {
     // TODO: just select layers you want, instead of all vector layers
     layers = map.getLayersByName(data.map.behaviors['openlayers_behavior_zoomtolayer'].zoomtolayer);
     for (var i in layers) {
-      if (layers[i].features !== undefined && layers[i].features.length > 1) {
+      if (layers[i].features !== undefined) {
         layerextent = layers[i].getDataExtent();
-        map.zoomToExtent(layerextent);
-      }
-      else {
-        layerextent = layers[i].getDataExtent();
-        if (layerextent !== undefined) {
-          map.zoomToExtent(layerextent);
+        map.zoomToExtent(layerextent.transform(new OpenLayers.Projection('EPSG:4326'),
+          map.projection));
+        if (layerextent.getWidth == 0.0) {
           map.zoomTo(data.map.behaviors['openlayers_behavior_zoomtolayer'].point_zoom_level);
+        }
         }
       }
     }

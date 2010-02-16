@@ -46,7 +46,7 @@ function _openlayers_openlayers_presets() {
       'openlayers_behavior_navigation' => array(),
     ),
     'layers' => array(
-      'osm_mapnik',
+      'osm_mapnik' => 'osm_mapnik',
     )
   );
   return array('default' => $default);
