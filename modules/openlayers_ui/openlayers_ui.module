@@ -112,11 +112,13 @@ function openlayers_ui_menu() {
   // Edit-layer form
   $items['admin/settings/openlayers/layers/%openlayers_layer/edit'] = array(
     'title' => 'Edit layer',
+    'description' => 'Edit OpenLayers layer.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_layers_form', 4),
     'access arguments' => array('administer openlayers'),
     'file' => 'includes/openlayers_ui.layers.inc',
-    'type' => MENU_NORMAL_ITEM
+    'type' => MENU_LOCAL_TASK,
+    'tab_parent' => 'admin/settings/openlayers/layers',
   );
   $items['admin/settings/openlayers/layers/%openlayers_layer_export/delete'] = array(
     'title' => 'Delete layer',

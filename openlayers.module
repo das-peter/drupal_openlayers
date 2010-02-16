@@ -245,6 +245,7 @@ function openlayers_layer_load($name, $reset = FALSE) {
   else {
     watchdog('openlayers', 'Layer %layer not found.', 
       array('%layer' => $layer), WATCHDOG_ERROR);
+    return FALSE;
   }
 }
 
