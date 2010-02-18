@@ -1,3 +1,7 @@
+$Id$
+
+Current for 6.x-2.0-alpha2
+
 This file contains the main API functions for
 OpenLayers and its sub-modules.  Please refer to the
 project page for more up to date information and

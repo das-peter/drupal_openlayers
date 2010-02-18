@@ -1,5 +1,7 @@
 $Id$
 
+Current for 6.x-2.0-alpha2
+
 # Description
 
 OpenLayers is a suite of module to help integrate the
@@ -38,4 +40,5 @@ and display them where you like.
 * [zzolo](http://drupal.org/user/147331)
 * [phayes](http://drupal.org/user/47098)
 * [tmcw](http://drupal.org/user/12664)
+* [brynbellomy](http://drupal.org/user/537416)
 * [bdragon](http://drupal.org/user/53081)
