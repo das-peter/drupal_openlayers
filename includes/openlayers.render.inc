@@ -80,7 +80,7 @@ function _openlayers_styles_process($styles = array(), $layer_styles = array(), 
   $layer_styles = is_array($layer_styles) ? $layer_styles : array();
   $map = is_array($map) ? $map : array();
 
-  // Get behavior info array
+  // Get styles info array
   $styles_info = openlayers_styles();
 
   // Go through styles
