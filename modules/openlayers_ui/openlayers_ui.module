@@ -264,8 +264,8 @@ function openlayers_ui_menu() {
   $items['admin/settings/openlayers/presets/clone/%openlayers_preset'] = array(
     'title' => 'Clone preset',
     'description' => 'Clone OpenLayers map preset.', 	 
-    'page callback' => 'drupal_get_form', 	 
-    'page arguments' => array('openlayers_ui_presets_form', 5, TRUE), 	 
+    'page callback' => 'openlayers_ui_presets_clone',
+    'page arguments' => array(5),
     'access arguments' => array('administer openlayers'), 	 
     'file' => 'includes/openlayers_ui.presets.inc', 	 
     'type' => MENU_LOCAL_TASK, 

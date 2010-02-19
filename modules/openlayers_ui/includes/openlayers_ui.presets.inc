@@ -9,6 +9,16 @@
  * @ingroup openlayers
  */
 
+function openlayers_ui_presets_clone($preset) {
+  $form_state = array();
+  drupal_set_title(
+    t('Clone preset %preset', 
+      array('%preset' => $preset->name)
+    )
+  );
+  return drupal_get_form('openlayers_ui_presets_form', $preset);
+}
+
 /**
  * Menu Callback for Add Preset
  */
