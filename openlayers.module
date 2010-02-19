@@ -116,6 +116,10 @@ function openlayers_build_map($map = array()) {
     }
   }
 
+  // Hook to alter map.
+  // Styles, behaviors, layers may all be added here.
+  drupal_alter('openlayers_postrender', $map);
+
   // styles and layer styles are not required parameters
   $map['styles'] = isset($map['styles']) ? $map['styles'] : array();
   $map['layer_styles'] = isset($map['layer_styles']) ? $map['layer_styles'] : array();
@@ -126,8 +130,10 @@ function openlayers_build_map($map = array()) {
   $map['behaviors'] = _openlayers_behaviors_render($map['behaviors'], $map);
   $map['styles'] = _openlayers_styles_process($map['styles'], $map['layer_styles'], $map);
 
-  // Hook to alter map
-  drupal_alter('openlayers_map', $map);
+  // Hook to alter map one last time
+  // Final modification to existing styles, behaviors, layers can happen here,
+  // but nothing new may be added.
+  drupal_alter('openlayers', $map);
 
   // Check map for errors
   $map['errors'] = openlayers_error_check_map($map);
