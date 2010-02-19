@@ -8,6 +8,14 @@ function openlayers_ui_help($path, $arg) {
   switch ($path) {
     case 'admin/help#openlayers_ui':
       return '<p>'. t('Provides a user interface to manage OpenLayers maps.') .'</p>';
+    case 'admin/settings/openlayers':
+      return '<p>'. t('Configure where Drupal finds 
+        the OpenLayers javascript library. Using a local or <a href="@olb">compacted 
+        version</a> of OpenLayers can reduce filesize, but remember to also point 
+        OpenLayers to a valid image path and css path, because it needs more 
+        than just a javascript file. See the included documentation in /doc for 
+        more details.',
+        array('@olb' => 'http://trac.openlayers.org/wiki/Profiles')) .'</p>';
     case 'admin/settings/openlayers/styles':
       return '<p>'. t('OpenLayer styles are stored versions of 
         <a href="@ols">javascript StyleMap objects</a>, but are much easier to 
