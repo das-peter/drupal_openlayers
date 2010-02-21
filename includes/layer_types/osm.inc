@@ -41,6 +41,7 @@ class openlayers_layer_type_osm extends openlayers_layer_type {
       'base_url' => array(
         '#type' => 'textfield',
         '#title' => t('Base URL'),
+        '#default_value' => ($this->data['base_url']) ? $this->data['base_url'] : ''
       ),
       'layer_type' => array(
         '#type' => 'hidden',
