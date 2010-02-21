@@ -60,34 +60,8 @@ function theme_openlayers_cck_formatter_map($element) {
   // Get map preset
   $preset = openlayers_preset_load($preset_name);
 
-  /*
-  // Set map ID
-  static $formatter_count = array();
-  if (isset($formatter_count[$field['field_name']])) {
-    $formatter_count[$field['field_name']]++;
-  }
-  else {
-    $formatter_count[$field['field_name']] = 0;
-  }
-  $map['id'] = OPENLAYERS_CCK_FORMATTER_MAP_ID_PREFIX .'-'. 
-    str_replace('_', '-', $field['field_name']) .'-'. $formatter_count[$field['field_name']];
-  $formatter_count++;
-  
-  // Add features and vector layer
-  if (count($features) > 0) {
-    $map['layers']['openlayers_cck_vector'] = array(
-      'id' => 'openlayers_cck_vector',
-      'name' => $field['widget']['label'],
-      'type' => 'Vector',
-      'options' => array(),
-      'features' => $features,
-    );
-    $map['options']['displayProjection'] = ($field['srid'] != 0) ? $field['srid'] : '4326';
-  }
-   */
-  
   // Render map
-  return openlayers_render_map(array(), $preset);
+  return openlayers_render_map($preset->data, $preset->name);
 }
 
 /**
