@@ -24,7 +24,7 @@ function _openlayers_openlayers_presets() {
   $default->title = t('Default Map');
   $default->description = t('This is the default map preset that comes with the OpenLayers module.');
   $default->data = array(
-    'projection' => '4326',
+    'projection' => '900913',
     'width' => 'auto',
     'default_layer' => 'osm_mapnik',
     'height' => '400px',
