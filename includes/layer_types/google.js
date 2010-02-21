@@ -5,8 +5,8 @@
  *
  * @param layerOptions
  *   Object of options
- * @param mapid
- *   Map ID
+ * @param map
+ *   Reference to OpenLayers object
  * @return
  *   Valid OpenLayers layer
  */

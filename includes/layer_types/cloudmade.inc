@@ -11,6 +11,15 @@
  * OpenLayers CloudMade Layer Type class
  */
 class openlayers_layer_type_cloudmade extends openlayers_layer_type {
+  function __construct($layer = array(), $map = array()) {
+    parent::__construct($layer, $map);
+    if ($this->data) {
+      $this->data += $this->options_init();
+    }
+    else {
+      $this->data = $this->options_init();
+    }
+  }
   /**
    * Provide initial values for options.
    */
@@ -28,16 +37,25 @@ class openlayers_layer_type_cloudmade extends openlayers_layer_type {
    * Options form which generates layers
    */
   function options_form() {
+    $warning = (!variable_get('openlayers_layers_cloudmade_js', FALSE) ||
+      !variable_get('openlayers_layers_cloudmade_api', FALSE)) ?
+        array(
+          '#value' => t('WARNING: Your CloudMade API key or 
+          Javascript location is not set. Map including CloudMade layers 
+          will break until they are set correctly.')
+        )
+      : null;
     return array(
-      'style_id' => array(
+      'styleId' => array(
         '#type' => 'textfield',
         '#title' => t('Style ID'),
-        '#default_value' => $this->data['style_id']
+        '#default_value' => $this->data['styleId']
       ),
       'layer_type' => array(
         '#type' => 'hidden',
         '#value' => 'openlayers_layer_type_cloudmade'
       ),
+      $warning
     );
   }
 
@@ -66,7 +84,13 @@ class openlayers_layer_type_cloudmade extends openlayers_layer_type {
    */
   function render(&$map) {
     drupal_add_js(drupal_get_path('module', 'openlayers') .'/includes/layer_types/cloudmade.js');
-    drupal_add_js(variable_get('openlayers_layers_cloudmade_js', ''));
+    $path = variable_get('openlayers_layers_cloudmade_js', '');
+    if (valid_url($path, TRUE)) {
+      drupal_set_html_head('<script src="' . check_url($path) . '" type="text/javascript"></script>');
+    }
+    else {
+      drupal_add_js($path);
+    }
     return $this->options;
   }
 }

@@ -244,8 +244,9 @@ function openlayers_layer_load($name, $reset = FALSE) {
   if ($reset) ctools_export_load_object_reset('openlayers_layers');
   $layer = ctools_export_load_object('openlayers_layers', 'names', array($name));
   if ($layer) {
-    if (openlayers_layer_sanity_check($layer[$name])) {
-      return openlayers_get_layer_object($layer[$name]);
+    $layer_object = openlayers_get_layer_object($layer[$name]);
+    if (openlayers_layer_sanity_check($layer_object)) {
+      return $layer_object;
     }
   }
   else {
@@ -269,10 +270,10 @@ function openlayers_layers_load($reset = FALSE) {
   $layer_objects = array();
   if ($reset) ctools_export_load_object_reset('openlayers_layers');
   $layers = ctools_export_load_object('openlayers_layers', 'all', array());
-  $layers = array_filter($layers, 'openlayers_layer_sanity_check');
   foreach ($layers as $layer) {
     $layer_objects[$layer->name] = openlayers_get_layer_object($layer);
   }
+  $layer_objects = array_filter($layer_objects, 'openlayers_layer_sanity_check');
   return $layer_objects;
 }
 

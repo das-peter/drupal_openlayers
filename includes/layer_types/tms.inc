@@ -65,12 +65,6 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
         '#type' => 'hidden',
         '#value' => 'openlayers_layer_type_tms'
       ),
-      'projection' => array(
-        array(
-        '#type' => 'hidden',
-        '#value' => '900913'
-        )
-      )
     );
   }
 

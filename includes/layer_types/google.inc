@@ -10,13 +10,26 @@
  * OpenLayers Google Layer Type class
  */
 class openlayers_layer_type_google extends openlayers_layer_type {
+  function __construct($layer = array(), $map = array()) {
+    parent::__construct($layer, $map);
+    if ($this->data) {
+      $this->data += $this->options_init();
+    }
+    else {
+      $this->data = $this->options_init();
+    }
+  }
   /**
    * Provide initial values for options.
    */
   function options_init() {
     return array(
+      'serverResolutions' => openlayers_get_resolutions('900913'),
+      'maxExtent' => openlayers_get_extent('900913'),
+      'projection' => array('900913'),
       'layer_type' => 'google',
       'layer_handler' => 'google',
+      'isBaseLayer' => TRUE
     );
   }
 
@@ -24,7 +37,30 @@ class openlayers_layer_type_google extends openlayers_layer_type {
    * Options form which generates layers
    */
   function options_form() {
-    return array();
+    $google_layer_types = array(
+      'hybrid' => 'Hybrid', 
+      'normal' => 'Normal',
+      'satellite' => 'Satellite');
+    return array(
+      'type' => array(
+        '#title' => t('Google Layer Type'),
+        '#type' => 'select',
+        '#default_value' => ($this->data['type']) ? $this->data['type'] : 'normal',
+        '#options' => $google_layer_types
+      ),
+      'layer_type' => array(
+        '#type' => 'hidden',
+        '#value' => 'openlayers_layer_type_google'
+      ),
+      'numZoomLevels' => array(
+        '#type' => 'textfield',
+        '#title' => t('Number of Zoom Levels'),
+        '#description' => t('Satellite and hybrid maps are occasionally 
+          unavailable at higher zoom levels.'),
+        '#default_value' => ($this->data['numZoomLevels']) ? 
+          $this->data['numZoomLevels'] : '15'
+      ),
+    );
   }
 
   /**

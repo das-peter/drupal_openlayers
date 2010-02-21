@@ -27,6 +27,7 @@ class openlayers_layer_type_osm extends openlayers_layer_type {
     return array(
       'serverResolutions' => openlayers_get_resolutions('900913'),
       'maxExtent' => openlayers_get_extent('900913'),
+      'projection' => array('900913'),
       'layer_handler' => 'xyz',
       'layer_type' => 'osm',
     );
