@@ -115,7 +115,7 @@ Drupal.behaviors.openlayers = function(context) {
         }
       }
       } catch(e) {
-        if (typeof console == 'undefined') {
+        if (typeof console != 'undefined') {
           console.log(e);
         } else {
           $(this).text('Error during map rendering.');

@@ -10,11 +10,21 @@
  * OpenLayers Yahoo Layer Type class
  */
 class openlayers_layer_type_yahoo extends openlayers_layer_type {
+  function __construct($layer = array(), $map = array()) {
+    parent::__construct($layer, $map);
+    if ($this->data) {
+      $this->data += $this->options_init();
+    }
+    else {
+      $this->data = $this->options_init();
+    }
+  }
   /**
    * Provide initial values for options.
    */
   function options_init() {
     return array(
+      'projection' => array('900913'),
       'layer_type' => 'yahoo',
       'layer_handler' => 'yahoo',
     );
@@ -24,7 +34,31 @@ class openlayers_layer_type_yahoo extends openlayers_layer_type {
    * Options form which generates layers
    */
   function options_form() {
-    return array();
+    $warning = (!variable_get('openlayers_layers_yahoo_api', FALSE)) ?
+        array(
+          '#value' => t('WARNING: Your Yahoo API key. 
+          Map including Yahoo layers 
+          will break until it is set correctly.')
+        )
+      : null;
+
+    $yahoo_layer_types = array(
+      'hybrid' => 'Hybrid', 
+      'street' => 'Street',
+      'satellite' => 'Satellite');
+    return array(
+      'type' => array(
+        '#title' => t('Yahoo Layer Type'),
+        '#type' => 'select',
+        '#default_value' => ($this->data['type']) ? $this->data['type'] : 'normal',
+        '#options' => $yahoo_layer_types
+      ),
+      'layer_type' => array(
+        '#type' => 'hidden',
+        '#value' => 'openlayers_layer_type_yahoo'
+      ),
+      $warning
+    );
   }
 
   function settings_form() {
