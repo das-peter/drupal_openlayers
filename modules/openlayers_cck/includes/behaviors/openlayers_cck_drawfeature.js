@@ -12,6 +12,12 @@ openlayers_cck_drawfeature_wkt_field = null;
 
 function update(features) {
   WktWriter = new OpenLayers.Format.WKT();
+  for(var i in features.object.features) {
+    features.object.features[i].geometry = features.object.features[i].geometry.transform(
+      features.object.map.projection,
+      new OpenLayers.Projection("EPSG:4326")
+    );
+  }
   wkt_value = WktWriter.write(features.object.features);
   openlayers_cck_drawfeature_wkt_field.text(wkt_value);
 }

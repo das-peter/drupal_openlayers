@@ -391,10 +391,7 @@ function _openlayers_cck_render_element_map($field_name = '', $field_label = '',
 
   // Make sure that our display projection matches the database projection
   // TODO: rewrite
-  $map['options']['displayProjection'] = ($field['srid'] != 0) ? $field['srid'] : '4326';
-
   $map['behaviors']['openlayers_cck_drawfeature'] = array('wkt_field_id' => $field_id);
-  
   return openlayers_render_map($map);
 }
 
