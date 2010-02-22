@@ -17,7 +17,6 @@ Drupal.behaviors.openlayers_zoomtolayer = function(context) {
         if (layerextent.getWidth == 0.0) {
           map.zoomTo(data.map.behaviors['openlayers_behavior_zoomtolayer'].point_zoom_level);
         }
-        }
       }
     }
   }
