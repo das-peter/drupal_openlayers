@@ -48,7 +48,7 @@ function _openlayers_openlayers_behaviors() {
 
     'openlayers_behavior_fullscreen' => array(
        'title' => t('Fullscreen'),
-       'description' => t('Adds a toggle to maps which makes them fill the browser window.'),
+       'description' => t('Provides a button that expands maps to the size of the page.'),
        'type' => 'map',
        'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
        'file' => 'openlayers_behavior_fullscreen.inc',
@@ -59,7 +59,7 @@ function _openlayers_openlayers_behaviors() {
      ),
     'openlayers_behavior_keyboarddefaults' => array(
        'title' => t('Keyboard Defaults'),
-       'description' => t('Provides a the ability to use the keyboard to pan and zoom map.'),
+       'description' => t('Provides keyboard shortcuts to pan and zoom the map.'),
        'type' => 'layer',
        'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
        'file' => 'openlayers_behavior_keyboarddefaults.inc',
@@ -70,7 +70,7 @@ function _openlayers_openlayers_behaviors() {
      ),
     'openlayers_behavior_layerswitcher' => array(
        'title' => t('Layer Switcher'),
-       'description' => t('Gives user ability to switch Layers in the map interface.'),
+       'description' => t('Provides the ability to switch layers in the map interface.'),
        'type' => 'map',
        'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
        'file' => 'openlayers_behavior_layerswitcher.inc',
@@ -81,7 +81,7 @@ function _openlayers_openlayers_behaviors() {
      ),
     'openlayers_behavior_mouseposition' => array(
        'title' => t('Mouse Position'),
-       'description' => t('Gives a visual indication of the mouse position to the user.'),
+       'description' => t('Provides a visual indication of the mouse position to the user.'),
        'type' => 'map',
        'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
        'file' => 'openlayers_behavior_mouseposition.inc',
@@ -92,7 +92,7 @@ function _openlayers_openlayers_behaviors() {
      ),
     'openlayers_behavior_navigation' => array(
        'title' => t('Navigation'),
-       'description' => t('Gives the user the ability to navigate the map interface.'),
+       'description' => t('Provides the ability to navigate the map interface.'),
        'type' => 'map',
        'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
        'file' => 'openlayers_behavior_navigation.inc',
@@ -103,7 +103,7 @@ function _openlayers_openlayers_behaviors() {
      ),
      'openlayers_behavior_dragpan' => array(
       'title' => t('DragPan'),
-      'description' => t('Gives user ability to pan in the map interface.'),
+      'description' => t('Provides the ability to pan in the map interface.'),
       'type' => 'map',
       'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
       'file' => 'openlayers_behavior_dragpan.inc',
@@ -114,7 +114,7 @@ function _openlayers_openlayers_behaviors() {
     ),
     'openlayers_behavior_panzoom' => array(
       'title' => t('PanZoom'),
-      'description' => t('Gives user ability to pan and zoom in the map interface.'),
+      'description' => t('Provides the ability to pan and zoom in the map interface.'),
       'type' => 'map',
       'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
       'file' => 'openlayers_behavior_panzoom.inc',
@@ -136,7 +136,7 @@ function _openlayers_openlayers_behaviors() {
     ),
     'openlayers_behavior_mapformvalues' => array(
       'title' => t('Map Form Values'),
-      'description' => t('Private method for admin UI'),
+      'description' => t('Private method for admin UI.'),
       'type' => 'map',
       'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
       'file' => 'openlayers_behavior_mapformvalues.inc',
@@ -169,7 +169,7 @@ function _openlayers_openlayers_behaviors() {
     ),
     'openlayers_behavior_scaleline' => array(
       'title' => t('Scale Line'),
-      'description' => t('Provides the user with a line of scale in the map interface.'),
+      'description' => t('Provides a line of scale in the map interface.'),
       'type' => 'map',
       'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
       'file' => 'openlayers_behavior_scaleline.inc',
@@ -180,7 +180,7 @@ function _openlayers_openlayers_behaviors() {
     ),
     'openlayers_behavior_zoombox' => array(
       'title' => t('Zoom Box'),
-      'description' => t('Allows user to draw a box on screen to zoom with Shift + Click.'),
+      'description' => t('Provides a zoom box that can be drawn on shift + click.'),
       'type' => 'map',
       'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
       'file' => 'openlayers_behavior_zoombox.inc',
