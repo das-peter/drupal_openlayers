@@ -314,6 +314,8 @@ function openlayers_cck_wkt_element_process($element, $edit, &$form_state, &$for
     '#description' => $element['#description'],
     '#required' => $element['#required'],
     '#field_name' => $element['#field_name'],
+    // TODO: more standard way of saying this?
+    '#default_value' => $element['#default_value'][0]['openlayers_wkt'],
     '#type_name' => $element['#type_name'],
     '#delta' => $element['#delta'],
     '#columns' => $element['#columns'],
@@ -356,8 +358,6 @@ function openlayers_cck_field_formatter_info() {
     'label' => t('WKT Value'),
     'field types' => array('openlayers_wkt'),
     'multiple values' => CONTENT_HANDLE_MODULE,
-    'gis types' => array('point', 'linestring', 'polygon'),
-    'gis input' => 'wkt',
   );
 
   // Map preset formatter
@@ -366,8 +366,6 @@ function openlayers_cck_field_formatter_info() {
       'label' => t('OpenLayers Map: @preset', array('@preset' => check_plain($title))),
       'field types' => array('openlayers_wkt'),
       'multiple values' => CONTENT_HANDLE_MODULE,
-      'gis types' => array('point', 'linestring', 'polygon'),
-      'gis input' => 'wkt',
     );
   }
   return $formatters;
