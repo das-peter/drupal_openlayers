@@ -21,8 +21,6 @@ function theme_openlayers_cck_formatter_default($element) {
 
   // Create array of $features
   foreach (element_children($element) as $delta) {
-    // First look in the 'wkt' key (where geo stores it), 
-    // then look in 'openlayers_wkt' key (where the non-spatial openlayers wkt field stores it).
     $features[$delta] = $element[$delta]['#item']['openlayers_wkt'];
   }
   
@@ -40,7 +38,7 @@ function theme_openlayers_cck_formatter_map($element) {
   
   // Create array of $features
   foreach (element_children($element) as $delta) {
-    $features['openlayers_cck_vector_feature_' . $delta] = array(
+    $features[] = array(
       // First look for geo_field data, then for openlayers wkt data
       'wkt' => $element[$delta]['#item']['openlayers_wkt'],
       'projection' => $element[$delta]['#item']['srid'] ? 
@@ -49,7 +47,10 @@ function theme_openlayers_cck_formatter_map($element) {
     );
   }
 
-  // Get preset name from formatter. Strip off 'openlayers_cck_formatter_' and 'openlayers_map_' from the beginning.
+  // Get preset name from formatter. 
+  // Strip off 'openlayers_cck_formatter_' and 
+  // 'openlayers_map_' from the beginning.
+  // TODO: this seems like it should be eliminated upstream
   if (substr($element['#formatter'], 25) == 'openlayers_cck_formatter_') {
     $preset_name = substr($element['#formatter'], 25);
   }
@@ -59,6 +60,13 @@ function theme_openlayers_cck_formatter_map($element) {
 
   // Get map preset
   $preset = openlayers_preset_load($preset_name);
+
+  // Add vector layer behavior
+  $preset->data['behaviors']['openlayers_cck_vector_layer'] = 
+    array(
+      'features' => $features
+    );
+  
 
   // Render map
   return openlayers_render_map($preset->data, $preset->name);

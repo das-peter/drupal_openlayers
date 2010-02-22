@@ -65,7 +65,18 @@ function openlayers_cck_openlayers_behaviors() {
          'class' => 'openlayers_cck_drawfeature',
          'parent' => 'openlayers_behavior',
        ),
-     ),
+    ),
+    'openlayers_cck_vector_layer' => array(
+       'title' => t('Add a Vector Layer (for CCK)'),
+       'description' => t('Adds a dynamic layer from a features array'),
+       'type' => 'layer',
+       'path' => drupal_get_path('module', 'openlayers_cck') .'/includes/behaviors',
+       'file' => 'openlayers_cck_vector_layer.inc',
+       'behavior' => array(
+         'class' => 'openlayers_cck_vector_layer',
+         'parent' => 'openlayers_behavior',
+       ),
+    ),
    );
 }
 
