@@ -1,0 +1,16 @@
+$Id$
+
+Current for 6.x-2.0-alpha2
+
+# Layer Types
+
+Layer types are one of the fundamental building blocks of the OpenLayers module. They are factories for layers themselves - a layer type is like a wrapper around an OpenLayers (javascript) object which lets you configure settings through the UI and also encapsulate other tasks that layers need to do, like loading information.
+
+## Structure
+
+Typically a layer type is a class that extends `openlayers_layer_type`, although it can extend another layer type class if necessary. All that's really needed is that it implements the right methods. Which are...
+
+* `render`: The `render(&$map)` function is called on each layer type when a map is rendered. Since the map array is passed by reference, this function can modify it in any way it wishes. However, typically render functions just include layer javascript and then return their options array.
+* `settings_form`: The settings form of a layer type is different from the options form in two very important ways. The first, practical reason for their separation is that layer type settings are settings that you'll want to set for an entire website, like a Google Maps API key or javascript location. So, these settings are not attached to individual layers. The other, technical difference, is that, while layer *options* end up in the data array, which is serialized and exported, etc., layer *settings* are saved as Drupal variables, so that they can optionally intercepted by modules like Spaces, which allow users to customize domain-specific settings (like API keys) by space.
+* `options_form`: The options form of the layer is what the user sees when they land on the layer add form. The results of this form submission are automatically saved as the contents of the layer's 'data' property, which is then sent to javascript and, depending on layer type, pushed into the Javascript layer constructor. This means that exported layers can have more properties than the OpenLayers Drupal Module knows about, and they will be seamlessly pushed into Javascript and serve their function in Javascript-land.
+* `options_init`: The options_init function defines the default options of any given layer. This is used for options that will not be set in the options form, but would be awkward to code as hidden fields. If your layer type class has the correct __construct implementation (like those in the OpenLayers Module), then these settings will be added whenever you initialize a layer
