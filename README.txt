@@ -71,8 +71,19 @@ OpenLayers views come in two varieties. The first is a display type called OpenL
 
 # Documentation
 
-* See docs/ directory.
-* A [tutorial is available on Drupal.org](http://drupal.org/node/627816)
+More documentation is available in the docs/ directory of this module:
+
+* CUSTOMIZATION.txt: a cookbook for common customizations users might want to make for performance and tweaking
+
+* API.txt: a technical description of the main map-generating API
+
+* LAYER_TYPES.txt: a technical description of how layer types work and guide for implementation of new layer types
+
+* KML.txt: an explanation of how KML support works in OpenLayers
+
+* JAVASCRIPT.txt: a technical explanation of how the Javascript included in the OpenLayers module (not the code in the actual OpenLayers library) operates
+
+A [tutorial is available on Drupal.org](http://drupal.org/node/627816)
   
 # Authors/Credits
 
