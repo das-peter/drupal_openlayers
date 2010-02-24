@@ -82,7 +82,7 @@ class OpenLayersPresetsHook extends DrupalWebTestCase {
 
     // Layers
     $this->drupalGet('admin/settings/openlayers/layers/add');
-    $this->assertResponse(200, t('User can reach preset add page.'));
+    $this->assertResponse(200, t('User can reach layer add page.'));
 
     $new_style = array(
       'name' => 'UnitLayerOSM',
@@ -91,13 +91,12 @@ class OpenLayersPresetsHook extends DrupalWebTestCase {
     );
 
     $this->drupalPost('admin/settings/openlayers/layers/add/openlayers_layer_type_osm', $new_style, t('Save'));
-    $this->assertText(t('Style saved.'), 
-      t('The style was successfully saved.'));
+    $this->assertText(t('Layer saved.'), 
+      t('The layer was successfully saved.'));
 
-    $this->drupalGet('admin/settings/openlayers/styles');
-    $this->assertRaw(t('UnitStyle'),
-      t('A new style has been added by the test'));
-
+    $this->drupalGet('admin/settings/openlayers/layers');
+    $this->assertRaw(t('UnitLayer'),
+      t('A new layer has been added by the test'));
 
   }
 }
