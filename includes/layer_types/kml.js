@@ -14,12 +14,11 @@ Drupal.openlayers.layer.kml = function(name, map, options) {
   
   // Format options
   if (options.maxExtent !== undefined) {
-    options.maxExtent = OpenLayers.Bounds.fromArray(options.maxExtent) || new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
+    options.maxExtent = OpenLayers.Bounds.fromArray(options.maxExtent);
   }
+
   options.format = OpenLayers.Format.KML;
-  options.formatOptions = {extractStyles: true, extractAttributes: true};
-  var layer_projection = options.custom_projection || options.projection;
-  options.projection = new OpenLayers.Projection('EPSG:' + layer_projection);
+  options.projection = new OpenLayers.Projection('EPSG:4326');
   
   // Create layer
   var layer = new OpenLayers.Layer.GML(name, options.url, options);
