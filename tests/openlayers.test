@@ -13,16 +13,11 @@
  *
  * @ingroup openlayers
  */
-
-/**
- * Test OpenLayers presets.
- * @TODO split up and rename
- */
-class OpenLayersPresetsHook extends DrupalWebTestCase {
+class OpenLayersUI extends DrupalWebTestCase {
   public static function getInfo() {
     return array(
-      'name' => 'OpenLayers Presets Hook',
-      'description' => 'Tests the OpenLayers Preset hook.',
+      'name' => 'OpenLayers UI',
+      'description' => 'Tests OpenLayers core settings.',
       'group' => 'OpenLayers',
     );
   }
@@ -35,7 +30,44 @@ class OpenLayersPresetsHook extends DrupalWebTestCase {
   /**
    * Ensure that the preset shows up in the interface
    */
-  function testOpenLayersPresetsHook() {
+  function testOpenLayersPresets() {
+    $user = $this->drupalCreateUser(array('administer openlayers'));
+    $this->drupalLogin($user);
+
+    $new_openlayers_source = "http://openlayers.org/nightly/OpenLayers.js";
+    $openlayers_settings = array('openlayers_source' => $new_openlayers_source);
+    $this->drupalPost('admin/settings/openlayers', $openlayers_settings, t('Save configuration'));
+
+    // Go to preset page
+    $this->drupalGet('admin/settings/openlayers');
+    $this->assertResponse(200, t('User can reach the settings page.'));
+
+    $this->drupalGet('admin/settings/openlayers');
+    $this->assertRaw($new_openlayers_source, t('The OpenLayers source was changed'));
+    // Presets
+  }
+}
+/**
+ * Test OpenLayers presets.
+ */
+class OpenLayersPresets extends DrupalWebTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'OpenLayers Presets',
+      'description' => 'Tests the OpenLayers Presets system.',
+      'group' => 'OpenLayers',
+    );
+  }
+
+  function setUp() {
+    // Install modules
+    parent::setUp('openlayers', 'ctools', 'openlayers_ui', 'openlayers_test');
+  }
+
+  /**
+   * Ensure that the preset shows up in the interface
+   */
+  function testOpenLayersPresets() {
     $user = $this->drupalCreateUser(array('administer openlayers'));
     $this->drupalLogin($user);
 
@@ -58,6 +90,28 @@ class OpenLayersPresetsHook extends DrupalWebTestCase {
 
     $this->drupalGet('admin/settings/openlayers/presets/add');
     $this->assertResponse(200, t('User can reach preset add page.'));
+  }
+}
+
+class OpenLayersStyles extends DrupalWebTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'OpenLayers Styles',
+      'description' => 'Tests the OpenLayers Styles system.',
+      'group' => 'OpenLayers',
+    );
+  }
+
+  function setUp() {
+    // Install modules
+    parent::setUp('openlayers', 'ctools', 'openlayers_ui', 'openlayers_test');
+  }
+
+
+  function testOpenLayersStyles() {
+    $user = $this->drupalCreateUser(array('administer openlayers'));
+    $this->drupalLogin($user);
+
 
     // Styles
     $this->drupalGet('admin/settings/openlayers/styles/default/export');
@@ -79,24 +133,89 @@ class OpenLayersPresetsHook extends DrupalWebTestCase {
     $this->drupalGet('admin/settings/openlayers/styles');
     $this->assertRaw(t('UnitStyle'),
       t('A new style has been added by the test'));
+  }
+}
+
+class OpenLayersLayers extends DrupalWebTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'OpenLayers Layers',
+      'description' => 'Tests the OpenLayers Layers system.',
+      'group' => 'OpenLayers',
+    );
+  }
+
+  function setUp() {
+    // Install modules
+    parent::setUp('openlayers', 'ctools', 'openlayers_ui', 'openlayers_test');
+  }
+
+
+  function testOpenLayersLayers() {
+    $user = $this->drupalCreateUser(array('administer openlayers'));
+    $this->drupalLogin($user);
 
     // Layers
     $this->drupalGet('admin/settings/openlayers/layers/add');
     $this->assertResponse(200, t('User can reach layer add page.'));
 
-    $new_style = array(
-      'name' => 'UnitLayerOSM',
-      'title' => 'Unit Layer',
-      'description' => 'Unit Layer for Drupal',
+    $layer_inputs = array(
+      'openlayers_layer_type_osm' => array(
+        'name' => 'UnitLayerOSM',
+        'title' => 'Unit Layer',
+        'description' => 'Unit Layer for Drupal',
+      ),
+      'openlayers_layer_type_xyz' => array(
+        'name' => 'UnitLayerXYZ',
+        'title' => 'Unit Layer',
+        'description' => 'Unit Layer for Drupal',
+      ),
+      'openlayers_layer_type_kml' => array(
+        'name' => 'UnitLayerKML',
+        'title' => 'Unit Layer',
+        'description' => 'Unit Layer for Drupal',
+      ),
+      'openlayers_layer_type_wms' => array(
+        'name' => 'UnitLayerWMS',
+        'title' => 'Unit Layer',
+        'description' => 'Unit Layer for Drupal',
+      ),
+      'openlayers_layer_type_cloudmade' => array(
+        'name' => 'UnitLayerCloudMade',
+        'title' => 'Unit Layer',
+        'description' => 'Unit Layer for Drupal',
+      ),
+      'openlayers_layer_type_yahoo' => array(
+        'name' => 'UnitLayerYahoo',
+        'title' => 'Unit Layer',
+        'description' => 'Unit Layer for Drupal',
+      ),
+      'openlayers_layer_type_virtualearth' => array(
+        'name' => 'UnitLayerVirtualEarth',
+        'title' => 'Unit Layer',
+        'description' => 'Unit Layer for Drupal',
+      ),
+      'openlayers_layer_type_google' => array(
+        'name' => 'UnitLayerGoogle',
+        'title' => 'Unit Layer',
+        'description' => 'Unit Layer for Drupal',
+      )
     );
 
-    $this->drupalPost('admin/settings/openlayers/layers/add/openlayers_layer_type_osm', $new_style, t('Save'));
-    $this->assertText(t('Layer saved.'), 
-      t('The layer was successfully saved.'));
+    foreach ($layer_inputs as $layer_type => $input_data) {
+      $this->drupalGet('admin/settings/openlayers/layers/add');
+      $this->assertResponse(200, t('User can reach layer add page.'));
+      $this->drupalPost('admin/settings/openlayers/layers/add/' . $layer_type, 
+        $input_data, 
+        t('Save'));
+      $this->assertText(t('Layer saved.'), 
+        t('The layer was successfully saved.'));
 
-    $this->drupalGet('admin/settings/openlayers/layers');
-    $this->assertRaw(t('UnitLayer'),
-      t('A new layer has been added by the test'));
+      $this->drupalGet('admin/settings/openlayers/layers');
+      $this->assertRaw($input_data['name'],
+        t('A new layer of layer type %type_name has been added by the test',
+          array('%type_name' => $layer_type)));
+    }
 
   }
 }

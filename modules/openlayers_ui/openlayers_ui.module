@@ -117,6 +117,15 @@ function openlayers_ui_menu() {
     'type' => MENU_NORMAL_ITEM, 
     'tab_parent' => 'admin/settings/openlayers/layers',
   );
+  $items['admin/settings/openlayers/layers/import'] = array(
+    'title' => 'Import',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_ui_layers_import_form'),
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers_ui.layers.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => -10,
+  );
   // Edit-layer form
   $items['admin/settings/openlayers/layers/%openlayers_layer/edit'] = array(
     'title' => 'Edit layer',
@@ -136,7 +145,7 @@ function openlayers_ui_menu() {
     'file' => 'includes/openlayers_ui.layers.inc',
     'type' => MENU_NORMAL_ITEM
   );
-  $items['admin/settings/openlayers/layers/%openlayers_layer/export'] = array(
+  $items['admin/settings/openlayers/layers/%openlayers_layer_export/export'] = array(
     'title' => 'Export layer',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_object_export', 3, 4),

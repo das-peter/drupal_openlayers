@@ -11,6 +11,16 @@
  * OpenLayers VirtualEarth Layer Type class
  */
 class openlayers_layer_type_virtualearth extends openlayers_layer_type {
+  function __construct($layer = array(), $map = array()) {
+    parent::__construct($layer, $map);
+    if ($this->data) {
+      $this->data += $this->options_init();
+    }
+    else {
+      $this->data = $this->options_init();
+    }
+  }
+
   /**
    * Provide initial values for options.
    */
@@ -26,7 +36,10 @@ class openlayers_layer_type_virtualearth extends openlayers_layer_type {
    */
   function options_form() {
     return array(
-
+      'layer_type' => array(
+        '#type' => 'hidden',
+        '#value' => 'openlayers_layer_type_virtualearth'
+      ),
     );
   }
 

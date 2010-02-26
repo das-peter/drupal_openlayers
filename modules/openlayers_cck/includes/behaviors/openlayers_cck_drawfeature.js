@@ -58,6 +58,9 @@ Drupal.behaviors.openlayers_cck_drawfeature = function(context) {
     
     var control = new OpenLayers.Control.EditingToolbar(data_layer);
     data.openlayers.addControl(control);
+
+    var mcontrol = new OpenLayers.Control.ModifyFeature(data_layer);
+    data.openlayers.addControl(mcontrol);
     control.activate();
   }
 };

@@ -168,3 +168,70 @@ function openlayers_ui_get_layer_type_options($type) {
   }
   return $form;
 }
+
+/**
+ * Import a preset from cut & paste
+ */
+function openlayers_ui_layers_import_form($form_state) {
+  $form['name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Layers name'),
+    '#description' => t('Enter the name to use for this layer if it is different from the source layer. Leave blank to use the name of the layer.'),
+  );
+
+  $form['layer'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Paste layer code here'),
+    '#required' => TRUE,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Import'),
+    '#submit' =>   array('openlayers_ui_layers_import_submit'),
+    '#validate' => array('openlayers_ui_layers_import_validate'),
+  );
+  return $form;
+}
+
+/**
+ * Validate handler to import a preset
+ */
+function openlayers_ui_layers_import_validate($form, &$form_state) {
+
+  $items = '';
+  ob_start();
+  eval($form_state['values']['layer']);
+  ob_end_clean();
+
+  if (!is_array($items)) {
+    return form_error($form['layer'], t('Unable to interpret layer code.'));
+  }
+
+  // View name must be alphanumeric or underscores, no other punctuation.
+  if (!empty($form_state['values']['name']) && 
+    preg_match('/[^a-zA-Z0-9_]/', $form_state['values']['name'])) {
+      form_error($form['name'], 
+        t('Layer name must be alphanumeric or underscores only.'));
+  }
+
+  $layer = current($items);
+  $layer_type_object = openlayers_layer_type_load($layer->data['layer_type']);
+
+  if ($form_state['values']['name']) {
+    $layer->name = $form_state['values']['name'];
+  }
+
+  if ($exists = openlayers_layer_load($layer->name)) {
+    drupal_set_message(t('An existing layer of this name already exists'), 'error');
+    $form_state['redirect'] = 'admin/settings/openlayers/layers';
+  }
+  else {
+    drupal_set_title(t('Add Layer'));
+    $layer_object = new $layer->data['layer_type']($layer);
+    $output = drupal_get_form('openlayers_ui_layers_form', 
+      $layer_object);
+    print theme('page', $output);
+    exit;
+  }
+}
