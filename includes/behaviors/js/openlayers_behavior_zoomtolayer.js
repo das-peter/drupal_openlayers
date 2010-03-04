@@ -12,9 +12,8 @@ Drupal.behaviors.openlayers_zoomtolayer = function(context) {
     for (var i in layers) {
       if (layers[i].features !== undefined) {
         layerextent = layers[i].getDataExtent();
-        map.zoomToExtent(layerextent.transform(new OpenLayers.Projection('EPSG:4326'),
-          map.projection));
-        if (layerextent.getWidth == 0.0) {
+        map.zoomToExtent(layerextent);
+        if (layerextent.getWidth() == 0.0) {
           map.zoomTo(data.map.behaviors['openlayers_behavior_zoomtolayer'].point_zoom_level);
         }
       }
