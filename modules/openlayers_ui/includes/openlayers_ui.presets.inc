@@ -427,7 +427,7 @@ function openlayers_ui_presets_add_projection_submit($form, &$form_state) {
 function openlayers_ui_presets_form_submit($form, &$form_state) {
   // Check for cancel
   if ($form_state['clicked_button']['#id'] == 'edit-openlayers-cancel') {
-    $form_state['redirect'] = 'admin/settings/openlayers/presets/list';
+    $form_state['redirect'] = 'admin/build/openlayers/presets/list';
   }
 
   // Only save if save button is pressed
@@ -445,7 +445,7 @@ function openlayers_ui_presets_form_submit($form, &$form_state) {
     // Redirect to edit page
     if ($success) {
       drupal_set_message(t('Map saved.'));
-      $form_state['redirect'] = "admin/settings/openlayers/presets/{$preset->name}/edit";
+      $form_state['redirect'] = "admin/build/openlayers/presets/{$preset->name}/edit";
     }
     else {
       form_set_error('openlayers', t('Error trying to save map'));

@@ -17,7 +17,7 @@
 function openlayers_test_menu() {
   $items = array();
 
-  $items['admin/settings/openlayers/test'] = array(
+  $items['admin/build/openlayers/test'] = array(
     'title' => 'OpenLayers Test Page',
     'description' => 'Test Page for OpenLayers.',
     'page callback' => 'openlayers_test_page',
