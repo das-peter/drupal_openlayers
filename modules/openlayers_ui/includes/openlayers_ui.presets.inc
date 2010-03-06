@@ -282,6 +282,11 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#options' => $overlay_options,
     '#default_value' => !empty($defaults['layer_activated']) ? array_intersect_key($defaults['layer_activated'], $overlay_options) : array(),
   );
+  $form['layerstyles']['layer_switcher'] = array(
+    '#type' => 'checkboxes',
+    '#options' => $overlay_options,
+    '#default_value' => !empty($defaults['layer_switcher']) ? array_intersect_key($defaults['layer_switcher'], $overlay_options) : array(),
+  );
 
   // Styles
   $form['layerstyles']['styles'] = array('#tree' => TRUE);
@@ -498,6 +503,7 @@ function openlayers_ui_presets_form_process($values = array()) {
     'layers',
     'layer_styles',
     'layer_activated',
+    'layer_switcher',
     'projections',
     'styles',
     'options',
@@ -519,10 +525,12 @@ function openlayers_ui_presets_form_process($values = array()) {
           }
         }
         break;
+
       case 'projections':
         $processed['projection'] = $values['projections']['easy_projection']; 
         $processed['displayProjection'] = $values['projections']['displayProjection'];
         break;
+
       case 'layers':
         // Put the default layer in the right place.
         // TODO: finish port here
@@ -533,9 +541,11 @@ function openlayers_ui_presets_form_process($values = array()) {
         $overlays = array_filter($values['layers']['overlays']);
         $processed['layers'] = array_merge($baselayers, $overlays);
         break;
+
       default:
         $processed[$key] = is_array($values[$key]) ? array_filter($values[$key]) : $values[$key];
         break;
+
     }
   }
 

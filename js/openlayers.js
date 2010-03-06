@@ -148,6 +148,7 @@ Drupal.openlayers = {
       }
     );
   },
+
   /**
    * Add layers to the map
    *
@@ -158,10 +159,16 @@ Drupal.openlayers = {
     for (var name in map.layers) {
       var layer;      
       var options = map.layers[name];
+      // Ensure that the layer handler is available
       if (options.layer_handler !== undefined && Drupal.openlayers.layer[options.layer_handler] !== undefined) {
+        // Create new layer
         var layer = Drupal.openlayers.layer[options.layer_handler](name, map, options);
-
+        // Check visibility
         layer.visibility = (!map.layer_activated || map.layer_activated[name]);
+        // Check inSwitcher (for overlays only)
+        if (layer.isBaseLayer === false) {
+          layer.displayInLayerSwitcher = (!map.layer_switcher || map.layer_switcher[name]);
+        }
 
         if (map.center.wrapdateline === '1') {
           // TODO: move into layer specific settings
