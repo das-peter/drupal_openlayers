@@ -13,7 +13,7 @@
  */
 function theme_openlayers_ui_form_layer_description($layer_title = '', $layer_description = '') {
   if ($layer_description) {
-    $output = $layer_title .' - <span class="openlayers-form-layer-description">'. $layer_description .'</span>';
+    $output = $layer_title .': <span class="openlayers-form-layer-description">' . $layer_description . '</span>';
   }
   else {
     $output = $layer_title;
@@ -33,6 +33,9 @@ function theme_openlayers_ui_form_projection_description($projection_title = '',
   return $output;
 }
 
+/**
+ * Theme function for presets form
+ */
 function theme_openlayers_ui_presets_form($form) {
   $links = $panels = array();
   $first = TRUE;

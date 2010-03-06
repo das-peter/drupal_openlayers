@@ -238,9 +238,7 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#maxlength' => 6
   );
 
-  /**
-   * Construct data for theme_openlayers_ui_presets_form_layers
-   */
+  // Construct data for theme_openlayers_ui_presets_form_layers
   $form['layerstyles']['layers']['#tree'] = TRUE;
   $form['layerstyles']['layers']['baselabels'] = array();
   $base_options = openlayers_ui_get_layer_options('baselayer', $defaults['projection']);
@@ -260,7 +258,7 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#default_value' => !empty($defaults['default_layer']) && isset($base_options[$defaults['default_layer']]) ? $defaults['default_layer'] : NULL,
   );
 
-  /* Overlay layers */
+  // Overlay layers
   $overlay_options = openlayers_ui_get_layer_options('overlay', $defaults['projection']);
   $form['layerstyles']['layers']['overlaylabels'] = array();
   if (!empty($overlay_options)) {
@@ -285,9 +283,7 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#default_value' => !empty($defaults['layer_activated']) ? array_intersect_key($defaults['layer_activated'], $overlay_options) : array(),
   );
 
-  
-
-  /* Styles */
+  // Styles
   $form['layerstyles']['styles'] = array('#tree' => TRUE);
   $form['layerstyles']['styles']['default'] = array(
     '#type' => 'select',

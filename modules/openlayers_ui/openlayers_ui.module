@@ -581,17 +581,19 @@ function openlayers_ui_get_layer_options($type = 'baselayer', $projection = NULL
   $options = array();
   $layers = array();
 
+  // Get layers in an array
   foreach (openlayers_layers_load() as $l) {
     $layers[$l->name] = openlayers_get_layer_object($l);
   }
   
+  // Go through layers to theme output.
   foreach ($layers as $key => $layer) {
     if (!isset($projection) || (in_array($projection, $layer->data['projection']))) {
       if ($type == 'baselayer' && $layer->data['baselayer']) {
-        $options[$key] = theme('openlayers_ui_form_layer_description', $layer->name, $layer->description);
+        $options[$key] = theme('openlayers_ui_form_layer_description', $layer->title, $layer->description);
       }
       elseif ($type != 'baselayer' && empty($layer->data['baselayer'])) {
-        $options[$key] = theme('openlayers_ui_form_layer_description', $layer->name, $layer->description);
+        $options[$key] = theme('openlayers_ui_form_layer_description', $layer->title, $layer->description);
       }
     }
   }
