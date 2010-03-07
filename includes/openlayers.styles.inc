@@ -16,7 +16,7 @@
  * @return
  *   Array of styles for an OpenLayers map
  */
-function _openlayers_openlayers_styles_info() {
+function _openlayers_openlayers_styles() {
   $styles = array();
 
   $style = new stdClass();

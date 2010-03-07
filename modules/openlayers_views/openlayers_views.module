@@ -52,9 +52,9 @@ function openlayers_views_openlayers_layers_handler_info($map = array()) {
 
 
 /**
- * Implementation of hook_openlayers_layers_info().
+ * Implementation of hook_openlayers_layers().
  */
-function openlayers_views_openlayers_layers_info() {
+function openlayers_views_openlayers_layers() {
   $layers = array();
 
   // Attempt to load information from cache.

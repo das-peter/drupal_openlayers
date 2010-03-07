@@ -86,7 +86,7 @@ function openlayers_schema() {
     'export' => array(
       'key' => 'name',
       'identifier' => 'openlayers_layers',
-      'default hook' => 'openlayers_layers_info',
+      'default hook' => 'openlayers_layers',
       'api' => array(
         'owner' => 'openlayers',
         'api' => 'openlayers_layers',
@@ -134,7 +134,7 @@ function openlayers_schema() {
     'export' => array(
       'key' => 'name',
       'identifier' => 'openlayers_styles',
-      'default hook' => 'openlayers_styles_info',
+      'default hook' => 'openlayers_styles',
       'api' => array(
         'owner' => 'openlayers',
         'api' => 'openlayers_styles',

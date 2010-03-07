@@ -209,7 +209,7 @@ function openlayers_ui_menu() {
     'type' => MENU_NORMAL_ITEM,
     'weight' => -10,
   );
-  $items['admin/build/openlayers/styles/clone/%openlayers_layer'] = array( 	 
+  $items['admin/build/openlayers/styles/clone/%openlayers_style'] = array( 	 
     'title' => 'Clone style', 	 
     'page callback' => 'drupal_get_form', 	 
     'page arguments' => array('openlayers_ui_styles_form', 5), 	 
