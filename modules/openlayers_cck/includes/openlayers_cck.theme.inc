@@ -14,9 +14,9 @@ function theme_openlayers_wkt_widget($element) {
 }
 
 /**
- * Theme function for openlayers cck default formatters
+ * Theme function for WKT CCK formatter
  */
-function theme_openlayers_cck_formatter_default($element) {
+function theme_openlayers_cck_formatter_openlayers_wkt($element) {
   $features = array();
 
   // Create array of $features
@@ -47,15 +47,18 @@ function theme_openlayers_cck_formatter_map($element) {
     );
   }
 
-  // Get preset name from formatter. 
-  // Strip off 'openlayers_cck_formatter_' and 
-  // 'openlayers_map_' from the beginning.
-  // TODO: this seems like it should be eliminated upstream
+  // Get preset name from formatter. Strip off 'openlayers_cck_formatter_' 
+  // and 'openlayers_map_' from the beginning.
+  // If none found, use default map.
+  // TODO: Better way to do this?
   if (substr($element['#formatter'], 25) == 'openlayers_cck_formatter_') {
     $preset_name = substr($element['#formatter'], 25);
   }
-  if (substr($element['#formatter'], 0, 15) == 'openlayers_map_') {
+  elseif (substr($element['#formatter'], 0, 15) == 'openlayers_map_') {
     $preset_name = substr($element['#formatter'], 15);
+  }
+  else {
+    $preset_name = variable_get('openlayers_default_preset', 'default');
   }
 
   // Get map preset

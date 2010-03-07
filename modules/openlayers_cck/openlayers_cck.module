@@ -15,9 +15,6 @@
 define('OPENLAYERS_CCK_WIDGET_MAP_ID_PREFIX', 'openlayers-cck-widget-map');
 define('OPENLAYERS_CCK_FORMATTER_MAP_ID_PREFIX', 'openlayers-cck-formatter-map');
 
-// TODO: only load on hooks
-module_load_include('inc', 'openlayers_cck', 'openlayers_cck.feeds');
-
 /**
  * Implementation of hook_help().
  */
@@ -100,6 +97,12 @@ function openlayers_cck_theme($existing, $type, $theme, $path) {
       'file' => 'includes/openlayers_cck.theme.inc',
     ),
     'openlayers_cck_formatter_default' => array(
+      'arguments' => array('element' => NULL),
+      'gis input' => 'wkt',
+      'file' => 'includes/openlayers_cck.theme.inc',
+      'function' => 'theme_openlayers_cck_formatter_map',
+    ),
+    'openlayers_cck_formatter_openlayers_wkt' => array(
       'arguments' => array('element' => NULL),
       'gis input' => 'wkt',
       'file' => 'includes/openlayers_cck.theme.inc',
@@ -297,8 +300,7 @@ function openlayers_cck_wkt_element_process($element, $edit, &$form_state, &$for
   $field_key = $element['#columns'][0];
 
   // Make map for input
-  $rendered_map = _openlayers_cck_render_element_map(
-    $field_name, $field['widget']['label'], $element['#value'], $field);
+  $rendered_map = _openlayers_cck_render_element_map($field_name, $field['widget']['label'], $element['#value'], $field);
   // Create map element
   $element['map'] = array(
     '#value' => theme('openlayers_cck_map', $field, $rendered_map),
@@ -356,6 +358,13 @@ function openlayers_cck_field_formatter_info() {
 
   // Default formatter
   $formatters['default'] = array(
+    'label' => t('Default Map'),
+    'field types' => array('openlayers_wkt'),
+    'multiple values' => CONTENT_HANDLE_MODULE,
+  );
+  
+  // WKT value
+  $formatters['openlayers_wkt'] = array(
     'label' => t('WKT Value'),
     'field types' => array('openlayers_wkt'),
     'multiple values' => CONTENT_HANDLE_MODULE,
