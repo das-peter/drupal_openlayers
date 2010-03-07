@@ -6,23 +6,10 @@
  * for openlayers_cck
  */
 
-
 /**
- * Generate Random Lat and Lon
- *
- * @return
- *   A space separated longitude and latitiude
+ * Private callback for same hook.
  */
-function _openlayers_cck_generate_pair() {
-  $lat = (float)((mt_rand(0, 120000) - 60000)/1000);
-  $lon = (float)((mt_rand(0, 360000) - 180000)/1000);
-  return ((string) $lon) . ' ' . ((string) $lat);
-}
-
-/**
-* Implementation of hook content_generate().
-*/
-function openlayers_cck_content_generate(&$node, $field) {
+function _openlayers_cck_content_generate(&$node, $field) {
   $node_field = array();
   $types = array();
   $value = NULL;
@@ -80,4 +67,16 @@ function openlayers_cck_content_generate(&$node, $field) {
   if (count($node_field) > 0) {
     return $node_field;
   }
+}
+
+/**
+ * Generate Random Lat and Lon
+ *
+ * @return
+ *   A space separated longitude and latitiude
+ */
+function _openlayers_cck_generate_pair() {
+  $lat = (float)((mt_rand(0, 120000) - 60000)/1000);
+  $lon = (float)((mt_rand(0, 360000) - 180000)/1000);
+  return ((string) $lon) . ' ' . ((string) $lat);
 }

@@ -1,12 +1,12 @@
 <?php
-// $Id $
+// $Id$
 
 /**
- * Implementation of feeds_node_processor_targets_alter().
+ * Private function for hook of same name.
  *
  * Enable mapping to openlayer_wkt fields for feeds
  */
-function openlayers_cck_feeds_node_processor_targets_alter(&$targets, $content_type) {
+function _openlayers_cck_feeds_node_processor_targets_alter(&$targets, $content_type) {
   $info = content_types($content_type);
   $fields = array();
   if (isset($info['fields']) && count($info['fields'])) {

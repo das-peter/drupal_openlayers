@@ -16,7 +16,6 @@ define('OPENLAYERS_CCK_WIDGET_MAP_ID_PREFIX', 'openlayers-cck-widget-map');
 define('OPENLAYERS_CCK_FORMATTER_MAP_ID_PREFIX', 'openlayers-cck-formatter-map');
 
 // TODO: only load on hooks
-module_load_include('inc', 'openlayers_cck', 'openlayers_cck.test');
 module_load_include('inc', 'openlayers_cck', 'openlayers_cck.feeds');
 
 /**
@@ -91,24 +90,24 @@ function openlayers_cck_theme($existing, $type, $theme, $path) {
       'arguments' => array(
         'element' => NULL
       ),
-      'file' => 'openlayers_cck_theme.inc',
+      'file' => 'includes/openlayers_cck.theme.inc',
     ),
     'openlayers_cck_map' => array(
       'arguments' => array(
         'field' => NULL,
         'map' => NULL,
       ),
-      'file' => 'openlayers_cck_theme.inc',
+      'file' => 'includes/openlayers_cck.theme.inc',
     ),
     'openlayers_cck_formatter_default' => array(
       'arguments' => array('element' => NULL),
       'gis input' => 'wkt',
-      'file' => 'openlayers_cck_theme.inc',
+      'file' => 'includes/openlayers_cck.theme.inc',
     ),
     'openlayers_cck_formatter_map' => array(
       'arguments' => array('element' => NULL),
       'gis input' => 'wkt',
-      'file' => 'openlayers_cck_theme.inc',
+      'file' => 'includes/openlayers_cck.theme.inc',
     ),
   );
 
@@ -407,3 +406,22 @@ function _openlayers_cck_render_element_map($field_name = '', $field_label = '',
   return openlayers_render_map($map);
 }
 
+/**
+ * Implementation of hook_content_generate().
+ */
+function openlayers_cck_content_generate(&$node, $field) {
+  // In order to save PHP parsing unnecessary code on
+  // every page load, use an include
+  module_load_include('inc', 'openlayers_cck', 'includes/openlayers_cck.generate');
+  return _openlayers_cck_content_generate(&$node, $field);
+}
+
+/**
+ * Implementation of hook_feeds_node_processor_targets_alter().
+ */
+function openlayers_cck_feeds_node_processor_targets_alter(&$targets, $content_type) {
+  // In order to save PHP parsing unnecessary code on
+  // every page load, use an include
+  module_load_include('inc', 'openlayers_cck', 'includes/openlayers_cck.feeds');
+  return _openlayers_cck_feeds_node_processor_targets_alter(&$targets, $content_type);
+}
