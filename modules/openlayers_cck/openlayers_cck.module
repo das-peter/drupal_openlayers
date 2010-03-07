@@ -56,22 +56,24 @@ function openlayers_cck_ctools_plugin_api($module, $api) {
 function openlayers_cck_openlayers_behaviors() {
   return array(
     'openlayers_cck_drawfeature' => array(
-       'title' => t('Draw Feature for CCK'),
-       'description' => t('Allows layers to provide attribution to the map if it exists.'),
+       'title' => t('Draw Features for CCK'),
+       'description' => t('Provides functionality for adding features to a map.'),
        'type' => 'layer',
        'path' => drupal_get_path('module', 'openlayers_cck') .'/includes/behaviors',
        'file' => 'openlayers_cck_drawfeature.inc',
+       'ui_visibility' => FALSE,
        'behavior' => array(
          'class' => 'openlayers_cck_drawfeature',
          'parent' => 'openlayers_behavior',
        ),
     ),
     'openlayers_cck_vector_layer' => array(
-       'title' => t('Add a Vector Layer (for CCK)'),
+       'title' => t('Dynamic Vector Layer for CCK'),
        'description' => t('Adds a dynamic layer from a features array'),
        'type' => 'layer',
        'path' => drupal_get_path('module', 'openlayers_cck') .'/includes/behaviors',
        'file' => 'openlayers_cck_vector_layer.inc',
+       'ui_visibility' => FALSE,
        'behavior' => array(
          'class' => 'openlayers_cck_vector_layer',
          'parent' => 'openlayers_behavior',

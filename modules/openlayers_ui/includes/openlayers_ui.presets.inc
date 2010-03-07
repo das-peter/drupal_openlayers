@@ -566,9 +566,16 @@ function openlayers_ui_presets_form_process($values = array()) {
  */
 function openlayers_ui_get_behavior_options($type, $defaults) {
   $form = array();
+  
+  // Get and go through behaviors
   foreach (openlayers_behaviors() as $key => $plugin) {
+    // Get behavior class
     $class = ctools_plugin_get_class($plugin, 'behavior');
-    if ($class) {
+    // Make UI visibility true by default
+    $plugin['ui_visibility'] = isset($plugin['ui_visibility']) ? $plugin['ui_visibility'] : TRUE;
+
+    // Check for the class and visibility
+    if (!empty($class) && $plugin['ui_visibility'] !== FALSE) {
       // Build form.
       $form[$key] = array(
         '#tree' => TRUE,
@@ -584,11 +591,13 @@ function openlayers_ui_get_behavior_options($type, $defaults) {
         ),
       );
 
+      // Get options and add form elements
       $options = isset($defaults['behaviors'][$key]) ? $defaults['behaviors'][$key] : array();
       $behavior = new $class($options, $defaults);
       $form[$key]['options'] = $behavior->options_form($options);
     }
   }
+
   return $form;
 }
 

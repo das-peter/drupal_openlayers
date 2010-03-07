@@ -136,10 +136,11 @@ function _openlayers_openlayers_behaviors() {
     ),
     'openlayers_behavior_mapformvalues' => array(
       'title' => t('Map Form Values'),
-      'description' => t('Private method for admin UI.'),
+      'description' => t('Provides a way of updating form elements with zoom level and centering from a map.'),
       'type' => 'map',
       'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
       'file' => 'openlayers_behavior_mapformvalues.inc',
+      'ui_visibility' => FALSE,
       'behavior' => array(
         'class' => 'openlayers_behavior_mapformvalues',
         'parent' => 'openlayers_behavior',

@@ -6,7 +6,6 @@
  *
  * @ingroup openlayers_cck
  */
-
 Drupal.behaviors.openlayers_cck_vector_layer = function(context) {
   var data = $(context).data('openlayers');
   if (data && data.map.behaviors['openlayers_cck_vector_layer']) {
