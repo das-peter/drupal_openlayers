@@ -138,7 +138,6 @@ function openlayers_test_openlayers_presets() {
 
   // Return preset(s) in an array
   return array(
-    'default_test' => $default,
     'behaviors_test' => $behaviors_test,
   );
 }
@@ -158,6 +157,7 @@ function openlayers_test_page() {
     ';
   }
 
+  /*
   // Create collapsed fieldset
   //$render_fieldset = openlayers_render_map();
   $element = array(
@@ -167,6 +167,7 @@ function openlayers_test_page() {
     '#collapsible' => TRUE,
   );
   $fieldset = theme_fieldset($element);
+  */
 
   // Create output
   $output .= '
