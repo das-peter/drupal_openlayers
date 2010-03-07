@@ -23,7 +23,7 @@ class openlayers_cck_drawfeature extends openlayers_behavior {
    * Render.
    */
   function render(&$map) {
-    drupal_add_js(drupal_get_path('module', 'openlayers_cck') .'/includes/behaviors/openlayers_cck_drawfeature.js');
+    drupal_add_js(drupal_get_path('module', 'openlayers_cck') .'/includes/behaviors/js/openlayers_cck_drawfeature.js');
     return $this->options;
   }
 }
