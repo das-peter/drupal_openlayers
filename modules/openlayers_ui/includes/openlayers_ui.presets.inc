@@ -386,7 +386,7 @@ function openlayers_ui_presets_form_validate($form, &$form_state) {
 
   // Check if adding and name already exists
   $existing = openlayers_preset_load($values['name'], TRUE);
-  if (!empty($existing) && (!$form_state['values']['preset_edit']) && ($existing->get_type & EXPORT_IN_DATABASE)) {
+  if (!empty($existing) && (!$form_state['values']['preset_edit']) && ($existing->export_type & EXPORT_IN_DATABASE)) {
     form_set_error('name', t('The Preset Name already exists.'));
     $found_error = TRUE;
   }
