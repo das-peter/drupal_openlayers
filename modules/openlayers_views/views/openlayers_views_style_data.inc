@@ -157,6 +157,23 @@ class openlayers_views_style_data extends views_plugin_style {
         '#options' => array_merge(array('' => ''), $fields),
         '#default_value' => $this->options['data_source']['description_field'],
     );
+    
+    // Attributes and variable styling
+    $form['attributes'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Attributes'),
+      '#description' => t('Attributes are field data attached to each feature.  This can be used with styling to create Variable styling.'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+    );
+    // Create array of fields
+    $form['attributes']['included_fields'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Included Fields'),
+      '#description' => t('Fields to make as attributes to each feature.  You should only choose the ones you need to ensure the best performance.'),
+      '#options' => $fields,
+      '#default_value' => $this->options['attributes']['included_fields'],
+    );
   }
 
   /**
@@ -165,6 +182,7 @@ class openlayers_views_style_data extends views_plugin_style {
   function map_features($records = array()) {      
     $features = array();
     $data_source = $this->options['data_source'];
+    $included_fields = array_filter($this->options['attributes']['included_fields']);
 
     // Get list of fields in this view
     $handlers = $this->display->handler->get_handlers('field');
@@ -240,6 +258,16 @@ class openlayers_views_style_data extends views_plugin_style {
 
         $feature['attributes']['description'] = $grouped_description;
         $feature['attributes']['count'] = count($record);
+        
+        // Add included features
+        foreach ($included_fields as $inc) {
+          $field_alias = $fields[$inc]['field_alias'];
+          // Use non-aliased field name in attribute array as
+          // it is easier to talk about.
+          $feature['attributes'][$inc] = current($record)->$field_alias;
+          $feature['attributes'][$inc . '_rendered'] = $rendered_record['$field_alias'];
+        }
+        
         // Only add features with WKT data
         if (!empty($feature['wkt'])) {
           $features[] = $feature;
@@ -297,12 +325,13 @@ class openlayers_views_style_data extends views_plugin_style {
           }
         }
 
-
-        // Fill in all attributes
-        foreach ($fields as $fid => $field) {
-          $field_alias = $field['field_alias'];
-          $feature['attributes'][$field_alias] = $record->$field_alias;
-          $feature['attributes'][$field_alias . "_rendered"] = $rendered_record[$field_alias];
+        // Fill in selected attributes
+        foreach ($included_fields as $inc) {
+          $field_alias = $fields[$inc]['field_alias'];
+          // Use non-aliased field name in attribute array as
+          // it is easier to talk about.
+          $feature['attributes'][$inc] = $record->$field_alias;
+          $feature['attributes'][$inc . "_rendered"] = $rendered_record[$field_alias];
         }
 
         if ($data_source['name_field']) {
@@ -319,7 +348,7 @@ class openlayers_views_style_data extends views_plugin_style {
         if (!empty($feature['wkt'])) {
           $features[] = $feature;
         }
-      }          
+      }
       return $features;
     }  
   }
