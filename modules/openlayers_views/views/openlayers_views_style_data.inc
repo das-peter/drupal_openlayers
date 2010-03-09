@@ -158,21 +158,37 @@ class openlayers_views_style_data extends views_plugin_style {
         '#default_value' => $this->options['data_source']['description_field'],
     );
     
-    // Attributes and variable styling
+    // Attributes and variable styling description
     $form['attributes'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Attributes'),
+      '#title' => t('Attributes and Styling'),
       '#description' => t('Attributes are field data attached to each feature.  This can be used with styling to create Variable styling.'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
     );
-    // Create array of fields
-    $form['attributes']['included_fields'] = array(
-      '#type' => 'checkboxes',
-      '#title' => t('Included Fields'),
-      '#description' => t('Fields to make as attributes to each feature.  You should only choose the ones you need to ensure the best performance.'),
-      '#options' => $fields,
-      '#default_value' => $this->options['attributes']['included_fields'],
+    // Make array of attributes
+    $variable_fields = array();
+    // Add name and description
+    if (!empty($this->options['data_source']['name_field'])) {
+      $variable_fields['name'] = '${name}';
+    }
+    if (!empty($this->options['data_source']['description_field'])) {
+      $variable_fields['description'] = '${description}';
+    }
+    // Go through fields
+    foreach ($this->view->display_handler->get_handlers('field') as $field => $handler) {
+      if (($field != $this->options['data_source']['name_field']) && ($field != $this->options['data_source']['description_field'])) {
+        $variable_fields[$field] = '${' . $field . '}';
+        $variable_fields[$field . '_rendered'] = '${' . $field . '_rendered}';
+      }
+    }
+    $form['attributes']['styling'] = array(
+      '#type' => 'markup',
+      '#value' => '
+        <p>' . t('Any fields that you add to this view will be attached to their respective feature (point, line, polygon) as attributes.  These attributes can then be used to add variable styling to your themes.  This is accomplished by using the %syntax syntax in the values for a style.  The following is a list of formatted variables that are currently available; these can be placed right in the style interface.  The %rendered one means that it has been processed by Views and may have a different value.', array('%syntax' => '${field_name}', '%rendered' => '_rendered')) . '</p>
+        ' . theme('item_list', $variable_fields) . '
+        <p>' . t('Please note that this does not apply to Grouped Displays.') . '</p>
+      ',
     );
   }
 
@@ -259,15 +275,6 @@ class openlayers_views_style_data extends views_plugin_style {
         $feature['attributes']['description'] = $grouped_description;
         $feature['attributes']['count'] = count($record);
         
-        // Add included features
-        foreach ($included_fields as $inc) {
-          $field_alias = $fields[$inc]['field_alias'];
-          // Use non-aliased field name in attribute array as
-          // it is easier to talk about.
-          $feature['attributes'][$inc] = current($record)->$field_alias;
-          $feature['attributes'][$inc . '_rendered'] = $rendered_record['$field_alias'];
-        }
-        
         // Only add features with WKT data
         if (!empty($feature['wkt'])) {
           $features[] = $feature;
@@ -325,23 +332,28 @@ class openlayers_views_style_data extends views_plugin_style {
           }
         }
 
-        // Fill in selected attributes
-        foreach ($included_fields as $inc) {
-          $field_alias = $fields[$inc]['field_alias'];
-          // Use non-aliased field name in attribute array as
-          // it is easier to talk about.
-          $feature['attributes'][$inc] = $record->$field_alias;
-          $feature['attributes'][$inc . "_rendered"] = $rendered_record[$field_alias];
-        }
-
+        // Add the name and description attributes
+        // as choosen through interface
+        $name_field = NULL;
+        $description_field = NULL;
         if ($data_source['name_field']) {
           $name_field = $fields[$data_source['name_field']]['field_alias'];
           $feature['attributes']['name'] = $rendered_record[$name_field];
         } 
-                        
         if ($data_source['description_field']) {
           $description_field = $fields[$data_source['description_field']]['field_alias'];
           $feature['attributes']['description'] = $record->$description_field;
+        }
+
+        // Fill in attributes that are not title and description
+        foreach ($fields as $fid => $field) {
+          $field_alias = $field['field_alias'];
+          // Check if name, description
+          if (($field_alias != $name_field) && ($field_alias != $description_field)) {
+            // Use regular field name as this is easier to understand
+            $feature['attributes'][$fid] = $record->$field_alias;
+            $feature['attributes'][$fid . "_rendered"] = $rendered_record[$field_alias];
+          }
         }
 
         // Only add features with WKT data
