@@ -119,7 +119,7 @@ function openlayers_cck_theme($existing, $type, $theme, $path) {
     $themes['openlayers_cck_formatter_openlayers_map_' . $name] = array(
       'arguments' => array('element' => NULL),
       'function' => 'theme_openlayers_cck_formatter_map',
-      'file' => 'openlayers_cck_theme.inc',
+      'file' => 'includes/openlayers_cck.theme.inc',
       'gis input' => 'wkt',
     );
   }
