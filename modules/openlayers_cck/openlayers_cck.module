@@ -422,7 +422,7 @@ function openlayers_cck_content_generate(&$node, $field) {
   // In order to save PHP parsing unnecessary code on
   // every page load, use an include
   module_load_include('inc', 'openlayers_cck', 'includes/openlayers_cck.generate');
-  return _openlayers_cck_content_generate(&$node, $field);
+  return _openlayers_cck_content_generate($node, $field);
 }
 
 /**
@@ -432,5 +432,5 @@ function openlayers_cck_feeds_node_processor_targets_alter(&$targets, $content_t
   // In order to save PHP parsing unnecessary code on
   // every page load, use an include
   module_load_include('inc', 'openlayers_cck', 'includes/openlayers_cck.feeds');
-  return _openlayers_cck_feeds_node_processor_targets_alter(&$targets, $content_type);
+  return _openlayers_cck_feeds_node_processor_targets_alter($targets, $content_type);
 }
