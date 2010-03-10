@@ -76,10 +76,8 @@ class OpenLayersPresets extends DrupalWebTestCase {
     $this->assertResponse(200, t('User can reach preset list.'));
 
     // Ensure that the default test is listed
-    $this->assertText(t('Default Test Map'), 
-      t('Assert that the default test preset\'s title appears.'));
-    $this->assertText(t('This is a test preset.'), 
-      t('Assert that the default test preset\'s description appears.'));
+    $this->assertText(t('Default Map'), 
+      t('Assert that the default preset\'s title appears.'));
 
     // Presets
     $this->drupalGet('admin/build/openlayers/default/export');
