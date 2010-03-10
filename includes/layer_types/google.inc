@@ -29,7 +29,7 @@ class openlayers_layer_type_google extends openlayers_layer_type {
       'projection' => array('900913'),
       'layer_type' => 'google',
       'layer_handler' => 'google',
-      'isBaseLayer' => TRUE
+      'baselayer' => TRUE,
     );
   }
 
