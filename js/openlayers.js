@@ -162,7 +162,7 @@ Drupal.openlayers = {
       // Ensure that the layer handler is available
       if (options.layer_handler !== undefined && Drupal.openlayers.layer[options.layer_handler] !== undefined) {
         // Create new layer
-        var layer = Drupal.openlayers.layer[options.layer_handler](name, map, options);
+        var layer = Drupal.openlayers.layer[options.layer_handler](map.layers[name].title, map, options);
         // Check visibility
         layer.visibility = (!map.layer_activated || map.layer_activated[name]);
         // Check inSwitcher (for overlays only)
