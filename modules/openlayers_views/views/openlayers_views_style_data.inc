@@ -198,7 +198,6 @@ class openlayers_views_style_data extends views_plugin_style {
   function map_features($records = array()) {      
     $features = array();
     $data_source = $this->options['data_source'];
-    $included_fields = array_filter($this->options['attributes']['included_fields']);
 
     // Get list of fields in this view
     $handlers = $this->display->handler->get_handlers('field');
