@@ -132,7 +132,7 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   // Center
   $form['center'] = array(
     '#title' => t('Center & Bounds'),
-    '#description' => t('Where the map will center itself initially. Shift-drag on the map to set the restrictedExtent.'),
+    '#description' => t('Where the map will center itself initially. Shift-drag on the map to set the Restricted Extent.'),
     '#tree' => TRUE,
   );
   $form['center']['helpmap'] = array(
@@ -169,6 +169,12 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   $form['center']['restrict']['restrictextent'] = array(
     '#type' => 'checkbox',
     '#title' => t('Restrict Extent'),
+    '#description' => t('Setting the restricted extent of a map prevents users 
+      from panning the map outside a specified area. This can be set 
+      interactively by holding the shift key and dragging a box over the map 
+      above. Setting the extent does not restrict how far users can zoom out, 
+      so setting restricted zoom levels (via individual layer settings) is
+      recommended.'),
     '#id' => 'restrictextent',
     '#default_value' => isset($defaults['center']['restrict']['restrictextent']) ? $defaults['center']['restrict']['restrictextent'] : '',
   );
