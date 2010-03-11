@@ -1,4 +1,13 @@
 <?php
+// $Id$
+
+/**
+ * @file
+ * Display plugin for OpenLayers Data
+ *
+ * @ingroup openlayers
+ */
+
 class openlayers_views_plugin_display_openlayers extends views_plugin_display {
   function uses_breadcrumb() { return FALSE; }
   function get_style_type() { return 'openlayers'; }

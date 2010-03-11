@@ -44,7 +44,7 @@ class openlayers_layer_type_cloudmade extends openlayers_layer_type {
           Javascript location is not set. Map including CloudMade layers 
           will break until they are set correctly.')
         )
-      : null;
+      : NULL;
     return array(
       'styleId' => array(
         '#type' => 'textfield',

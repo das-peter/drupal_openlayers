@@ -242,7 +242,7 @@ function _openlayers_openlayers_layers() {
   );
   $layers[$layer->name] = $layer;
 
-  $layer = new StdClass();
+  $layer = new stdClass();
   $layer->api_version = 1;
   $layer->name = 'wms_default';
   $layer->title = t('Default OpenLayers WMS');

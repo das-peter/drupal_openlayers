@@ -518,7 +518,9 @@ function openlayers_preset_options($reset = FALSE) {
  *   FALSE if passed. Array of descriptive errors if fail
  */
 function openlayers_error_check_map($map, $log_errors = TRUE) {
-  // @TODO: Instead of manually specifying projections, we should do a lookup on the projections in a big table to get variables that it should be checked against.
+  // @TODO: Instead of manually specifying projections, 
+  // we should do a lookup on the projections in a big table to 
+  // get variables that it should be checked against.
   // @TODO: For next release, make hook
   $errors = array();
 

@@ -36,11 +36,11 @@ class openlayers_layer_type_yahoo extends openlayers_layer_type {
   function options_form() {
     $warning = (!variable_get('openlayers_layers_yahoo_api', FALSE)) ?
         array(
-          '#value' => t('WARNING: Your Yahoo API key. 
+          '#value' => t('WARNING: Your Yahoo API key is not set. 
           Map including Yahoo layers 
           will break until it is set correctly.')
         )
-      : null;
+      : NULL;
 
     $yahoo_layer_types = array(
       'hybrid' => 'Hybrid', 
