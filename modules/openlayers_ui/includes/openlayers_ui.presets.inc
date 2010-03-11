@@ -616,8 +616,6 @@ function openlayers_ui_get_behavior_options($type, $defaults) {
         '#type' => 'fieldset',
         '#title' => $plugin['title'],
         '#description' => $plugin['description'],
-        '#collapsible' => TRUE,
-        '#collapsed' => FALSE,
         'enabled' => array(
           '#type' => 'checkbox',
           '#title' => t('Enabled'),
