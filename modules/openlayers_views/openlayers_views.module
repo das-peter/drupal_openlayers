@@ -68,12 +68,7 @@ function openlayers_views_openlayers_layers() {
 
   $views = views_get_all_views();
   /**
-   * Loop through views for displays generatd by the openlayers data style plugin.  Provide each as
-   * available layer for map presets
-   *
-   * @Todo: think about what settings should be allowed to be defined by the view display options,
-   *        what should be automatic, and what to configure on the map preset level
-   *
+   * Provide each OpenLayers Data display as a layer
    */
   foreach ($views as $view) {
     foreach ($view->display as $display => $data) {

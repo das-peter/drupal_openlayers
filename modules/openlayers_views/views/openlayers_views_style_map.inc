@@ -37,7 +37,8 @@ class openlayers_views_style_map extends views_plugin_style {
       '#title' => t('Map preset'),
       '#description' => t('This is map that will be used to render the view.'),
       '#options' => openlayers_preset_options(),
-      '#default_value' => $this->options['preset'] ? $this->options['preset'] : variable_get('openlayers_default_preset', 'default'),
+      '#default_value' => $this->options['preset'] ? 
+        $this->options['preset'] : variable_get('openlayers_default_preset', 'default'),
     );
   }
 
