@@ -78,14 +78,16 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   $form['info']['width'] = array(
     '#type' => 'textfield',
     '#title' => t('Width'),
-    '#description' => t('A CSS width value.'),
+    '#description' => t('The map\'s width. "auto" will make the map fill 
+      the space it is given; otherwise, enter a value in pixels, like 400px.'),
     '#default_value' => !empty($defaults['width']) ? $defaults['width'] : '',
     '#maxlength' => 128,
   );
   $form['info']['height'] = array(
     '#type' => 'textfield',
     '#title' => t('Height'),
-    '#description' => t('A CSS height value.'),
+    '#description' => t('The map\'s height. Enter a value in pixels, 
+      like 400px.'),
     '#default_value' => !empty($defaults['height']) ? $defaults['height'] : '',
     '#maxlength' => 128,
   );
