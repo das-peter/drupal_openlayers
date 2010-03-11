@@ -92,22 +92,41 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   $form['info']['image_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Image Path'),
-    '#description' => t('The path to a directory for OpenLayers to look for UI graphics. If blank, default graphics are used.  Use either a Drupal path (and the appropriate base path will be prepended), an absolute path (such as !ab_example), or a full URL.', array('!ab_example' => '/path/to/images/')),
-    '#default_value' => !empty($defaults['image_path']) ? $defaults['image_path'] : '',
+    '#description' => t('The path to a directory for OpenLayers to look for UI 
+      graphics. If blank, default graphics are used.  Use either a Drupal path 
+      (and the appropriate base path will be prepended), an absolute path 
+      (such as !ab_example), or a full URL.', 
+      array('!ab_example' => '/path/to/images/')
+    ),
+    '#default_value' => !empty($defaults['image_path']) ? 
+      $defaults['image_path'] : '',
   );
 
   $form['info']['css_path'] = array(
     '#type' => 'textfield',
     '#title' => t('CSS Path'),
-    '#description' => t('Path for where OpenLayers should look for its theme CSS file. The default hosted OpenLayers URL is http://openlayers.org/api/theme/default/style.css.  Use either a Drupal path (and the appropriate base path will be prepended), an absolute path (such as !ab_example), or a full URL.', array('!ab_example' => '/path/to/css/')),
-    '#default_value' => !empty($defaults['css_path']) ? $defaults['css_path'] : '',
+    '#description' => t('Path for where OpenLayers should look for its theme 
+      CSS file. The default hosted OpenLayers URL is 
+      http://openlayers.org/api/theme/default/style.css.  Use either a Drupal path 
+      (and the appropriate base path will be prepended), an absolute path 
+      (such as !ab_example), or a full URL.', 
+      array('!ab_example' => '/path/to/css/')
+    ),
+    '#default_value' => !empty($defaults['css_path']) ?
+      $defaults['css_path'] : '',
   );
 
   $form['info']['proxy_host'] = array(
     '#type' => 'textfield',
     '#title' => t('Proxy Host'),
-    '#description' => t('A proxy (typically on the same domain as this site) which enables requests to cross-domain AJAX resources (including remote KML).  Use either a Drupal path (and the appropriate base path will be prepended), an absolute path (such as !ab_example), or a full URL.', array('!ab_example' => '/cgi_proxy?request=')),
-    '#default_value' => !empty($defaults['proxy_host']) ? $defaults['proxy_host'] : '',
+    '#description' => t('A proxy (typically on the same domain as this site) 
+      which enables requests to cross-domain AJAX resources (including remote 
+      KML).  Use either a Drupal path (and the appropriate base path will 
+      be prepended), an absolute path (such as !ab_example), or a full URL.', 
+      array('!ab_example' => '/cgi_proxy?request=')
+    ),
+    '#default_value' => !empty($defaults['proxy_host']) ? 
+      $defaults['proxy_host'] : '',
   );
 
   // Center
@@ -268,24 +287,28 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
       $form['layerstyles']['layer_styles'][$id] = array(
         '#type' => 'select',
         '#options' => array('-- '. t('Default style') .' --') + openlayers_ui_get_style_options(),
-        '#default_value' => !empty($defaults['layer_styles'][$id]) ? $defaults['layer_styles'][$id] : '',
+        '#default_value' => !empty($defaults['layer_styles'][$id]) ? 
+          $defaults['layer_styles'][$id] : '',
       );
     }
   }
   $form['layerstyles']['layers']['overlays'] = array(
     '#type' => 'checkboxes',
     '#options' => $overlay_options,
-    '#default_value' => !empty($defaults['layers']) ? array_intersect_key($defaults['layers'], $overlay_options) : array(),
+    '#default_value' => !empty($defaults['layers']) ? 
+      array_intersect_key($defaults['layers'], $overlay_options) : array(),
   );
   $form['layerstyles']['layer_activated'] = array(
     '#type' => 'checkboxes',
     '#options' => $overlay_options,
-    '#default_value' => !empty($defaults['layer_activated']) ? array_intersect_key($defaults['layer_activated'], $overlay_options) : array(),
+    '#default_value' => !empty($defaults['layer_activated']) ? 
+      array_intersect_key($defaults['layer_activated'], $overlay_options) : array(),
   );
   $form['layerstyles']['layer_switcher'] = array(
     '#type' => 'checkboxes',
     '#options' => $overlay_options,
-    '#default_value' => !empty($defaults['layer_switcher']) ? array_intersect_key($defaults['layer_switcher'], $overlay_options) : array(),
+    '#default_value' => !empty($defaults['layer_switcher']) ? 
+      array_intersect_key($defaults['layer_switcher'], $overlay_options) : array(),
   );
 
   // Styles
@@ -295,14 +318,16 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#title' => t('Default style'),
     '#description' => t('Default style for features in a vector.'),
     '#options' => openlayers_ui_get_style_options(),
-    '#default_value' => !empty($defaults['styles']['default']) ? $defaults['styles']['default'] : NULL,
+    '#default_value' => !empty($defaults['styles']['default']) ? 
+      $defaults['styles']['default'] : NULL,
   );
   $form['layerstyles']['styles']['select'] = array(
     '#type' => 'select',
     '#title' => t('Select style'),
     '#description' => t('Style for features in a vector that are selected.'),
     '#options' => openlayers_ui_get_style_options(),
-    '#default_value' => !empty($defaults['styles']['select']) ? $defaults['styles']['select'] : NULL,
+    '#default_value' => !empty($defaults['styles']['select']) ? 
+      $defaults['styles']['select'] : NULL,
   );
   $form['layerstyles']['styles']['temporary'] = array(
     '#type' => 'select',
@@ -310,7 +335,8 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#description' => t('Default style for any temporary features in a vector. 
       This will also be used for rollovers for things like Tooltips.'),
     '#options' => openlayers_ui_get_style_options(),
-    '#default_value' => !empty($defaults['styles']['temporary']) ? $defaults['styles']['temporary'] : NULL,
+    '#default_value' => !empty($defaults['styles']['temporary']) ? 
+      $defaults['styles']['temporary'] : NULL,
   );
 
   // End AHAH Wrapper
@@ -397,7 +423,8 @@ function openlayers_ui_presets_form_validate($form, &$form_state) {
   // Check if any errors found
   if (is_array($map['errors']) && count($map['errors']) > 0) {
     foreach ($map['errors'] as $error) {
-      form_set_error('openlayers', t('OpenLayers Map Rendering Error: !error', array('!error' => $error)));
+      form_set_error('openlayers', 
+        t('OpenLayers Map Rendering Error: !error', array('!error' => $error)));
       $found_error = TRUE;
     }
   }
@@ -572,7 +599,8 @@ function openlayers_ui_get_behavior_options($type, $defaults) {
     // Get behavior class
     $class = ctools_plugin_get_class($plugin, 'behavior');
     // Make UI visibility true by default
-    $plugin['ui_visibility'] = isset($plugin['ui_visibility']) ? $plugin['ui_visibility'] : TRUE;
+    $plugin['ui_visibility'] = isset($plugin['ui_visibility']) ? 
+      $plugin['ui_visibility'] : TRUE;
 
     // Check for the class and visibility
     if (!empty($class) && $plugin['ui_visibility'] !== FALSE) {
@@ -592,7 +620,8 @@ function openlayers_ui_get_behavior_options($type, $defaults) {
       );
 
       // Get options and add form elements
-      $options = isset($defaults['behaviors'][$key]) ? $defaults['behaviors'][$key] : array();
+      $options = isset($defaults['behaviors'][$key]) ? 
+        $defaults['behaviors'][$key] : array();
       $behavior = new $class($options, $defaults);
       $form[$key]['options'] = $behavior->options_form($options);
     }
