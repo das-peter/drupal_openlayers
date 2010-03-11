@@ -251,7 +251,8 @@ function openlayers_cck_widget_settings($op, $widget) {
         '#title' => t('Input Map Preset'),
         '#description' => t('Choose the OpenLayers Preset Map that will be used to input the data.'),
         '#options' => $presets,
-        '#default_value' => isset($widget['openlayers_cck_preset_map']) ? $widget['openlayers_cck_preset_map'] : $default_preset,
+        '#default_value' => isset($widget['openlayers_cck_preset_map']) ? 
+          $widget['openlayers_cck_preset_map'] : $default_preset,
       );
 
       // Return form
