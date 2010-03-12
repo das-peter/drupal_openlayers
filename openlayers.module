@@ -574,8 +574,7 @@ function openlayers_error_check_map($map, $log_errors = TRUE) {
 function openlayers_get_extent($projection) {
   switch ($projection) {
     case '900913':
-      return array(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
-      
+      return array(-20037508, -20037508, 20037508, 20037508);
     case '4326':
       return array(-180, -90, 180, 90);
   }
