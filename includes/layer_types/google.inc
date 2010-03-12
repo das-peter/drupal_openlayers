@@ -12,7 +12,7 @@
 class openlayers_layer_type_google extends openlayers_layer_type {
   function __construct($layer = array(), $map = array()) {
     parent::__construct($layer, $map);
-    if ($this->data) {
+    if (isset($this->data)) {
       $this->data += $this->options_init();
     }
     else {
@@ -45,7 +45,7 @@ class openlayers_layer_type_google extends openlayers_layer_type {
       'type' => array(
         '#title' => t('Google Layer Type'),
         '#type' => 'select',
-        '#default_value' => ($this->data['type']) ? $this->data['type'] : 'normal',
+        '#default_value' => isset($this->data['type']) ? $this->data['type'] : 'normal',
         '#options' => $google_layer_types
       ),
       'layer_type' => array(
@@ -57,7 +57,7 @@ class openlayers_layer_type_google extends openlayers_layer_type {
         '#title' => t('Number of Zoom Levels'),
         '#description' => t('Satellite and hybrid maps are occasionally 
           unavailable at higher zoom levels.'),
-        '#default_value' => ($this->data['numZoomLevels']) ? 
+        '#default_value' => isset($this->data['numZoomLevels']) ? 
           $this->data['numZoomLevels'] : '15'
       ),
     );

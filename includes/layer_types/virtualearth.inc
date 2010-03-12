@@ -13,7 +13,7 @@
 class openlayers_layer_type_virtualearth extends openlayers_layer_type {
   function __construct($layer = array(), $map = array()) {
     parent::__construct($layer, $map);
-    if ($this->data) {
+    if (isset($this->data)) {
       $this->data += $this->options_init();
     }
     else {

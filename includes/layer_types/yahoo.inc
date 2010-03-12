@@ -12,7 +12,7 @@
 class openlayers_layer_type_yahoo extends openlayers_layer_type {
   function __construct($layer = array(), $map = array()) {
     parent::__construct($layer, $map);
-    if ($this->data) {
+    if (isset($this->data)) {
       $this->data += $this->options_init();
     }
     else {
@@ -50,7 +50,8 @@ class openlayers_layer_type_yahoo extends openlayers_layer_type {
       'type' => array(
         '#title' => t('Yahoo Layer Type'),
         '#type' => 'select',
-        '#default_value' => ($this->data['type']) ? $this->data['type'] : 'normal',
+        '#default_value' => isset($this->data['type']) ? 
+          $this->data['type'] : 'normal',
         '#options' => $yahoo_layer_types
       ),
       'layer_type' => array(

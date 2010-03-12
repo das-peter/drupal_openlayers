@@ -13,7 +13,7 @@
 class openlayers_layer_type_cloudmade extends openlayers_layer_type {
   function __construct($layer = array(), $map = array()) {
     parent::__construct($layer, $map);
-    if ($this->data) {
+    if (isset($this->data)) {
       $this->data += $this->options_init();
     }
     else {
@@ -49,7 +49,8 @@ class openlayers_layer_type_cloudmade extends openlayers_layer_type {
       'styleId' => array(
         '#type' => 'textfield',
         '#title' => t('Style ID'),
-        '#default_value' => $this->data['styleId']
+        '#default_value' => isset($this->data['styleId']) ?
+          $this->data['styleId'] : ''
       ),
       'layer_type' => array(
         '#type' => 'hidden',

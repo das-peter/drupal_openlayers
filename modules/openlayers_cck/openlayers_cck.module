@@ -403,7 +403,8 @@ function _openlayers_cck_render_element_map($field_name = '', $field_label = '',
   
   // Get map to use for field
   if (isset($field['widget']['openlayers_cck_preset_map'])) {
-    $preset = openlayers_preset_load($field['widget']['openlayers_cck_preset_map']);
+    $preset = openlayers_preset_load(
+      $field['widget']['openlayers_cck_preset_map']);
     $map = $preset->data;
   }
 
@@ -412,7 +413,10 @@ function _openlayers_cck_render_element_map($field_name = '', $field_label = '',
 
   // Make sure that our display projection matches the database projection
   // TODO: rewrite
-  $map['behaviors']['openlayers_cck_drawfeature'] = array('wkt_field_id' => $field_id);
+  $map['behaviors']['openlayers_cck_drawfeature'] = array(
+    'wkt_field_id' => $field_id,
+    'feature_types' => $field['openlayers_cck_feature_types']
+  );
   return openlayers_render_map($map);
 }
 

@@ -46,7 +46,8 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
         '#title' => t('URL'),
         '#description' => t('The URL of the KML file.'),
         '#maxlength' => 1024,
-        '#default_value' => $this->data['url']
+        '#default_value' => isset($this->data['url']) ?
+          $this->data['url'] : ''
       ),
       'formatOptions' => array(
         'extractStyles' => array(

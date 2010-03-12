@@ -54,8 +54,6 @@ class OpenLayersCCKWidgetTest extends ContentCrudTestCase {
     );
     $this->drupalPost('node/'. $node->nid .'/edit', $edit, 'Save');
     $node = node_load($node->nid, NULL, TRUE);
-    $this->assertEqual($node->{$field_name}[0]['value'], 
-      $off_value, 'Checkbox: unchecked (saved)');
     $this->drupalGet('node/'. $node->nid);
   }
 }
