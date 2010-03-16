@@ -13,7 +13,8 @@ openlayers_cck_drawfeature_wkt_field = null;
 function update(features) {
   WktWriter = new OpenLayers.Format.WKT();
   for(var i in features.object.features) {
-    features.object.features[i].geometry = features.object.features[i].geometry.transform(
+    features.object.features[i].geometry = 
+    features.object.features[i].geometry.transform(
       features.object.map.projection,
       new OpenLayers.Projection("EPSG:4326")
     );
@@ -58,9 +59,37 @@ Drupal.behaviors.openlayers_cck_drawfeature = function(context) {
     
     var control = new OpenLayers.Control.EditingToolbar(data_layer);
     data.openlayers.addControl(control);
+    
+    var class_names = {
+      'point': 'OpenLayers.Handler.Point',
+      'path': 'OpenLayers.Handler.Path',
+      'polygon': 'OpenLayers.Handler.Polygon',
+    };
+
+    control.activate();
+    var feature_types = 
+      data.map.behaviors['openlayers_cck_drawfeature'].feature_types;
+
+    var r;
+
+    for(var i in control.controls) {
+      r = true;
+      for(var j in feature_types) {
+        // don't judge the navigation control
+        if(control.controls[i].handler !== null) {
+          if(control.controls[i].handler.CLASS_NAME == 
+          class_names[feature_types[j]]) {
+            r = false;
+          }
+        }
+      }
+      if(r == true) {
+        control.controls.splice(i, i);
+      }
+    }
+    control.redraw();
 
     var mcontrol = new OpenLayers.Control.ModifyFeature(data_layer);
     data.openlayers.addControl(mcontrol);
-    control.activate();
   }
 };
