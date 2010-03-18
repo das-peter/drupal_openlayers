@@ -1,0 +1,18 @@
+$Id$
+
+Current for 6.x-2.0-alpha4
+
+Between the OpenLayers 2.0-alpha3 and 2.0-alpha4 releases, there were 
+several changes which clarified the module but are not backwards-
+compatible with alpha3.
+
+# OpenLayers Hooks
+
+[Ticket](http://drupal.org/node/723530#comment-2688276)
+
+Upgrading:
+
+* Update hook definitions to implement `openlayers_openlayers_layers`
+  instead of `openlayers_openlayers_layers_info`
+* Update hook definitions to implement `openlayers_openlayers_styles`
+  instead of `openlayers_openlayers_styles_info`

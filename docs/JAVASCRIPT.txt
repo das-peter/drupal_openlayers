@@ -1,6 +1,6 @@
 $Id$
 
-Current for 6.x-2.0-alpha2
+Current for 6.x-2.0-alpha3
 
 The OpenLayers module aims to add minimal abstraction in Javascript to what is
 already provided by the [OpenLayers](http://openlayers.org/) Javascript library.

@@ -1,6 +1,6 @@
 $Id$
 
-Current for 6.x-2.0-alpha2
+Current for 6.x-2.0-alpha3
 
 Obviously there are many points at which advanced users will want to push the
 limits of what the OpenLayers module can do. In many cases, these changes can be

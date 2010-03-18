@@ -1,6 +1,6 @@
 $Id$
 
-Current for 6.x-2.0-alpha2
+Current for 6.x-2.x
 
 # Layer Types
 
