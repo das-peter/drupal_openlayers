@@ -1,10 +1,14 @@
 <?php
 // $Id$
 
-/*
- * @file OpenLayers CCK tests
+/**
+ * @file
+ * OpenLayers CCK tests
  */
 
+/**
+ * OpenLayers Test Class
+ */
 class OpenLayersCCKWidgetTest extends ContentCrudTestCase {
   function getInfo() {
     return array(
@@ -44,7 +48,7 @@ class OpenLayersCCKWidgetTest extends ContentCrudTestCase {
     $this->drupalPost('node/add/'. $type_url, $edit, 'Save');
     $node = node_load(array('title' => $edit['title']));
     $this->assertEqual(
-      $node->{$field_name}[0]['openlayers_wkt'], 
+      $node->{$field_name}[0]['openlayers_wkt'],
       'POINT(1 1)', 'Point: saved in the correct place');
     $this->drupalGet('node/'. $node->nid);
 

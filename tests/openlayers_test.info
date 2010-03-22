@@ -1,6 +1,6 @@
 ; $Id$
+
 name = OpenLayers Tests
 description = OpenLayers test module.  There is no reason to install this.
 core = 6.x
 package = OpenLayers
-

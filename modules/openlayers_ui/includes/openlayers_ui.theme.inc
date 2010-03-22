@@ -95,7 +95,7 @@ function theme_openlayers_ui_presets_form_layers($form) {
     unset($form['layers']['overlays'][$key]['#title']);
     unset($form['layer_activated'][$key]['#title']);
     unset($form['layer_switcher'][$key]['#title']);
-    
+
     $row[] = drupal_render($form['layers']['overlaylabels'][$key]);
     $row[] = drupal_render($form['layers']['overlays'][$key]);
     $row[] = drupal_render($form['layer_activated'][$key]);

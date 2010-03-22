@@ -37,7 +37,7 @@ class openlayers_views_style_map extends views_plugin_style {
       '#title' => t('Map preset'),
       '#description' => t('This is map that will be used to render the view.'),
       '#options' => openlayers_preset_options(),
-      '#default_value' => $this->options['preset'] ? 
+      '#default_value' => $this->options['preset'] ?
         $this->options['preset'] : variable_get('openlayers_default_preset', 'default'),
     );
   }
@@ -55,8 +55,8 @@ class openlayers_views_style_map extends views_plugin_style {
 
     // Get selected preset
     $preset = openlayers_preset_load($this->options['preset']);
-             
-    $map = openlayers_render_map($preset->data, $preset->name);  
+
+    $map = openlayers_render_map($preset->data, $preset->name);
     return theme($this->theme_functions(), $this->view, $this->options, $map);
   }
 }

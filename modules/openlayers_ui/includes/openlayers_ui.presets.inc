@@ -3,7 +3,7 @@
 
 /**
  * @file
- * This file holds the functions handling presets in the 
+ * This file holds the functions handling presets in the
  * Openlayers UI.
  *
  * @ingroup openlayers
@@ -12,7 +12,7 @@
 function openlayers_ui_presets_clone($preset) {
   $form_state = array();
   drupal_set_title(
-    t('Clone preset %preset', 
+    t('Clone preset %preset',
       array('%preset' => $preset->name)
     )
   );
@@ -78,7 +78,7 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   $form['info']['width'] = array(
     '#type' => 'textfield',
     '#title' => t('Width'),
-    '#description' => t('The map\'s width. "auto" will make the map fill 
+    '#description' => t('The map\'s width. "auto" will make the map fill
       the space it is given; otherwise, enter a value in pixels, like 400px.'),
     '#default_value' => !empty($defaults['width']) ? $defaults['width'] : '',
     '#maxlength' => 128,
@@ -86,7 +86,7 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   $form['info']['height'] = array(
     '#type' => 'textfield',
     '#title' => t('Height'),
-    '#description' => t('The map\'s height. Enter a value in pixels, 
+    '#description' => t('The map\'s height. Enter a value in pixels,
       like 400px.'),
     '#default_value' => !empty($defaults['height']) ? $defaults['height'] : '',
     '#maxlength' => 128,
@@ -94,24 +94,24 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   $form['info']['image_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Image Path'),
-    '#description' => t('The path to a directory for OpenLayers to look for UI 
-      graphics. If blank, default graphics are used.  Use either a Drupal path 
-      (and the appropriate base path will be prepended), an absolute path 
-      (such as !ab_example), or a full URL.', 
+    '#description' => t('The path to a directory for OpenLayers to look for UI
+      graphics. If blank, default graphics are used.  Use either a Drupal path
+      (and the appropriate base path will be prepended), an absolute path
+      (such as !ab_example), or a full URL.',
       array('!ab_example' => '/path/to/images/')
     ),
-    '#default_value' => !empty($defaults['image_path']) ? 
+    '#default_value' => !empty($defaults['image_path']) ?
       $defaults['image_path'] : '',
   );
 
   $form['info']['css_path'] = array(
     '#type' => 'textfield',
     '#title' => t('CSS Path'),
-    '#description' => t('Path for where OpenLayers should look for its theme 
-      CSS file. The default hosted OpenLayers URL is 
-      http://openlayers.org/api/theme/default/style.css.  Use either a Drupal path 
-      (and the appropriate base path will be prepended), an absolute path 
-      (such as !ab_example), or a full URL.', 
+    '#description' => t('Path for where OpenLayers should look for its theme
+      CSS file. The default hosted OpenLayers URL is
+      http://openlayers.org/api/theme/default/style.css.  Use either a Drupal path
+      (and the appropriate base path will be prepended), an absolute path
+      (such as !ab_example), or a full URL.',
       array('!ab_example' => '/path/to/css/')
     ),
     '#default_value' => !empty($defaults['css_path']) ?
@@ -121,13 +121,13 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   $form['info']['proxy_host'] = array(
     '#type' => 'textfield',
     '#title' => t('Proxy Host'),
-    '#description' => t('A proxy (typically on the same domain as this site) 
-      which enables requests to cross-domain AJAX resources (including remote 
-      KML).  Use either a Drupal path (and the appropriate base path will 
-      be prepended), an absolute path (such as !ab_example), or a full URL.', 
+    '#description' => t('A proxy (typically on the same domain as this site)
+      which enables requests to cross-domain AJAX resources (including remote
+      KML).  Use either a Drupal path (and the appropriate base path will
+      be prepended), an absolute path (such as !ab_example), or a full URL.',
       array('!ab_example' => '/cgi_proxy?request=')
     ),
-    '#default_value' => !empty($defaults['proxy_host']) ? 
+    '#default_value' => !empty($defaults['proxy_host']) ?
       $defaults['proxy_host'] : '',
   );
 
@@ -138,11 +138,11 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#tree' => TRUE,
   );
   $form['center']['helpmap'] = array(
-    '#value' => '<div class="form-item openlayers-center-helpmap" 
+    '#value' => '<div class="form-item openlayers-center-helpmap"
       style="display:block">'. openlayers_ui_presets_form_center_map($defaults) .'</div>'
   );
   $form['center']['initial'] = array(
-    '#type' => 'fieldset', 
+    '#type' => 'fieldset',
     '#title' => t('Initial Map View')
   );
   $form['center']['initial']['centerpoint'] = array(
@@ -171,10 +171,10 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   $form['center']['restrict']['restrictextent'] = array(
     '#type' => 'checkbox',
     '#title' => t('Restrict Extent'),
-    '#description' => t('Setting the restricted extent of a map prevents users 
-      from panning the map outside a specified area. This can be set 
-      interactively by holding the shift key and dragging a box over the map 
-      above. Setting the extent does not restrict how far users can zoom out, 
+    '#description' => t('Setting the restricted extent of a map prevents users
+      from panning the map outside a specified area. This can be set
+      interactively by holding the shift key and dragging a box over the map
+      above. Setting the extent does not restrict how far users can zoom out,
       so setting restricted zoom levels (via individual layer settings) is
       recommended.'),
     '#id' => 'restrictextent',
@@ -185,7 +185,7 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#title' => t('Restricted Extent'),
     '#description' => t('Prevents users from panning outside of a specific bounding box'),
     '#default_value' => isset($defaults['center']['restrict']['restrictedExtent']) ? $defaults['center']['restrict']['restrictedExtent'] : '',
-    '#attributes' => array('class' => 'openlayers-form-restrictedExtent'), 
+    '#attributes' => array('class' => 'openlayers-form-restrictedExtent'),
     '#size' => 25,
     '#process' => array('ctools_dependent_process'),
     '#dependency' => array('restrictextent' => array(1)),
@@ -225,8 +225,7 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   // Projection options
   $projections = array();
   foreach (openlayers_ui_get_projection_options() as $projection) {
-    $projection_layers = array_merge(openlayers_ui_get_layer_options('baselayer', $projection),
-                                     openlayers_ui_get_layer_options('overlay', $projection));
+    $projection_layers = array_merge(openlayers_ui_get_layer_options('baselayer', $projection), openlayers_ui_get_layer_options('overlay', $projection));
     $projections[$projection] = theme('openlayers_ui_form_projection_description', $projection, array_keys($projection_layers));
   }
 
@@ -235,15 +234,15 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   $form['layerstyles']['projections']['#tree'] = TRUE;
 
   $form['layerstyles']['projections']['#title'] = t('Projection');
-  $form['layerstyles']['projections']['#description'] = t('Select the EPSG code of the !link_proj for your map. 
+  $form['layerstyles']['projections']['#description'] = t('Select the EPSG code of the !link_proj for your map.
     The list next to each projection is the layers that support this projection.', array(
-    '!link_proj' => l('geographical projection', 'http://en.wikipedia.org/wiki/Map_projection'),
+    '!link_proj' => l(t('geographical projection'), 'http://en.wikipedia.org/wiki/Map_projection'),
   ));
   $form['layerstyles']['projections']['easy_projection'] = array(
     '#type' => 'radios',
     '#title' => t('Map Projection'),
     '#description' => t('The !link_proj of this map: all layers will either be requested or reprojected to this format.', array(
-      '!link_proj' => l('geographical projection', 'http://en.wikipedia.org/wiki/Map_projection'),
+      '!link_proj' => l(t('geographical projection'), 'http://en.wikipedia.org/wiki/Map_projection'),
     )),
     '#default_value' => $defaults['projection'],
     '#options' => $projections,
@@ -295,7 +294,7 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
       $form['layerstyles']['layer_styles'][$id] = array(
         '#type' => 'select',
         '#options' => array('-- '. t('Default style') .' --') + openlayers_ui_get_style_options(),
-        '#default_value' => !empty($defaults['layer_styles'][$id]) ? 
+        '#default_value' => !empty($defaults['layer_styles'][$id]) ?
           $defaults['layer_styles'][$id] : '',
       );
     }
@@ -303,19 +302,19 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   $form['layerstyles']['layers']['overlays'] = array(
     '#type' => 'checkboxes',
     '#options' => $overlay_options,
-    '#default_value' => !empty($defaults['layers']) ? 
+    '#default_value' => !empty($defaults['layers']) ?
       array_intersect_key($defaults['layers'], $overlay_options) : array(),
   );
   $form['layerstyles']['layer_activated'] = array(
     '#type' => 'checkboxes',
     '#options' => $overlay_options,
-    '#default_value' => !empty($defaults['layer_activated']) ? 
+    '#default_value' => !empty($defaults['layer_activated']) ?
       array_intersect_key($defaults['layer_activated'], $overlay_options) : array(),
   );
   $form['layerstyles']['layer_switcher'] = array(
     '#type' => 'checkboxes',
     '#options' => $overlay_options,
-    '#default_value' => !empty($defaults['layer_switcher']) ? 
+    '#default_value' => !empty($defaults['layer_switcher']) ?
       array_intersect_key($defaults['layer_switcher'], $overlay_options) : array(),
   );
 
@@ -326,7 +325,7 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#title' => t('Default style'),
     '#description' => t('Default style for features in a vector.'),
     '#options' => openlayers_ui_get_style_options(),
-    '#default_value' => !empty($defaults['styles']['default']) ? 
+    '#default_value' => !empty($defaults['styles']['default']) ?
       $defaults['styles']['default'] : NULL,
   );
   $form['layerstyles']['styles']['select'] = array(
@@ -334,16 +333,16 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#title' => t('Select style'),
     '#description' => t('Style for features in a vector that are selected.'),
     '#options' => openlayers_ui_get_style_options(),
-    '#default_value' => !empty($defaults['styles']['select']) ? 
+    '#default_value' => !empty($defaults['styles']['select']) ?
       $defaults['styles']['select'] : NULL,
   );
   $form['layerstyles']['styles']['temporary'] = array(
     '#type' => 'select',
     '#title' => t('Temporary Style'),
-    '#description' => t('Default style for any temporary features in a vector. 
+    '#description' => t('Default style for any temporary features in a vector.
       This will also be used for rollovers for things like Tooltips.'),
     '#options' => openlayers_ui_get_style_options(),
-    '#default_value' => !empty($defaults['styles']['temporary']) ? 
+    '#default_value' => !empty($defaults['styles']['temporary']) ?
       $defaults['styles']['temporary'] : NULL,
   );
 
@@ -431,7 +430,7 @@ function openlayers_ui_presets_form_validate($form, &$form_state) {
   // Check if any errors found
   if (is_array($map['errors']) && count($map['errors']) > 0) {
     foreach ($map['errors'] as $error) {
-      form_set_error('openlayers', 
+      form_set_error('openlayers',
         t('OpenLayers Map Rendering Error: !error', array('!error' => $error)));
       $found_error = TRUE;
     }
@@ -554,15 +553,15 @@ function openlayers_ui_presets_form_process($values = array()) {
         $processed['behaviors'] = array();
         foreach ($values['behaviors'] as $behavior => $settings) {
           if ($settings['enabled']) {
-            $processed['behaviors'][$behavior] = isset($settings['options']) ? 
-              $settings['options'] : 
+            $processed['behaviors'][$behavior] = isset($settings['options']) ?
+              $settings['options'] :
               array();
           }
         }
         break;
 
       case 'projections':
-        $processed['projection'] = $values['projections']['easy_projection']; 
+        $processed['projection'] = $values['projections']['easy_projection'];
         $processed['displayProjection'] = $values['projections']['displayProjection'];
         break;
 
@@ -595,19 +594,18 @@ function openlayers_ui_presets_form_process($values = array()) {
   return $processed;
 }
 
-
 /**
  * Get behavior options.
  */
 function openlayers_ui_get_behavior_options($type, $defaults) {
   $form = array();
-  
+
   // Get and go through behaviors
   foreach (openlayers_behaviors() as $key => $plugin) {
     // Get behavior class
     $class = ctools_plugin_get_class($plugin, 'behavior');
     // Make UI visibility true by default
-    $plugin['ui_visibility'] = isset($plugin['ui_visibility']) ? 
+    $plugin['ui_visibility'] = isset($plugin['ui_visibility']) ?
       $plugin['ui_visibility'] : TRUE;
 
     // Check for the class and visibility
@@ -626,7 +624,7 @@ function openlayers_ui_get_behavior_options($type, $defaults) {
       );
 
       // Get options and add form elements
-      $options = isset($defaults['behaviors'][$key]) ? 
+      $options = isset($defaults['behaviors'][$key]) ?
         $defaults['behaviors'][$key] : array();
       $behavior = new $class($options, $defaults);
       $form[$key]['options'] = $behavior->options_form($options);

@@ -18,7 +18,7 @@ function theme_openlayers_map($map = array(), $preset_name = '') {
   $container_height = $map['height'];
   $map['width'] = (strpos($map['width'], '%') > 0) ? '100%' : $map['width'];
   $map['height'] = (strpos($map['height'], '%') > 0) ? '100%' : $map['height'];
-  
+
   // Create output
   $output = '
     <div style="width: ' . $container_width . '; height: ' . $container_height . ';">

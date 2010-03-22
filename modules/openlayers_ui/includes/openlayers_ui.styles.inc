@@ -3,7 +3,7 @@
 
 /**
  * @file
- * This file holds the functions handling styles in the 
+ * This file holds the functions handling styles in the
  * Openlayers UI.
  *
  * @ingroup openlayers
@@ -38,49 +38,49 @@ function openlayers_ui_styles_form(&$form_state, $style = NULL, $edit = FALSE) {
   );
 
   $form['data'] = array('#type' => 'fieldset', '#tree' => TRUE);
-  
+
   $form['data']['externalGraphic'] = array(
     '#title' => 'externalGraphic',
     '#type' => 'textfield',
     '#description' => t('The URL of an icon for points in a layer.'),
-    '#default_value' => isset($style->data['externalGraphic']) ? 
+    '#default_value' => isset($style->data['externalGraphic']) ?
       $style->data['externalGraphic'] : '',
   );
   $form['data']['pointRadius'] = array(
     '#title' => 'pointRadius',
     '#type' => 'textfield',
-    '#description' => t('The radius of a vector point or the size of 
-      an icon. Note that, when using icons, this value should be half the 
+    '#description' => t('The radius of a vector point or the size of
+      an icon. Note that, when using icons, this value should be half the
       width of the icon image.'),
-    '#default_value' => isset($style->data['pointRadius']) ? 
+    '#default_value' => isset($style->data['pointRadius']) ?
       $style->data['pointRadius'] : 5,
   );
   $form['data']['fillColor'] = array(
     '#title' => 'fillColor',
     '#type' => 'textfield',
-    '#default_value' => isset($style->data['fillColor']) ? 
+    '#default_value' => isset($style->data['fillColor']) ?
       $style->data['fillColor'] : "#FFFFFF",
   );
   $form['data']['strokeColor'] = array(
     '#title' => 'strokeColor',
     '#type' => 'textfield',
-    '#description' => t('The color of the border around a vector 
+    '#description' => t('The color of the border around a vector
       point'),
-    '#default_value' => isset($style->data['strokeColor']) ? 
+    '#default_value' => isset($style->data['strokeColor']) ?
       $style->data['strokeColor'] : "#FFFFFF",
   );
   $form['data']['strokeWidth'] = array(
     '#title' => 'strokeWidth',
     '#type' => 'textfield',
-    '#description' => t('The width of the border around a vector 
+    '#description' => t('The width of the border around a vector
       point'),
-    '#default_value' => isset($style->data['strokeWidth']) ? 
+    '#default_value' => isset($style->data['strokeWidth']) ?
       $style->data['strokeWidth'] : 5,
   );
   $form['data']['fillOpacity'] = array(
     '#title' => 'fillOpacity',
     '#type' => 'textfield',
-    '#default_value' => isset($style->data['fillOpacity']) ? 
+    '#default_value' => isset($style->data['fillOpacity']) ?
       $style->data['fillOpacity'] : 0.5,
   );
 
@@ -122,13 +122,13 @@ function openlayers_ui_styles_form_submit(&$form, &$form_state) {
 //     '#title' => t('Style name'),
 //     '#description' => t('Enter the name to use for this style if it is different from the source style. Leave blank to use the name of the style.'),
 //   );
-// 
+//
 //   $form['style'] = array(
 //     '#type' => 'textarea',
 //     '#title' => t('Paste style code here'),
 //     '#required' => TRUE,
 //   );
-// 
+//
 //   $form['submit'] = array(
 //     '#type' => 'submit',
 //     '#value' => t('Import'),
@@ -137,7 +137,7 @@ function openlayers_ui_styles_form_submit(&$form, &$form_state) {
 //   );
 //   return $form;
 // }
-// 
+//
 // /**
 //  * Validate handler to import a preset
 //  */
@@ -146,27 +146,27 @@ function openlayers_ui_styles_form_submit(&$form, &$form_state) {
 //   ob_start();
 //   eval($form_state['values']['style']);
 //   ob_end_clean();
-// 
+//
 //   if (!is_object($style)) {
 //     return form_error($form['style'], t('Unable to interpret preset code.'));
 //   }
-// 
+//
 //   // View name must be alphanumeric or underscores, no other punctuation.
 //   if (!empty($form_state['values']['name']) && preg_match('/[^a-zA-Z0-9_]/', $form_state['values']['name'])) {
 //     form_error($form['name'], t('Preset name must be alphanumeric or underscores only.'));
 //   }
-// 
+//
 //   if ($form_state['values']['name']) {
 //     $preset->name = $form_state['values']['name'];
 //   }
-// 
+//
 //   /*
 //    * TODO: replace with style code
 //   if ($test && $test->type != t('Default')) {
 //     form_set_error('', t('A preset by that name already exists; please choose a different name'));
 //   }
 //   */
-// 
+//
 //   // TODO: The import process should test layer existence
 //   $form_state['style'] = &$style;
 //   $a = array();

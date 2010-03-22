@@ -180,11 +180,11 @@ function openlayers_schema() {
 }
 
 /**
- * Implmentation of hook_update_N().
+ * Implementation of hook_update_N().
  */
 function openlayers_update_6200(&$sandbox) {
   $ret = array();
-  
+
   // Because we already have two different versions of this
   // module that are not meant to be compatible, we have to
   // check what version we are coming from and do the correct
@@ -195,8 +195,8 @@ function openlayers_update_6200(&$sandbox) {
   if (!empty($openlayers_version) && $openlayers_version >= 6100 && $openlayers_version < 6200) {
     // 1.x to 2.x upgrade.
     $ret = _openlayers_upgrade_1xto2x();
-  } 
-  
+  }
+
   return $ret;
 }
 
@@ -208,13 +208,13 @@ function openlayers_update_6200(&$sandbox) {
  */
 function _openlayers_upgrade_1xto2x() {
   $ret = array();
-  
+
   // Add simple note
   $ret[] = array(
     'success' => TRUE,
     'query' => 'Upgrading OpenLayers from 1.x to 2.x',
   );
-  
+
   // Update preset table
   db_drop_field($ret, 'openlayers_map_presets', 'preset_id');
   db_change_field($ret, 'openlayers_map_presets', 'preset_name', 'name',
@@ -240,9 +240,9 @@ function _openlayers_upgrade_1xto2x() {
       db_create_table($ret, $name, $table);
     }
   }
-  
+
   // The only thing we can really do in the upgrade process
-  // is to attempt to automate the conversion of the 
+  // is to attempt to automate the conversion of the
   // changes in the map preset/array to the new version,
   // and we can only do this for presets in the database,
   // so get all the presets currently in the database.
@@ -255,13 +255,13 @@ function _openlayers_upgrade_1xto2x() {
     _openlayers_upgrade_1xto2x_convert_layers($new_map, $ret);
     _openlayers_upgrade_1xto2x_convert_behaviors($new_map, $ret);
     _openlayers_upgrade_1xto2x_convert_styles($new_map, $ret);
-    
+
     // Save new Map back into the database.
     $result = db_query("UPDATE {openlayers_map_presets} SET data='%s' WHERE name='%s'", serialize($new_map), $row['name']);
-    
+
     // Debug map array
     // $ret[] = array('success' => TRUE, 'query' => '<pre>' . var_export($new_map, TRUE) . '</pre>');
-    
+
     // Add some output to user.
     $ret[] = array(
       'success' => $result,
@@ -269,12 +269,12 @@ function _openlayers_upgrade_1xto2x() {
       'rows' => 1,
     );
   }
-  
+
   return $ret;
 }
 
 /**
- * Converting general map propoerties for the 
+ * Converting general map propoerties for the
  * upgrade from 1.x to 2.x
  *
  * @param $map
@@ -292,7 +292,7 @@ function _openlayers_upgrade_1xto2x_convert_general(&$map = array(), &$ret = arr
       ),
     );
   }
-  
+
   // Options
   if (isset($map['options']) && is_array($map['options'])) {
     // maxExtent
@@ -309,7 +309,7 @@ function _openlayers_upgrade_1xto2x_convert_general(&$map = array(), &$ret = arr
 }
 
 /**
- * Converting layer arrays for the 
+ * Converting layer arrays for the
  * upgrade from 1.x to 2.x
  *
  * @param $map
@@ -344,7 +344,7 @@ function _openlayers_upgrade_1xto2x_convert_layers(&$map = array(), &$ret = arra
     'openlayers_layers_cloudmade' => '',
     'openlayers_default_wms' => 'wms_default',
   );
-  
+
   // Array to associate layer types to 2.x
   $layer_type_convert = array(
     'WMS' => 'openlayers_layer_type_wms',
@@ -356,7 +356,7 @@ function _openlayers_upgrade_1xto2x_convert_layers(&$map = array(), &$ret = arra
     'Yahoo' => 'openlayers_layer_type_yahoo',
     'Cloudmade' => 'openlayers_layer_type_cloudmade',
   );
-  
+
   // Check that there are layers
   if (isset($map['layers']) && is_array($map['layers'])) {
     // Go through layers
@@ -368,16 +368,16 @@ function _openlayers_upgrade_1xto2x_convert_layers(&$map = array(), &$ret = arra
           $map['layers'][$layer_convert[$layer]] = $layer_convert[$layer];
         }
         // What to do with named layers that dont translate ??
-        
+
       }
       elseif (is_array($layer)) {
         // Save new layer in DB, then map to preset
-        
-        
+
+
       }
     }
   }
-  
+
   // Check default layer
   if (!empty($map['default_layer']) && is_string($map['default_layer']) && !empty($layer_convert[$map['default_layer']])) {
     $map['default_layer'] = $layer_convert[$map['default_layer']];
@@ -389,7 +389,7 @@ function _openlayers_upgrade_1xto2x_convert_layers(&$map = array(), &$ret = arra
 }
 
 /**
- * Converting behaviors for the 
+ * Converting behaviors for the
  * upgrade from 1.x to 2.x
  *
  * @param $map
@@ -411,19 +411,19 @@ function _openlayers_upgrade_1xto2x_convert_behaviors(&$map = array(), &$ret = a
     'ZoomBox' => 'openlayers_behavior_zoombox',
     'ZoomToMaxExtent' => 'openlayers_behavior_zoomtomaxextent',
   );
-  
+
   // Convert controls
   if (isset($map['controls']) && is_array($map['controls'])) {
     foreach ($map['controls'] as $control => $enabled) {
       if ($enabled && !empty($control_convert[$control])) {
         $map['behaviors'][$control_convert[$control]] = array();
       }
-      
+
       // Get rid of controls array
       unset($map['controls']);
     }
   }
-  
+
   // Go through behaviors
   if (isset($map['behaviors']) && is_array($map['behaviors'])) {
     foreach ($map['behaviors'] as $id => $behavior) {
@@ -432,7 +432,7 @@ function _openlayers_upgrade_1xto2x_convert_behaviors(&$map = array(), &$ret = a
         $map['behaviors']['openlayers_behavior_fullscreen'] = array();
         unset($map['behaviors'][$id]);
       }
-      
+
       // Zoom to Layer
       if ($behavior['type'] == 'openlayers_behaviors_zoom_to_layer' && !empty($behavior['layer'])) {
         $map['behaviors']['openlayers_behaviors_zoomtolayer'] = array(
@@ -440,20 +440,20 @@ function _openlayers_upgrade_1xto2x_convert_behaviors(&$map = array(), &$ret = a
         );
         unset($map['beahviors'][$id]);
       }
-      
+
       // Cluster
       // Zoom to Feature
       // Tooltip
       // Popup
       // Draw Features
       // Declutter
-    
+
     }
   }
 }
 
 /**
- * Converting styles for the 
+ * Converting styles for the
  * upgrade from 1.x to 2.x
  *
  * @param $map
@@ -466,7 +466,7 @@ function _openlayers_upgrade_1xto2x_convert_styles(&$map = array(), &$ret = arra
   if (isset($map['styles']) && is_array($map['style'])) {
     foreach ($map['styles'] as $id => $style) {
       // Named styles are the same
-  
+
       // Convert style arrays and store in DB
       if (is_array($style)) {
         // Create new object

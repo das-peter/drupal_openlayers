@@ -106,7 +106,7 @@ function _openlayers_openlayers_layers() {
     'events' => array(),
   );
   $layers[$layer->name] = $layer;
-  
+
   $layer = new stdClass();
   $layer->api_version = 1;
   $layer->name = 'virtualearth_street';
@@ -148,7 +148,7 @@ function _openlayers_openlayers_layers() {
     'events' => array(),
   );
   $layers[$layer->name] = $layer;
-  
+
   // OpenStreetMap Mapnik
   $layer = new stdClass();
   $layer->api_version = 1;
@@ -157,7 +157,7 @@ function _openlayers_openlayers_layers() {
   $layer->description = t('The main OpenStreetMap map');
   $layer->data = array(
     'baselayer' => TRUE,
-    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> 2010 
+    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> 2010
       <a href="@openstreetmap">OpenStreetMap.org</a> contributors',
       array(
         '@openstreetmap' => 'http://www.openstreetmap.org/',
@@ -169,7 +169,7 @@ function _openlayers_openlayers_layers() {
     'url' => 'http://tile.openstreetmap.org/${z}/${x}/${y}.png',
   );
   $layers[$layer->name] = $layer;
-  
+
   // OpenStreetMap Tiles @ Home
   $layer = new stdClass();
   $layer->api_version = 1;
@@ -178,7 +178,7 @@ function _openlayers_openlayers_layers() {
   $layer->description = t('Alternative, community-rendered OpenStreetMap');
   $layer->data = array(
     'baselayer' => TRUE,
-    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> 2010 
+    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> 2010
       <a href="@openstreetmap">OpenStreetMap.org</a> contributors',
       array(
         '@openstreetmap' => 'http://www.openstreetmap.org/',
@@ -190,7 +190,7 @@ function _openlayers_openlayers_layers() {
     'url' => 'http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png',
   );
   $layers[$layer->name] = $layer;
-  
+
   // OpenStreetMap Cycling Map
   $layer = new stdClass();
   $layer->api_version = 1;
@@ -199,7 +199,7 @@ function _openlayers_openlayers_layers() {
   $layer->description = t('OpenStreetMap with highlighted bike lanes');
   $layer->data = array(
     'baselayer' => TRUE,
-    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> 2010 
+    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> 2010
       <a href="@openstreetmap">OpenStreetMap.org</a> contributors',
       array(
         '@openstreetmap' => 'http://www.openstreetmap.org/',
@@ -211,7 +211,7 @@ function _openlayers_openlayers_layers() {
     'url' => 'http://andy.sandbox.cloudmade.com/tiles/cycle/${z}/${x}/${y}.png',
   );
   $layers[$layer->name] = $layer;
-  
+
   // OpenStreetMap 426 hybrid overlay
   $layer = new stdClass();
   $layer->api_version = 1;
@@ -220,7 +220,7 @@ function _openlayers_openlayers_layers() {
   $layer->description = t('Semi-transparent hybrid overlay. Projected into WSG84 for use on non spherical-mercator maps.');
   $layer->data = array(
     'baselayer' => FALSE,
-    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> 2010 
+    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> 2010
       <a href="@openstreetmap">OpenStreetMap.org</a> contributors',
       array(
         '@openstreetmap' => 'http://www.openstreetmap.org/',
@@ -259,7 +259,7 @@ function _openlayers_openlayers_layers() {
     'events' => array(),
   );
   $layers[$layer->name] = $layer;
-  
+
 
   return $layers;
 }

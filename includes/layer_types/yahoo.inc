@@ -36,21 +36,21 @@ class openlayers_layer_type_yahoo extends openlayers_layer_type {
   function options_form() {
     $warning = (!variable_get('openlayers_layers_yahoo_api', FALSE)) ?
         array(
-          '#value' => t('WARNING: Your Yahoo API key is not set. 
-          Map including Yahoo layers 
+          '#value' => t('WARNING: Your Yahoo API key is not set.
+          Map including Yahoo layers
           will break until it is set correctly.')
         )
       : NULL;
 
     $yahoo_layer_types = array(
-      'hybrid' => 'Hybrid', 
+      'hybrid' => 'Hybrid',
       'street' => 'Street',
       'satellite' => 'Satellite');
     return array(
       'type' => array(
         '#title' => t('Yahoo Layer Type'),
         '#type' => 'select',
-        '#default_value' => isset($this->data['type']) ? 
+        '#default_value' => isset($this->data['type']) ?
           $this->data['type'] : 'normal',
         '#options' => $yahoo_layer_types
       ),

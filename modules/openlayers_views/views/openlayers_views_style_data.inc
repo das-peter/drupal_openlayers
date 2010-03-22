@@ -43,7 +43,7 @@ class openlayers_views_style_data extends views_plugin_style {
         '#prefix' => '<div class="error form-item description">',
         '#suffix' => '</div>',
       );
-      return; 
+      return;
     }
 
     // Go through fields
@@ -70,7 +70,7 @@ class openlayers_views_style_data extends views_plugin_style {
       '#title' => t('Map Data Sources'),
       '#description' => t('Choose which sources of data that the map will provide features for.'),
       '#options' => $data_source_options,
-      '#default_value' => $this->options['data_source']['value'], 
+      '#default_value' => $this->options['data_source']['value'],
     );
     // Other Lat and Lon data sources
     if (count($fields > 0)) {
@@ -157,7 +157,7 @@ class openlayers_views_style_data extends views_plugin_style {
         '#options' => array_merge(array('' => ''), $fields),
         '#default_value' => $this->options['data_source']['description_field'],
     );
-    
+
     // Attributes and variable styling description
     $form['attributes'] = array(
       '#type' => 'fieldset',
@@ -195,21 +195,21 @@ class openlayers_views_style_data extends views_plugin_style {
   /**
    * Map features
    */
-  function map_features($records = array()) {      
+  function map_features($records = array()) {
     $features = array();
     $data_source = $this->options['data_source'];
 
     // Get list of fields in this view
     $handlers = $this->display->handler->get_handlers('field');
     $fields = array();
-    foreach ($handlers as $field_id => $handler) {      
+    foreach ($handlers as $field_id => $handler) {
       $fields[$field_id] = $handler->definition;
       $fields[$field_id]['field_alias'] = $handler->field_alias;
     }
-    
+
     // Build feature. We create one feature per field per row.
-    
-    // Separate mapping for grouped views.  Currently only adds name and count. 
+
+    // Separate mapping for grouped views.  Currently only adds name and count.
     if (!empty($this->options['grouping'])) {
       $this->view->row_index = 0;
       foreach ($records as $id => $record) {
@@ -243,7 +243,7 @@ class openlayers_views_style_data extends views_plugin_style {
           $left = current($record)->$left_field;
           $bottom = current($record)->$bottom_field;
           if (!empty($lat) && !empty($lon)) {
-            $feature['wkt'] = 'MULTIPOLYGON(' . 
+            $feature['wkt'] = 'MULTIPOLYGON(' .
               $left . ' ' . $top . ', ' .
               $right . ' ' . $top . ', ' .
               $right . ' ' . $bottom . ', ' .
@@ -261,7 +261,7 @@ class openlayers_views_style_data extends views_plugin_style {
           if ($data_source['name_field']) {
             $name_field = $fields[$data_source['name_field']]['field_alias'];
             $item .= "<h2 class='point-title'>". $rendered_record[$name_field] ."</h2>";
-          } 
+          }
           if ($data_source['description_field']) {
             $description_field = $fields[$data_source['description_field']]['field_alias'];
             $item .= "<div class='point-content'>". $rendered_record[$description_field] ."</div>";
@@ -273,7 +273,7 @@ class openlayers_views_style_data extends views_plugin_style {
 
         $feature['attributes']['description'] = $grouped_description;
         $feature['attributes']['count'] = count($record);
-        
+
         // Only add features with WKT data
         if (!empty($feature['wkt'])) {
           $features[] = $feature;
@@ -283,8 +283,8 @@ class openlayers_views_style_data extends views_plugin_style {
       unset($this->view->row_index);
       return $features;
     }
-    
-    // Separate mapping for non-grouped views. 
+
+    // Separate mapping for non-grouped views.
     else {
       $records = array_shift($records);
       foreach ($records as $id => $record) {
@@ -293,7 +293,7 @@ class openlayers_views_style_data extends views_plugin_style {
         foreach ($handlers as $hid => $handler) {
           $rendered_record[$handler->field_alias] = $handler->advanced_render($record);
         }
-                
+
         if ($data_source['value']['other_latlon']) {
           $lat_field = $fields[$data_source['other_lat']]['field_alias'];
           $lon_field = $fields[$data_source['other_lon']]['field_alias'];
@@ -322,7 +322,7 @@ class openlayers_views_style_data extends views_plugin_style {
           $left = $record->$left_field;
           $bottom = $record->$bottom_field;
           if (!empty($top) && !empty($left)) {
-            $feature['wkt'] = 'MULTIPOLYGON(' . 
+            $feature['wkt'] = 'MULTIPOLYGON(' .
               $left . ' ' . $top . ', ' .
               $right . ' ' . $top . ', ' .
               $right . ' ' . $bottom . ', ' .
@@ -338,7 +338,7 @@ class openlayers_views_style_data extends views_plugin_style {
         if ($data_source['name_field']) {
           $name_field = $fields[$data_source['name_field']]['field_alias'];
           $feature['attributes']['name'] = $rendered_record[$name_field];
-        } 
+        }
         if ($data_source['description_field']) {
           $description_field = $fields[$data_source['description_field']]['field_alias'];
           $feature['attributes']['description'] = $record->$description_field;
@@ -361,7 +361,7 @@ class openlayers_views_style_data extends views_plugin_style {
         }
       }
       return $features;
-    }  
+    }
   }
 
   /**

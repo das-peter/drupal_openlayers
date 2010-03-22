@@ -38,7 +38,7 @@ class openlayers_layer_type_google extends openlayers_layer_type {
    */
   function options_form() {
     $google_layer_types = array(
-      'hybrid' => 'Hybrid', 
+      'hybrid' => 'Hybrid',
       'normal' => 'Normal',
       'satellite' => 'Satellite');
     return array(
@@ -55,9 +55,9 @@ class openlayers_layer_type_google extends openlayers_layer_type {
       'numZoomLevels' => array(
         '#type' => 'textfield',
         '#title' => t('Number of Zoom Levels'),
-        '#description' => t('Satellite and hybrid maps are occasionally 
+        '#description' => t('Satellite and hybrid maps are occasionally
           unavailable at higher zoom levels.'),
-        '#default_value' => isset($this->data['numZoomLevels']) ? 
+        '#default_value' => isset($this->data['numZoomLevels']) ?
           $this->data['numZoomLevels'] : '15'
       ),
     );

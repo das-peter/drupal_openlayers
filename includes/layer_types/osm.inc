@@ -41,7 +41,7 @@ class openlayers_layer_type_osm extends openlayers_layer_type {
       'base_url' => array(
         '#type' => 'textfield',
         '#title' => t('Base URL'),
-        '#default_value' => isset($this->data['base_url']) ? 
+        '#default_value' => isset($this->data['base_url']) ?
           $this->data['base_url'] : ''
       ),
       'layer_type' => array(
@@ -55,7 +55,7 @@ class openlayers_layer_type_osm extends openlayers_layer_type {
           array_map('strval', openlayers_get_resolutions('900913')),
           range(0, 18)),
         '#title' => t('Zoom Level Range'),
-        '#default_value' => isset($this->data['resolutions']) ? 
+        '#default_value' => isset($this->data['resolutions']) ?
           $this->data['resolutions'] : array_map('strval', openlayers_get_resolutions('900913'))
       ),
     );

@@ -2,6 +2,11 @@
 // $Id$
 
 /**
+ * @file
+ * File for feeds module integration
+ */
+
+/**
  * Private function for hook of same name.
  *
  * Enable mapping to openlayer_wkt fields for feeds

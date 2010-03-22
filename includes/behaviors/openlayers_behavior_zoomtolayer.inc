@@ -29,7 +29,7 @@ class openlayers_behavior_zoomtolayer extends openlayers_behavior {
       ),
       'point_zoom_level' => array(
         '#type' => 'textfield',
-        '#default_value' => (isset($defaults['point_zoom_level'])) ? 
+        '#default_value' => (isset($defaults['point_zoom_level'])) ?
           $defaults['point_zoom_level'] : 5,
         '#size' => 5,
         '#title' => t('Point Zoom Level')

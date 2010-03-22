@@ -55,7 +55,7 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
           '#title' => t('Extract Styles'),
           '#description' => t('Extract styles from KML.'),
           '#default_value' => isset(
-            $this->data['formatOptions']['extractStyles']) ? 
+            $this->data['formatOptions']['extractStyles']) ?
             $this->data['formatOptions']['extractStyles'] : TRUE,
         ),
         'extractAttributes' => array(
@@ -63,7 +63,7 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
           '#title' => t('Extract Attributes'),
           '#description' => t('Extract attributes from KML.'),
           '#default_value' => isset(
-            $this->data['formatOptions']['extractAttributes']) ? 
+            $this->data['formatOptions']['extractAttributes']) ?
             $this->data['formatOptions']['extractAttributes'] : TRUE,
         ),
       ),

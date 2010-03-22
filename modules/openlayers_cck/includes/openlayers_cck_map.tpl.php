@@ -1,3 +1,11 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Template file for cck map
+ */
+?>
 <div id="openlayers-cck-map-container-<?php print $map['id'] ?>" class="form-item openlayers-cck-map-container">
 <label for="openlayers-cck-map-<?php $map['id'] ?>"><?php print $title ?>:</label>
   <?php print $map['themed'] ?>

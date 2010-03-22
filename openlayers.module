@@ -2,7 +2,7 @@
 // $Id$
 
 /**
- * @defgroup openlayers OpenLayers provides an API and 
+ * @defgroup openlayers OpenLayers provides an API and
  * Modules to interface with OpenLayers
  */
 
@@ -17,7 +17,7 @@
  */
 
 /**
- * Implementation of hook_help
+ * Implementation of hook_help().
  */
 function openlayers_help($path, $arg) {
   switch ($path) {
@@ -250,7 +250,7 @@ function openlayers_layer_load($name, $reset = FALSE) {
     }
   }
   else {
-    watchdog('openlayers', 'Layer %layer not found.', 
+    watchdog('openlayers', 'Layer %layer not found.',
       array('%layer' => $layer), WATCHDOG_ERROR);
     return FALSE;
   }
@@ -300,7 +300,7 @@ function openlayers_layer_sanity_check($layer, $projection = FALSE, $strict = FA
     watchdog('openlayers', 'Layer %name does not have a projection set.',
       array('%name' => $layer->name));
     drupal_set_message(
-      t('OpenLayers layers failed the sanity check. See the 
+      t('OpenLayers layers failed the sanity check. See the
       <a href="@drupallog">Drupal log</a> for details',
       array('@drupallog' => url('admin/reports/dblog')))
     );
@@ -311,7 +311,7 @@ function openlayers_layer_sanity_check($layer, $projection = FALSE, $strict = FA
     watchdog('openlayers', 'Layer %name does not have its layer_type set.',
       array('%name' => $layer->name));
     drupal_set_message(
-      t('OpenLayers layers failed the sanity check. See the 
+      t('OpenLayers layers failed the sanity check. See the
       <a href="@drupallog">Drupal log</a> for details',
       array('@drupallog' => url('admin/reports/dblog')))
     );
@@ -319,8 +319,8 @@ function openlayers_layer_sanity_check($layer, $projection = FALSE, $strict = FA
   }
 
   if ($projection && (!in_array($projection, $layer->data['projection']))) {
-    watchdog('openlayers', 
-      'The layer %layer_name cannot work with the map projection: EPSG: %map_proj', 
+    watchdog('openlayers',
+      'The layer %layer_name cannot work with the map projection: EPSG: %map_proj',
       array(
         '%layer_name' => $layer->name,
         '%map_proj' => $map['projection'],
@@ -331,7 +331,6 @@ function openlayers_layer_sanity_check($layer, $projection = FALSE, $strict = FA
 
   return TRUE;
 }
-
 
 /**
  * Save layer.
@@ -345,8 +344,8 @@ function openlayers_layer_sanity_check($layer, $projection = FALSE, $strict = FA
 function openlayers_layer_save($layer) {
   if (!empty($layer->name)) {
     $exists = db_result(db_query("SELECT name FROM {openlayers_layers} WHERE name = '%s'", $layer->name));
-    return $exists ? 
-      drupal_write_record('openlayers_layers', $layer, 'name') : 
+    return $exists ?
+      drupal_write_record('openlayers_layers', $layer, 'name') :
       drupal_write_record('openlayers_layers', $layer);
   }
   return FALSE;
@@ -426,8 +425,8 @@ function openlayers_style_load($name) {
 function openlayers_style_save($style) {
   if (!empty($style->name)) {
     $exists = db_result(db_query("SELECT name FROM {openlayers_styles} WHERE name = '%s'", $style->name));
-    return $exists ? 
-      drupal_write_record('openlayers_styles', $style, 'name') : 
+    return $exists ?
+      drupal_write_record('openlayers_styles', $style, 'name') :
       drupal_write_record('openlayers_styles', $style);
   }
   return FALSE;
@@ -480,8 +479,8 @@ function openlayers_preset_load($name = '', $reset = FALSE) {
 function openlayers_preset_save($preset) {
   if (!empty($preset->name)) {
     $exists = db_result(db_query("SELECT name FROM {openlayers_map_presets} WHERE name = '%s'", $preset->name));
-    return $exists ? 
-      drupal_write_record('openlayers_map_presets', $preset, 'name') : 
+    return $exists ?
+      drupal_write_record('openlayers_map_presets', $preset, 'name') :
       drupal_write_record('openlayers_map_presets', $preset);
   }
   return FALSE;
@@ -518,8 +517,8 @@ function openlayers_preset_options($reset = FALSE) {
  *   FALSE if passed. Array of descriptive errors if fail
  */
 function openlayers_error_check_map($map, $log_errors = TRUE) {
-  // @TODO: Instead of manually specifying projections, 
-  // we should do a lookup on the projections in a big table to 
+  // @TODO: Instead of manually specifying projections,
+  // we should do a lookup on the projections in a big table to
   // get variables that it should be checked against.
   // @TODO: For next release, make hook
   $errors = array();
@@ -564,10 +563,10 @@ function openlayers_error_check_map($map, $log_errors = TRUE) {
 
 /**
  * Returns standard world-max-extents for common projections.
- * Layers implementing other projections and subsets of the 
+ * Layers implementing other projections and subsets of the
  * world should define their maxExtent in the layer array
  *
- * @param $projection 
+ * @param $projection
  *   Currently supports 900913, 4326
  * @return array of maxExtent in OpenLayers toArray() format
  */
@@ -581,8 +580,8 @@ function openlayers_get_extent($projection) {
 }
 
 /**
- * Returns a default set of resolutions for standard 
- * TMS, WMS, etc servers serving up common projections. 
+ * Returns a default set of resolutions for standard
+ * TMS, WMS, etc servers serving up common projections.
  * Layers supporting less common projections and resolutions
  * can easily define custom resolutions arrays
  *
@@ -719,10 +718,10 @@ class openlayers_layer_type {
   function save() {
     if (!empty($this->name)) {
       $exists = db_result(db_query("SELECT name FROM {openlayers_layers} WHERE name = '%s'", $this->name));
-      // If this layer exists, specify that 'name' is 
+      // If this layer exists, specify that 'name' is
       // the primary key for the layer which will be updated
-      return $exists ? 
-        drupal_write_record('openlayers_layers', $this->to_record(), 'name') : 
+      return $exists ?
+        drupal_write_record('openlayers_layers', $this->to_record(), 'name') :
         drupal_write_record('openlayers_layers', $this->to_record());
     }
   }

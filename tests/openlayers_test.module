@@ -100,7 +100,7 @@ function openlayers_test_openlayers_presets() {
     )
   );
   $items['behaviors_test'] = $behaviors_test;
-  
+
   /*
   // Map with popups
   $popup_test = new stdClass();
@@ -146,10 +146,10 @@ function openlayers_test_openlayers_presets() {
     );
   }
   $popup_test->data['layers']['style_vector']['features'] = $features;
-  
+
   $items['popup_test'] = $popup_test;
   */
-  
+
   $openlayers_map_presets_cck_views = new stdClass;
   $openlayers_map_presets_cck_views->disabled = FALSE; /* Edit this to true to make a default openlayers_presets disabled initially */
   $openlayers_map_presets_cck_views->api_version = 1;
@@ -201,7 +201,7 @@ function openlayers_test_openlayers_presets() {
     ),
     'options' => NULL,
   );
-  
+
   // We only want to provide the Views/CCK preset if the
   // modules are installed and the view is provide
   if (module_exists('content') && module_exists('views') && module_exists('content_copy')) {
@@ -210,7 +210,7 @@ function openlayers_test_openlayers_presets() {
       $items['openlayers_test_preset_cck_views'] = $openlayers_map_presets_cck_views;
     }
   }
-  
+
   // Return presets
   return $items;
 }
@@ -414,7 +414,7 @@ function openlayers_test_views_default_views() {
       $handler = $view->new_display('openlayers', 'OpenLayers Test View OpenLayers Display', 'openlayers_1');
       $handler->override_option('row_plugin', '');
       $handler->override_option('displays', array());
-      
+
       // Return
       $views['openlayers_test_view'] = $view;
       return $views;

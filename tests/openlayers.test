@@ -76,7 +76,7 @@ class OpenLayersPresets extends DrupalWebTestCase {
     $this->assertResponse(200, t('User can reach preset list.'));
 
     // Ensure that the default test is listed
-    $this->assertText(t('Default Map'), 
+    $this->assertText(t('Default Map'),
       t('Assert that the default preset\'s title appears.'));
 
     // Presets
@@ -125,7 +125,7 @@ class OpenLayersStyles extends DrupalWebTestCase {
     );
 
     $this->drupalPost('admin/build/openlayers/styles/add', $new_style, t('Save'));
-    $this->assertText(t('Style saved.'), 
+    $this->assertText(t('Style saved.'),
       t('The style was successfully saved.'));
 
     $this->drupalGet('admin/build/openlayers/styles');
@@ -203,10 +203,10 @@ class OpenLayersLayers extends DrupalWebTestCase {
     foreach ($layer_inputs as $layer_type => $input_data) {
       $this->drupalGet('admin/build/openlayers/layers/add');
       $this->assertResponse(200, t('User can reach layer add page.'));
-      $this->drupalPost('admin/build/openlayers/layers/add/' . $layer_type, 
-        $input_data, 
+      $this->drupalPost('admin/build/openlayers/layers/add/' . $layer_type,
+        $input_data,
         t('Save'));
-      $this->assertText(t('Layer saved.'), 
+      $this->assertText(t('Layer saved.'),
         t('The layer was successfully saved.'));
 
       $this->drupalGet('admin/build/openlayers/layers');

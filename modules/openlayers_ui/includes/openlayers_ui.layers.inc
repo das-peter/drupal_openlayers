@@ -3,7 +3,7 @@
 
 /**
  * @file
- * This file holds the functions handling layers in the 
+ * This file holds the functions handling layers in the
  * Openlayers UI.
  *
  * @ingroup openlayers
@@ -51,9 +51,9 @@ function openlayers_ui_layers_form_submit(&$form, &$form_state) {
   if (isset($layer->data['resolutions'])) {
     // resolutions are stored as strings because floats are not handled
     // well by formapi
-    $layer->data['resolutions'] = 
+    $layer->data['resolutions'] =
       array_map("floatval", array_keys($layer->data['resolutions']));
-    rsort($layer->data['resolutions']); 
+    rsort($layer->data['resolutions']);
   }
 
   $success = $layer->save();
@@ -209,9 +209,9 @@ function openlayers_ui_layers_import_validate($form, &$form_state) {
   }
 
   // View name must be alphanumeric or underscores, no other punctuation.
-  if (!empty($form_state['values']['name']) && 
+  if (!empty($form_state['values']['name']) &&
     preg_match('/[^a-zA-Z0-9_]/', $form_state['values']['name'])) {
-      form_error($form['name'], 
+      form_error($form['name'],
         t('Layer name must be alphanumeric or underscores only.'));
   }
 
@@ -229,7 +229,7 @@ function openlayers_ui_layers_import_validate($form, &$form_state) {
   else {
     drupal_set_title(t('Add Layer'));
     $layer_object = new $layer->data['layer_type']($layer);
-    $output = drupal_get_form('openlayers_ui_layers_form', 
+    $output = drupal_get_form('openlayers_ui_layers_form',
       $layer_object);
     print theme('page', $output);
     exit;

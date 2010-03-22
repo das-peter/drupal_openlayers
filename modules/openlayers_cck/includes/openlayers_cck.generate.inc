@@ -2,8 +2,8 @@
 // $Id$
 
 /**
- * @file implementations of testing functions 
- * for openlayers_cck
+ * @file
+ * Implementations of content generate for openlayers_cck
  */
 
 /**
@@ -21,7 +21,7 @@ function _openlayers_cck_content_generate(&$node, $field) {
       $types[] = $type;
     }
   }
-  
+
   // Check multiple
   if ($field['multiple'] == 0) {
     // Only one
@@ -31,7 +31,7 @@ function _openlayers_cck_content_generate(&$node, $field) {
     // Unlimited
     $multiple_count = rand(3, 11);
   }
-  
+
   // Create WKT
   for ($i = 0; $i < $multiple_count; $i++) {
     $type = $types[array_rand($types)];
@@ -39,7 +39,7 @@ function _openlayers_cck_content_generate(&$node, $field) {
       case 'point':
         $value = 'POINT('. _openlayers_cck_generate_pair() . ')';
         break;
-        
+
       case 'path':
         // Make random number of points
         $line_array = array();
@@ -48,7 +48,7 @@ function _openlayers_cck_content_generate(&$node, $field) {
         }
         $value = 'LINESTRING(' . implode(',', $line_array) . ')';
         break;
-        
+
       case 'polygon':
         // Make random number of points
         $poly_array = array();

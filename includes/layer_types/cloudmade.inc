@@ -40,8 +40,8 @@ class openlayers_layer_type_cloudmade extends openlayers_layer_type {
     $warning = (!variable_get('openlayers_layers_cloudmade_js', FALSE) ||
       !variable_get('openlayers_layers_cloudmade_api', FALSE)) ?
         array(
-          '#value' => t('WARNING: Your CloudMade API key or 
-          Javascript location is not set. Map including CloudMade layers 
+          '#value' => t('WARNING: Your CloudMade API key or
+          Javascript location is not set. Map including CloudMade layers
           will break until they are set correctly.')
         )
       : NULL;

@@ -5,8 +5,6 @@
  * @file
  * OpenLayers Views Vector Layer Type
  */
- 
-
 class openlayers_layer_type_openlayers_views_vector extends openlayers_layer_type {
   /**
    * Provide initial values for options.
@@ -26,16 +24,20 @@ class openlayers_layer_type_openlayers_views_vector extends openlayers_layer_typ
     );
   }
 
-  /*
+  /**
    * Get features for this view
-   * @param $view_name the view name
-   * @param $display_name the view display name
-   * @return array of features
+   *
+   * @param $view_name
+   *   the view name
+   * @param $display_name
+   *   the view display name
+   * @return
+   *   array of features
    */
   function get_features($view_name, $display_name) {
     if ($view = views_get_view($view_name)) {
       $args = array();
-      // Retrieve args/filters from current view 
+      // Retrieve args/filters from current view
       // to pass on to our vector layer.
       $current_view = views_get_current_view();
       if (isset($current_view)) {
@@ -46,7 +48,7 @@ class openlayers_layer_type_openlayers_views_vector extends openlayers_layer_typ
       }
       $features = $view->execute_display($display_name, $args);
       $view->destroy();
-    } 
+    }
     return isset($features) ? $features : array();
   }
 
@@ -56,7 +58,7 @@ class openlayers_layer_type_openlayers_views_vector extends openlayers_layer_typ
   function render(&$map) {
     drupal_add_js(drupal_get_path('module', 'openlayers_views') .
       '/includes/layer_types/openlayers_views_vector.js');
-    //$processed[$layer_name]['features'] 
+    //$processed[$layer_name]['features']
     $features = $this->get_features($this->data['views']['view'],
       $this->data['views']['display']);
     $this->data['features'] = $features;
