@@ -8,7 +8,7 @@ compatible with alpha3.
 
 # OpenLayers Hooks
 
-[Ticket](http://drupal.org/node/723530#comment-2688276)
+[Ticket](http://drupal.org/node/723530)
 
 Upgrading:
 
@@ -16,3 +16,11 @@ Upgrading:
   instead of `openlayers_openlayers_layers_info`
 * Update hook definitions to implement `openlayers_openlayers_styles`
   instead of `openlayers_openlayers_styles_info`
+
+# Grouped OpenLayers Data Views
+
+[Ticket](http://drupal.org/node/736576)
+
+* Update CSS for h2.point-title to h2.openlayers-views-group-feature-name
+* Update CSS for div.point-content to 
+  div.openlayers-views-group-feature-description
