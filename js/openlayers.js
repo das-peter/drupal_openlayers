@@ -159,6 +159,9 @@ Drupal.openlayers = {
     for (var name in map.layers) {
       var layer;      
       var options = map.layers[name];
+      
+      // Add reference to our layer ID
+      options.drupalID = name;
       // Ensure that the layer handler is available
       if (options.layer_handler !== undefined && Drupal.openlayers.layer[options.layer_handler] !== undefined) {
         // Create new layer
@@ -174,14 +177,18 @@ Drupal.openlayers = {
           // TODO: move into layer specific settings
           layer.wrapDateLine = true;
         }
+
         openlayers.addLayer(layer);
       }
     }
     
     // Set our default base layer
-    for (var layer in openlayers.layers) {      
-      if (openlayers.layers[layer].name === map.layers[map.default_layer].name) {
-        openlayers.setBaseLayer(openlayers.layers[layer]); 
+    openlayers.setBaseLayer(openlayers.getLayersBy('drupalID', map.default_layer));
+    
+    // Set our default base layer
+    for (var layer in openlayers.layers) {
+      if (openlayers.layers[layer].drupalID === map.default_layer) {
+        openlayers.setBaseLayer(openlayers.layers[layer]);
       }
     }
     

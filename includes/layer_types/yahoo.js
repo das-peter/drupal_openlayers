@@ -10,9 +10,8 @@
  * @return
  *   Valid OpenLayers layer
  */
-
-Drupal.openlayers.layer.yahoo = function (name, map, options) {
-  var styleMap = Drupal.openlayers.getStyleMap(map, options.name);
+Drupal.openlayers.layer.yahoo = function (title, map, options) {
+  var styleMap = Drupal.openlayers.getStyleMap(map, options.drupalID);
 
   yahoo_type_map = {
     "street": YAHOO_MAP_REG,

@@ -8,9 +8,9 @@
 /**
  * Openlayer layer handler for KML layer
  */
-Drupal.openlayers.layer.kml = function(name, map, options) {
+Drupal.openlayers.layer.kml = function(title, map, options) {
   // Get styles
-  var styleMap = Drupal.openlayers.getStyleMap(map, name);
+  var styleMap = Drupal.openlayers.getStyleMap(map, options.drupalID);
   
   // Format options
   if (options.maxExtent !== undefined) {
@@ -21,7 +21,7 @@ Drupal.openlayers.layer.kml = function(name, map, options) {
   options.projection = new OpenLayers.Projection('EPSG:4326');
   
   // Create layer
-  var layer = new OpenLayers.Layer.GML(name, options.url, options);
+  var layer = new OpenLayers.Layer.GML(title, options.url, options);
   layer.styleMap = styleMap;
   return layer;
 };

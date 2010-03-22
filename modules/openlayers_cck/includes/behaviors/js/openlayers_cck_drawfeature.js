@@ -30,12 +30,12 @@ Drupal.behaviors.openlayers_cck_drawfeature = function(context) {
     openlayers_cck_drawfeature_wkt_field = 
       $("#"+data.map.behaviors['openlayers_cck_drawfeature'].wkt_field_id);
 
-    var data_layer = new OpenLayers.Layer.Vector("Data Layer",
-      {
-        projection: new OpenLayers.Projection('EPSG:4326')
-      }
-    );
-
+    // Create options
+    var options = {
+      projection: new OpenLayers.Projection('EPSG:4326'),
+      drupalID: 'openlayers_cck_vector_layer'
+    };
+    var data_layer = new OpenLayers.Layer.Vector(Drupal.t("Data Layer"), options);
     data.openlayers.addLayer(data_layer);
 
     if (openlayers_cck_drawfeature_wkt_field.text() != '') {

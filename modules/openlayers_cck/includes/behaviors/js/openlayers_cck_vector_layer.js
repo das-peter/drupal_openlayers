@@ -11,7 +11,13 @@ Drupal.behaviors.openlayers_cck_vector_layer = function(context) {
   if (data && data.map.behaviors['openlayers_cck_vector_layer']) {
     features = data.map.behaviors['openlayers_cck_vector_layer'].features;
 
-    var data_layer = new OpenLayers.Layer.Vector("Data Layer");
+    // Create options and layer
+    var options = {
+      drupalID: 'openlayers_cck_vector_layer'
+    };
+    var data_layer = new OpenLayers.Layer.Vector(Drupal.t("Data Layer"), options);
+    
+    // Add features and layers
     Drupal.openlayers.addFeatures(data.map, data_layer, features);
     data.openlayers.addLayer(data_layer);
   }

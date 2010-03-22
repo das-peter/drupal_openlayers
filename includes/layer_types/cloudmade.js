@@ -10,14 +10,14 @@
  * @return
  *   Valid OpenLayers layer
  */
-Drupal.openlayers.layer.cloudmade = function (name, map, options) {
-  var styleMap = Drupal.openlayers.getStyleMap(map, options.name);
+Drupal.openlayers.layer.cloudmade = function (title, map, options) {
+  var styleMap = Drupal.openlayers.getStyleMap(map, options.drupalID);
 
   // options.sphericalMercator = true;
   options.maxExtent = new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34);
   options.projection = new OpenLayers.Projection('EPSG:'+options.projection);
 
-  var layer = new OpenLayers.Layer.CloudMade(name, options);
+  var layer = new OpenLayers.Layer.CloudMade(title, options);
   layer.styleMap = styleMap;
   return layer;
 };

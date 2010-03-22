@@ -10,8 +10,8 @@
  * @return
  *   Valid OpenLayers layer
  */
-Drupal.openlayers.layer.google = function (name, map, options) {
-  var styleMap = Drupal.openlayers.getStyleMap(map, options.name);
+Drupal.openlayers.layer.google = function (title, map, options) {
+  var styleMap = Drupal.openlayers.getStyleMap(map, options.drupalID);
 
   var google_type_map = {
     "normal": G_NORMAL_MAP,
@@ -24,7 +24,7 @@ Drupal.openlayers.layer.google = function (name, map, options) {
   options.maxExtent = new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34);
   options.type = google_type_map[options.type];
 
-  var layer = new OpenLayers.Layer.Google(name, options);
+  var layer = new OpenLayers.Layer.Google(title, options);
   layer.styleMap = styleMap;
   return layer;
 };

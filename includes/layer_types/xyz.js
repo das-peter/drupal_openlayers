@@ -8,8 +8,8 @@
 /**
  * Openlayer layer handler for XYZ layer
  */
-Drupal.openlayers.layer.xyz = function (name, map, options) {
-  var styleMap = Drupal.openlayers.getStyleMap(map, name);
+Drupal.openlayers.layer.xyz = function (title, map, options) {
+  var styleMap = Drupal.openlayers.getStyleMap(map, options.drupalID);
   if (options.maxExtent !== undefined) {
     options.maxExtent = new OpenLayers.Bounds.fromArray(options.maxExtent) || new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
   }
@@ -19,7 +19,7 @@ Drupal.openlayers.layer.xyz = function (name, map, options) {
   options.projection = new OpenLayers.Projection('EPSG:'+options.projection);
   options.sphericalMercator = true;
   
-  var layer = new OpenLayers.Layer.XYZ(name, options.url, options);
+  var layer = new OpenLayers.Layer.XYZ(title, options.url, options);
   layer.styleMap = styleMap;
   return layer;
 };
