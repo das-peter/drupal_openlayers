@@ -215,7 +215,7 @@ class openlayers_views_style_data extends views_plugin_style {
       foreach ($records as $id => $record) {
         $feature = array();
         $feature['attributes']['name'] = $id;
-        if ($data_source['value']['other_latlon']) {
+        if (isset($data_source['value']['other_latlon'])) {
           $lat_field = $fields[$data_source['other_lat']]['field_alias'];
           $lon_field = $fields[$data_source['other_lon']]['field_alias'];
           $lon = current($record)->$lon_field;
@@ -225,7 +225,7 @@ class openlayers_views_style_data extends views_plugin_style {
             $feature['projection'] = '4326';
           }
         }
-        elseif ($data_source['value']['openlayers_wkt']) {
+        elseif (isset($data_source['value']['openlayers_wkt'])) {
           $wkt_field = $fields[$data_source['openlayers_wkt']]['field_alias'];
           $wkt = current($record)->$wkt_field;
           if ($wkt) {
@@ -233,7 +233,7 @@ class openlayers_views_style_data extends views_plugin_style {
             $feature['projection'] = '4326';
           }
         }
-        elseif ($data_source['value']['other_boundingbox']) {
+        elseif (isset($data_source['value']['other_boundingbox'])) {
           $top_field = $fields[$data_source['other_top']]['field_alias'];
           $right_field = $fields[$data_source['other_right']]['field_alias'];
           $left_field = $fields[$data_source['other_left']]['field_alias'];
