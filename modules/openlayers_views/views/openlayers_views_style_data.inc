@@ -294,7 +294,7 @@ class openlayers_views_style_data extends views_plugin_style {
           $rendered_record[$handler->field_alias] = $handler->advanced_render($record);
         }
 
-        if ($data_source['value']['other_latlon']) {
+        if (!empty($data_source['value']['other_latlon'])) {
           $lat_field = $fields[$data_source['other_lat']]['field_alias'];
           $lon_field = $fields[$data_source['other_lon']]['field_alias'];
           $lon = $record->$lon_field;

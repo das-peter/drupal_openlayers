@@ -60,7 +60,7 @@ function openlayers_ui_menu() {
   // Core OpenLayers settings pages.
   $items['admin/build/openlayers'] = array(
     'title' => 'OpenLayers',
-    'description' => t('Main settings for OpenLayers.'),
+    'description' => 'Main settings for OpenLayers.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_admin_settings'),
     'access arguments' => array('administer openlayers'),
@@ -245,7 +245,7 @@ function openlayers_ui_menu() {
   // Presets.
   $items['admin/build/openlayers/presets'] = array(
     'title' => 'Presets',
-    'description' => t('Create OpenLayers map presets.'),
+    'description' => 'Create OpenLayers map presets.',
     'page callback' => 'openlayers_ui_object_list',
     'page arguments' => array(3),
     'access arguments' => array('administer openlayers'),
@@ -260,7 +260,7 @@ function openlayers_ui_menu() {
   );
   $items['admin/build/openlayers/presets/add'] = array(
     'title' => 'Add',
-    'description' => t('Add OpenLayers map preset.'),
+    'description' => 'Add OpenLayers map preset.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_presets_form'),
     'access arguments' => array('administer openlayers'),
@@ -270,7 +270,7 @@ function openlayers_ui_menu() {
   );
   $items['admin/build/openlayers/presets/add/%openlayers_preset'] = array(
     'title' => 'Clone Preset',
-    'description' => t('Add OpenLayers map preset.'),
+    'description' => 'Add OpenLayers map preset.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_presets_form', 5),
     'access arguments' => array('administer openlayers'),
@@ -309,7 +309,7 @@ function openlayers_ui_menu() {
   );
   $items['admin/build/openlayers/presets/%openlayers_preset/export'] = array(
     'title' => 'Export preset',
-    'description' => t('Export OpenLayers map preset.'),
+    'description' => 'Export OpenLayers map preset.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_object_export', 3, 4),
     'access arguments' => array('administer openlayers'),
