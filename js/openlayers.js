@@ -52,7 +52,12 @@ Drupal.behaviors.openlayers = function(context) {
 
       try {
 
+
       if (Drupal.settings.openlayers.maps[map_id]) {
+        // Set OpenLayers language based on document language, 
+        // rather than browser language
+        OpenLayers.Lang.setCode($('html').attr('lang'));
+
         var map = Drupal.settings.openlayers.maps[map_id];
         
         $(this)
