@@ -384,7 +384,17 @@ function openlayers_ui_object_list($type) {
   foreach ($objects as $object) {
     $row = array();
     $links = array();
-    $row[] = $object->title;
+    switch ($object->export_type) {
+      case (EXPORT_IN_DATABASE | EXPORT_IN_CODE):
+        $row[] = $object->title .' <em><small>(' .t('Overridden'). ')</small></em>';
+        break;
+      case EXPORT_IN_DATABASE:
+        $row[] = $object->title .' <em><small>(' .t('Normal'). ')</small></em>';
+        break;
+      case EXPORT_IN_CODE:
+        $row[] = $object->title .' <em><small>(' .t('Default'). ')</small></em>';
+        break;
+    }
     $row[] = $object->description;
     // Check preset type and create links accordingly.
     if ($object->export_type == (EXPORT_IN_CODE | EXPORT_IN_DATABASE)) {
