@@ -35,6 +35,7 @@ function openlayers_theme($existing, $type, $theme, $path) {
     'openlayers_map' => array(
       'arguments' => array(
         'map' => array(),
+        'preset_name' => '',
       ),
       'file' => 'includes/openlayers.theme.inc',
     ),
