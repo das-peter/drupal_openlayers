@@ -51,19 +51,6 @@ function openlayers_views_openlayers_layers_handler_info($map = array()) {
 }
 
 /**
- * Translate views titles: this is invoked because otherwise
- * translated titles are cached by OpenLayers. This runs after 
- * our cache layer on individual views or as array_map runs
- * @param $layer Layer object
- * @return $layer Layer object with title attribute run through t()
- */
-function openlayers_views_translate($layer) {
-  $layer->title = t($layer->title);
-  return $layer;
-}
-
-
-/**
  * Implementation of hook_openlayers_layers().
  */
 function openlayers_views_openlayers_layers() {
@@ -74,7 +61,6 @@ function openlayers_views_openlayers_layers() {
   if (arg(0) != 'admin') {
     $cache = cache_get('openlayers_views');
     if (isset($cache->data)) {
-      $cache->data = array_map('openlayers_views_translate', $cache->data);
       return $cache->data;
     }
   }
@@ -106,7 +92,7 @@ function openlayers_views_openlayers_layers() {
           'events' => array(),
           'views' => array('view' => $view->name, 'display' => $display),
         );
-        $layers[$layer->name] = openlayers_views_translate($layer);
+        $layers[$layer->name] = $layer;
       }
     }
     $view->destroy();

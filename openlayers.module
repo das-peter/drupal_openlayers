@@ -196,6 +196,9 @@ function openlayers_get_layer_object($layer, $map = array()) {
     $layer_types = openlayers_layer_types();
   }
 
+  $layer->title = t($layer->title);
+  $layer->description = t($layer->description);
+
   // Attempt to get ctool class
   $class = ctools_plugin_get_class($layer_types[$layer->data['layer_type']], 'layer_type');
   if ($class) {
@@ -260,7 +263,7 @@ function openlayers_layer_load($name, $reset = FALSE) {
   }
   else {
     watchdog('openlayers', 'Layer %layer not found.',
-      array('%layer' => $layer), WATCHDOG_ERROR);
+      array('%layer' => $name), WATCHDOG_ERROR);
     return FALSE;
   }
 }

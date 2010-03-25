@@ -12,8 +12,8 @@ function _openlayers_openlayers_layers() {
   $layer = new stdClass();
   $layer->api_version = 1;
   $layer->name = 'google_satellite';
-  $layer->title = t('Google Maps Satellite');
-  $layer->description = t('Google Maps Satellite Imagery.');
+  $layer->title = 'Google Maps Satellite';
+  $layer->description = 'Google Maps Satellite Imagery.';
   $layer->data = array(
     'baselayer' => TRUE,
     'type' => 'satellite',
@@ -26,8 +26,8 @@ function _openlayers_openlayers_layers() {
   $layer = new stdClass();
   $layer->api_version = 1;
   $layer->name = 'google_hybrid';
-  $layer->title = t('Google Maps Hybrid');
-  $layer->description = t('Google Maps with roads and terrain.');
+  $layer->title = 'Google Maps Hybrid';
+  $layer->description = 'Google Maps with roads and terrain.';
   $layer->data = array(
     'baselayer' => TRUE,
     'type' => 'hybrid',
@@ -40,8 +40,8 @@ function _openlayers_openlayers_layers() {
   $layer = new stdClass();
   $layer->api_version = 1;
   $layer->name = 'google_normal';
-  $layer->title = t('Google Maps Normal');
-  $layer->description = t('Standard Google Maps Roads');
+  $layer->title = 'Google Maps Normal';
+  $layer->description = 'Standard Google Maps Roads';
   $layer->data = array(
     'baselayer' => TRUE,
     'type' => 'normal',
@@ -54,8 +54,8 @@ function _openlayers_openlayers_layers() {
   $layer = new stdClass();
   $layer->api_version = 1;
   $layer->name = 'google_physical';
-  $layer->title = t('Google Maps Physical');
-  $layer->description = t('Google Maps Hillshades');
+  $layer->title = 'Google Maps Physical';
+  $layer->description = 'Google Maps Hillshades';
   $layer->data = array(
     'baselayer' => TRUE,
     'type' => 'physical',
@@ -68,8 +68,8 @@ function _openlayers_openlayers_layers() {
   $layer = new stdClass();
   $layer->api_version = 1;
   $layer->name = 'yahoo_satellite';
-  $layer->title = t('Yahoo Maps Satellite');
-  $layer->description = t('Yahoo satellite imagery tiles.');
+  $layer->title = 'Yahoo Maps Satellite';
+  $layer->description = 'Yahoo satellite imagery tiles.';
   $layer->data = array(
     'baselayer' => TRUE,
     'type' => 'satellite',
@@ -82,8 +82,8 @@ function _openlayers_openlayers_layers() {
   $layer = new stdClass();
   $layer->api_version = 1;
   $layer->name = 'yahoo_street';
-  $layer->title = t('Yahoo Maps Street');
-  $layer->description = t('Yahoo streets tiles.');
+  $layer->title = 'Yahoo Maps Street';
+  $layer->description = 'Yahoo streets tiles.';
   $layer->data = array(
     'baselayer' => TRUE,
     'type' => 'street',
@@ -96,8 +96,8 @@ function _openlayers_openlayers_layers() {
   $layer = new stdClass();
   $layer->api_version = 1;
   $layer->name = 'yahoo_hybrid';
-  $layer->title = t('Yahoo Maps Hybrid');
-  $layer->description = t('Yahoo hybrid of streets and satellite tiles.');
+  $layer->title = 'Yahoo Maps Hybrid';
+  $layer->description = 'Yahoo hybrid of streets and satellite tiles.';
   $layer->data = array(
     'baselayer' => TRUE,
     'type' => 'hybrid',
@@ -110,8 +110,8 @@ function _openlayers_openlayers_layers() {
   $layer = new stdClass();
   $layer->api_version = 1;
   $layer->name = 'virtualearth_street';
-  $layer->title = t('Virtual Earth Street');
-  $layer->description = t('Virtual Earth (Bing) street tiles.');
+  $layer->title = 'Virtual Earth Street';
+  $layer->description = 'Virtual Earth (Bing) street tiles.';
   $layer->data = array(
     'baselayer' => TRUE,
     'type' => 'street',
@@ -124,8 +124,8 @@ function _openlayers_openlayers_layers() {
   $layer = new stdClass();
   $layer->api_version = 1;
   $layer->name = 'virtualearth_satellite';
-  $layer->title = t('Virtual Earth Satellite');
-  $layer->description = t('Virtual Earth (Bing) satellite tiles.');
+  $layer->title = 'Virtual Earth Satellite';
+  $layer->description = 'Virtual Earth (Bing) satellite tiles.';
   $layer->data = array(
     'baselayer' => TRUE,
     'type' => 'satellite',
@@ -138,8 +138,8 @@ function _openlayers_openlayers_layers() {
   $layer = new stdClass();
   $layer->api_version = 1;
   $layer->name = 'virtualearth_hybrid';
-  $layer->title = t('Virtual Earth Hybrid');
-  $layer->description = t('Virtual Earth (Bing) hybrid of streets and satellite tiles.');
+  $layer->title = 'Virtual Earth Hybrid';
+  $layer->description = 'Virtual Earth (Bing) hybrid of streets and satellite tiles.';
   $layer->data = array(
     'baselayer' => TRUE,
     'type' => 'hybrid',
@@ -153,8 +153,8 @@ function _openlayers_openlayers_layers() {
   $layer = new stdClass();
   $layer->api_version = 1;
   $layer->name = 'osm_mapnik';
-  $layer->title = t('OSM Mapnik');
-  $layer->description = t('The main OpenStreetMap map');
+  $layer->title = 'OSM Mapnik';
+  $layer->description = 'The main OpenStreetMap map';
   $layer->data = array(
     'baselayer' => TRUE,
     'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> 2010
@@ -174,8 +174,8 @@ function _openlayers_openlayers_layers() {
   $layer = new stdClass();
   $layer->api_version = 1;
   $layer->name = 'osm_tah';
-  $layer->title = t('OSM Tiles@Home');
-  $layer->description = t('Alternative, community-rendered OpenStreetMap');
+  $layer->title = 'OSM Tiles@Home';
+  $layer->description = 'Alternative, community-rendered OpenStreetMap';
   $layer->data = array(
     'baselayer' => TRUE,
     'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> 2010
@@ -195,8 +195,8 @@ function _openlayers_openlayers_layers() {
   $layer = new stdClass();
   $layer->api_version = 1;
   $layer->name = 'osm_cycle';
-  $layer->title = t('OSM Cycling Map');
-  $layer->description = t('OpenStreetMap with highlighted bike lanes');
+  $layer->title = 'OSM Cycling Map';
+  $layer->description = 'OpenStreetMap with highlighted bike lanes';
   $layer->data = array(
     'baselayer' => TRUE,
     'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> 2010
@@ -216,8 +216,9 @@ function _openlayers_openlayers_layers() {
   $layer = new stdClass();
   $layer->api_version = 1;
   $layer->name = 'osm_4326_hybrid';
-  $layer->title = t('OSM Overlay');
-  $layer->description = t('Semi-transparent hybrid overlay. Projected into WSG84 for use on non spherical-mercator maps.');
+  $layer->title = 'OSM Overlay';
+  $layer->description = 'Semi-transparent hybrid overlay. Projected into 
+    WSG84 for use on non spherical-mercator maps.';
   $layer->data = array(
     'baselayer' => FALSE,
     'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> 2010
@@ -245,8 +246,8 @@ function _openlayers_openlayers_layers() {
   $layer = new stdClass();
   $layer->api_version = 1;
   $layer->name = 'wms_default';
-  $layer->title = t('Default OpenLayers WMS');
-  $layer->description = t('MetaCarta basemap of province and water boundaries');
+  $layer->title = 'Default OpenLayers WMS';
+  $layer->description = 'MetaCarta basemap of province and water boundaries';
   $layer->data = array(
     'projection' => array('4326'),
     'baselayer' => TRUE,
@@ -262,4 +263,46 @@ function _openlayers_openlayers_layers() {
 
 
   return $layers;
+}
+
+/**
+ * This function is for the po editor to be able to find these strings, 
+ * since in the codebase they are not in t()'s, because they are later 
+ * run through t() in the layer loader function
+ */
+function _openlayers_openlayers_layers_i18n() {
+  $translatable_strings = array(
+    // titles
+    t('Google Maps Satellite'),
+    t('Google Maps Hybrid'),
+    t('Google Maps Normal'),
+    t('Google Maps Physical'),
+    t('Yahoo Maps Street'),
+    t('Yahoo Maps Hybrid'),
+    t('Yahoo Maps Satellite'),
+    t('Virtual Earth Street'),
+    t('Virtual Earth Satellite'),
+    t('Virtual Earth Hybrid'),
+    t('OSM Mapnik'),
+    t('OSM Tiles@Home'),
+    t('OSM Cycling Map'),
+    t('OSM Overlay'),
+    t('Default OpenLayers WMS'),
+    // descriptions
+    t('Alternative, community-rendered OpenStreetMap'),
+    t('Google Maps Hillshades'),
+    t('Google Maps Satellite Imagery.'),
+    t('Google Maps with roads and terrain.'),
+    t('MetaCarta basemap of province and water boundaries'),
+    t('OpenStreetMap with highlighted bike lanes'),
+    t('Semi-transparent hybrid overlay. Projected into 
+      WSG84 for use on non spherical-mercator maps.'),
+    t('Standard Google Maps Roads'),
+    t('The main OpenStreetMap map'),
+    t('Virtual Earth (Bing) hybrid of streets and satellite tiles.'),
+    t('Virtual Earth (Bing) satellite tiles.'),
+    t('Virtual Earth (Bing) street tiles.'),
+    t('Yahoo hybrid of streets and satellite tiles.'),
+    t('Yahoo satellite imagery tiles.'),
+    t('Yahoo streets tiles.'));
 }
