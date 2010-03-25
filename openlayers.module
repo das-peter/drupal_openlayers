@@ -186,7 +186,7 @@ function openlayers_render_map($map = array(), $preset_name = '') {
  * @ingroup openlayers_api
  * @param $reset
  *   Boolean whether to reset cache or not
- * @return
+ * @return array
  *   array of layer info
  */
 function openlayers_get_layer_object($layer, $map = array()) {
@@ -213,7 +213,7 @@ function openlayers_get_layer_object($layer, $map = array()) {
  *
  * @param $name
  *   Layer name
- * @return
+ * @return object
  *   Layer export
  */
 function openlayers_layer_export_load($name, $reset = TRUE) {
@@ -229,7 +229,7 @@ function openlayers_layer_export_load($name, $reset = TRUE) {
  *
  * @param $reset
  *   Boolean whether to reset cache or not
- * @return
+ * @return array
  *   layer exports
  */
 function openlayers_layers_export_load($reset = TRUE) {
@@ -245,7 +245,7 @@ function openlayers_layers_export_load($reset = TRUE) {
  *
  * @param $name
  *   Layer name
- * @return
+ * @return array
  *   Layer export
  */
 function openlayers_layer_load($name, $reset = FALSE) {
@@ -540,23 +540,6 @@ function openlayers_error_check_map($map, $log_errors = TRUE) {
     // Check layer projections
     foreach ($map['layers'] as $layer) {
       openlayers_layer_sanity_check(array('data' => $layer), $map['projection'], TRUE);
-    }
-  }
-
-  // TODO: rewrite to use openlayers_get_extent
-  // If we are using a degree based projection, then check to make sure
-  // our bounds are not over 180/90 degrees
-  if (isset($map['projection'])) {
-    if ($map['projection'] == '4326' || $map['projection'] == '4269') {
-      if (
-        ($map['options']['maxExtent']['top']     && $map['options']['maxExtent']['top']    > 90)   ||
-        ($map['options']['maxExtent']['bottom']  && $map['options']['maxExtent']['bottom'] < -90)  ||
-        ($map['options']['maxExtent']['left']    && $map['options']['maxExtent']['left']   < -180) ||
-        ($map['options']['maxExtent']['right']   && $map['options']['maxExtent']['right']  > 180)  ||
-        ($map['options']['maxResoluton']         && $map['options']['maxResoluton']        > 180)
-      ) {
-        $errors[] = t("Your Maximum Extents are set greater than 180/90 degrees. Try Maximum Extent of: -180,180,-90,90 and a Maximum Resolution of 1.40625");
-      }
     }
   }
 
