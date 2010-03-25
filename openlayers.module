@@ -384,7 +384,8 @@ function openlayers_layer_types($reset = FALSE) {
  */
 function openlayers_layer_type_load($name) {
   ctools_include('plugins');
-  if ($layer_type_class = ctools_plugin_load_class('openlayers', 'layer_types', $name, 'layer_type')) {
+  if ($layer_type_class = ctools_plugin_load_class(
+    'openlayers', 'layer_types', $name, 'layer_type')) {
     $layer_type = new $layer_type_class();
     return $layer_type;
   }
@@ -454,7 +455,8 @@ function openlayers_style_save($style) {
 function openlayers_presets($reset = FALSE) {
   ctools_include('export');
   if ($reset) ctools_export_load_object_reset('openlayers_map_presets');
-  $presets = ctools_export_load_object('openlayers_map_presets', 'all', array());
+  $presets = ctools_export_load_object(
+    'openlayers_map_presets', 'all', array());
   return $presets;
 }
 
@@ -472,7 +474,8 @@ function openlayers_presets($reset = FALSE) {
 function openlayers_preset_load($name = '', $reset = FALSE) {
   ctools_include('export');
   if ($reset) ctools_export_load_object_reset('openlayers_map_presets');
-  $presets = ctools_export_load_object('openlayers_map_presets', 'names', array($name));
+  $presets = ctools_export_load_object(
+    'openlayers_map_presets', 'names', array($name));
   return !empty($presets[$name]) ? $presets[$name] : FALSE;
 }
 
@@ -539,7 +542,10 @@ function openlayers_error_check_map($map, $log_errors = TRUE) {
   else {
     // Check layer projections
     foreach ($map['layers'] as $layer) {
-      openlayers_layer_sanity_check(array('data' => $layer), $map['projection'], TRUE);
+      openlayers_layer_sanity_check(
+        array('data' => $layer), 
+        $map['projection'], 
+        TRUE);
     }
   }
 
@@ -579,7 +585,10 @@ function openlayers_get_extent($projection) {
  *
  * @param $projection
  *   string specifying which projection this should take, like 900913
- * @param ??
+ * @param $zoom_start
+ *    integer - first zoom level, default 0
+ * @param $zoom_end
+ *    integer - last zoom level, default FALSE
  * @return array of resolutions
  */
 function openlayers_get_resolutions($projection, $zoom_start = 0, $zoom_end = FALSE) {
