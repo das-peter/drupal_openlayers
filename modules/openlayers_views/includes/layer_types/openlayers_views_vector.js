@@ -20,6 +20,5 @@ Drupal.openlayers.layer.openlayers_views_vector = function(title, map, options) 
     Drupal.openlayers.addFeatures(map, layer, options.features);
   }
   
-  // Return rendered layer
   return layer;
 };

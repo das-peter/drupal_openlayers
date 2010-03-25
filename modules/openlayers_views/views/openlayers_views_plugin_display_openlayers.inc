@@ -34,6 +34,10 @@ class openlayers_views_plugin_display_openlayers extends views_plugin_display {
   function option_definition() {
     $options = parent::option_definition();
 
+    // Prevent the title from being translated at the view level
+    // so that it can be translated at the OpenLayers level
+    $options['title']['translatable'] = 0;
+
     $options['displays'] = array('default' => array());
 
     // Overrides for standard stuff:
