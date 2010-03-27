@@ -20,10 +20,11 @@ Drupal.openlayers.layer.yahoo = function (title, map, options) {
   };
 
   options.sphericalMercator = true;
-  options.maxExtent = new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34);
+  options.maxExtent = new OpenLayers.Bounds(
+    -20037508,-20037508,20037508,20037508);
   options.type = yahoo_type_map[options.type];
 
-  var layer = new OpenLayers.Layer.Yahoo(name, options);
+  var layer = new OpenLayers.Layer.Yahoo(title, options);
   layer.styleMap = styleMap;
   return layer;
 };
