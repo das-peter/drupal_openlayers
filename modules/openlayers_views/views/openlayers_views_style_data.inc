@@ -21,6 +21,7 @@ class openlayers_views_style_data extends views_plugin_style {
    */
   function option_definition() {
     $options = parent::option_definition();
+    $options['data_source'] = array('default' => array());
     return $options;
   }
 
