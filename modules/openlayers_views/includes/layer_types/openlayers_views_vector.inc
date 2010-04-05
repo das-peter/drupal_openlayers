@@ -47,6 +47,10 @@ class openlayers_layer_type_openlayers_views_vector extends openlayers_layer_typ
         }
       }
       $features = $view->execute_display($display_name, $args);
+
+      // Get dynamic title from view
+      $this->title = $view->get_title();
+
       $view->destroy();
     }
     return isset($features) ? $features : array();
