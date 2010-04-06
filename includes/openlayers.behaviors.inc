@@ -211,5 +211,16 @@ function _openlayers_openlayers_behaviors() {
         'parent' => 'openlayers_behavior',
       ),
     ),
+    'openlayers_behavior_drawfeatures' => array(
+       'title' => t('Draw Features'),
+       'description' => t('Provides functionality for adding features to a map.'),
+       'type' => 'layer',
+       'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
+       'file' => 'openlayers_behavior_drawfeatures.inc',
+       'behavior' => array(
+         'class' => 'openlayers_behavior_drawfeatures',
+         'parent' => 'openlayers_behavior',
+       ),
+    ),
   );
 }

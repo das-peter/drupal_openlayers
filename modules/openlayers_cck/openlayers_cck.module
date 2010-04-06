@@ -51,18 +51,6 @@ function openlayers_cck_ctools_plugin_api($module, $api) {
  */
 function openlayers_cck_openlayers_behaviors() {
   return array(
-    'openlayers_cck_drawfeature' => array(
-       'title' => t('Draw Features for CCK'),
-       'description' => t('Provides functionality for adding features to a map.'),
-       'type' => 'layer',
-       'path' => drupal_get_path('module', 'openlayers_cck') .'/includes/behaviors',
-       'file' => 'openlayers_cck_drawfeature.inc',
-       'ui_visibility' => FALSE,
-       'behavior' => array(
-         'class' => 'openlayers_cck_drawfeature',
-         'parent' => 'openlayers_behavior',
-       ),
-    ),
     'openlayers_cck_vector_layer' => array(
        'title' => t('Dynamic Vector Layer for CCK'),
        'description' => t('Adds a dynamic layer from a features array'),
@@ -413,10 +401,11 @@ function _openlayers_cck_render_element_map($field_name = '', $field_label = '',
 
   // Make sure that our display projection matches the database projection
   // TODO: rewrite
-  $map['behaviors']['openlayers_cck_drawfeature'] = array(
-    'wkt_field_id' => $field_id,
+  $map['behaviors']['openlayers_behavior_drawfeatures'] = array(
+    'element_id' => $field_id,
     'feature_types' => $field['openlayers_cck_feature_types']
   );
+
   return openlayers_render_map($map);
 }
 
