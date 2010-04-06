@@ -29,4 +29,5 @@ Drupal.behaviors.openlayers_behavior_fullscreen = function(context) {
 openlayers_behavior_fullscreen_toggle = function(context) {
   $(this.map.div).parent().toggleClass('openlayers_map_fullscreen');
   $(this.map.div).toggleClass('openlayers_map_fullscreen');
+  $(this.map.div).data('openlayers').openlayers.updateSize();
 }
