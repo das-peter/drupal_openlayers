@@ -259,8 +259,11 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   $form['layerstyles']['projections']['displayProjection'] = array(
     '#type' => 'textfield',
     '#title' => t('Display Projection'),
-    '#description' => t('All interaction with the map - drawing, panning, centering, and more - occurs in the display projection. The vast majority of maps use 4326 (latitude/longitude) for this value.'),
-    '#default_value' => !empty($defaults['layerstyles']['projections']['displayProjection']) ? $defaults['layerstyles']['projections']['displayProjection'] : '4326',
+    '#description' => t('All interaction with the map - drawing, panning, 
+      centering, and more - occurs in the display projection. The vast majority 
+      of maps use 4326 (latitude/longitude) for this value.'),
+    '#default_value' => !empty($defaults['displayProjection']) ? 
+      $defaults['displayProjection'] : '4326',
     '#maxlength' => 6
   );
 
