@@ -21,6 +21,8 @@
  *   Array of processed layers
  */
 function _openlayers_layers_process($layers = array(), &$map = array()) {
+  $layer_data = array();
+
   // Check parameters
   if (!is_array($layers)) {
     $layers = array();
