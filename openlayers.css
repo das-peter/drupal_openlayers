@@ -16,6 +16,13 @@
   position:relative;
 }
 
+/**
+ * prevent rtl translations from mirroring 
+ * vector layers
+ */
+.openlayers-map .olLayerDiv {
+  direction: ltr;
+}
 
 /**
  * Controls
