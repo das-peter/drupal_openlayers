@@ -2,9 +2,7 @@
 
 /**
  * @file
- * Main JS file for openlayers_cck
- *
- * @ingroup openlayers_cck
+ * DrawFeatures Behavior
  */
 
 // Declare global variable
@@ -17,14 +15,15 @@ openlayers_drawfeature_element = null;
  */
 function update(features) {
   WktWriter = new OpenLayers.Format.WKT();
-  for(var i in features.object.features) {
-    features.object.features[i].geometry = 
-    features.object.features[i].geometry.transform(
+  var features_copy = features.object.clone();
+  for(var i in features_copy.features) {
+    // transform() modifies geometry
+    features_copy.features[i].geometry.transform(
       features.object.map.projection,
       new OpenLayers.Projection("EPSG:4326")
     );
   }
-  wkt_value = WktWriter.write(features.object.features);
+  wkt_value = WktWriter.write(features_copy.features);
   openlayers_drawfeature_element.text(wkt_value);
 }
 
