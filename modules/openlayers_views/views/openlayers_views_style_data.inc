@@ -210,6 +210,7 @@ class openlayers_views_style_data extends views_plugin_style {
 
     // Build feature. We create one feature per field per row.
 
+    // @TODO: Redo the grouped-version of this style plugin.
     // Separate mapping for grouped views.  Currently only adds name and count.
     if (!empty($this->options['grouping'])) {
       $this->view->row_index = 0;
@@ -287,12 +288,19 @@ class openlayers_views_style_data extends views_plugin_style {
 
     // Separate mapping for non-grouped views.
     else {
+      $excluded_fields = array();
+
       $records = array_shift($records);
       foreach ($records as $id => $record) {
         $feature = array();
         $rendered_record = array();
+        // Note that excluded fields are still rendered in case they are used
+        // as render tokens in later fields.
         foreach ($handlers as $hid => $handler) {
           $rendered_record[$handler->field_alias] = $handler->advanced_render($record);
+          if (!empty($handler->options['exclude'])) {
+            $excluded_fields[] = $handler->field_alias;
+          }
         }
 
         if (!empty($data_source['value']['other_latlon'])) {
@@ -304,6 +312,9 @@ class openlayers_views_style_data extends views_plugin_style {
             $feature['wkt'] = 'POINT(' . $lon . ' ' . $lat . ')';
             $feature['projection'] = '4326';
           }
+
+          $excluded_fields[] = $lat_field;
+          $excluded_fields[] = $lon_field;
         }
         elseif ($data_source['value']['openlayers_wkt']) {
           $wkt_field = $fields[$data_source['openlayers_wkt']]['field_alias'];
@@ -312,6 +323,8 @@ class openlayers_views_style_data extends views_plugin_style {
             $feature['wkt'] = $wkt;
             $feature['projection'] = '4326';
           }
+
+          $excluded_fields[] = $wkt_field;
         }
         elseif ($data_source['value']['other_boundingbox']) {
           $top_field = $fields[$data_source['other_top']]['field_alias'];
@@ -330,6 +343,11 @@ class openlayers_views_style_data extends views_plugin_style {
               $left . ' ' . $bottom . ')';
             $feature['projection'] = '4326';
           }
+
+          $excluded_fields[] = $top_field;
+          $excluded_fields[] = $right_field;
+          $excluded_fields[] = $left_field;
+          $excluded_fields[] = $bottom_field;
         }
 
         // Add the name and description attributes
@@ -339,17 +357,21 @@ class openlayers_views_style_data extends views_plugin_style {
         if ($data_source['name_field']) {
           $name_field = $fields[$data_source['name_field']]['field_alias'];
           $feature['attributes']['name'] = $rendered_record[$name_field];
+          $excluded_fields[] = $name_field;
         }
         if ($data_source['description_field']) {
           $description_field = $fields[$data_source['description_field']]['field_alias'];
           $feature['attributes']['description'] = $record->$description_field;
+          $excluded_fields[] = $description_field;
         }
 
-        // Fill in attributes that are not title and description
+        // Fill in attributes that are not:
+        // - Coordinate/bounding box fields
+        // - Name/description (already processed)
+        // - Views "excluded" fields
         foreach ($fields as $fid => $field) {
           $field_alias = $field['field_alias'];
-          // Check if name, description
-          if (($field_alias != $name_field) && ($field_alias != $description_field)) {
+          if (!in_array($field_alias, $excluded_fields, TRUE)) {
             // Use regular field name as this is easier to understand
             $feature['attributes'][$fid] = $record->$field_alias;
             $feature['attributes'][$fid . "_rendered"] = $rendered_record[$field_alias];
