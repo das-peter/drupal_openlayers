@@ -10,6 +10,16 @@
  * OpenLayers WMS Layer Type class
  */
 class openlayers_layer_type_wms extends openlayers_layer_type {
+  function __construct($layer = array(), $map = array()) {
+    parent::__construct($layer, $map);
+    if (isset($this->data)) {
+      $this->data += $this->options_init();
+    }
+    else {
+      $this->data = $this->options_init();
+    }
+  }
+
   /**
    * Provide initial values for options.
    */
@@ -17,7 +27,9 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
     return array(
       'serverResolutions' => openlayers_get_resolutions('900913'),
       'maxExtent' => openlayers_get_extent('900913'),
-      'layer_handler' => 'wms'
+      'projection' => array('900913'),
+      'layer_handler' => 'wms',
+      'baselayer' => FALSE
     );
   }
 
@@ -32,11 +44,53 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
         '#default_value' => isset($this->data['base_url']) ?
           $this->data['base_url'] : ''
       ),
-      'layername' => array(
-        '#type' => 'textfield',
-        '#title' => t('Layer Name'),
-        '#default_value' => isset($this->data['layername']) ?
-          $this->data['layername'] : ''
+      
+      // TODO: swap terms
+      'params' => array(
+        'isBaseLayer' => array(
+          '#type' => 'checkbox',
+          '#default_value' => $this->data['params']['isBaseLayer'],
+          '#title' => t('BaseLayer'),
+          '#description' => t('Uncheck to make this map an overlay')
+        ),
+      ),
+      'options' => array(
+      'srs' => array(
+        '#type' => 'select',
+        '#title' => t('Projection'),
+        '#options' => array(
+          'EPSG:900913' => '900913',
+          'EPSG:4326' => '4326'),
+        '#default_value' => isset($this->data['options']['srs']) ?
+          $this->data['options']['srs'] : '900913'
+      ),
+        'TRANSPARENT' => array(
+          '#type' => 'checkbox',
+          '#default_value' => $this->data['options']['TRANSPARENT'],
+          '#title' => t('Transparent'),
+          '#description' => t('When a PNG, make the background color transparent')
+        ),
+        'format' => array(
+          '#type' => 'select',
+          '#title' => t('File Format'),
+          '#options' => array(
+            'image/png' => 'image/png',
+            'image/jpeg' => 'image/jpeg'),
+          '#default_value' => isset($this->data['options']['format']) ?
+            $this->data['options']['format'] : 'image/png'
+        ),
+        'layers' => array(
+          '#type' => 'textfield',
+          '#title' => t('Layers'),
+          '#default_value' => isset($this->data['options']['layers']) ?
+            $this->data['options']['layers'] : ''
+        ),
+        'styles' => array(
+          '#type' => 'textfield',
+          '#title' => t('Styles'),
+          '#default_value' => isset($this->data['options']['styles']) ?
+            $this->data['options']['styles'] : ''
+        ),
       ),
       'layer_type' => array(
         '#type' => 'hidden',

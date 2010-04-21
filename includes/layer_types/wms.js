@@ -10,14 +10,12 @@
  */
 Drupal.openlayers.layer.wms = function (title, map, options) {
   var styleMap = Drupal.openlayers.getStyleMap(map, options.drupalID);
-  if (options.maxExtent !== undefined) {
-    options.maxExtent = new OpenLayers.Bounds.fromArray(options.maxExtent);
-  }
   if (options.type === undefined){
-    options.type = "png";
+    options.type = "image/png";
   }
-  options.projection = new OpenLayers.Projection('EPSG:'+options.projection);
-  var layer = new OpenLayers.Layer.WMS(title, options.url, options.params, options);
+  options.options.transparent = true;
+  var layer = new OpenLayers.Layer.WMS(title, 
+    options.base_url, options.options, options.params);
   layer.styleMap = styleMap;
   return layer;
 };
