@@ -38,13 +38,10 @@ function theme_openlayers_cck_formatter_map($element) {
 
   // Create array of $features
   foreach (element_children($element) as $delta) {
-    // TODO: will the srid key ever be set
     $features[] = array(
       // First look for geo_field data, then for openlayers wkt data
       'wkt' => $element[$delta]['#item']['openlayers_wkt'],
-      'projection' => isset($element[$delta]['#item']['srid']) ?
-        $element[$delta]['#item']['srid'] :
-        '4326',
+      'projection' => '4326',
     );
   }
 
