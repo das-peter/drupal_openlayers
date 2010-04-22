@@ -13,7 +13,7 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
 
   function __construct($layer = array(), $map = array()) {
     parent::__construct($layer, $map);
-    if ($this->data) {
+    if (isset($this->data)) {
       $this->data += $this->options_init();
     }
     else {
@@ -42,24 +42,26 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
       'base_url' => array(
         '#type' => 'textfield',
         '#title' => t('Base URL'),
-        '#default_value' => $this->data['base_url']
+        '#default_value' => isset($this->data['base_url']) ? 
+          $this->data['base_url'] : ''
       ),
       'layername' => array(
         '#type' => 'textfield',
         '#title' => t('Layer Name'),
-        '#default_value' => $this->data['layername']
+        '#default_value' => isset($this->data['layername']) ?
+          $this->data['base_url'] : ''
       ),
       'resolutions' => array(
         '#type' => 'select',
         '#multiple' => TRUE,
         '#options' => array_combine(
-          array_map(strval, openlayers_get_resolutions('900913')),
+          array_map('strval', openlayers_get_resolutions('900913')),
           range(0, 18)
         ),
         '#title' => t('Zoom Level Range'),
-        '#default_value' => ($this->data['resolutions']) ?
+        '#default_value' => isset($this->data['resolutions']) ?
           $this->data['resolutions'] :
-          array_map(strval, openlayers_get_resolutions('900913'))
+          array_map('strval', openlayers_get_resolutions('900913'))
       ),
       'layer_type' => array(
         '#type' => 'hidden',
