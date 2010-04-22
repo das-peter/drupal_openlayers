@@ -18,7 +18,7 @@ Drupal.openlayers.layer.kml = function(title, map, options) {
   }
 
   options.format = OpenLayers.Format.KML;
-  options.projection = new OpenLayers.Projection('EPSG:4326');
+  options.projection = 'EPSG:4326';
   
   // Create layer
   var layer = new OpenLayers.Layer.GML(title, options.url, options);

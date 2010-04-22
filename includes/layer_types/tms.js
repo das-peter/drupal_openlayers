@@ -16,7 +16,7 @@ Drupal.openlayers.layer.tms = function (title, map, options) {
     if (options.type === undefined){
       options.type = "png";
     }
-    options.projection = new OpenLayers.Projection('EPSG:'+options.projection);
+    options.projection = 'EPSG:'+options.projection;
     var layer = new OpenLayers.Layer.TMS(title, options.base_url, options);
     layer.styleMap = styleMap;
     return layer;

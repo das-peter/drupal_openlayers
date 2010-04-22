@@ -16,7 +16,7 @@ Drupal.openlayers.layer.xyz = function (title, map, options) {
   if (options.type === undefined){
     options.type = "png";
   }
-  options.projection = new OpenLayers.Projection('EPSG:'+options.projection);
+  options.projection = 'EPSG:'+options.projection;
   options.sphericalMercator = true;
   
   var layer = new OpenLayers.Layer.XYZ(title, options.url, options);
