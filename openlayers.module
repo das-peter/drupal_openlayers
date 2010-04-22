@@ -200,12 +200,19 @@ function openlayers_get_layer_object($layer, $map = array()) {
   $layer->description = t($layer->description);
 
   // Attempt to get ctool class
-  $class = ctools_plugin_get_class($layer_types[$layer->data['layer_type']], 'layer_type');
-  if ($class) {
+  if(isset($layer_types[$layer->data['layer_type']]) && 
+    $class = ctools_plugin_get_class(
+      $layer_types[$layer->data['layer_type']], 
+      'layer_type')
+  ) {
     $layer_object = new $class($layer, $map);
     return $layer_object;
   }
   else {
+    watchdog('openlayers', 'Layer !layer_name is unavailable because its 
+      layer type or the module that provides its layer type is missing',
+      array('!layer_name' => $layer->title),
+      WATCHDOG_ERROR);
     return FALSE;
   }
 }
