@@ -74,7 +74,8 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
    * Render.
    */
   function render(&$map) {
-    drupal_add_js(drupal_get_path('module', 'openlayers') .'/includes/layer_types/tms.js');
+    drupal_add_js(drupal_get_path('module', 'openlayers') 
+      .'/includes/layer_types/tms.js');
     return $this->options;
   }
 }

@@ -169,11 +169,10 @@ Drupal.openlayers = {
       options.drupalID = name;
       // Ensure that the layer handler is available
       if (options.layer_handler !== undefined && Drupal.openlayers.layer[options.layer_handler] !== undefined) {
-        // Create new layer
         var layer = Drupal.openlayers.layer[options.layer_handler](map.layers[name].title, map, options);
-        // Check visibility
+
         layer.visibility = (!map.layer_activated || map.layer_activated[name]);
-        // Check inSwitcher (for overlays only)
+
         if (layer.isBaseLayer === false) {
           layer.displayInLayerSwitcher = (!map.layer_switcher || map.layer_switcher[name]);
         }
@@ -187,15 +186,7 @@ Drupal.openlayers = {
       }
     }
     
-    // Set our default base layer
-    openlayers.setBaseLayer(openlayers.getLayersBy('drupalID', map.default_layer));
-    
-    // Set our default base layer
-    for (var layer in openlayers.layers) {
-      if (openlayers.layers[layer].drupalID === map.default_layer) {
-        openlayers.setBaseLayer(openlayers.layers[layer]);
-      }
-    }
+    openlayers.setBaseLayer(openlayers.getLayersBy('drupalID', map.default_layer)[0]);
     
     // Zoom & center
     if (map.center.initial) {
@@ -208,7 +199,6 @@ Drupal.openlayers = {
 
     // Set the restricted extent if wanted.
     // Prevents the map from being panned outside of a specfic bounding box.
-    // TODO: needs to be aware of projection: currently the restrictedExtent string is always latlon
     if (typeof map.center.restrict !== 'undefined' && map.center.restrict.restrictextent) {
       openlayers.restrictedExtent = OpenLayers.Bounds.fromString(
           map.center.restrict.restrictedExtent);
@@ -311,15 +301,7 @@ Drupal.openlayers = {
     var wktFormat = new OpenLayers.Format.WKT();
     // Extract geometry either from wkt property or lon/lat properties
     if (feature.wkt) {
-      // Check to see if it is a string of wkt, or an array for a multipart feature.
-      // TODO is this necessary? We shouldn't have arrays coming in here
-      if (typeof(feature.wkt) === "string") {
-        var wkt = feature.wkt;
-      }
-      else if (typeof(feature.wkt) === "object" && feature.wkt !== null && feature.wkt.length !== 0) {
-        var wkt = "GEOMETRYCOLLECTION(" + feature.wkt.join(',') + ")";
-      }
-      return wktFormat.read(wkt);
+      return wktFormat.read(feature.wkt);
     }
     else if (feature.lon) {
       return wktFormat.read("POINT(" + feature.lon + " " + feature.lat + ")");
