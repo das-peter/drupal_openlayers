@@ -19,7 +19,6 @@ function _openlayers_openlayers_layers() {
     'type' => 'satellite',
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_google',
-    'events' => array(),
   );
   $layers[$layer->name] = $layer;
 
@@ -33,7 +32,6 @@ function _openlayers_openlayers_layers() {
     'type' => 'hybrid',
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_google',
-    'events' => array(),
   );
   $layers[$layer->name] = $layer;
 
@@ -47,7 +45,6 @@ function _openlayers_openlayers_layers() {
     'type' => 'normal',
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_google',
-    'events' => array(),
   );
   $layers[$layer->name] = $layer;
 
@@ -61,7 +58,6 @@ function _openlayers_openlayers_layers() {
     'type' => 'physical',
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_google',
-    'events' => array(),
   );
   $layers[$layer->name] = $layer;
 
@@ -75,7 +71,6 @@ function _openlayers_openlayers_layers() {
     'type' => 'satellite',
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_yahoo',
-    'events' => array(),
   );
   $layers[$layer->name] = $layer;
 
@@ -89,7 +84,6 @@ function _openlayers_openlayers_layers() {
     'type' => 'street',
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_yahoo',
-    'events' => array(),
   );
   $layers[$layer->name] = $layer;
 
@@ -103,7 +97,6 @@ function _openlayers_openlayers_layers() {
     'type' => 'hybrid',
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_yahoo',
-    'events' => array(),
   );
   $layers[$layer->name] = $layer;
 
@@ -117,7 +110,6 @@ function _openlayers_openlayers_layers() {
     'type' => 'street',
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_virtualearth',
-    'events' => array(),
   );
   $layers[$layer->name] = $layer;
 
@@ -131,7 +123,6 @@ function _openlayers_openlayers_layers() {
     'type' => 'satellite',
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_virtualearth',
-    'events' => array(),
   );
   $layers[$layer->name] = $layer;
 
@@ -145,7 +136,6 @@ function _openlayers_openlayers_layers() {
     'type' => 'hybrid',
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_virtualearth',
-    'events' => array(),
   );
   $layers[$layer->name] = $layer;
 
@@ -230,8 +220,6 @@ function _openlayers_openlayers_layers() {
     ),
     'projection' => array('4326'),
     'layer_type' => 'openlayers_layer_type_wms',
-    'events' => array(),
-    'url' => 'http://andy.sandbox.cloudmade.com/tiles/cycle/${z}/${x}/${y}.png',
     'url' => 'http://oam.hypercube.telascience.org/tiles',
     'params' => array(
       'layers' => 'osm-4326-hybrid',
@@ -257,7 +245,6 @@ function _openlayers_openlayers_layers() {
     'options' => array(
       'maxExtent' => openlayers_get_extent('4326'),
     ),
-    'events' => array(),
   );
   $layers[$layer->name] = $layer;
 
