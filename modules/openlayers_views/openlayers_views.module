@@ -42,15 +42,6 @@ function openlayers_views_ctools_plugin_api($module, $api) {
 }
 
 /**
- * Implementation of hook_openlayers_layers_handler_info
- */
-function openlayers_views_openlayers_layers_handler_info($map = array()) {
-  return array(
-    'view' => array('layer_handler' => 'view'),
-  );
-}
-
-/**
  * Implementation of hook_openlayers_layers().
  */
 function openlayers_views_openlayers_layers() {
