@@ -50,7 +50,8 @@ function _openlayers_openlayers_layer_types() {
     ),
     'openlayers_layer_type_cloudmade' => array(
       'title' => t('CloudMade'),
-      'description' => t('CloudMade'),
+      'description' => t('<a href="!url">CloudMade</a> Custom Map',
+        array('!url' => 'http://cloudmade.com/')),
       'layer_type' => array(
         'path' => drupal_get_path('module', 'openlayers') .'/includes/layer_types',
         'file' => 'cloudmade.inc',
@@ -60,7 +61,8 @@ function _openlayers_openlayers_layer_types() {
     ),
     'openlayers_layer_type_wms' => array(
       'title' => t('WMS'),
-      'description' => t('Web Map Service'),
+      'description' => t('<a href="!url">Web Map Service</a>',
+        array('!url' => 'http://en.wikipedia.org/wiki/Web_Map_Service')),
       'layer_type' => array(
         'path' => drupal_get_path('module', 'openlayers') . '/includes/layer_types',
         'file' => 'wms.inc',
@@ -70,7 +72,8 @@ function _openlayers_openlayers_layer_types() {
     ),
     'openlayers_layer_type_tms' => array(
       'title' => t('TMS'),
-      'description' => t('Tiled Map Service'),
+      'description' => t('<a href="!url">Tile Map Service</a>',
+        array('!url' => 'http://en.wikipedia.org/wiki/Tile_Map_Service')),
       'layer_type' => array(
         'path' => drupal_get_path('module', 'openlayers') . '/includes/layer_types',
         'file' => 'tms.inc',
@@ -100,7 +103,8 @@ function _openlayers_openlayers_layer_types() {
     ),
     'openlayers_layer_type_kml' => array(
       'title' => t('KML'),
-      'description' => t('<a href="!url">KML</a> overlay.', array('!url' => 'http://en.wikipedia.org/wiki/Keyhole_Markup_Language')),
+      'description' => t('<a href="!url">KML</a> overlay.', 
+        array('!url' => 'http://en.wikipedia.org/wiki/Keyhole_Markup_Language')),
       'layer_type' => array(
         'path' => drupal_get_path('module', 'openlayers') . '/includes/layer_types',
         'file' => 'kml.inc',
