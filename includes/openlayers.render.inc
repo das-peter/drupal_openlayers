@@ -3,35 +3,23 @@
 
 /**
  * @file
- * This file holds the functions the extra processing of rendering a map
- *
+ * Processing functions for layers and behaviors
  * @ingroup openlayers
  */
 
 /**
- * Process Layers
- *
- * Get full data for any layers and add handlers
+ * Initialize the layer array into an indexed array of layer objects
  *
  * @param $layers
  *   Array of layers to process
  * @param $map
  *   Map array
- * @return
- *   Array of processed layers
+ * @return $layer_data
+ *   Array of initialized layer objects
  */
 function _openlayers_layers_process($layers = array(), &$map = array()) {
   $layer_data = array();
 
-  // Check parameters
-  if (!is_array($layers)) {
-    $layers = array();
-  }
-  if (!is_array($map)) {
-    $map = array();
-  }
-
-  // Go through layers
   foreach ($layers as $layer) {
     if ($layer_object = openlayers_layer_load($layer)) {
       $layer_object->render($map);
@@ -44,23 +32,25 @@ function _openlayers_layers_process($layers = array(), &$map = array()) {
 }
 
 /**
- * Render Behaviors
- *
  * Execute render() method for all enabled behaviors.
  *
  * @param $behaviors
  *   Array of behaviors to process
  * @param $map
  *   Map array
+ * @return $rendered
+ *  Indexed array of rendered behaviors
  */
 function _openlayers_behaviors_render($behaviors = array(), &$map = array()) {
   $rendered = array();
+  
   foreach (openlayers_behaviors() as $key => $plugin) {
     if (isset($behaviors[$key]) && $class = ctools_plugin_get_class($plugin, 'behavior')) {
       $behavior = new $class($behaviors[$key], $map);
       $rendered[$key] = $behavior->render($map);
     }
   }
+
   return $rendered;
 }
 
@@ -73,14 +63,11 @@ function _openlayers_behaviors_render($behaviors = array(), &$map = array()) {
  *   Array of styles to process
  * @param $map
  *   Map array
- * @return
+ * @return $processed
  *   Array of processed styles
  */
-function _openlayers_styles_process($styles = array(), $layer_styles = array(), &$map = array()) {
-  // Initial variables
-  $styles = is_array($styles) ? $styles : array();
-  $layer_styles = is_array($layer_styles) ? $layer_styles : array();
-  $map = is_array($map) ? $map : array();
+function _openlayers_styles_process($styles = array(), 
+  $layer_styles = array(), &$map = array()) {
 
   // Get styles info array
   $styles_info = openlayers_styles();
@@ -99,7 +86,9 @@ function _openlayers_styles_process($styles = array(), $layer_styles = array(), 
 
   // Add layer styles
   foreach ($layer_styles as $style) {
-    if (!isset($processed[$style]) && !empty($styles_info[$style]) && $info = $styles_info[$style]->data) {
+    if (!isset($processed[$style]) && 
+        !empty($styles_info[$style]) && 
+        $info = $styles_info[$style]->data) {
       $processed[$style] = $info;
     }
   }
