@@ -101,6 +101,17 @@ function _openlayers_openlayers_layer_types() {
         'parent' => 'openlayers_layer_type',
       ),
     ),
+    'openlayers_layer_type_maptiler' => array(
+      'title' => t('MapTiler'),
+      'description' => t('<a href="!url">MapTiler</a> or GDAL2Tiles',
+        array('!url' => 'http://www.maptiler.org/')),
+      'layer_type' => array(
+        'path' => drupal_get_path('module', 'openlayers') . '/includes/layer_types',
+        'file' => 'maptiler.inc',
+        'class' => 'openlayers_layer_type_maptiler',
+        'parent' => 'openlayers_layer_type',
+      ),
+    ),
     'openlayers_layer_type_kml' => array(
       'title' => t('KML'),
       'description' => t('<a href="!url">KML</a> overlay.', 
