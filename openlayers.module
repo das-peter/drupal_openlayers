@@ -203,7 +203,7 @@ function openlayers_get_layer_object($layer, $map = array()) {
   $layer->description = t($layer->description);
 
   // Attempt to get ctool class
-  if(isset($layer_types[$layer->data['layer_type']]) && 
+  if (isset($layer_types[$layer->data['layer_type']]) && 
     $class = ctools_plugin_get_class(
       $layer_types[$layer->data['layer_type']], 
       'layer_type')
