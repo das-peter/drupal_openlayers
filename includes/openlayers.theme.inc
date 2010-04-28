@@ -12,9 +12,6 @@
  * Theme function for openlayers_map
  */
 function theme_openlayers_map($map = array(), $preset_name = '') {
-  $map['width'] = isset($map['width']) ? $map['width'] : 'auto';
-  $map['height'] = isset($map['height']) ? $map['height'] : '300px';
-
   // To ensure that any controls are on the map correctly, we need to
   // wrap the map in a container, and take into account percentage dimensions
   $container_width = $map['width'];
