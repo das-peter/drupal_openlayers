@@ -696,7 +696,7 @@ class openlayers_layer_type {
         $this->{$k} = $layer->{$k};
       }
     }
-    if (is_array($this->data)) {
+    if (isset($this->data) && is_array($this->data)) {
       $this->data += $this->options_init();
     }
     $this->map = $map;

@@ -13,9 +13,6 @@ Drupal.openlayers.layer.tms = function (title, map, options) {
     if (options.maxExtent !== undefined) {
       options.maxExtent = new OpenLayers.Bounds.fromArray(options.maxExtent);
     }
-    if (options.type === undefined){
-      options.type = "png";
-    }
     options.projection = 'EPSG:'+options.projection;
     var layer = new OpenLayers.Layer.TMS(title, options.base_url, options);
     layer.styleMap = styleMap;

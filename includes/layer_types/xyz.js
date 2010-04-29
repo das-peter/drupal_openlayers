@@ -13,9 +13,6 @@ Drupal.openlayers.layer.xyz = function (title, map, options) {
   if (options.maxExtent !== undefined) {
     options.maxExtent = new OpenLayers.Bounds.fromArray(options.maxExtent) || new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
   }
-  if (options.type === undefined){
-    options.type = "png";
-  }
   options.projection = 'EPSG:'+options.projection;
   options.sphericalMercator = true;
   

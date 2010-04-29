@@ -20,6 +20,7 @@ Drupal.openlayers.layer.kml = function(title, map, options) {
   options.format = OpenLayers.Format.KML;
   options.projection = 'EPSG:4326';
   
+  // TODO: switch to OpenLayers.Vector layer type; GML will be deprecated
   // Create layer
   var layer = new OpenLayers.Layer.GML(title, options.url, options);
   layer.styleMap = styleMap;

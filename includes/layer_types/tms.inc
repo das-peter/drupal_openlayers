@@ -31,6 +31,7 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
       'projection' => array('900913'),
       'baselayer' => TRUE,
       'layer_handler' => 'tms',
+      'type' => 'png',
     );
   }
 
@@ -50,6 +51,15 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
         '#title' => t('Layer Name'),
         '#default_value' => isset($this->data['layername']) ?
           $this->data['base_url'] : ''
+      ),
+      'type' => array(
+        '#type' => 'select',
+        '#title' => t('File Format'),
+        '#options' => array(
+          'png' => 'png',
+          'jpg' => 'jpg'),
+        '#default_value' => isset($this->data['type']) ?
+          $this->data['type'] : 'png'
       ),
       'resolutions' => array(
         '#type' => 'select',
