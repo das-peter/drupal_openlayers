@@ -49,7 +49,8 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
       'params' => array(
         'isBaseLayer' => array(
           '#type' => 'checkbox',
-          '#default_value' => $this->data['params']['isBaseLayer'],
+          '#default_value' => isset($this->data['params']['isBaseLayer']) ? 
+            $this->data['params']['isBaseLayer'] : TRUE,
           '#title' => t('BaseLayer'),
           '#description' => t('Uncheck to make this map an overlay')
         ),
@@ -66,7 +67,8 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
       ),
         'TRANSPARENT' => array(
           '#type' => 'checkbox',
-          '#default_value' => $this->data['options']['TRANSPARENT'],
+          '#default_value' => isset($this->data['options']['TRANSPARENT']) ?
+            $this->data['options']['TRANSPARENT'] : FALSE,
           '#title' => t('Transparent'),
           '#description' => t('When a PNG, make the background color transparent')
         ),
