@@ -67,7 +67,6 @@ Drupal.behaviors.openlayers = function(context) {
 
         // Process map option settings and prepare params for OpenLayers.
         if (map.options) {
-          alert('with map.options');
           var options = map.options;
           options.projection = new OpenLayers.Projection('EPSG:' + map.projection);          
           options.displayProjection = new OpenLayers.Projection('EPSG:' + map.displayProjection);
@@ -75,7 +74,6 @@ Drupal.behaviors.openlayers = function(context) {
           options.controls = [];
         }
         else {
-          alert('NOT with map.options');
           var options = {};
           // This is necessary because the input JSON cannot contain objects
           options.projection = new OpenLayers.Projection('EPSG:' + map.projection);
