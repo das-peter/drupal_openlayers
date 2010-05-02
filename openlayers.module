@@ -138,7 +138,6 @@ function openlayers_include() {
 function openlayers_build_map($map = array()) {
   // Get the necessary parts
   openlayers_include();
-
   module_load_include('inc', 'openlayers', 'includes/openlayers.render');
 
   // If no map is specified, use the default preset.
@@ -148,18 +147,20 @@ function openlayers_build_map($map = array()) {
     }
   }
 
-  // Hook to alter map.
-  // Styles, behaviors, layers may all be added here.
-  drupal_alter('openlayers_postrender', $map);
+  // Create ID for map as this will help with alters.
+  $map['id'] = !isset($map['id']) ? 
+    _openlayers_create_map_id() : $map['id'];
+
+  // Hook to alter map before main processing.  Styles, behaviors, 
+  // layers may all be added here.
+  // hook_openlayers_map_preprocess_alter($map)
+  drupal_alter('openlayers_map_preprocess', $map);
 
   // styles and layer styles are not required parameters
   $map['styles'] = isset($map['styles']) ? 
     $map['styles'] : array();
   $map['layer_styles'] = isset($map['layer_styles']) ? 
     $map['layer_styles'] : array();
-
-  $map['id'] = !isset($map['id']) ? 
-    _openlayers_create_map_id() : $map['id'];
 
   $map['layers'] = _openlayers_layers_process($map['layers'], $map);
   $map['behaviors'] = _openlayers_behaviors_render($map['behaviors'], $map);
@@ -168,10 +169,11 @@ function openlayers_build_map($map = array()) {
     $map['layer_styles'], 
     $map);
 
-  // Hook to alter map one last time
-  // Final modification to existing styles, behaviors, layers can happen here,
-  // but nothing new may be added.
-  drupal_alter('openlayers', $map);
+  // Hook to alter map one last time.  Final modification to existing 
+  // styles, behaviors, layers can happen here, but adding new styles,
+  // behaviors will not get rendered.
+  // hook_openlayers_map_alter($map)
+  drupal_alter('openlayers_map', $map);
 
   // Check map for errors
   $map['errors'] = openlayers_error_check_map($map);

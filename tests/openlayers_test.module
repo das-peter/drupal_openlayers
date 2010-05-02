@@ -421,3 +421,29 @@ function openlayers_test_views_default_views() {
     }
   }
 }
+
+/**
+ * Impements hook_openlayers_map_preprocess_alter().
+ */
+function openlayers_test_openlayers_map_preprocess_alter(&$map) {
+  // For testing purposes, display a message on the only the Test
+  // page, and only once.
+  static $performed = FALSE;
+  if (!$performed && $_GET['q'] == 'admin/build/openlayers/test') {
+    drupal_set_message(t('OpenLayers preprocess map alter hook fired.'));
+    $performed = TRUE;
+  }
+}
+
+/**
+ * Impements hook_openlayers_map_alter().
+ */
+function openlayers_test_openlayers_map_alter(&$map) {
+  // For testing purposes, display a message on the only the Test
+  // page, and only once.
+  static $performed = FALSE;
+  if (!$performed && $_GET['q'] == 'admin/build/openlayers/test') {
+    drupal_set_message(t('OpenLayers map alter hook fired.'));
+    $performed = TRUE;
+  }
+}

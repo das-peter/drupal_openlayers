@@ -217,3 +217,33 @@ class OpenLayersLayers extends DrupalWebTestCase {
 
   }
 }
+
+/**
+ * Test Case for Map Alters
+ */
+class OpenLayersMapAlters extends DrupalWebTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'OpenLayers Map Alters',
+      'description' => 'Tests the OpenLayers map alter hooks.',
+      'group' => 'OpenLayers',
+    );
+  }
+
+  function setUp() {
+    // Install modules
+    parent::setUp('openlayers', 'ctools', 'openlayers_ui', 'openlayers_test');
+  }
+
+  function testOpenLayersMapAlters() {
+    $user = $this->drupalCreateUser(array('administer openlayers'));
+    $this->drupalLogin($user);
+
+    // Styles
+    $this->drupalGet('admin/build/openlayers/test');
+    $this->assertText(t('OpenLayers preprocess map alter hook fired.'),
+      t('Map preprocess alter fired correctly.'));
+    $this->assertText(t('OpenLayers map alter hook fired.'),
+      t('Map alter fired correctly.'));
+  }
+}
