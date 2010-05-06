@@ -35,6 +35,7 @@ function theme_openlayers_cck_formatter_openlayers_wkt($element) {
 function theme_openlayers_cck_formatter_map($element) {
   $features = array();
   $field = content_fields($element['#field_name'], $element['#type_name']);
+  $widget = $field['widget'];
 
   // Create array of $features
   foreach (element_children($element) as $delta) {
@@ -64,10 +65,16 @@ function theme_openlayers_cck_formatter_map($element) {
 
   // Add vector layer behavior
   $preset->data['behaviors']['openlayers_cck_vector_layer'] =
-    array(
-      'features' => $features
-    );
+    array('features' => $features);
 
+  // Add widget/formatter behaviors
+  if (is_array($widget['openlayers_behaviors'])) {
+    foreach ($widget['openlayers_behaviors'] as $key => $behavior) {
+      if ($behavior['enabled']) {
+        $preset->data['behaviors'][$key] = $behavior['options'];
+      }
+    }
+  }
 
   // Render map
   return openlayers_render_map($preset->data, $preset->name);

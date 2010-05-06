@@ -26,14 +26,15 @@ function _openlayers_openlayers_presets() {
   $default->data = array(
     'projection' => '900913',
     'width' => 'auto',
-    'default_layer' => 'osm_mapnik',
     'height' => '400px',
+    'default_layer' => 'osm_mapnik',
     'center' => array(
       'initial' => array(
         'centerpoint' => '0,0',
         'zoom' => '2'
       )
     ),
+    // TODO: eliminate
     'options' => array(
       'displayProjection' => '4326',
       'maxExtent' => openlayers_get_extent('4326'),
