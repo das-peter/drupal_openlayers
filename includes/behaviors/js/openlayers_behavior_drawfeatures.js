@@ -94,7 +94,19 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = function(context) {
     control.controls = c;
     control.redraw();
 
-    var mcontrol = new OpenLayers.Control.ModifyFeature(data_layer);
-    data.openlayers.addControl(mcontrol);
+    var mcontrol = new OpenLayers.Control.ModifyFeature(
+      data_layer, {
+        displayClass: 'olControlModifyFeature',
+        deleteCodes: [46, 68, 100],
+        handleKeypress: function(evt){                              
+          if (this.feature && $.inArray(evt.keyCode, this.deleteCodes) > -1) {
+            // We must unselect the feature before we delete it 
+            this.selectControl.unselectAll();
+            this.layer.removeFeatures([this.feature]);
+          }
+        }
+      }
+    );
+    control.addControls(mcontrol);
   }
 };
