@@ -101,8 +101,9 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = function(context) {
         handleKeypress: function(evt){                              
           if (this.feature && $.inArray(evt.keyCode, this.deleteCodes) > -1) {
             // We must unselect the feature before we delete it 
+            var feature_to_delete = this.feature;
             this.selectControl.unselectAll();
-            this.layer.removeFeatures([this.feature]);
+            this.layer.removeFeatures([feature_to_delete]);
           }
         }
       }
