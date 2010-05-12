@@ -70,32 +70,6 @@ function openlayers_ctools_plugin_api($module, $api) {
 }
 
 /**
- * Implementation of hook_features_export().
- */
-function openlayers_layers_features_export($data, &$export, $module_name = '') {
-  $modules = module_implements('openlayers_layer_types');
-  $layer = openlayers_layer_load(current($data));
-
-  /*
-   * ensure that modules which provide layer types are
-   * included as dependencies when the layers those 
-   * layer types generate are exported
-   */
-  foreach ($modules as $module) {
-    $layer_types = module_invoke($module, 'openlayers_layer_types');
-    $export['features']['openlayers'][current($data)] = current($data);
-
-    foreach ($layer_types as $layer_type_name => $layer_type) {
-      if ($layer->data['layer_type'] == $layer_type_name) {
-        $export['dependencies'][$module] = $module;
-      }
-    }
-  }
-
-  return array();
-}
-
-/**
  * Include necessary CSS and JS for OpenLayers.
  *
  * @ingroup openlayers_api
