@@ -73,7 +73,7 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = function(context) {
     var class_names = {
       'point': 'OpenLayers.Handler.Point',
       'path': 'OpenLayers.Handler.Path',
-      'polygon': 'OpenLayers.Handler.Polygon',
+      'polygon': 'OpenLayers.Handler.Polygon'
     };
 
     var c = [];
