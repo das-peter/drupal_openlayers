@@ -68,7 +68,7 @@ function theme_openlayers_cck_formatter_map($element) {
     array('features' => $features);
 
   // Add widget/formatter behaviors
-  if (is_array($widget['openlayers_behaviors'])) {
+  if (isset($widget['openlayers_behaviors']) && is_array($widget['openlayers_behaviors'])) {
     foreach ($widget['openlayers_behaviors'] as $key => $behavior) {
       if ($behavior['enabled']) {
         $preset->data['behaviors'][$key] = $behavior['options'];
