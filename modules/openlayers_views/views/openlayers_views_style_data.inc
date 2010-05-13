@@ -361,7 +361,7 @@ class openlayers_views_style_data extends views_plugin_style {
         }
         if ($data_source['description_field']) {
           $description_field = $fields[$data_source['description_field']]['field_alias'];
-          $feature['attributes']['description'] = $record->$description_field;
+          $feature['attributes']['description'] = $rendered_record[$description_field];
           $excluded_fields[] = $description_field;
         }
 
