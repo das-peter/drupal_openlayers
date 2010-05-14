@@ -75,7 +75,7 @@ function openlayers_views_openlayers_layers() {
         $layer->description = $view->description . ' - ' . $data->display_title;
         $layer->data = array(
           'layer_type' => 'openlayers_views_vector',
-          'projection' => array('4326', '900913', '4269', '27700'),
+          'projection' => array('4326'),
           'baselayer' => FALSE,
           'type' => 'Vector',
           'url' => array(),

@@ -13,6 +13,7 @@ class openlayers_layer_type_openlayers_views_vector extends openlayers_layer_typ
     return array(
       'layer_type' => 'openlayers_layer_type_openlayers_views_vector',
       'layer_handler' => 'openlayers_views_vector',
+      'vector' => TRUE,
     );
   }
 
@@ -62,7 +63,6 @@ class openlayers_layer_type_openlayers_views_vector extends openlayers_layer_typ
   function render(&$map) {
     drupal_add_js(drupal_get_path('module', 'openlayers_views') .
       '/includes/layer_types/openlayers_views_vector.js');
-    //$processed[$layer_name]['features']
     $features = $this->get_features($this->data['views']['view'],
       $this->data['views']['display']);
     $this->data['features'] = $features;

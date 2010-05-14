@@ -342,9 +342,10 @@ function openlayers_layer_sanity_check($layer, $projection = FALSE, $strict = FA
     return !$strict;
   }
 
-  if ($projection && (!in_array($projection, $layer->data['projection']))) {
+  if ($projection && empty($layer->data['vector']) && 
+    (!in_array($projection, $layer->data['projection']))) {
     watchdog('openlayers',
-      'The layer %layer_name cannot work with the map projection: EPSG: %map_proj',
+      'The layer %layer_name cannot be reprojected to the map projection: EPSG: %map_proj',
       array(
         '%layer_name' => $layer->name,
         '%map_proj' => $map['projection'],

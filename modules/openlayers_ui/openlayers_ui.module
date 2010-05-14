@@ -598,12 +598,22 @@ function openlayers_ui_get_layer_options($type = 'baselayer', $projection = NULL
   
   // Go through layers to theme output.
   foreach ($layers as $key => $layer) {
-    if (!isset($projection) || (in_array($projection, $layer->data['projection']))) {
+    // not filtering by projection
+    // this layer has an appropriate projection
+    // this layer can be reprojected because it is vector
+    if (
+      !isset($projection) || 
+      in_array($projection, $layer->data['projection']) ||
+      !empty($layer->data['vector'])
+    ) {
       if ($type == 'baselayer' && $layer->data['baselayer']) {
-        $options[$key] = theme('openlayers_ui_form_layer_description', $layer->title, $layer->description);
+        $options[$key] = theme('openlayers_ui_form_layer_description', 
+          $layer->title, $layer->description);
       }
-      elseif ($type != 'baselayer' && empty($layer->data['baselayer'])) {
-        $options[$key] = theme('openlayers_ui_form_layer_description', $layer->title, $layer->description);
+      elseif ($type != 'baselayer' && 
+        empty($layer->data['baselayer'])) {
+        $options[$key] = theme('openlayers_ui_form_layer_description', 
+          $layer->title, $layer->description);
       }
     }
   }
