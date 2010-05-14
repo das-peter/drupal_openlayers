@@ -41,6 +41,13 @@ class openlayers_views_style_map extends views_plugin_style {
         $this->options['preset'] : variable_get('openlayers_default_preset', 'default'),
     );
   }
+  
+  /**
+   * Query - override to make sure this doesn't get run
+   */
+  function query() {
+    $this->view->built = TRUE;
+  }
 
   /**
    * Renders views (map)
