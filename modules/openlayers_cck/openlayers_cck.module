@@ -359,7 +359,8 @@ function openlayers_cck_wkt_element_process($element, $edit, &$form_state, &$for
     '#required' => $element['#required'],
     '#field_name' => $element['#field_name'],
     // TODO: more standard way of saying this?
-    '#default_value' => $element['#default_value'][0]['openlayers_wkt'],
+    '#default_value' => isset($element['#default_value'][0]['openlayers_wkt']) ?
+      $element['#default_value'][0]['openlayers_wkt'] : NULL,
     '#type_name' => $element['#type_name'],
     '#delta' => $element['#delta'],
     '#columns' => $element['#columns'],
