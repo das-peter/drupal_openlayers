@@ -47,83 +47,83 @@ Drupal.behaviors.openlayers = function(context) {
   if (typeof(Drupal.settings.openlayers) === 'object' && Drupal.settings.openlayers.maps && !$(context).data('openlayers')) {
     $('.openlayers-map:not(.openlayers-processed)').each(function() {
       $(this).addClass('openlayers-processed');
-
       var map_id = $(this).attr('id');
 
+      // Use try..catch for error handling.
       try {
-
-
-      if (Drupal.settings.openlayers.maps[map_id]) {
-        // Set OpenLayers language based on document language, 
-        // rather than browser language
-        OpenLayers.Lang.setCode($('html').attr('lang'));
-
-        var map = Drupal.settings.openlayers.maps[map_id];
-        
-        $(this)
-          // @TODO: move this into markup in theme function, doing this dynamically is a waste.
-          .css('width', map.width)
-          .css('height', map.height);
-
-        // Process map option settings and prepare params for OpenLayers.
-        if (map.options) {
-          var options = map.options;
-          options.projection = new OpenLayers.Projection('EPSG:' + map.projection);          
-          options.displayProjection = new OpenLayers.Projection('EPSG:' + map.displayProjection);
-          options.maxExtent = new OpenLayers.Bounds.fromArray(map.options.maxExtent);
-          options.controls = [];
-        }
-        else {
-          var options = {};
-          // This is necessary because the input JSON cannot contain objects
-          options.projection = new OpenLayers.Projection('EPSG:' + map.projection);
-          options.displayProjection = new OpenLayers.Projection('EPSG:' + map.displayProjection);
-          // TODO: work around this scary code
-          if (map.projection === '900913') {
-            options.maxExtent = new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
+        if (Drupal.settings.openlayers.maps[map_id]) {
+          // Set OpenLayers language based on document language, 
+          // rather than browser language
+          OpenLayers.Lang.setCode($('html').attr('lang'));
+  
+          var map = Drupal.settings.openlayers.maps[map_id];
+          
+          $(this)
+            // @TODO: move this into markup in theme function, doing this dynamically is a waste.
+            .css('width', map.width)
+            .css('height', map.height);
+  
+          // Process map option settings and prepare params for OpenLayers.
+          if (map.options) {
+            var options = map.options;
+            options.projection = new OpenLayers.Projection('EPSG:' + map.projection);          
+            options.displayProjection = new OpenLayers.Projection('EPSG:' + map.displayProjection);
+            options.maxExtent = new OpenLayers.Bounds.fromArray(map.options.maxExtent);
+            options.controls = [];
           }
-          if (map.projection === '4326') {
-            options.maxExtent = new OpenLayers.Bounds(-180, -90, 180, 90);
+          else {
+            var options = {};
+            // This is necessary because the input JSON cannot contain objects
+            options.projection = new OpenLayers.Projection('EPSG:' + map.projection);
+            options.displayProjection = new OpenLayers.Projection('EPSG:' + map.displayProjection);
+            // TODO: work around this scary code
+            if (map.projection === '900913') {
+              options.maxExtent = new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
+            }
+            if (map.projection === '4326') {
+              options.maxExtent = new OpenLayers.Bounds(-180, -90, 180, 90);
+            }
+            options.maxResolution = 1.40625;
+            options.controls = [];
           }
-          options.maxResolution = 1.40625;
-          options.controls = [];
-        }
-
-        // Change image path if specified
-        if (map.image_path) {
-          OpenLayers.ImgPath = relate_path(map.image_path, Drupal.settings.basePath);
-        }
-
-        // Change css path if specified
-        if (map.css_path) {
-          options.theme = relate_path(map.css_path, Drupal.settings.basePath);
-        }
-
-        if (map.proxy_host) {
-          OpenLayers.ProxyHost = relate_path(map.proxy_host, Drupal.settings.basePath);
-        }
-
-        // Initialize openlayers map
-        var openlayers = new OpenLayers.Map(map.id, options);
-
-        // Run the layer addition first
-        Drupal.openlayers.addLayers(map, openlayers);
-
-        // Attach data to map DOM object
-        $(this).data('openlayers', {'map': map, 'openlayers': openlayers});
-
-        // Finally, attach behaviors
-        Drupal.attachBehaviors(this);
-
-        if($.browser.msie) {
-          Drupal.openlayers.redrawVectors();
+  
+          // Change image path if specified
+          if (map.image_path) {
+            OpenLayers.ImgPath = relate_path(map.image_path, Drupal.settings.basePath);
+          }
+  
+          // Change css path if specified
+          if (map.css_path) {
+            options.theme = relate_path(map.css_path, Drupal.settings.basePath);
+          }
+  
+          if (map.proxy_host) {
+            OpenLayers.ProxyHost = relate_path(map.proxy_host, Drupal.settings.basePath);
+          }
+  
+          // Initialize openlayers map
+          var openlayers = new OpenLayers.Map(map.id, options);
+  
+          // Run the layer addition first
+          Drupal.openlayers.addLayers(map, openlayers);
+  
+          // Attach data to map DOM object
+          $(this).data('openlayers', {'map': map, 'openlayers': openlayers});
+  
+          // Finally, attach behaviors
+          Drupal.attachBehaviors(this);
+  
+          if($.browser.msie) {
+            Drupal.openlayers.redrawVectors();
+          }
         }
       }
-      } catch(e) {
+      catch(e) {
         if (typeof console != 'undefined') {
           console.log(e);
-        } else {
-          $(this).text('Error during map rendering.');
+        }
+        else {
+          $(this).text('Error during map rendering: ' + e);
         }
       }
     });
