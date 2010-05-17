@@ -24,7 +24,7 @@ function update(features) {
     );
   }
   wkt_value = WktWriter.write(features_copy.features);
-  openlayers_drawfeature_element.text(wkt_value);
+  openlayers_drawfeature_element.val(wkt_value);
 }
 
 /**
