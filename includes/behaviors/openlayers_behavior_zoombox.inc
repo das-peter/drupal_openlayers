@@ -19,6 +19,14 @@ class openlayers_behavior_zoombox extends openlayers_behavior {
     );
   }
 
+  function js_dependency() {
+    return array('OpenLayers.Control.ZoomBox');
+  }
+
+  function options_form($defaults) {
+    return array();
+  }
+
   /**
    * Render.
    */

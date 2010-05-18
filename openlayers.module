@@ -675,10 +675,22 @@ class openlayers_behavior {
     $this->map = $map;
   }
 
+  /*
+   * @return array of JavaScript functions required to be defined
+   * in order for this function to work
+   */
+  function js_dependency() {
+    return array();
+  }
+
   function options_init() {
     return array();
   }
 
+  /*
+   * @param $defaults default values for the form
+   * @return a FormAPI form
+   */
   function options_form($defaults = array()) {
     return array();
   }

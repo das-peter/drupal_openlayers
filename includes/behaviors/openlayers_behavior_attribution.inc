@@ -19,6 +19,15 @@ class openlayers_behavior_attribution extends openlayers_behavior {
     );
   }
 
+  function js_dependency() {
+    return array('OpenLayers.Control.Attribution');
+  }
+
+  function options_form($defaults) {
+    return array(
+    );
+  }
+
   /**
    * Render.
    */

@@ -19,6 +19,14 @@ class openlayers_behavior_layerswitcher extends openlayers_behavior {
     );
   }
 
+  function js_dependency() {
+    return array('OpenLayers.Control.LayerSwitcher');
+  }
+
+  function options_form($defaults) {
+    return array();
+  }
+
   /**
    * Render.
    */

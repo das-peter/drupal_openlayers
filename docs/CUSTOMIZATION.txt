@@ -42,6 +42,6 @@ buffer should be set to 0 if multiple urls are enabled.
 
 # Custom Behaviors
 
-If behaviors similar to those included is necessary, just clone the behaviors
+If behaviors similar to those included are necessary, just clone the behaviors
 and create a tiny new module that includes the copy. The same goes for layers,
 etc.

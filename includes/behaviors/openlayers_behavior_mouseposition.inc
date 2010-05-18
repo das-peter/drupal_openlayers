@@ -19,6 +19,14 @@ class openlayers_behavior_mouseposition extends openlayers_behavior {
     );
   }
 
+  function js_dependency() {
+    return array('OpenLayers.Control.MousePosition');
+  }
+
+  function options_form($defaults) {
+    return array();
+  }
+
   /**
    * Render.
    */

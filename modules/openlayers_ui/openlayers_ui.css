@@ -38,6 +38,16 @@ div.openlayers-column-right {
   float:right;
   }
 
+span.openlayers-dependency-value {
+  display: none;
+}
+
+span.openlayers-dependency-broken {
+  font-size: smaller;
+  display: none;
+  color: red;
+  }
+
 /**
  * Panel links
  */

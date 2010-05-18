@@ -633,3 +633,26 @@ function openlayers_ui_get_style_options() {
   }
   return $options;
 }
+
+/**
+ * dependencies widget helper
+ * @param $dependencies
+ *  Array of Javascript dependencies as strings of function names
+ * @return $form
+ *  Form element of dependencies if any
+ */
+function openlayers_dependency_widget($dependencies) {
+  if (is_array($dependencies) > 0) {
+    $dependency_form = array();
+    foreach($dependencies as $dependency) {
+      $dependency_form[] = array(
+        '#type' => 'markup',
+        '#value' => "<div class='openlayers-dependency-flag'>
+             <span class='openlayers-dependency-value'>$dependency</span>" . 
+            "<span class='openlayers-dependency-broken'>" . t('Dependency not found:') . ' ' . $dependency . "</span>" .
+            "</div>"
+      );
+    }
+    return $dependency_form;
+  }
+}

@@ -19,6 +19,14 @@ class openlayers_behavior_scaleline extends openlayers_behavior {
     );
   }
 
+  function js_dependency() {
+    return array('OpenLayers.Control.ScaleLine');
+  }
+
+  function options_form($defaults) {
+    return array();
+  }
+
   /**
    * Render.
    */

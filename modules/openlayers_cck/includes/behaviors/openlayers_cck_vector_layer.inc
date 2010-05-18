@@ -19,6 +19,10 @@ class openlayers_cck_vector_layer extends openlayers_behavior {
     );
   }
 
+  function js_dependency() {
+    return array('OpenLayers.Layer.Vector');
+  }
+
   /**
    * Render.
    */

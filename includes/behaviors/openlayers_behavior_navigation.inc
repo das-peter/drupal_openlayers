@@ -20,6 +20,10 @@ class openlayers_behavior_navigation extends openlayers_behavior {
     );
   }
 
+  function js_dependency() {
+    return array('OpenLayers.Control.Navigation');
+  }
+
   function options_form($defaults) {
     return array(
       'zoomWheelEnabled' => array(
