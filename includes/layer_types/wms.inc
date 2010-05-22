@@ -13,6 +13,10 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
   function __construct($layer = array(), $map = array()) {
     parent::__construct($layer, $map);
     if (isset($this->data)) {
+      if (isset($this->data['options']['srs'])) {
+        $pts = explode(':', $this->data['options']['srs']);
+        $this->data['projection'] = array($pts[1]);
+      }
       $this->data += $this->options_init();
     }
     else {
@@ -56,15 +60,15 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
         ),
       ),
       'options' => array(
-      'srs' => array(
-        '#type' => 'select',
-        '#title' => t('Projection'),
-        '#options' => array(
-          'EPSG:900913' => '900913',
-          'EPSG:4326' => '4326'),
-        '#default_value' => isset($this->data['options']['srs']) ?
-          $this->data['options']['srs'] : '900913'
-      ),
+        'srs' => array(
+          '#type' => 'select',
+          '#title' => t('Projection'),
+          '#options' => array(
+            'EPSG:900913' => '900913',
+            'EPSG:4326' => '4326'),
+          '#default_value' => isset($this->data['options']['srs']) ?
+            $this->data['options']['srs'] : '900913'
+        ),
         'TRANSPARENT' => array(
           '#type' => 'checkbox',
           '#default_value' => isset($this->data['options']['TRANSPARENT']) ?
