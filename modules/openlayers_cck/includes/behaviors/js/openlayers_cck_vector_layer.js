@@ -9,7 +9,7 @@
 Drupal.behaviors.openlayers_cck_vector_layer = function(context) {
   var data = $(context).data('openlayers');
   if (data && data.map.behaviors['openlayers_cck_vector_layer']) {
-    features = data.map.behaviors['openlayers_cck_vector_layer'].features;
+    var features = data.map.behaviors['openlayers_cck_vector_layer'].features;
 
     // Create options and layer
     var options = {
