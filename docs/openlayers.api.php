@@ -81,21 +81,33 @@ function hook_openlayers_layer_types() {
  * one must notify the CTools module that that module provides implementations 
  * of the hooks for styles, presets, and/or layers.
  *
- * @param $module name of a module that supports ctools exportables
- * @param $api name of the kind of exportable supported
- * @return array of version => 1 
- *  if $module is 'openlayers' and $api is a type of exportable that
- *  your module provides
+ * This function is just an example implementation of 
+ * hook_ctools_plugin_api() and should be alter according to
+ * your module's name.
+ *
+ * @param $module
+ *   Name of a module that supports CTools exportables.
+ * @param $api
+ *   Name of the kind of exportable supported.
+ * @return
+ *  If $module is 'openlayers', and $api is a type of exportable that
+ *  your module provides, and you are using Openlayers 2.x, then
+ *  return array with the following values:
+ *  - version => 1
  */
-function hook_ctools_plugin_api($module, $api) {
-  if ($module == "openlayers" && $api == "openlayers_layers") {
-    return array("version" => 1);
-  }
-  else if ($module == "openlayers" && $api == "openlayers_presets") {
-    return array("version" => 1);
-  }
-  else if ($module == "openlayers" && $api == "openlayers_styles") {
-    return array("version" => 1);
+function openlayers_example_ctools_plugin_api($module, $api) {
+  if ($module == "openlayers") {
+    switch ($api) {
+      case 'openlayers_presets':
+        return array('version' => 1);
+
+      case 'openlayers_layers':
+        return array('version' => 1);
+
+      case 'openlayers_styles':
+        return array('version' => 1);
+
+    }
   }
 }
 
@@ -104,6 +116,9 @@ function hook_ctools_plugin_api($module, $api) {
  *
  * This hook tells OpenLayers about the available layers
  * that can be used by name in maps.
+ *
+ * Ensure that you are telling CTools about this as well.
+ * @see openlayers_example_ctools_plugin_api().
  *
  * @return
  *   Return an associative array with index being a unique string 
@@ -140,6 +155,9 @@ function hook_openlayers_layers() {
  * This hook tells OpenLayers about the available behaviors
  * that can be used in maps.
  *
+ * Ensure that you are telling CTools about this as well.
+ * @see openlayers_example_ctools_plugin_api().
+ *
  * @return
  *   Return a nested associative array with the top level
  *   being a unique string identifier, and the nested array
@@ -173,6 +191,9 @@ function hook_openlayers_behaviors() {
  *
  * This hook tells OpenLayers about the available styles
  * that can be used in maps.
+ *
+ * Ensure that you are telling CTools about this as well.
+ * @see openlayers_example_ctools_plugin_api().
  *
  * @return
  *   Return an associative array with index being a unique string 

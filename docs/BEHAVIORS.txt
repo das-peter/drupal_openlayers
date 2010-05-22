@@ -13,7 +13,7 @@ First, you'll need to create a module. Of course, skip through this step if ther
     package = "OpenLayers"
     project = "modulename"
 
-In this case, you're creating a module just for this feature. So you'll need to implement a hook to notify OpenLayers that your module can do something for it. There's a hook called `hook_openlayers_behavior` for this, and since your module is called modulename, its implementation should be `modulename_openlayers_behavior`. A basic implementation would be
+In this case, you're creating a module just for this feature. So you'll need to implement a hook to notify OpenLayers that your module can do something for it. There's a hook called `hook_openlayers_behaviors` for this, and since your module is called modulename, its implementation should be `modulename_openlayers_behaviors`. A basic implementation would be
 
     function modulename_openlayers_behaviors() {
       return array(

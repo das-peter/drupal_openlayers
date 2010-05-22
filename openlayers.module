@@ -51,25 +51,6 @@ function openlayers_theme($existing, $type, $theme, $path) {
 }
 
 /**
- * Implementation of hook_ctools_plugin_api().
- */
-function openlayers_ctools_plugin_api($module, $api) {
-  if ($module == "openlayers") {
-    switch ($api) {
-      case 'openlayers_presets':
-        return array('version' => 1);
-
-      case 'openlayers_layers':
-        return array('version' => 1);
-
-      case 'openlayers_styles':
-        return array('version' => 1);
-
-    }
-  }
-}
-
-/**
  * Include necessary CSS and JS for OpenLayers.
  *
  * @ingroup openlayers_api
@@ -773,6 +754,25 @@ function openlayers_ctools_plugin_layer_types() {
   return array(
     'use hooks' => TRUE,
   );
+}
+
+/**
+ * Implementation of hook_ctools_plugin_api().
+ */
+function openlayers_ctools_plugin_api($module, $api) {
+  if ($module == "openlayers") {
+    switch ($api) {
+      case 'openlayers_presets':
+        return array('version' => 1);
+
+      case 'openlayers_layers':
+        return array('version' => 1);
+
+      case 'openlayers_styles':
+        return array('version' => 1);
+
+    }
+  }
 }
 
 /**
