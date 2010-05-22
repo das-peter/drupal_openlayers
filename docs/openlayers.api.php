@@ -73,6 +73,33 @@ function hook_openlayers_layer_types() {
 }
 
 /**
+ * CTools Registration Hook
+ *
+ * IMPORTANT:
+ *
+ * In order to support styles, presets, and layers in an external module,
+ * one must notify the CTools module that that module provides implementations 
+ * of the hooks for styles, presets, and/or layers.
+ *
+ * @param $module name of a module that supports ctools exportables
+ * @param $api name of the kind of exportable supported
+ * @return array of version => 1 
+ *  if $module is 'openlayers' and $api is a type of exportable that
+ *  your module provides
+ */
+function hook_ctools_plugin_api($module, $api) {
+  if ($module == "openlayers" && $api == "openlayers_layers") {
+    return array("version" => 1);
+  }
+  else if ($module == "openlayers" && $api == "openlayers_presets") {
+    return array("version" => 1);
+  }
+  else if ($module == "openlayers" && $api == "openlayers_styles") {
+    return array("version" => 1);
+  }
+}
+
+/**
  * OpenLayers Layers
  *
  * This hook tells OpenLayers about the available layers
