@@ -189,6 +189,17 @@ function _openlayers_openlayers_behaviors() {
         'parent' => 'openlayers_behavior',
       ),
     ),
+    'openlayers_behavior_zoompanel' => array(
+      'title' => t('Zoom Panel'),
+      'description' => t('Provides a Zoom In, Zoom Out, and Zoom to Max Extent Button'),
+      'type' => 'map',
+      'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
+      'file' => 'openlayers_behavior_zoompanel.inc',
+      'behavior' => array(
+        'class' => 'openlayers_behavior_zoompanel',
+        'parent' => 'openlayers_behavior',
+      ),
+    ),
     'openlayers_behavior_zoomtomaxextent' => array(
       'title' => t('Zoom to Max Extent'),
       'description' => t('Provides button to zoom to the maximum extent of the map.'),
