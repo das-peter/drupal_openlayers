@@ -378,7 +378,12 @@ function openlayers_ui_object_list($type) {
   }
 
   // Make table of presets and actions
-  $header = array(t('Title'), t('Description'), t('Actions'));
+  if ($type = 'layers') {
+    $header = array(t('Title'), t('Type'), t('Description'), t('Actions'));
+    $layer_types = openlayers_layer_types();
+  } else {
+    $header = array(t('Title'), t('Description'), t('Actions'));
+  }
 
   // Create table rows
   foreach ($objects as $object) {
@@ -395,7 +400,13 @@ function openlayers_ui_object_list($type) {
         $row[] = $object->title .' <em><small>(' .t('Default'). ')</small></em>';
         break;
     }
+
+    if ($type == 'layers') {
+      $row[] = $layer_types[$object->data['layer_type']]['title'];
+    }
+
     $row[] = $object->description;
+
     // Check preset type and create links accordingly.
     if ($object->export_type == (EXPORT_IN_CODE | EXPORT_IN_DATABASE)) {
       $links[] = l(t('Edit'), "admin/build/openlayers/{$type}/{$object->name}/edit");
