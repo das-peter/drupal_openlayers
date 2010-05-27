@@ -378,7 +378,7 @@ function openlayers_ui_object_list($type) {
   }
 
   // Make table of presets and actions
-  if ($type = 'layers') {
+  if ($type == 'layers') {
     $header = array(t('Title'), t('Type'), t('Description'), t('Actions'));
     $layer_types = openlayers_layer_types();
   } else {
