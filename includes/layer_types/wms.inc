@@ -58,6 +58,13 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
           '#title' => t('BaseLayer'),
           '#description' => t('Uncheck to make this map an overlay')
         ),
+        'singleTile' => array(
+          '#type' => 'checkbox',
+          '#default_value' => isset($this->data['params']['singleTile']) ?
+            $this->data['params']['singleTile'] : FALSE,
+          '#title' => t('Single tile'),
+          '#description' => t('Check to make this layer untiled')
+        )
       ),
       'options' => array(
         'srs' => array(
