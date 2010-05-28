@@ -19,9 +19,9 @@ class openlayers_behavior_zoompanel extends openlayers_behavior {
     );
   }
 
-  function options_form($defaults) {
+  function js_dependency() {
     return array(
-      'spec' => openlayers_dependency_widget('OpenLayers.Control.ZoomPanel')
+      'OpenLayers.Control.ZoomPanel'
     );
   }
 

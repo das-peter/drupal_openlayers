@@ -15,7 +15,7 @@
  * @return bool true or false for existence
  */
 function function_exists(head) {
-  return _function_exists(String.split(head, '.'), window);
+  return _function_exists(head.split('.'), window);
 }
 
 function _function_exists(head, f) {
