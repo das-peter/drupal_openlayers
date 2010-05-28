@@ -382,7 +382,7 @@ function openlayers_ui_object_list($type) {
     $header = array(t('Title'), t('Type'), t('Description'), t('Actions'));
     $layer_types = openlayers_layer_types();
   }
- if ($type == 'presets') {
+  elseif ($type == 'presets') {
     $header = array(t('Title'), t('Layers'), t('Description'), t('Actions'));
     $layers = openlayers_layers_load();
   }
