@@ -87,13 +87,18 @@ class openlayers_layer_type_cloudmade extends openlayers_layer_type {
    * Render.
    */
   function render(&$map) {
-    drupal_add_js(drupal_get_path('module', 'openlayers') .'/includes/layer_types/cloudmade.js');
-    $path = variable_get('openlayers_layers_cloudmade_js', '');
-    if (valid_url($path, TRUE)) {
-      drupal_set_html_head('<script src="' . check_url($path) . '" type="text/javascript"></script>');
-    }
-    else {
-      drupal_add_js($path);
+    static $cloudmade_maps_included;
+    
+    if (!isset($cloudmade_maps_included)) {
+      drupal_add_js(drupal_get_path('module', 'openlayers') .'/includes/layer_types/cloudmade.js');
+      $path = variable_get('openlayers_layers_cloudmade_js', '');
+      if (valid_url($path, TRUE)) {
+        drupal_set_html_head('<script src="' . check_url($path) . '" type="text/javascript"></script>');
+      }
+      else {
+        drupal_add_js($path);
+      }
+      $cloudmade_maps_included = true;
     }
     return $this->options;
   }
