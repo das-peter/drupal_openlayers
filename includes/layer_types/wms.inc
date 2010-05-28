@@ -58,6 +58,23 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
           '#title' => t('BaseLayer'),
           '#description' => t('Uncheck to make this map an overlay')
         ),
+        // TODO: validate the field, only positive integers shall be allowed
+        'buffer' => array(
+          '#type' => 'textfield',
+          '#default_value' => isset($this->data['params']['buffer']) ?
+            $this->data['params']['buffer'] : 2,
+          '#title' => t('Buffer'),
+          '#description' => t('Used only when not in single-tile mode, this specifies umber of extra rows and colums of tiles on each side which will surround the minimum grid tiles to cover the map')
+        ),
+        // TODO: validate the field, only positive numbers shall be allowed
+        //       numbers below 1 might also not make much sense
+        'ratio' => array(
+          '#type' => 'textfield',
+          '#default_value' => isset($this->data['params']['ratio']) ?
+            $this->data['params']['ratio'] : 1.5,
+          '#title' => t('Ratio'),
+          '#description' => t('Used only when in single-tile mode, this specifies the ratio of the size of the single tile to the size of the map')
+        )
         'singleTile' => array(
           '#type' => 'checkbox',
           '#default_value' => isset($this->data['params']['singleTile']) ?
