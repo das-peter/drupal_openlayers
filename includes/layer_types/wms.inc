@@ -74,7 +74,7 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
             $this->data['params']['ratio'] : 1.5,
           '#title' => t('Ratio'),
           '#description' => t('Used only when in single-tile mode, this specifies the ratio of the size of the single tile to the size of the map')
-        )
+        ),
         'singleTile' => array(
           '#type' => 'checkbox',
           '#default_value' => isset($this->data['params']['singleTile']) ?
