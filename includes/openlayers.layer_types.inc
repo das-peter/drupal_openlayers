@@ -123,5 +123,17 @@ function _openlayers_openlayers_layer_types() {
         'parent' => 'openlayers_layer_type',
       ),
     ),
+    'openlayers_layer_type_raw' => array(
+      'title' => t('Raw'),
+      'description' => t('Layer type for raw data input - 
+        not meant to be added with the UI.' 
+      ),
+      'layer_type' => array(
+        'path' => drupal_get_path('module', 'openlayers') . '/includes/layer_types',
+        'file' => 'raw.inc',
+        'class' => 'openlayers_layer_type_raw',
+        'parent' => 'openlayers_layer_type',
+      ),
+    ),
   );
 }
