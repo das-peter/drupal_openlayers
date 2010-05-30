@@ -23,6 +23,18 @@ function _openlayers_openlayers_behaviors() {
         'parent' => 'openlayers_behavior',
       ),
     ),
+    'openlayers_behavior_argparser' => array(
+      'title' => t('ArgParser'),
+      'description' => t('Parses Permalink-formatted arguments without adding a 
+        Permalink link to the map'),
+      'type' => 'layer',
+      'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
+      'file' => 'openlayers_behavior_argparser.inc',
+      'behavior' => array(
+        'class' => 'openlayers_behavior_argparser',
+        'parent' => 'openlayers_behavior',
+      ),
+    ),
     'openlayers_behavior_popup' => array(
       'title' => t('Pop Up'),
       'description' => t('Adds clickable info boxes to points or shapes on maps.'),
