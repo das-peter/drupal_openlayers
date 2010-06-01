@@ -33,9 +33,9 @@ function geolocator_openlayers_layers() {
   $layers = array();
   $layer = new stdClass();
   $layer->api_version = 1;
-  $layer->name = 'hack';
-  $layer->title = 'A Hackish Hack';
-  $layer->description = 'Oh boy';
+  $layer->name = 'afghanistan';
+  $layer->title = 'One Point on Afghanistan';
+  $layer->description = '';
   $layer->data = array(
     'layer_type' => 'openlayers_layer_type_raw',
     'projection' => array('900913'),
@@ -60,7 +60,7 @@ function geolocator_openlayers_layers() {
  * before layers are rendered and data is pulled from them.
  */
 function geolocator_openlayers_map_preprocess_alter(&$map) {
-  $map['layers']['hack'] = 'hack';
-  $map['layer_activated']['hack'] = 'hack';
-  $map['layer_switcher']['hack'] = 'hack';
+  $map['layers']['afghanistan'] = 'afghanistan';
+  $map['layer_activated']['afghanistan'] = 'afghanistan';
+  $map['layer_switcher']['afghanistan'] = 'afghanistan';
 }
