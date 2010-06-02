@@ -291,5 +291,6 @@ function _openlayers_openlayers_layers_i18n() {
     t('Virtual Earth (Bing) street tiles.'),
     t('Yahoo hybrid of streets and satellite tiles.'),
     t('Yahoo satellite imagery tiles.'),
-    t('Yahoo streets tiles.'));
+    t('Yahoo streets tiles.'),
+  );
 }

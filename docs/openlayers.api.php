@@ -120,6 +120,10 @@ function openlayers_example_ctools_plugin_api($module, $api) {
  * Ensure that you are telling CTools about this as well.
  * @see openlayers_example_ctools_plugin_api().
  *
+ * Please note, that to support translation for exportable
+ * code for potx extraction, you should include separate code
+ * of translatable string.
+ *
  * @return
  *   Return an associative array with index being a unique string 
  *   identifier, and simple objects with the following properties:
@@ -132,7 +136,6 @@ function hook_openlayers_layers() {
   // Taken from openlayers.layers.inc
 
   $layers = array();
-
   $layer = new stdClass();
   $layer->api_version = 1;
   $layer->name = 'google_satellite';
@@ -145,8 +148,13 @@ function hook_openlayers_layers() {
     'layer_type' => 'openlayers_layer_type_google',
   );
   $layers[$layer->name] = $layer;
-
   return $layers;
+  
+  // Extra code to support potx extractors
+  $potx = array(
+    t('Google Maps Satellite'),
+    t('Google Maps Satellite Imagery.'),
+  );
 }
 
 /**
