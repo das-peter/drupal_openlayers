@@ -255,10 +255,15 @@ class openlayers_views_style_data extends views_plugin_style {
         }
 
         $descriptions = array();
+        $excluded_fields = array();
         foreach ($record as $k => $v) {
           foreach ($handlers as $hid => $handler) {
             $rendered_record[$handler->field_alias] = $handler->advanced_render($v);
+            if (!empty($handler->options['exclude'])) {
+              $excluded_fields[] = $handler->field_alias;
+            }
           }
+          
           $item = '';
           if ($data_source['name_field']) {
             $name_field = $fields[$data_source['name_field']]['field_alias'];
@@ -275,6 +280,14 @@ class openlayers_views_style_data extends views_plugin_style {
 
         $feature['attributes']['description'] = $grouped_description;
         $feature['attributes']['count'] = count($record);
+
+        foreach ($fields as $fid => $field) {
+          $field_alias = $field['field_alias'];
+          if (!in_array($field_alias, $excluded_fields, TRUE)) {
+            // Use regular field name as this is easier to understand
+            $feature['attributes'][$fid . "_rendered"] = $rendered_record[$field_alias];
+          }
+        }
 
         // Only add features with WKT data
         if (!empty($feature['wkt'])) {
