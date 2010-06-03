@@ -365,6 +365,20 @@ function openlayers_layer_save($layer) {
 }
 
 /**
+ * Delete a layer object from the database.
+ *
+ * @ingroup openlayers_api
+ *
+ * @param $preset
+ *   String identifier of a layer or layer object with name.
+ * @return
+ *   The results of DB delete.
+ */
+function openlayers_layer_delete($layer) {
+  return openlayers_object_delete($layer, 'layer');
+}
+
+/**
  * Get all layer types.
  *
  * @ingroup openlayers_api
@@ -479,6 +493,20 @@ function openlayers_style_save($style) {
 }
 
 /**
+ * Delete a style object from the database.
+ *
+ * @ingroup openlayers_api
+ *
+ * @param $preset
+ *   String identifier of a style or style object with name.
+ * @return
+ *   The results of DB delete.
+ */
+function openlayers_style_delete($style) {
+  return openlayers_object_delete($style, 'style');
+}
+
+/**
  * Get Presets from DB or code, via cache.
  *
  * @ingroup openlayers_api
@@ -547,6 +575,20 @@ function openlayers_preset_save($preset) {
 }
 
 /**
+ * Delete a preset object from the database.
+ *
+ * @ingroup openlayers_api
+ *
+ * @param $preset
+ *   String identifier of a preset or preset object with name.
+ * @return
+ *   The results of DB delete.
+ */
+function openlayers_preset_delete($preset) {
+  return openlayers_object_delete($preset, 'preset');
+}
+
+/**
  * Get preset options in an array suitable for a FormAPI element.
  *
  * @ingroup openlayers_api
@@ -563,6 +605,47 @@ function openlayers_preset_options($reset = FALSE) {
     $options[$preset->name] = $preset->title;
   }
   return $options;
+}
+
+/**
+ * Delete an object from the database.
+ *
+ * @ingroup openlayers_api
+ *
+ * @param $ol_object
+ *   String identifier of an object or the object with name.
+ * @param $type
+ *   Type of object to delete.  The options are the following:
+ *   - 'layer'
+ *   - 'style'
+ *   = 'preset'
+ * @return
+ *   The results of the DB delete.
+ */
+function openlayers_object_delete($ol_object, $type) {
+  // Check for object or name
+  if (is_object($ol_object) && isset($ol_object->name)) {
+    $ol_object = $ol_object->name;
+  }
+  
+  // Determine query to use
+  switch ($type) {
+    case 'style':
+      $query = "DELETE FROM {openlayers_styles} WHERE name = '%s'";
+      break;
+      
+    case 'layer':
+      $query = "DELETE FROM {openlayers_layers} WHERE name = '%s'";
+      break;
+      
+    case 'preset':
+      $query = "DELETE FROM {openlayers_map_presets} WHERE name = '%s'";
+      break;
+      
+    default:
+      return FALSE;
+  }
+  return db_query($query, $ol_object);
 }
 
 /**

@@ -470,13 +470,15 @@ function openlayers_ui_object_delete_submit($form, &$form_state) {
 
   switch ($type) {
     case 'styles':
-      $result = db_query("DELETE FROM {openlayers_styles} WHERE name = '%s'", $object->name);
+      $result = openlayers_style_delete($object);
       break;
+      
     case 'layers':
-      $result = db_query("DELETE FROM {openlayers_layers} WHERE name = '%s'", $object->name);
+      $result = openlayers_layer_delete($object);
       break;
+      
     case 'presets':
-      $result = db_query("DELETE FROM {openlayers_map_presets} WHERE name = '%s'", $object->name);
+      $result = openlayers_preset_delete($object);
       break;
   }
 
