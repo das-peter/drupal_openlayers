@@ -15,10 +15,12 @@ Drupal.behaviors.openlayers_cck_vector_layer = function(context) {
     var options = {
       drupalID: 'openlayers_cck_vector_layer'
     };
-    var data_layer = new OpenLayers.Layer.Vector(Drupal.t("Data Layer"), options);
+    var styleMap = Drupal.openlayers.getStyleMap(data.map, options.drupalID);
+    var dataLayer = new OpenLayers.Layer.Vector(Drupal.t("Data Layer"), options);
     
-    // Add features and layers
-    Drupal.openlayers.addFeatures(data.map, data_layer, features);
-    data.openlayers.addLayer(data_layer);
+    // Add features, styles, and layers
+    dataLayer.styleMap = styleMap;
+    Drupal.openlayers.addFeatures(data.map, dataLayer, features);
+    data.openlayers.addLayer(dataLayer);
   }
 };

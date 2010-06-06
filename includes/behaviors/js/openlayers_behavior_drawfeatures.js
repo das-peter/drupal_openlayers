@@ -39,8 +39,10 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = function(context) {
       projection: new OpenLayers.Projection('EPSG:4326'),
       drupalID: 'openlayers_drawfeatures_layer'
     };
-    var data_layer = new OpenLayers.Layer.Vector(Drupal.t("Feature Layer"), options);
-    data.openlayers.addLayer(data_layer);
+    var styleMap = Drupal.openlayers.getStyleMap(data.map, options.drupalID);
+    var dataLayer = new OpenLayers.Layer.Vector(Drupal.t("Feature Layer"), options);
+    dataLayer.styleMap = styleMap;
+    data.openlayers.addLayer(dataLayer);
 
     if (openlayers_drawfeature_element.text() != '') {
       var wktFormat = new OpenLayers.Format.WKT();
@@ -52,19 +54,19 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = function(context) {
           data.openlayers.projection
         );
       }
-      data_layer.addFeatures(features);
+      dataLayer.addFeatures(features);
     }
 
     // registering events late, because adding data
     // would result in a reprojection loop
-    data_layer.events.register('featureadded', openlayers_drawfeature_element,
+    dataLayer.events.register('featureadded', openlayers_drawfeature_element,
       openlayers_behavior_drawfeatures_update);
-    data_layer.events.register('featureremoved', openlayers_drawfeature_element,
+    dataLayer.events.register('featureremoved', openlayers_drawfeature_element,
       openlayers_behavior_drawfeatures_update);
-    data_layer.events.register('featuremodified', openlayers_drawfeature_element,
+    dataLayer.events.register('featuremodified', openlayers_drawfeature_element,
       openlayers_behavior_drawfeatures_update);
     
-    var control = new OpenLayers.Control.EditingToolbar(data_layer);
+    var control = new OpenLayers.Control.EditingToolbar(dataLayer);
     data.openlayers.addControl(control);
     control.activate();
 
@@ -93,7 +95,7 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = function(context) {
     control.redraw();
 
     var mcontrol = new OpenLayers.Control.ModifyFeature(
-      data_layer, {
+      dataLayer, {
         displayClass: 'olControlModifyFeature',
         deleteCodes: [46, 68, 100],
         handleKeypress: function(evt){                              
