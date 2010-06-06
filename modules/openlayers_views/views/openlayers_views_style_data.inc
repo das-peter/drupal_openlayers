@@ -263,17 +263,15 @@ class openlayers_views_style_data extends views_plugin_style {
               $excluded_fields[] = $handler->field_alias;
             }
           }
-          
-          $item = '';
-          if ($data_source['name_field']) {
-            $name_field = $fields[$data_source['name_field']]['field_alias'];
-            $item .= "<h2 class='point-title'>". $rendered_record[$name_field] ."</h2>";
-          }
-          if ($data_source['description_field']) {
-            $description_field = $fields[$data_source['description_field']]['field_alias'];
-            $item .= "<div class='point-content'>". $rendered_record[$description_field] ."</div>";
-          }
-          $descriptions[] = $item;
+
+          // Get aliases name
+          $name_field = (!empty($data_source['name_field'])) ? 
+            $fields[$data_source['name_field']]['field_alias'] : NULL;
+          $description_field = (!empty($data_source['description_field'])) ? 
+            $fields[$data_source['description_field']]['field_alias'] : NULL;
+          // Create output
+          $descriptions[] = theme('openlayers_views_group_display_item', 
+            $rendered_record[$name_field], $rendered_record[$description_field]);
         }
 
         $grouped_description = theme('item_list', $descriptions);
