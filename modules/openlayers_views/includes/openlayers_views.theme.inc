@@ -18,10 +18,10 @@ function theme_openlayers_views_group_display_item($name = '', $description = ''
 
   // Build output
   if (!empty($name)) {
-    $output .= '<h2 class="openlayers-views-group-feature-name">' . $name . '</h2>';
+    $output .= '<h2 class="point-title openlayers-views-group-feature-name">' . $name . '</h2>';
   } 
   if (!empty($description)) {
-    $output .= '<div class="openlayers-views-group-feature-description">' . $description . '</div>';
+    $output .= '<div class="point-content openlayers-views-group-feature-description">' . $description . '</div>';
   } 
 
   return $output;
