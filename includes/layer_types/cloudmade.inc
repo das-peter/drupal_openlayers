@@ -98,7 +98,7 @@ class openlayers_layer_type_cloudmade extends openlayers_layer_type {
       else {
         drupal_add_js($path);
       }
-      $cloudmade_maps_included = true;
+      $cloudmade_maps_included = TRUE;
     }
     return $this->options;
   }

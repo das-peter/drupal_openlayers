@@ -16,7 +16,7 @@ class openlayers_behavior_cluster extends openlayers_behavior {
   function options_init() {
     return array(
       'distance' => '20',
-      'threshold' => null,
+      'threshold' => NULL,
     );
   }
 
@@ -46,25 +46,25 @@ class openlayers_behavior_cluster extends openlayers_behavior {
         '#options' => $vector_layers,
         '#description' => t('Select layer to cluster'),
         '#default_value' => isset($defaults['clusterlayer']) ?
-          $defaults['clusterlayer'] : NULL,
+        $defaults['clusterlayer'] : NULL,
       ),
       'distance' => array(
         '#type' => 'textfield',
         '#default_value' => (isset($defaults['distance'])) ?
-          $defaults['distance'] : 20,
+        $defaults['distance'] : 20,
         '#size' => 5,
         '#title' => t('Distance'),
-     	  '#description' => t('Pixel distance between features that should ' .
-     	    'be considered a single cluster'),
+        '#description' => t('Pixel distance between features that should ' .
+        'be considered a single cluster'),
       ),
       'threshold' => array(
         '#type' => 'textfield',
         '#default_value' => (isset($defaults['threshold'])) ?
-          $defaults['threshold'] : null,
+        $defaults['threshold'] : NULL,
         '#size' => 5,
         '#title' => t('Threshold'),
-   	    '#description' => t('Optional threshold below which original ' .
-   	      'features will be added to the layer instead of clusters'),
+        '#description' => t('Optional threshold below which original ' .
+        'features will be added to the layer instead of clusters'),
       )
     );
   }
