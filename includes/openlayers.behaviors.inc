@@ -245,5 +245,16 @@ function _openlayers_openlayers_behaviors() {
          'parent' => 'openlayers_behavior',
        ),
     ),
+    'openlayers_behavior_cluster' => array(
+      'title' => t('Cluster'),
+      'description' => t('Provides vector layer features clustering by proximity.'),
+      'type' => 'layer',
+      'path' => drupal_get_path('module', 'openlayers') . '/includes/behaviors',
+      'file' => 'openlayers_behavior_cluster.inc',
+      'behavior' => array(
+        'class' => 'openlayers_behavior_cluster',
+        'parent' => 'openlayers_behavior',
+      ),
+    ),
   );
 }
