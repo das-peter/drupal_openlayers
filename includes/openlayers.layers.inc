@@ -240,9 +240,10 @@ function _openlayers_openlayers_layers() {
     'projection' => array('4326'),
     'baselayer' => TRUE,
     'layer_type' => 'openlayers_layer_type_wms',
-    'url' => 'http://labs.metacarta.com/wms/vmap0',
-    'params' => array('layers' => 'basic'),
+    'base_url' => 'http://labs.metacarta.com/wms-c/Basic.py',
+    'params' => array(),
     'options' => array(
+      'layers' => array('basic'),
       'maxExtent' => openlayers_get_extent('4326'),
     ),
   );

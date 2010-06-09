@@ -34,11 +34,8 @@ function _openlayers_openlayers_presets() {
         'zoom' => '2'
       )
     ),
-    // TODO: eliminate
-    'options' => array(
-      'displayProjection' => '4326',
-      'maxExtent' => openlayers_get_extent('4326'),
-    ),
+    'displayProjection' => '4326',
+    'maxExtent' => openlayers_get_extent('4326'),
     'behaviors' => array(
       'openlayers_behavior_panzoombar' => array(),
       'openlayers_behavior_layerswitcher' => array(),
