@@ -370,10 +370,16 @@ class openlayers_views_style_data extends views_plugin_style {
           $feature['attributes']['name'] = $rendered_record[$name_field];
           $excluded_fields[] = $name_field;
         }
+        else {
+          $feature['attributes']['name'] = '';
+        }
         if ($data_source['description_field']) {
           $description_field = $fields[$data_source['description_field']]['field_alias'];
           $feature['attributes']['description'] = $rendered_record[$description_field];
           $excluded_fields[] = $description_field;
+        }
+        else {
+          $feature['attributes']['description'] = '';
         }
 
         // Fill in attributes that are not:
