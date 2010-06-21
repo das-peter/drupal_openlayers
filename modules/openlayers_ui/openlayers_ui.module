@@ -60,7 +60,7 @@ function openlayers_ui_menu() {
   // Core OpenLayers settings pages.
   $items['admin/build/openlayers'] = array(
     'title' => 'OpenLayers',
-    'description' => 'Main settings for OpenLayers.',
+    'description' => 'Manage maps, layers, styles, and map behaviors.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('openlayers_ui_admin_settings'),
     'access arguments' => array('administer openlayers'),
