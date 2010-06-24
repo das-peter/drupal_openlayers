@@ -17,12 +17,20 @@ Drupal.openlayers.layer.kml = function(title, map, options) {
     options.maxExtent = OpenLayers.Bounds.fromArray(options.maxExtent);
   }
 
-  options.format = OpenLayers.Format.KML;
-  options.projection = 'EPSG:4326';
-  
-  // TODO: switch to OpenLayers.Vector layer type; GML will be deprecated
   // Create layer
-  var layer = new OpenLayers.Layer.GML(title, options.url, options);
+  var layer = new OpenLayers.Layer.Vector(
+    title, 
+    {
+    strategies: [new OpenLayers.Strategy.Fixed()],
+    protocol: new OpenLayers.Protocol.HTTP({
+        url: options.url, 
+        format: new OpenLayers.Format.KML({
+          extractStyles: true,
+          extractAttributes: true
+        })
+      })
+    }
+  );
   layer.styleMap = styleMap;
   return layer;
 };
