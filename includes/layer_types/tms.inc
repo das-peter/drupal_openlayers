@@ -50,7 +50,7 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
         '#type' => 'textfield',
         '#title' => t('Layer Name'),
         '#default_value' => isset($this->data['layername']) ?
-          $this->data['base_url'] : ''
+          $this->data['layername'] : ''
       ),
       'type' => array(
         '#type' => 'select',
