@@ -52,7 +52,7 @@ function openlayers_ui_styles_form(&$form_state, $style = NULL, $edit = FALSE) {
         feature.  This is a value in pixels.'),
     ),
     'fillOpacity' => array(
-      'default' => 0.4,
+      'default' => 1,
       'desc' => t('This is the opacity used for filling in Polygons. 
         It is also used in the center of marks for points: the interior 
         color of circles or other shapes. It is not used if an 
@@ -113,9 +113,11 @@ function openlayers_ui_styles_form(&$form_state, $style = NULL, $edit = FALSE) {
         Y direction.  This should be in pixels.'),
     ),
     'graphicOpacity' => array(
-      'default' => '',
+      'default' => '1',
       'desc' => t('Opacity of an external graphic.  This should be a 
-        value between 0 and 1.'),
+      value between 0 and 1. Grahics that are already semitransparent,
+      like alpha PNGs, should have this set to 1, or rendering problems in 
+      Internet Explorer will ensue.'),
     ),
     'graphicXOffset' => array(
       'default' => '',
