@@ -23,23 +23,6 @@ Drupal.settings.openlayers = {};
 Drupal.settings.openlayers.maps = {};
 
 /**
- * This should move down and be a part of another object
-  * and get docs.
- */
-function relate_path(path, base_path) {
-  // Check for a full URL or an absolute path.
-  if (path.indexOf('://') >= 0 || path.indexOf('/') == 0) {
-    return path;
-  }
-  else {
-    return base_path + path;
-  }
-}
-
-/**
- * object from feature
- */
-/**
  * Minimal OpenLayers map bootstrap.
  * All additional operations occur in additional Drupal behaviors.
  */
@@ -70,7 +53,8 @@ Drupal.behaviors.openlayers = function(context) {
 
           // TODO: work around this scary code
           if (map.projection === '900913') {
-            options.maxExtent = new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
+            options.maxExtent = new OpenLayers.Bounds(
+              -20037508.34, -20037508.34, 20037508.34, 20037508.34);
           }
           if (map.projection === '4326') {
             options.maxExtent = new OpenLayers.Bounds(-180, -90, 180, 90);
@@ -79,18 +63,18 @@ Drupal.behaviors.openlayers = function(context) {
           options.maxResolution = 1.40625;
           options.controls = [];
   
-          // Change image path if specified
+          // Change image, CSS, and proxy paths if specified
           if (map.image_path) {
-            OpenLayers.ImgPath = relate_path(map.image_path, Drupal.settings.basePath);
+            OpenLayers.ImgPath = Drupal.openlayers.relatePath(map.image_path, 
+              Drupal.settings.basePath);
           }
-  
-          // Change css path if specified
           if (map.css_path) {
-            options.theme = relate_path(map.css_path, Drupal.settings.basePath);
+            options.theme = Drupal.openlayers.relatePath(map.css_path, 
+              Drupal.settings.basePath);
           }
-  
           if (map.proxy_host) {
-            OpenLayers.ProxyHost = relate_path(map.proxy_host, Drupal.settings.basePath);
+            OpenLayers.ProxyHost = Drupal.openlayers.relatePath(map.proxy_host, 
+              Drupal.settings.basePath);
           }
   
           // Initialize openlayers map
@@ -126,6 +110,20 @@ Drupal.behaviors.openlayers = function(context) {
  * Collection of helper methods.
  */
 Drupal.openlayers = {
+
+  /**
+   * Determine path based on format.
+   */
+  'relatePath': function(path, basePath) {
+    // Check for a full URL or an absolute path.
+    if (path.indexOf('://') >= 0 || path.indexOf('/') == 0) {
+      return path;
+    }
+    else {
+      return basePath + path;
+    }
+  },
+
   /**
    * Redraw Vectors.
    * This is necessary because various version of IE cannot draw vectors on

@@ -220,12 +220,18 @@ function openlayers_test_openlayers_presets() {
  */
 function openlayers_test_page() {
   $output = '';
+  $js_test_link = l(t('JS Testing Page.'), 
+    drupal_get_path('module', 'openlayers_test') . '/js/index.html');
 
   // Render all presets
   $presets = openlayers_presets();
   foreach ($presets as $name => $preset) {
     $output .= '
-      </h3> ' . $preset->title . '</h3>
+      <h3>' . t('Info') . '</h3>
+      <ul>
+        <li>' . $js_test_link . '</li>
+      </ul> 
+      <h3>' . $preset->title . '</h3>
       ' . openlayers_render_map($preset->data) . '
     ';
   }
