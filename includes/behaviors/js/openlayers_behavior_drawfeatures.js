@@ -48,11 +48,22 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = function(context) {
       var wktFormat = new OpenLayers.Format.WKT();
       var wkt = openlayers_drawfeature_element.text();
       var features = wktFormat.read(wkt);
-      for(var i in features) {
-        features[i].geometry = features[i].geometry.transform(
+      
+      // Check if features is an array
+      if (features.constructor == Array) {
+        for (var i in features) {
+          features[i].geometry = features[i].geometry.transform(
+            new OpenLayers.Projection('EPSG:4326'),
+            data.openlayers.projection
+          );
+        }
+      }
+      else {
+        features.geometry = features.geometry.transform(
           new OpenLayers.Projection('EPSG:4326'),
           data.openlayers.projection
         );
+        features = [features];
       }
       dataLayer.addFeatures(features);
     }
