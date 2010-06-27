@@ -234,9 +234,18 @@ Drupal.openlayers = {
           }
 
           // Add attribute data
-          if (feature.attributes){
+          if (feature.attributes) {
+            // Attributes belong to features, not single component geometries
+            // of them. But we're creating a geometry for each component for
+            // better performance and clustering support. Let's call these
+            // "pseudofeatures".
+            //
+            // In order to identify the real feature each geometry belongs to
+            // we then add a 'fid' parameter to the "pseudofeature".
+            // NOTE: 'drupalFID' is only unique within a single layer.
             newFeature.attributes = feature.attributes;
             newFeature.data = feature.attributes;
+            newFeature.drupalFID = key; 
           }
 
           // Add style information
