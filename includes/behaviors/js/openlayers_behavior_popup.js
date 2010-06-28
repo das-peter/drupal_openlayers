@@ -55,7 +55,6 @@ Drupal.behaviors.openlayers_behavior_popup = function(context) {
       }
     }
 
-    // Define feature select events for selected layers.
     popupSelect = new OpenLayers.Control.SelectFeature(layers,
       {
         onSelect: function (feature) {
@@ -88,7 +87,6 @@ Drupal.behaviors.openlayers_behavior_popup = function(context) {
       }
     );
 
-    // Actiate the popups
     map.addControl(popupSelect);
     popupSelect.activate();
     Drupal.openlayers.popup.popupSelect = popupSelect;
