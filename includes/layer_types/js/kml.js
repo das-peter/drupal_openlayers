@@ -24,10 +24,9 @@ Drupal.openlayers.layer.kml = function(title, map, options) {
     strategies: [new OpenLayers.Strategy.Fixed()],
     protocol: new OpenLayers.Protocol.HTTP({
         url: options.url, 
-        format: new OpenLayers.Format.KML({
-          extractStyles: true,
-          extractAttributes: true
-        })
+        format: new OpenLayers.Format.KML(
+          options.formatOptions
+        )
       })
     }
   );
