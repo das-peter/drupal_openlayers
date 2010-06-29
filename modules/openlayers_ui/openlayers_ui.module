@@ -516,9 +516,11 @@ function openlayers_ui_object_export(&$form_state, $type, $object) {
   
   // Use CTools to create export code
   ctools_include('export');
+  $schema = ctools_export_get_schema($api);
+  $identifier = $schema['export']['identifier'];
   $code = '$items = array();' ."\n";
   $code .= ctools_export_object($api, $object, '');
-  $code .= '$items["'. $object->name .'"] = $' . $api . ';' ."\n";
+  $code .= '$items["'. $object->name .'"] = $' . $identifier . ';' ."\n";
   $code .= 'return $items;';
   $rows = substr_count($code, "\n") + 1;
 
