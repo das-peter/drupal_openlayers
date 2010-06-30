@@ -87,22 +87,29 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = function(context) {
       'polygon': 'OpenLayers.Handler.Polygon'
     };
 
+    // Create index of valid handlers
+    var validHandler = {};
+    for(var j in feature_types) {
+       if (class_names[feature_types[j]]) {
+          validHandler[class_names[feature_types[j]]] = 1;
+       }
+    }
+
+    var defaultControl;
     var c = [];
     for(var i in control.controls) {
-      for(var j in feature_types) {
-        // don't judge the navigation control
-        if(control.controls[i].handler !== null) {
-          if(control.controls[i].handler.CLASS_NAME == 
-          class_names[feature_types[j]]) {
-            c.push(control.controls[i]);
-          }
-        }
-        else {
-          c.push(control.controls[i]);
-        }
+      // Mark the navigation control as the default one
+      if (control.controls[i].CLASS_NAME == 'OpenLayers.Control.Navigation') {
+        c.push(control.controls[i]);
+        defaultControl = control.controls[i];
+      } else if (validHandler[control.controls[i].handler.CLASS_NAME]) {
+        c.push(control.controls[i]);
       }
     }
     control.controls = c;
+    if (defaultControl) {
+      control.activateControl(defaultControl);
+    }
     control.redraw();
 
     var mcontrol = new OpenLayers.Control.ModifyFeature(
