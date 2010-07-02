@@ -131,6 +131,14 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
       $defaults['proxy_host'] : '',
   );
 
+  $form['info']['hide_empty_map'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Hide empty map'),
+    '#description' => t("Show views empty text or hide the map if there are 
+    no map overlays with features. Otherwise an empty map is displayed."),
+    '#default_value' => isset($defaults['hide_empty_map']),  
+  );
+  
   // Center
   $form['center'] = array(
     '#title' => t('Center & Bounds'),
@@ -535,6 +543,7 @@ function openlayers_ui_presets_form_process($values = array()) {
     'image_path',
     'css_path',
     'proxy_host',
+    'hide_empty_map',
     'center',
     'behaviors',
     'layers',

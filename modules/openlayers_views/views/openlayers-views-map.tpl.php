@@ -6,4 +6,6 @@
  * Template file for map
  */
 ?>
-<div class='openlayers-views-map'><?php print $rows ?></div>
+<?php if (!empty($rows)): ?>
+  <div class='openlayers-views-map'><?php print $rows ?></div>
+<?php endif; ?>
