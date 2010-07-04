@@ -39,7 +39,7 @@ class openlayers_behavior_popup extends openlayers_behavior {
         '#options' => $vector_layers,
         '#description' => t('Select layer to apply popups to.'),
         '#default_value' => isset($defaults['layers']) ? 
-          $defaults['layers'] : NULL
+          $defaults['layers'] : array(),
       ),
     );
   }

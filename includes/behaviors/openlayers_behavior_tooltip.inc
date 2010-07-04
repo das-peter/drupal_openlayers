@@ -40,7 +40,7 @@ class openlayers_behavior_tooltip extends openlayers_behavior {
         '#options' => $vector_layers,
         '#description' => t('Select layer to apply tooltips to.'),
         '#default_value' => isset($defaults['layers']) ? 
-          $defaults['layers'] : NULL
+          $defaults['layers'] : array(),
       ),
     );
   }
