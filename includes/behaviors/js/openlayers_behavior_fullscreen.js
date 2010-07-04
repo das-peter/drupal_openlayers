@@ -27,9 +27,11 @@ Drupal.behaviors.openlayers_behavior_fullscreen = function(context) {
 }
 
 openlayers_behavior_fullscreen_toggle = function(context) {
-  $(this.map.div).parent().toggleClass('openlayers_map_fullscreen');
-  extent = $(this.map.div).data('openlayers').openlayers.getExtent();
-  $(this.map.div).toggleClass('openlayers_map_fullscreen');
-  $(this.map.div).data('openlayers').openlayers.updateSize();
-  $(this.map.div).data('openlayers').openlayers.zoomToExtent(extent, true);
+  $map = $(this.map.div);
+  extent = $map.data('openlayers').openlayers.getExtent();
+  
+  $map.parent().toggleClass('openlayers_map_fullscreen');
+  $map.toggleClass('openlayers_map_fullscreen');
+  $map.data('openlayers').openlayers.updateSize();
+  $map.data('openlayers').openlayers.zoomToExtent(extent, true);
 }
