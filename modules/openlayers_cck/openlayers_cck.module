@@ -288,7 +288,7 @@ function openlayers_cck_widget_settings($op, $widget) {
             $widget['openlayers_behaviors'][$key] : array();
           $behavior = new $class($options, $map);
           $form['openlayers_behaviors'][$key]['options'] = 
-            $behavior->options_form($options);
+            $behavior->options_form($options['options']);
         }
       }
 
