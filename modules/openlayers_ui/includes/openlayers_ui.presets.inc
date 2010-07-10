@@ -136,7 +136,7 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#title' => t('Hide empty map'),
     '#description' => t("Show views empty text or hide the map if there are 
     no map overlays with features. Otherwise an empty map is displayed."),
-    '#default_value' => isset($defaults['hide_empty_map']),  
+    '#default_value' => isset($defaults['hide_empty_map']) ? $defaults['hide_empty_map'] : FALSE,  
   );
   
   // Center
