@@ -289,7 +289,7 @@ class openlayers_views_style_data extends views_plugin_style {
 
         // Only add features with WKT data
         if (!empty($feature['wkt'])) {
-          $features[] = $feature;
+          $features[] = theme('openlayers_views_render_feature', $feature, $record);
         }
         $this->view->row_index++;
       }
@@ -395,9 +395,11 @@ class openlayers_views_style_data extends views_plugin_style {
           }
         }
 
+
+
         // Only add features with WKT data
         if (!empty($feature['wkt'])) {
-          $features[] = $feature;
+          $features[] = theme('openlayers_views_render_feature', $feature, $record);
         }
       }
       return $features;

@@ -26,3 +26,10 @@ function theme_openlayers_views_group_display_item($name = '', $description = ''
 
   return $output;
 }
+
+/**
+ * Theme function for openlayers_views_render_feature
+ */
+function theme_openlayers_views_render_feature($feature ='', $record = '') {
+  return $feature;
+}

@@ -31,6 +31,13 @@ function openlayers_views_theme($existing, $type, $theme, $path) {
       ),
       'file' => 'includes/openlayers_views.theme.inc',
     ),
+    'openlayers_views_render_feature' => array(
+      'arguments' => array(
+        'feature' => '',
+        'record' => '',
+      ),
+      'file' => 'includes/openlayers_views.theme.inc',
+    ),
   );
 }
 
