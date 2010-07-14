@@ -30,6 +30,7 @@ Drupal.openlayers.layer.kml = function(title, map, options) {
       })
     }
   );
+  layer.drupalID = options.drupalID;
   layer.styleMap = styleMap;
   return layer;
 };
