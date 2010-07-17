@@ -161,7 +161,7 @@ Drupal.openlayers = {
       if (options.layer_handler !== undefined && Drupal.openlayers.layer[options.layer_handler] !== undefined) {
         var layer = Drupal.openlayers.layer[options.layer_handler](map.layers[name].title, map, options);
 
-        layer.visibility = (!map.layer_activated || map.layer_activated[name]);
+        layer.visibility = !!(!map.layer_activated || map.layer_activated[name]);
 
         if (layer.isBaseLayer === false) {
           layer.displayInLayerSwitcher = (!map.layer_switcher || map.layer_switcher[name]);
