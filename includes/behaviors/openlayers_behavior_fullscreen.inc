@@ -15,7 +15,21 @@ class openlayers_behavior_fullscreen extends openlayers_behavior {
    */
   function options_init() {
     return array(
-      'input_fields' => '',
+      'activated' => FALSE
+    );
+  }
+
+  /**
+   * Provide form for configurations per map.
+   */
+  function options_form($defaults) {
+    return array(
+      'activated' => array(
+        '#title' => t('Initially activated'),
+        '#type' => 'checkbox',
+        '#description' => t('Select to be in fullscreen by default.'),
+        '#default_value' => isset($defaults['activated']) ?  $defaults['activated'] : FALSE
+      )
     );
   }
 
@@ -23,8 +37,10 @@ class openlayers_behavior_fullscreen extends openlayers_behavior {
    * Render.
    */
   function render(&$map) {
-    drupal_add_css(drupal_get_path('module', 'openlayers') .'/includes/behaviors/js/openlayers_behavior_fullscreen.css');
-    drupal_add_js(drupal_get_path('module', 'openlayers') .'/includes/behaviors/js/openlayers_behavior_fullscreen.js');
+    drupal_add_css(drupal_get_path('module', 'openlayers') .
+      '/includes/behaviors/js/openlayers_behavior_fullscreen.css');
+    drupal_add_js(drupal_get_path('module', 'openlayers') .
+      '/includes/behaviors/js/openlayers_behavior_fullscreen.js');
     return $this->options;
   }
 }
