@@ -24,6 +24,7 @@ function openlayers_ui_presets_clone($preset) {
  */
 function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE) {
   openlayers_include();
+  ctools_include('dependent');
   drupal_add_js(drupal_get_path('module', 'openlayers_ui') . '/js/openlayers_ui.presets.js', 'module');
   drupal_add_css(drupal_get_path('module', 'openlayers_ui') . '/openlayers_ui.css');
 
@@ -169,9 +170,6 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     '#attributes' => array('class' => 'openlayers-form-zoom'),
     '#size' => 25,
   );
-
-  ctools_include('dependent');
-
   $form['center']['restrict'] = array(
     '#type' => 'fieldset',
     '#title' => t('Restrict Extent')
@@ -360,13 +358,11 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   // End AHAH Wrapper
   $form['layerstyles']['ahah-end'] = array('#value' => '</div>');
 
-  // Save button
   $form['buttons'] = array('#tree' => FALSE);
   $form['buttons']['openlayers_save'] = array(
     '#type' => 'submit',
     '#value' => t('Save')
   );
-  // Cancel button
   $form['buttons']['openlayers_cancel'] = array(
     '#type' => 'submit',
     '#value' => t('Cancel')
