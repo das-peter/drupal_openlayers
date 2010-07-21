@@ -15,7 +15,13 @@ Drupal.behaviors.openlayers_cluster = function(context) {
     var map = data.openlayers;
     var distance = parseInt(options.distance, 10);
     var threshold = parseInt(options.threshold, 10);
-    var layers = map.getLayersBy('drupalID', options.clusterlayer);
+    var layers = [];
+    for (var i in options.clusterlayer) {
+      var selectedLayer = map.getLayersBy('drupalID', options.clusterlayer[i]);
+      if (typeof selectedLayer[0] != 'undefined') {
+        layers.push(selectedLayer[0]);
+      }
+    }
     
     // Go through chosen layers
     for (var i in layers) {
@@ -43,12 +49,13 @@ Drupal.theme.openlayersPopup = function(feature) {
     var visited = []; // to keep track of already-visited items
     for(var i = 0; i < feature.cluster.length; i++) {
       var pf = feature.cluster[i]; // pseudo-feature
-      var mapwide_id = feature.layer.drupalID + pf.drupalFID;
-      if (!(mapwide_id in visited)) {
+      if ( typeof pf.drupalFID != 'undefined' ) {
+        var mapwide_id = feature.layer.drupalID + pf.drupalFID;
+        if (mapwide_id in visited) continue;
         visited[mapwide_id] = true;
-        output += '<div class="openlayers-popup openlayers-popup-feature">' +
-          Drupal.theme.prototype.openlayersPopup(pf) + '</div>';
       }
+      output += '<div class="openlayers-popup openlayers-popup-feature">' +
+        Drupal.theme.prototype.openlayersPopup(pf) + '</div>';
     }
     return output;
   }
