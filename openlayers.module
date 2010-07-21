@@ -569,7 +569,7 @@ function openlayers_preset_load($name = '', $reset = FALSE) {
     return FALSE;
   } else {
     $preset = $presets[$name];
-    $preset->data['preset'] = $preset;
+    $preset->data['preset_name'] = $name;
     return $preset;
   }
 }
