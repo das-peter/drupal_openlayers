@@ -565,7 +565,13 @@ function openlayers_preset_load($name = '', $reset = FALSE) {
   
   $presets = ctools_export_load_object(
     'openlayers_map_presets', 'names', array($name));
-  return !empty($presets[$name]) ? $presets[$name] : FALSE;
+  if ( empty($presets[$name]) ) {
+    return FALSE;
+  } else {
+    $preset = $presets[$name];
+    $preset->data['preset'] = $preset;
+    return $preset;
+  }
 }
 
 /**
