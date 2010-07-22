@@ -105,6 +105,7 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
           '#title' => t('File Format'),
           '#options' => array(
             'image/png' => 'image/png',
+            'image/gif' => 'image/gif',
             'image/jpeg' => 'image/jpeg'),
           '#default_value' => isset($this->data['options']['format']) ?
             $this->data['options']['format'] : 'image/png'
