@@ -219,12 +219,14 @@ function openlayers_ui_styles_form(&$form_state, $style = NULL, $edit = FALSE) {
 function openlayers_ui_styles_form_submit(&$form, &$form_state) {
   $style_data = $form_state['values']['style_data'];
   
-  // Cast and unset values so JS can handle them better
+  // Cast and unset values so JS can handle them better,
+  // Unless vluase is in form ${attribute}
   foreach ($form_state['values']['data'] as $key => $value) {
     if ($form_state['values']['data'][$key] === '') {
       unset($form_state['values']['data'][$key]);
     }
-    elseif (isset($style_data[$key]['type'])) {
+    elseif (isset($style_data[$key]['type']) &&
+      strpos($form_state['values']['data'][$key], '${') !== 0) {
       if ($style_data[$key]['type'] == 'integer') {
         $form_state['values']['data'][$key] = 
           (int) $form_state['values']['data'][$key];
