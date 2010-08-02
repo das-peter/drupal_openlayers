@@ -15,6 +15,7 @@ class openlayers_layer_type_maptiler extends openlayers_layer_type {
     parent::__construct($layer, $map);
     if (isset($this->data)) {
       $this->data += $this->options_init();
+      $this->data['baselayer'] = $this->data['isBaseLayer'];
     }
     else {
       $this->data = $this->options_init();
