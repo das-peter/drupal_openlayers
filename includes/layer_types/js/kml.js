@@ -9,18 +9,13 @@
  * Openlayer layer handler for KML layer
  */
 Drupal.openlayers.layer.kml = function(title, map, options) {
-  // Get styles
   var styleMap = Drupal.openlayers.getStyleMap(map, options.drupalID);
-  
-  // Format options
-  if (options.maxExtent !== undefined) {
-    options.maxExtent = OpenLayers.Bounds.fromArray(options.maxExtent);
-  }
 
-  // Create layer
+  options.projection = 'EPSG:' + options.projection;
+
   var layer = new OpenLayers.Layer.Vector(
     title, 
-    {
+    $.extend(options, {
     strategies: [new OpenLayers.Strategy.Fixed()],
     protocol: new OpenLayers.Protocol.HTTP({
         url: options.url, 
@@ -28,7 +23,7 @@ Drupal.openlayers.layer.kml = function(title, map, options) {
           options.formatOptions
         )
       })
-    }
+    })
   );
   layer.drupalID = options.drupalID;
   layer.styleMap = styleMap;
