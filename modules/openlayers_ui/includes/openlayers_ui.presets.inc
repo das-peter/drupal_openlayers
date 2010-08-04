@@ -552,7 +552,6 @@ function openlayers_ui_presets_form_process($values = array()) {
 
   // TODO: eliminate this process, too much disconnect between
   // forms and data
-  // TODO: fix 'options' key warning in admin after saving
   $processed = array();
   foreach ($keys as $key) {
     switch ($key) {
