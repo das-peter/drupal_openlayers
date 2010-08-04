@@ -97,6 +97,7 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
           '#type' => 'checkbox',
           '#default_value' => isset($this->data['options']['TRANSPARENT']) ?
             $this->data['options']['TRANSPARENT'] : FALSE,
+          '#return_value' => TRUE,
           '#title' => t('Transparent'),
           '#description' => t('When a PNG, make the background color transparent')
         ),
