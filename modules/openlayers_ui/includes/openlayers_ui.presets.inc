@@ -547,8 +547,7 @@ function openlayers_ui_presets_form_process($values = array()) {
     'layer_activated',
     'layer_switcher',
     'projections',
-    'styles',
-    'options',
+    'styles'
   );
 
   // TODO: eliminate this process, too much disconnect between
