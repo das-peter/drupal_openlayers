@@ -264,9 +264,6 @@ Drupal.openlayers = {
       layer.addFeatures(newFeatures);
     }
   },
-  /**
-   * getStyleMap
-   */
   'getStyleMap': function(map, layername) {
     if (map.styles) {
       var stylesAdded = {};
