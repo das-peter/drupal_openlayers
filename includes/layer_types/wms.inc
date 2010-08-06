@@ -17,6 +17,7 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
         $pts = explode(':', $this->data['options']['srs']);
         $this->data['projection'] = array($pts[1]);
       }
+      $this->data['baselayer'] = $this->data['params']['isBaseLayer'];
       $this->data += $this->options_init();
     }
     else {
@@ -55,6 +56,7 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
           '#type' => 'checkbox',
           '#default_value' => isset($this->data['params']['isBaseLayer']) ? 
             $this->data['params']['isBaseLayer'] : TRUE,
+          '#return_value' => TRUE,
           '#title' => t('BaseLayer'),
           '#description' => t('Uncheck to make this map an overlay')
         ),

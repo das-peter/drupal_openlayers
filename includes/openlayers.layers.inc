@@ -222,10 +222,10 @@ function _openlayers_openlayers_layers() {
     'layer_type' => 'openlayers_layer_type_wms',
     'url' => 'http://oam.hypercube.telascience.org/tiles',
     'params' => array(
+      'isBaseLayer' => FALSE,
       'layers' => 'osm-4326-hybrid',
     ),
     'options' => array(
-      'isBaseLayer' => FALSE,
       'buffer' => 1,
     ),
   );
@@ -241,7 +241,9 @@ function _openlayers_openlayers_layers() {
     'baselayer' => TRUE,
     'layer_type' => 'openlayers_layer_type_wms',
     'base_url' => 'http://labs.metacarta.com/wms-c/Basic.py',
-    'params' => array(),
+    'params' => array(
+      'isBaseLayer' => TRUE,
+    ),
     'options' => array(
       'layers' => array('basic'),
       'maxExtent' => openlayers_get_extent('4326'),
