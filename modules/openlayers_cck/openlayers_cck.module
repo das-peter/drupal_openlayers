@@ -439,7 +439,6 @@ function openlayers_cck_field_formatter_info() {
  */
 function _openlayers_cck_render_element_map($field_name = '', 
   $field_label = '', $values = array(), $field = array()) {
-
   $field_id = 'edit-' . str_replace('_', '-', $field_name) . '-openlayers-wkt';
   
   // Get map to use for field
@@ -456,11 +455,22 @@ function _openlayers_cck_render_element_map($field_name = '',
 
   $map['id'] = OPENLAYERS_CCK_WIDGET_MAP_ID_PREFIX . '-' . $field_name;
 
+  if ($field['multiple'] == 0) {
+    $limit = 1;
+  }
+  elseif ($field['multiple'] > 1) {
+    $limit = $field['multiple'];
+  }
+  else {
+    $limit = 0;
+  }
+
   // Make sure that our display projection matches the database projection
   // TODO: rewrite
   $map['behaviors']['openlayers_behavior_drawfeatures'] = array(
     'element_id' => $field_id,
-    'feature_types' => $field['openlayers_cck_feature_types']
+    'feature_types' => $field['openlayers_cck_feature_types'],
+    'feature_limit' => $limit,
   );
 
   return openlayers_render_map($map);
