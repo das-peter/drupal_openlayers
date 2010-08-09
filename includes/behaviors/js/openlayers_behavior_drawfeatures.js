@@ -14,10 +14,9 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = function(context) {
 
     WktWriter = new OpenLayers.Format.WKT();
 
-    if ( features.type == 'featureadded' && this.feature_limit ) {
-      while ( this.feature_limit < features.object.features.length ) {
-        features.feature.layer.removeFeatures(features.object.features.shift());
-      }
+    while (features.type == 'featureadded' && this.feature_limit && 
+      (this.feature_limit < features.object.features.length)) {
+      features.feature.layer.removeFeatures(features.object.features.shift());
     }
 
     var features_copy = features.object.clone();
