@@ -11,10 +11,15 @@
 Drupal.behaviors.openlayers_behavior_drawfeatures = function(context) {
 
   function openlayers_behavior_drawfeatures_update(features) {
+
     WktWriter = new OpenLayers.Format.WKT();
-    if (this.feature_limit < features.object.features.length) {
-      features.feature.layer.removeFeatures(features.object.features.shift());
+
+    if ( features.type == 'featureadded' && this.feature_limit ) {
+      while ( this.feature_limit < features.object.features.length ) {
+        features.feature.layer.removeFeatures(features.object.features.shift());
+      }
     }
+
     var features_copy = features.object.clone();
     for(var i in features_copy.features) {
       features_copy.features[i].geometry.transform(
