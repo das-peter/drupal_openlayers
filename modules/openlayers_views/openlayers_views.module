@@ -87,7 +87,7 @@ function openlayers_views_openlayers_layers() {
       $view->set_display($display);
       if ($data->display_plugin == 'openlayers') {
         //Build Layer
-        $layer = new StdClass();
+        $layer = new stdClass();
         $layer->api_version = 1;
         $layer->name = $view->name . '_' . $display;
         $layer->title = 
