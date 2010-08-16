@@ -31,6 +31,7 @@ class openlayers_layer_type_osm extends openlayers_layer_type {
       'layer_handler' => 'xyz',
       'layer_type' => 'osm',
       'type' => 'png',
+      'baselayer' => TRUE,
     );
   }
 

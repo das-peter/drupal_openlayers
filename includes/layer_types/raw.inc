@@ -14,6 +14,7 @@ class openlayers_layer_type_raw extends openlayers_layer_type {
       'layer_type' => 'openlayers_layer_type_raw',
       'layer_handler' => 'openlayers_raw',
       'vector' => TRUE,
+      'baselayer' => FALSE,
     );
   }
 
