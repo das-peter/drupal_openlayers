@@ -84,22 +84,34 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = function(context) {
     data.openlayers.addControl(control);
     control.activate();
 
+    // Build an array of the requested feature classes
+    var feature_classmap = {
+      'point': 'OpenLayers.Handler.Point',
+      'path': 'OpenLayers.Handler.Path',
+      'polygon': 'OpenLayers.Handler.Polygon'
+    };
+    var feature_classes = [];
+    for (var i in feature_types) {
+      if ( feature_types[i] !== 0 ) {
+        feature_classes.push(feature_classmap[feature_types[i]]);
+      }
+    }
+
+    // Reconstruct editing toolbar controls so to only contain
+    // the tools for the requested feature types / classes
+    // plus the navigation tool
     control.controls = $.map(control.controls,
       function(control) {
-        return (control.CLASS_NAME == 'OpenLayers.Control.Navigation') ||
-          $.inArray(control.handler.CLASS_NAME,
-          $.map({
-              'point': 'OpenLayers.Handler.Point',
-              'path': 'OpenLayers.Handler.Path',
-              'polygon': 'OpenLayers.Handler.Polygon'
-            },
-            function(c) { return $.inArray(c, feature_types); })) ? control : null;
+        return ( control.CLASS_NAME == 'OpenLayers.Control.Navigation' || 
+          $.inArray(control.handler.CLASS_NAME, feature_classes) != -1 )
+          ? control : null;
       }
     );
 
     control.activateControl(control.getControlsByClass('OpenLayers.Control.Navigation')[0]);
     control.redraw();
 
+    // Add modify feature tool
     control.addControls(new OpenLayers.Control.ModifyFeature(
       dataLayer, {
         displayClass: 'olControlModifyFeature',
