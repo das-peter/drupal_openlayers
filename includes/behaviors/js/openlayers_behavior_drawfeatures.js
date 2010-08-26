@@ -35,6 +35,7 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = function(context) {
       
     this.element = 
       $("#" + data.map.behaviors['openlayers_behavior_drawfeatures'].element_id);
+
     this.feature_limit = 
       data.map.behaviors['openlayers_behavior_drawfeatures'].feature_limit;
 
@@ -79,6 +80,8 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = function(context) {
       openlayers_behavior_drawfeatures_update);
     dataLayer.events.register('featuremodified', this,
       openlayers_behavior_drawfeatures_update);
+
+
     
     var control = new OpenLayers.Control.EditingToolbar(dataLayer);
     data.openlayers.addControl(control);
@@ -90,6 +93,7 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = function(context) {
       'path': 'OpenLayers.Handler.Path',
       'polygon': 'OpenLayers.Handler.Polygon'
     };
+
     var feature_classes = [];
     for (var i in feature_types) {
       if ( feature_types[i] !== 0 ) {
@@ -110,6 +114,16 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = function(context) {
 
     control.activateControl(control.getControlsByClass('OpenLayers.Control.Navigation')[0]);
     control.redraw();
+
+    this.element.parents('form').bind('submit', 
+      {
+        control: control, 
+        dataLayer: dataLayer 
+      }, function(evt) {
+        $.map(evt.data.control.controls, function(c) { c.deactivate(); });
+        dataLayer.events.triggerEvent('featuremodified');
+      }
+    );
 
     // Add modify feature tool
     control.addControls(new OpenLayers.Control.ModifyFeature(
