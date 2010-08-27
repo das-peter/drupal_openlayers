@@ -365,6 +365,21 @@ function openlayers_cck_wkt_element_process($element, $edit, &$form_state, &$for
     '#delta' => $element['#delta'],
     '#columns' => $element['#columns'],
   );
+  
+  // Settings to show/hide WKT field
+  drupal_add_js(array(
+    'openlayers_cck' => array(
+      'wkt_hide' => array(
+        'fields' => array(
+          str_replace('_', '-', $field_name) => str_replace('_', '-', $field_name),
+        ),
+        'text_show' => t('Show WKT field'),
+        'text_hide' => t('Hide WKT field'),
+      ),
+    ),
+  ), 'setting');
+  drupal_add_js(drupal_get_path('module', 'openlayers_cck') .
+    '/js/openlayers_cck.js');
 
   // Set #element_validate in a way that it will not wipe out other
   // validation functions already set by other modules.
