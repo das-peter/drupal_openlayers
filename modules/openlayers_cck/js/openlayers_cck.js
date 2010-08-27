@@ -18,20 +18,26 @@ Drupal.behaviors.openlayers_cck_wkt_hide = function(context) {
       var fieldID = '#edit-' + field + '-openlayers-wkt-wrapper';
       
       $(fieldID + ':not(.openlayers-cck-processed)').each(function() {
-        $thisField = $(this);
+        var $thisField = $(this);
         
         $thisField.addClass('openlayers-cck-processed');
         // Add a link to be able to hide and show, and hide by default.
-        $thisField.before('<a href="" id="' + field + '-toggle" class="openlayers-cck-hide-link">' + textShow + '</a>')
+        var link = $('<a href="" id="' + field + '-toggle" class="openlayers-cck-hide-link">' + textShow + '</a>')
+          .data('fieldID', fieldID);
+        $thisField.before(link)
           .hide();
         $('#' + field + '-toggle').toggle(
           function () {
-            $(fieldID).slideDown();
-            $(this).text(textHide);
+            var $thisLink = $(this);
+            var localFieldID = $thisLink.data('fieldID');
+            $(localFieldID).slideDown();
+            $thisLink.text(textHide);
           },
           function () {
-            $(fieldID).slideUp();
-            $(this).text(textShow);
+            var $thisLink = $(this);
+            var localFieldID = $thisLink.data('fieldID');
+            $(localFieldID).slideUp();
+            $thisLink.text(textShow);
           }
         );
       });

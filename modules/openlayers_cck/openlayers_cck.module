@@ -366,15 +366,28 @@ function openlayers_cck_wkt_element_process($element, $edit, &$form_state, &$for
     '#columns' => $element['#columns'],
   );
   
-  // Settings to show/hide WKT field
+  // Settings to show/hide WKT field.  Because of how
+  // drupal_add_js merges arrays (specifically PHP),
+  // we only send the text stuff once.
+  static $sent = FALSE;
+  if (!$sent) {
+    drupal_add_js(array(
+      'openlayers_cck' => array(
+        'wkt_hide' => array(
+          'text_show' => t('Show WKT field'),
+          'text_hide' => t('Hide WKT field'),
+        ),
+      ),
+    ), 'setting');
+    $sent = TRUE;
+  }
+  $field_id = str_replace('_', '-', $field_name);
   drupal_add_js(array(
     'openlayers_cck' => array(
       'wkt_hide' => array(
         'fields' => array(
-          str_replace('_', '-', $field_name) => str_replace('_', '-', $field_name),
+          $field_id => $field_id,
         ),
-        'text_show' => t('Show WKT field'),
-        'text_hide' => t('Hide WKT field'),
       ),
     ),
   ), 'setting');
