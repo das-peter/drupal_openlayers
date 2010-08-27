@@ -232,7 +232,7 @@ class openlayers_views_style_data extends views_plugin_style {
           $lon_field = $fields[$data_source['other_lon']]['field_alias'];
           $lon = current($record)->$lon_field;
           $lat = current($record)->$lat_field;
-          if (!empty($lat) && !empty($lon)) {
+          if (isset($lat) && isset($lon)) {
             $feature['wkt'] = 'POINT(' . $lon . ' ' . $lat . ')';
             $feature['projection'] = '4326';
           }
@@ -254,7 +254,7 @@ class openlayers_views_style_data extends views_plugin_style {
           $right = current($record)->$right_field;
           $left = current($record)->$left_field;
           $bottom = current($record)->$bottom_field;
-          if (!empty($lat) && !empty($lon)) {
+          if (isset($lat) && isset($lon)) {
             $feature['wkt'] = 'MULTIPOLYGON(' .
               $left . ' ' . $top . ', ' .
               $right . ' ' . $top . ', ' .
@@ -329,7 +329,7 @@ class openlayers_views_style_data extends views_plugin_style {
           $lon_field = $fields[$data_source['other_lon']]['field_alias'];
           $lon = $record->$lon_field;
           $lat = $record->$lat_field;
-          if (!empty($lat) && !empty($lon)) {
+          if (isset($lat) && isset($lon)) {
             $feature['wkt'] = 'POINT(' . $lon . ' ' . $lat . ')';
             $feature['projection'] = '4326';
           }
@@ -356,7 +356,7 @@ class openlayers_views_style_data extends views_plugin_style {
           $right = $record->$right_field;
           $left = $record->$left_field;
           $bottom = $record->$bottom_field;
-          if (!empty($top) && !empty($left)) {
+          if (isset($top) && isset($left)) {
             $feature['wkt'] = 'MULTIPOLYGON(' .
               $left . ' ' . $top . ', ' .
               $right . ' ' . $top . ', ' .
