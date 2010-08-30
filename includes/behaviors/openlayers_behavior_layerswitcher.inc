@@ -16,6 +16,7 @@ class openlayers_behavior_layerswitcher extends openlayers_behavior {
   function options_init() {
     return array(
       'layerswitcher' => '',
+      'descending' => FALSE,
     );
   }
 
@@ -24,7 +25,14 @@ class openlayers_behavior_layerswitcher extends openlayers_behavior {
   }
 
   function options_form($defaults) {
-    return array();
+    return array(
+      'descending' => array(
+        '#type' => 'checkbox',
+        '#title' => t('Show layers in descending order'),
+        '#description' => t('From higher Z-index down'),
+        '#default_value' => isset($defaults['descending']) ? $defaults['descending'] : FALSE 
+      )
+    );
   }
 
   /**
