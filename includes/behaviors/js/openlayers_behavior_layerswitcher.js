@@ -13,7 +13,7 @@ Drupal.behaviors.openlayers_behavior_layerswitcher = function(context) {
   if (data && data.map.behaviors['openlayers_behavior_layerswitcher']) {
     // Add control
     var control = new OpenLayers.Control.LayerSwitcher({
-      'ascending': !data.map.behaviors['openlayers_behavior_layerswitcher'].descending
+      'ascending': !!data.map.behaviors['openlayers_behavior_layerswitcher'].ascending
     });
     data.openlayers.addControl(control);
     control.activate();
