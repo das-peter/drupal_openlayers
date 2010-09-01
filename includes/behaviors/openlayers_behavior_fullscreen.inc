@@ -33,6 +33,12 @@ class openlayers_behavior_fullscreen extends openlayers_behavior {
     );
   }
 
+  function js_dependency() {
+    return array(
+      'OpenLayers.Control.Button'
+    );
+  }
+
   /**
    * Render.
    */
