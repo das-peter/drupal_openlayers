@@ -103,6 +103,16 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
           '#title' => t('Transparent'),
           '#description' => t('When a PNG, make the background color transparent')
         ),
+         'exceptions' => array(
+          '#type' => 'select',
+          '#title' => t('Exceptions'),
+          '#options' => array(
+            'application/vnd.ogc.se_xml' => 'application/vnd.ogc.se_xml',
+            'application/vnd.ogc.se_inimage' => 'application/vnd.ogc.se_inimage'),
+          '#default_value' => isset($this->data['options']['exceptions']) ?
+            $this->data['options']['exceptions'] : 'application/vnd.ogc.se_inimage',
+          '#description' => t('Select the exception handler')
+        ),
         'format' => array(
           '#type' => 'select',
           '#title' => t('File Format'),
