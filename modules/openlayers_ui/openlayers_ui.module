@@ -356,6 +356,10 @@ function openlayers_ui_theme($existing, $type, $theme, $path) {
       'arguments' => array('form' => array()),
       'file' => 'includes/openlayers_ui.theme.inc',
     ),
+    'openlayers_ui_presets_form_behaviors' => array(
+      'arguments' => array('form' => array()),
+      'file' => 'includes/openlayers_ui.theme.inc',
+    ),
   );
 }
 
