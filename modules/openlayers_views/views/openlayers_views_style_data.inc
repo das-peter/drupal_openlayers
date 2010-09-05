@@ -60,13 +60,6 @@ class openlayers_views_style_data extends views_plugin_style {
         }
     }
 
-    // Default data source
-    $data_source_options = array(
-      'other_latlon' => t('Other: Lat/Lon Point'),
-      'other_boundingbox' => t('Other: Bounding Box'),
-      'openlayers_wkt' => t('OpenLayers WKT')
-    );
-
     // Data Source options
     $form['data_source'] = array(
       '#type' => 'fieldset',
@@ -77,10 +70,13 @@ class openlayers_views_style_data extends views_plugin_style {
     );
     $form['data_source']['value'] = array(
       '#type' => 'select',
-      '#multiple' => TRUE,
       '#title' => t('Map Data Sources'),
       '#description' => t('Choose which sources of data that the map will provide features for.'),
-      '#options' => $data_source_options,
+      '#options' => array(
+        'other_latlon' => t('Other: Lat/Lon Point'),
+        'other_boundingbox' => t('Other: Bounding Box'),
+        'openlayers_wkt' => t('OpenLayers WKT')
+      ),
       '#default_value' => $this->options['data_source']['value'],
     );
     // Other Lat and Lon data sources
@@ -227,41 +223,43 @@ class openlayers_views_style_data extends views_plugin_style {
       foreach ($records as $id => $record) {
         $feature = array();
         $feature['attributes']['name'] = $id;
-        if (isset($data_source['value']['other_latlon'])) {
-          $lat_field = $fields[$data_source['other_lat']]['field_alias'];
-          $lon_field = $fields[$data_source['other_lon']]['field_alias'];
-          $lon = current($record)->$lon_field;
-          $lat = current($record)->$lat_field;
-          if (isset($lat) && isset($lon)) {
-            $feature['wkt'] = 'POINT(' . $lon . ' ' . $lat . ')';
-            $feature['projection'] = '4326';
-          }
-        }
-        elseif (isset($data_source['value']['openlayers_wkt'])) {
-          $wkt_field = $fields[$data_source['openlayers_wkt']]['field_alias'];
-          $wkt = current($record)->$wkt_field;
-          if ($wkt) {
-            $feature['wkt'] = $wkt;
-            $feature['projection'] = '4326';
-          }
-        }
-        elseif (isset($data_source['value']['other_boundingbox'])) {
-          $top_field = $fields[$data_source['other_top']]['field_alias'];
-          $right_field = $fields[$data_source['other_right']]['field_alias'];
-          $left_field = $fields[$data_source['other_left']]['field_alias'];
-          $bottom_field = $fields[$data_source['other_bottom']]['field_alias'];
-          $top = current($record)->$top_field;
-          $right = current($record)->$right_field;
-          $left = current($record)->$left_field;
-          $bottom = current($record)->$bottom_field;
-          if (isset($lat) && isset($lon)) {
-            $feature['wkt'] = 'MULTIPOLYGON(' .
-              $left . ' ' . $top . ', ' .
-              $right . ' ' . $top . ', ' .
-              $right . ' ' . $bottom . ', ' .
-              $left . ' ' . $bottom . ')';
-            $feature['projection'] = '4326';
-          }
+        switch($data_source['value']) {
+          case 'other_latlon':
+            $lat_field = $fields[$data_source['other_lat']]['field_alias'];
+            $lon_field = $fields[$data_source['other_lon']]['field_alias'];
+            $lon = current($record)->$lon_field;
+            $lat = current($record)->$lat_field;
+            if (isset($lat) && isset($lon)) {
+              $feature['wkt'] = 'POINT(' . $lon . ' ' . $lat . ')';
+              $feature['projection'] = '4326';
+            }
+            break;
+          case 'openlayers_wkt':
+            $wkt_field = $fields[$data_source['openlayers_wkt']]['field_alias'];
+            $wkt = current($record)->$wkt_field;
+            if ($wkt) {
+              $feature['wkt'] = $wkt;
+              $feature['projection'] = '4326';
+            }
+            break;
+          case 'other_boundingbox':
+            $top_field = $fields[$data_source['other_top']]['field_alias'];
+            $right_field = $fields[$data_source['other_right']]['field_alias'];
+            $left_field = $fields[$data_source['other_left']]['field_alias'];
+            $bottom_field = $fields[$data_source['other_bottom']]['field_alias'];
+            $top = current($record)->$top_field;
+            $right = current($record)->$right_field;
+            $left = current($record)->$left_field;
+            $bottom = current($record)->$bottom_field;
+            if (isset($lat) && isset($lon)) {
+              $feature['wkt'] = 'MULTIPOLYGON(' .
+                $left . ' ' . $top . ', ' .
+                $right . ' ' . $top . ', ' .
+                $right . ' ' . $bottom . ', ' .
+                $left . ' ' . $bottom . ')';
+              $feature['projection'] = '4326';
+            }
+            break;
         }
 
         $descriptions = array();
@@ -324,49 +322,50 @@ class openlayers_views_style_data extends views_plugin_style {
           }
         }
 
-        if (!empty($data_source['value']['other_latlon'])) {
-          $lat_field = $fields[$data_source['other_lat']]['field_alias'];
-          $lon_field = $fields[$data_source['other_lon']]['field_alias'];
-          $lon = $record->$lon_field;
-          $lat = $record->$lat_field;
-          if (isset($lat) && isset($lon)) {
-            $feature['wkt'] = 'POINT(' . $lon . ' ' . $lat . ')';
-            $feature['projection'] = '4326';
-          }
+        switch ($data_source['value']) {
+          case 'other_latlon':
+            $lat_field = $fields[$data_source['other_lat']]['field_alias'];
+            $lon_field = $fields[$data_source['other_lon']]['field_alias'];
+            $lon = $record->$lon_field;
+            $lat = $record->$lat_field;
+            if (isset($lat) && isset($lon)) {
+              $feature['wkt'] = 'POINT(' . $lon . ' ' . $lat . ')';
+              $feature['projection'] = '4326';
+            }
 
-          $excluded_fields[] = $lat_field;
-          $excluded_fields[] = $lon_field;
-        }
-        elseif ($data_source['value']['openlayers_wkt']) {
-          $wkt_field = $fields[$data_source['openlayers_wkt']]['field_alias'];
-          $wkt = $record->$wkt_field;
-          if ($wkt) {
-            $feature['wkt'] = $wkt;
-            $feature['projection'] = '4326';
-          }
+            $excluded_fields[] = $lat_field;
+            $excluded_fields[] = $lon_field;
+            break;
+          case 'openlayers_wkt':
+            $wkt_field = $fields[$data_source['openlayers_wkt']]['field_alias'];
+            $wkt = $record->$wkt_field;
+            if ($wkt) {
+              $feature['wkt'] = $wkt;
+              $feature['projection'] = '4326';
+            }
 
-          $excluded_fields[] = $wkt_field;
-        }
-        elseif ($data_source['value']['other_boundingbox']) {
-          $top_field = $fields[$data_source['other_top']]['field_alias'];
-          $right_field = $fields[$data_source['other_right']]['field_alias'];
-          $left_field = $fields[$data_source['other_left']]['field_alias'];
-          $bottom_field = $fields[$data_source['other_bottom']]['field_alias'];
-          $top = $record->$top_field;
-          $right = $record->$right_field;
-          $left = $record->$left_field;
-          $bottom = $record->$bottom_field;
-          if (isset($top) && isset($left)) {
-            $feature['wkt'] = 'MULTIPOLYGON(' .
-              $left . ' ' . $top . ', ' .
-              $right . ' ' . $top . ', ' .
-              $right . ' ' . $bottom . ', ' .
-              $left . ' ' . $bottom . ')';
-            $feature['projection'] = '4326';
-          }
+            $excluded_fields[] = $wkt_field;
+            break;
+          case 'other_boundingbox':
+            $top_field = $fields[$data_source['other_top']]['field_alias'];
+            $right_field = $fields[$data_source['other_right']]['field_alias'];
+            $left_field = $fields[$data_source['other_left']]['field_alias'];
+            $bottom_field = $fields[$data_source['other_bottom']]['field_alias'];
+            $top = $record->$top_field;
+            $right = $record->$right_field;
+            $left = $record->$left_field;
+            $bottom = $record->$bottom_field;
+            if (isset($top) && isset($left)) {
+              $feature['wkt'] = 'MULTIPOLYGON(' .
+                $left . ' ' . $top . ', ' .
+                $right . ' ' . $top . ', ' .
+                $right . ' ' . $bottom . ', ' .
+                $left . ' ' . $bottom . ')';
+              $feature['projection'] = '4326';
+            }
 
-          array_push($excluded_fields, $top_field, $right_field,
-            $left_field, $bottom_field);
+            array_push($excluded_fields, $top_field, $right_field,
+              $left_field, $bottom_field);
         }
 
         // Add the name and description attributes
