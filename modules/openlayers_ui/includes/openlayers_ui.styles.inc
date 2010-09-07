@@ -157,6 +157,50 @@ function openlayers_ui_styles_form(&$form_state, $style = NULL, $edit = FALSE) {
         'none' => t('None (off)'),
       ),
     ),
+    'label' => array(
+      'default' => '',
+      'desc' => t('A label to show for features. '
+         . 'Tipically used with ${attribute} syntax.'),	 
+    ),
+    'labelAlign' => array(
+      'default' => 'cm',
+      'desc' => t('Label alignment.'),
+      'options' => array(
+        'cm' => t('Center, middle'),
+        'ct' => t('Center, top'),
+        'cb' => t('Center, bottom'),
+        'lm' => t('Left, middle'),
+        'lt' => t('Left, top'),
+        'lb' => t('Left, bottom'),
+        'rm' => t('Right, middle'),
+        'rt' => t('Right, top'),
+        'rb' => t('Right, bottom'),
+      ),
+    ),
+    'labelXOffset' => array(
+      'default' => '',
+      'desc' => t('Label X offset. Positive numbers move label right.'),
+    ),
+    'labelYOffset' => array(
+      'default' => '',
+      'desc' => t('Label Y offset. Positive numbers move label up.'),
+    ),
+    'fontColor' => array(
+      'default' => '',
+      'desc' => t('Label font color.'),
+    ),
+    'fontSize' => array(
+      'default' => '',
+      'desc' => t('Label font size.'),
+    ),
+    'fontFamily' => array(
+      'default' => '',
+      'desc' => t('Label font family.'),
+    ),
+    'fontWeight' => array(
+      'default' => '',
+      'desc' => t('Label font weight.'),
+    ),
   );
   
   // Pass style data along
