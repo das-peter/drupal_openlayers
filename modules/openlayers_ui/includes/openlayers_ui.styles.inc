@@ -36,14 +36,14 @@ function openlayers_ui_styles_form(&$form_state, $style = NULL, $edit = FALSE) {
         filling in Polygons. It is also used in the center of marks for 
         points: the interior color of circles or other shapes. It is 
         not used if an externalGraphic is applied to a point.  This should be
-        a hexideicmal value like #FFFFFF.'),
+        a hexadecimal value like #FFFFFF.'),
     ),
     'strokeColor' => array(
       'default' => '#EE9900',
       'desc' => t('This is color of the line on features. On 
         polygons and point marks, it is used as an outline to the feature. 
         On lines, this is the representation of the feature.  This should be
-        a hexideicmal value like #FFFFFF.'),
+        a hexadecimal value like #FFFFFF.'),
     ),
     'strokeWidth' => array(
       'default' => 1,
