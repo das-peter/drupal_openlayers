@@ -5,6 +5,11 @@
  * @file
  * OpenLayers CCK tests
  */
+ 
+// Prevents issues if CCK is not installed
+if (!class_exists(ContentCrudTestCase)) {
+  return;
+}
 
 /**
  * OpenLayers Test Class
