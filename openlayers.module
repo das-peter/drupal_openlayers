@@ -62,7 +62,7 @@ function openlayers_include() {
     $once = TRUE;
 
     $path = check_plain(variable_get('openlayers_source', 
-      'http://openlayers.org/api/OpenLayers.js'));
+      'http://openlayers.org/api/2.9/OpenLayers.js'));
     // Check for full URL and include it manually if external.
     if (valid_url($path, TRUE)) {
       drupal_set_html_head('<script src="' . check_url($path) . 
