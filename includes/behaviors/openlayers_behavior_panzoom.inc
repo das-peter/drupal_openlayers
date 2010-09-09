@@ -21,7 +21,6 @@ class openlayers_behavior_panzoom extends openlayers_behavior {
 
   function options_form($defaults) {
     return array(
-      'spec' => openlayers_dependency_widget('OpenLayers.Control.PanZoom')
     );
   }
 
