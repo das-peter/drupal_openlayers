@@ -7,7 +7,7 @@
  */
  
 // Prevents issues if CCK is not installed
-if (!class_exists(ContentCrudTestCase)) {
+if (!class_exists('ContentCrudTestCase')) {
   return;
 }
 
