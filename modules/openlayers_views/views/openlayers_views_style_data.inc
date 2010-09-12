@@ -224,9 +224,7 @@ class openlayers_views_style_data extends views_plugin_style {
         $feature = array();
         $feature['attributes']['name'] = $id;
 
-        // For backwards compatiability, we support different formats
-        // for the data source.
-        switch (array_shift(array_keys($data_source['value'])))  {
+        switch ($data_source['value'])  {
           case 'other_latlon':
             $lat_field = $fields[$data_source['other_lat']]['field_alias'];
             $lon_field = $fields[$data_source['other_lon']]['field_alias'];
@@ -324,10 +322,7 @@ class openlayers_views_style_data extends views_plugin_style {
             $excluded_fields[] = $handler->field_alias;
           }
         }
-
-        // For backwards compatiability, we support different formats
-        // for the data source.
-        switch (array_shift(array_keys($data_source['value']))) {
+        switch ($data_source['value']) {
           case 'other_latlon':
             $lat_field = $fields[$data_source['other_lat']]['field_alias'];
             $lon_field = $fields[$data_source['other_lon']]['field_alias'];
