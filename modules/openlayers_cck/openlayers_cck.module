@@ -248,7 +248,7 @@ function openlayers_cck_widget_settings($op, $widget) {
       );
       $form['openlayers_behaviors'] = array(
         '#type' => 'fieldset',
-        '#title' => t('Behaviors'),
+        '#title' => t('Formatter Behaviors'),
         '#description' => t('These behaviors are specifically for the 
           CCK formatter layer.'),
         '#collapsible' => TRUE,
