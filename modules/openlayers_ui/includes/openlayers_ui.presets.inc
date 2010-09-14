@@ -298,14 +298,33 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   $overlay_options = openlayers_ui_get_layer_options('overlay', $defaults['projection']);
   $form['layerstyles']['layers']['overlaylabels'] = array();
   if (!empty($overlay_options)) {
-    foreach ($overlay_options as $id => $description) {
+
+    // Have enabled layers maintain their order
+    $available = array_keys($overlay_options);
+    $enabled = array_intersect(array_keys($defaults['layers']), $available);
+    //$enabled = array_reverse($enabled);
+    $disabled = array_diff($available, $enabled);
+    //$overlay_options_keys = array_merge($enabled, $disabled);
+    $overlay_options_keys = array_merge($disabled, $enabled);
+
+    $nextweight = -10;
+    $form['layerstyles']['layer_styles']['#tree'] = TRUE;
+    $form['layerstyles']['layer_weight']['#tree'] = TRUE;
+    foreach ($overlay_options_keys as $id) {
+      $description = $overlay_options[$id];
       $form['layerstyles']['layers']['overlaylabels'][$id] = array('#type' => 'markup', '#value' => $description);
-      $form['layerstyles']['layer_styles']['#tree'] = TRUE;
       $form['layerstyles']['layer_styles'][$id] = array(
         '#type' => 'select',
         '#options' => array('-- '. t('Default style') .' --') + openlayers_ui_get_style_options(),
         '#default_value' => !empty($defaults['layer_styles'][$id]) ?
           $defaults['layer_styles'][$id] : '',
+      );
+      $form['layerstyles']['layer_weight'][$id] = array(
+        '#type' => 'weight',
+        '#default_value' => $nextweight++,
+        '#attributes' => array(
+          'class' => 'layer-weight'
+        )
       );
     }
   }
@@ -576,10 +595,21 @@ function openlayers_ui_presets_form_process($values = array()) {
         // TODO: finish port here
         $processed['default_layer'] = $values['layers']['default_layer'];
 
-        // Merge our different layer sections together
         $baselayers = array_filter($values['layers']['baselayers']);
-        $overlays = array_filter($values['layers']['overlays']);
+
+        // Sort overlay layers by weight, in case browser didn't
+        // send them already sorted
+        $overlays = array();
+        asort($values['layer_weight']);
+        foreach (array_keys($values['layer_weight']) as $key) {
+          if ( $values['layers']['overlays'][$key] ) {
+             $overlays[$key] = $key;
+          }
+        }
+
+        // Merge our different layer sections together
         $processed['layers'] = array_merge($baselayers, $overlays);
+
         break;
 
       default:
