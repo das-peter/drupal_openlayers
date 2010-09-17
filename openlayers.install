@@ -54,24 +54,24 @@ function openlayers_schema() {
     ),
     'fields' => array(
       'name' => array(
-        'description' => t('The primary identifier for the preset.'),
+        'description' => 'The primary identifier for the preset.',
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
       ),
       'title' => array(
-        'description' => t('The title of the preset.'),
+        'description' => 'The title of the preset.',
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
       ),
       'description' => array(
-        'description' => t('The description of the preset.'),
+        'description' => 'The description of the preset.',
         'type' => 'text',
         'not null' => TRUE,
       ),
       'data' => array(
-        'description' => t('The serialized map.'),
+        'description' => 'The serialized map.',
         'type' => 'text',
         'not null' => TRUE,
         'serialize' => TRUE,
