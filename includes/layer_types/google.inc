@@ -114,7 +114,7 @@ class openlayers_layer_type_google extends openlayers_layer_type {
       // Include files.
       drupal_add_js(drupal_get_path('module', 'openlayers') . 
         '/includes/layer_types/js/google.js');
-      drupal_set_html_head('<script src="' . $url . '" type="text/javascript"></script>');
+      drupal_add_js($url, 'external');
       $google_maps_included = TRUE;
     }
     return $this->options;
