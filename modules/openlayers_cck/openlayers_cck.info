@@ -1,7 +1,9 @@
 ; $Id$
 name = OpenLayers CCK
 description = Provides CCK fields and widgets through an OpenLayers interface.
-core = 6.x
+core = 7.x
 package = OpenLayers
 dependencies[] = openlayers
 dependencies[] = content
+
+files[] = openlayers_cck.module

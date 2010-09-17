@@ -1,7 +1,9 @@
 ; $Id$
 name = OpenLayers Views
 description = Provides OpenLayers Views plugins.
-core = 6.x
+core = 7.x
 package = OpenLayers
 dependencies[] = openlayers
 dependencies[] = views
+; Core files
+files[] = openlayers_views.module
