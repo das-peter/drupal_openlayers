@@ -10,7 +10,7 @@
  */
 
 /**
- * Implementation of hook_help().
+ * Implements hook_help().
  */
 function openlayers_views_help($path, $arg) {
   switch ($path) {
@@ -20,7 +20,7 @@ function openlayers_views_help($path, $arg) {
 }
 
 /**
- * Implementation of hook_theme().
+ * Implements hook_theme().
  */
 function openlayers_views_theme($existing, $type, $theme, $path) {
   return array(
@@ -42,7 +42,7 @@ function openlayers_views_theme($existing, $type, $theme, $path) {
 }
 
 /**
- * Implementation of hook_views_api().
+ * Implements hook_views_api().
  */
 function openlayers_views_views_api() {
   return array(
@@ -52,7 +52,7 @@ function openlayers_views_views_api() {
 }
 
 /**
- * Implementation of hook_ctools_plugin_api().
+ * Implements hook_ctools_plugin_api().
  */
 function openlayers_views_ctools_plugin_api($module, $api) {
   if ($module == "openlayers") {
@@ -64,7 +64,7 @@ function openlayers_views_ctools_plugin_api($module, $api) {
 }
 
 /**
- * Implementation of hook_openlayers_layers().
+ * Implements hook_openlayers_layers().
  */
 function openlayers_views_openlayers_layers() {
   $layers = array();
@@ -115,7 +115,7 @@ function openlayers_views_openlayers_layers() {
 } 
 
 /**
- * Implementation of hook_openlayers_layer_types()
+ * Implements hook_openlayers_layer_types()
  */
 function openlayers_views_openlayers_layer_types() {
   return array(
@@ -134,7 +134,7 @@ function openlayers_views_openlayers_layer_types() {
 }
 
 /**
- * Implementation of hook_form_alter()
+ * Implements hook_form_alter()
  */
 function openlayers_views_form_alter(&$form, $form_state, $form_id) {
   switch ($form_id) {

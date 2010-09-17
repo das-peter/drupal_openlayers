@@ -2,7 +2,7 @@
 // $Id$
 
 /**
- * Implementation of hook_help
+ * Implements hook_help
  */
 function openlayers_ui_help($path, $arg) {
   switch ($path) {
@@ -45,14 +45,14 @@ function openlayers_ui_help($path, $arg) {
 }
 
 /**
- * Implementation of hook_perm
+ * Implements hook_perm
  */
 function openlayers_ui_perm() {
   return array('administer openlayers');
 }
 
 /**
- * Implementation of hook_menu
+ * Implements hook_menu
  */
 function openlayers_ui_menu() {
   $items = array();
@@ -329,7 +329,7 @@ function openlayers_ui_menu() {
 }
 
 /**
- * Implementation of hook_theme().
+ * Implements hook_theme().
  */
 function openlayers_ui_theme($existing, $type, $theme, $path) {
   return array(

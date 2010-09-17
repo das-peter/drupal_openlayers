@@ -10,7 +10,7 @@
  */
 
 /**
- * Implementation of hook_help().
+ * Implements hook_help().
  */
 function openlayers_filters_help($path, $arg) {
   $output = '';
@@ -25,7 +25,7 @@ function openlayers_filters_help($path, $arg) {
 }
 
 /**
- * Implementation of hook_filter().
+ * Implements hook_filter().
  */
 function openlayers_filters_filter($op, $delta = 0, $format = -1, $text = '', $cache_id = 0) {
   if ($op == 'list') {
@@ -82,7 +82,7 @@ function openlayers_filters_filter($op, $delta = 0, $format = -1, $text = '', $c
 }
 
 /**
- * Implementation of hook_filter_tips().
+ * Implements hook_filter_tips().
  */
 function openlayers_filters_filter_tips($delta, $format, $long = FALSE) {
   switch ($delta) {

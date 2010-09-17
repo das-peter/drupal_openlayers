@@ -17,7 +17,7 @@
  */
 
 /**
- * Implementation of hook_help().
+ * Implements hook_help().
  */
 function openlayers_help($path, $arg) {
   switch ($path) {
@@ -29,7 +29,7 @@ function openlayers_help($path, $arg) {
 }
 
 /**
- * Implementation of hook_theme().
+ * Implements hook_theme().
  */
 function openlayers_theme($existing, $type, $theme, $path) {
   return array(
@@ -903,7 +903,7 @@ class openlayers_layer_type {
 }
 
 /**
- * Implementation of hook_ctools_plugin
+ * Implements hook_ctools_plugin
  */
 function openlayers_ctools_plugin_behaviors() {
   return array(
@@ -912,7 +912,7 @@ function openlayers_ctools_plugin_behaviors() {
 }
 
 /**
- * Implementation of hook_ctools_plugin
+ * Implements hook_ctools_plugin
  */
 function openlayers_ctools_plugin_layer_types() {
   return array(
@@ -921,7 +921,7 @@ function openlayers_ctools_plugin_layer_types() {
 }
 
 /**
- * Implementation of hook_ctools_plugin_api().
+ * Implements hook_ctools_plugin_api().
  */
 function openlayers_ctools_plugin_api($module, $api) {
   if ($module == "openlayers") {
@@ -940,7 +940,7 @@ function openlayers_ctools_plugin_api($module, $api) {
 }
 
 /**
- * Implementation of hook_openlayers_layers().
+ * Implements hook_openlayers_layers().
  */
 function openlayers_openlayers_layers() {
   module_load_include('inc', 'openlayers', 'includes/openlayers.layers');
@@ -948,7 +948,7 @@ function openlayers_openlayers_layers() {
 }
 
 /**
- * Implementation of hook_openlayers_behaviors().
+ * Implements hook_openlayers_behaviors().
  */
 function openlayers_openlayers_behaviors() {
   module_load_include('inc', 'openlayers', 'includes/openlayers.behaviors');
@@ -956,7 +956,7 @@ function openlayers_openlayers_behaviors() {
 }
 
 /**
- * Implementation of hook_openlayers_styles().
+ * Implements hook_openlayers_styles().
  */
 function openlayers_openlayers_styles() {
   module_load_include('inc', 'openlayers', 'includes/openlayers.styles');
@@ -964,7 +964,7 @@ function openlayers_openlayers_styles() {
 }
 
 /**
- * Implementation of hook_openlayers_presets().
+ * Implements hook_openlayers_presets().
  */
 function openlayers_openlayers_presets() {
   module_load_include('inc', 'openlayers', 'includes/openlayers.presets');
@@ -972,7 +972,7 @@ function openlayers_openlayers_presets() {
 }
 
 /**
- * Implementation of hook_openlayers_layer_types().
+ * Implements hook_openlayers_layer_types().
  */
 function openlayers_openlayers_layer_types() {
   module_load_include('inc', 'openlayers', 'includes/openlayers.layer_types');

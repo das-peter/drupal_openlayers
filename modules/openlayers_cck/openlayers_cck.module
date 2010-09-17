@@ -16,7 +16,7 @@ define('OPENLAYERS_CCK_WIDGET_MAP_ID_PREFIX', 'openlayers-cck-widget-map');
 define('OPENLAYERS_CCK_FORMATTER_MAP_ID_PREFIX', 'openlayers-cck-formatter-map');
 
 /**
- * Implementation of hook_help().
+ * Implements hook_help().
  */
 function openlayers_cck_help($path, $arg) {
   switch ($path) {
@@ -28,7 +28,7 @@ function openlayers_cck_help($path, $arg) {
 }
 
 /**
- * Implementation of hook_ctools_plugin_api().
+ * Implements hook_ctools_plugin_api().
  */
 function openlayers_cck_ctools_plugin_api($module, $api) {
   if ($module == "openlayers") {
@@ -47,7 +47,7 @@ function openlayers_cck_ctools_plugin_api($module, $api) {
 }
 
 /**
- * Implementation of hook_openlayers_behaviors
+ * Implements hook_openlayers_behaviors
  */
 function openlayers_cck_openlayers_behaviors() {
   return array(
@@ -68,7 +68,7 @@ function openlayers_cck_openlayers_behaviors() {
 }
 
 /**
- * Implementation of hook_theme().
+ * Implements hook_theme().
  */
 function openlayers_cck_theme($existing, $type, $theme, $path) {
   $themes = array(
@@ -117,7 +117,7 @@ function openlayers_cck_theme($existing, $type, $theme, $path) {
 }
 
 /**
- * Implementation of hook_field_info().
+ * Implements hook_field_info().
  */
 function openlayers_cck_field_info() {
   return array(
@@ -133,7 +133,7 @@ function openlayers_cck_field_info() {
 }
 
 /**
- * Implementation of hook_field_settings().
+ * Implements hook_field_settings().
  */
 function openlayers_cck_field_settings($op, $field) {
   switch ($op) {
@@ -189,7 +189,7 @@ function openlayers_cck_field_settings($op, $field) {
 }
 
 /**
- * Implementation of hook_field().
+ * Implements hook_field().
  */
 function openlayers_cck_field($op, &$node, $field, &$items, $teaser, $page) {
   switch ($op) {
@@ -204,14 +204,14 @@ function openlayers_cck_field($op, &$node, $field, &$items, $teaser, $page) {
 }
 
 /**
- * Implementation of hook_content_is_empty().
+ * Implements hook_content_is_empty().
  */
 function openlayers_cck_content_is_empty($item, $field) {
   return empty($item['openlayers_wkt']);
 }
 
 /**
- * Implementation of hook_widget_info().
+ * Implements hook_widget_info().
  */
 function openlayers_cck_widget_info() {
   return array(
@@ -227,7 +227,7 @@ function openlayers_cck_widget_info() {
 }
 
 /**
- * Implementation of hook_widget_settings().
+ * Implements hook_widget_settings().
  */
 function openlayers_cck_widget_settings($op, $widget) {
   switch ($op) {
@@ -301,7 +301,7 @@ function openlayers_cck_widget_settings($op, $widget) {
 }
 
 /**
- * Implementation of hook_widget().
+ * Implements hook_widget().
  */
 function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0) {
   $element = array();
@@ -315,7 +315,7 @@ function openlayers_cck_widget(&$form, &$form_state, $field, $items, $delta = 0)
 }
 
 /**
- * Implementation of FAPI hook_elements().
+ * Implements FAPI hook_elements().
  */
 function openlayers_cck_elements() {
   return array(
@@ -422,7 +422,7 @@ function openlayers_cck_validate($element, &$form_state) {
 }
 
 /**
- * Implementation of hook_field_formatter_info().
+ * Implements hook_field_formatter_info().
  */
 function openlayers_cck_field_formatter_info() {
   $formatters = array();
@@ -505,7 +505,7 @@ function _openlayers_cck_render_element_map($field_name = '',
 }
 
 /**
- * Implementation of hook_content_generate().
+ * Implements hook_content_generate().
  */
 function openlayers_cck_content_generate(&$node, $field) {
   // In order to save PHP parsing unnecessary code on
@@ -516,7 +516,7 @@ function openlayers_cck_content_generate(&$node, $field) {
 }
 
 /**
- * Implementation of hook_feeds_node_processor_targets_alter().
+ * Implements hook_feeds_node_processor_targets_alter().
  */
 function openlayers_cck_feeds_node_processor_targets_alter(&$targets, $content_type) {
   // In order to save PHP parsing unnecessary code on
