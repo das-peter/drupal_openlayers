@@ -280,7 +280,7 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   $base_options = openlayers_ui_get_layer_options('baselayer', $defaults['projection']);
   if (!empty($base_options)) {
     foreach ($base_options as $id => $description) {
-      $form['layerstyles']['layers']['baselabels'][$id] = array('#type' => 'markup', '#value' => $description);
+      $form['layerstyles']['layers']['baselabels'][$id] = array('#markup' => $description);
     }
   }
   $form['layerstyles']['layers']['baselayers'] = array(
@@ -312,7 +312,7 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
     $form['layerstyles']['layer_weight']['#tree'] = TRUE;
     foreach ($overlay_options_keys as $id) {
       $description = $overlay_options[$id];
-      $form['layerstyles']['layers']['overlaylabels'][$id] = array('#type' => 'markup', '#value' => $description);
+      $form['layerstyles']['layers']['overlaylabels'][$id] = array('#markup' => $description);
       $form['layerstyles']['layer_styles'][$id] = array(
         '#type' => 'select',
         '#options' => array('-- '. t('Default style') .' --') + openlayers_ui_get_style_options(),

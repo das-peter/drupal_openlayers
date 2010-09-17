@@ -682,8 +682,7 @@ function openlayers_dependency_widget($dependencies) {
     $dependency_form = array();
     foreach ($dependencies as $dependency) {
       $dependency_form[] = array(
-        '#type' => 'markup',
-        '#value' => "<div class='openlayers-dependency-flag'>
+        '#markup' => "<div class='openlayers-dependency-flag'>
              <span class='openlayers-dependency-value'>$dependency</span>" . 
             "<span class='openlayers-dependency-broken'>" . t('Dependency not found:') . ' ' . $dependency . "</span>" .
             "</div>"

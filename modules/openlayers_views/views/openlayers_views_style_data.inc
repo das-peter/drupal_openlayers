@@ -190,8 +190,7 @@ class openlayers_views_style_data extends views_plugin_style {
       }
     }
     $form['attributes']['styling'] = array(
-      '#type' => 'markup',
-      '#value' => '
+      '#markup' => '
         <p>' . t('Any fields that you add to this view will be attached to their respective feature (point, line, polygon) as attributes.  These attributes can then be used to add variable styling to your themes.  This is accomplished by using the %syntax syntax in the values for a style.  The following is a list of formatted variables that are currently available; these can be placed right in the style interface.  The %rendered one means that it has been processed by Views and may have a different value.', array('%syntax' => '${field_name}', '%rendered' => '_rendered')) . '</p>
         ' . theme('item_list', $variable_fields) . '
         <p>' . t('Please note that this does not apply to Grouped Displays.') . '</p>
