@@ -7,6 +7,8 @@ php = 5.2
 dependencies[] = ctools
 ; Core files
 files[] = openlayers.module
+; Presets
+files[] = includes/openlayers.presets.inc
 ; Layer types
 files[] = includes/layer_types/cloudmade.inc
 files[] = includes/layer_types/google.inc

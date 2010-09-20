@@ -98,7 +98,10 @@ function _openlayers_styles_process($styles = array(),
   }
 
   // Run through theme function
-  $processed = theme('openlayers_styles', $processed, $map);
+  $processed = theme('openlayers_styles', array(
+    'styles' => $processed, 
+    'map' => $map)
+  );
 
   // Return processed
   return $processed;

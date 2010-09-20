@@ -22,7 +22,7 @@ function openlayers_ui_presets_clone($preset) {
 /**
  * Menu Callback for Add Preset
  */
-function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE) {
+function openlayers_ui_presets_form($form_state, $preset = NULL, $edit = FALSE) {
   openlayers_include();
   ctools_include('dependent');
   drupal_add_js(drupal_get_path('module', 'openlayers_ui') . '/js/openlayers_ui.presets.js', 'module');
@@ -233,7 +233,12 @@ function openlayers_ui_presets_form(&$form_state, $preset = NULL, $edit = FALSE)
   $projections = array();
   foreach (openlayers_ui_get_projection_options() as $projection) {
     $projection_layers = array_merge(openlayers_ui_get_layer_options('baselayer', $projection), openlayers_ui_get_layer_options('overlay', $projection));
-    $projections[$projection] = theme('openlayers_ui_form_projection_description', $projection, array_keys($projection_layers));
+    $projections[$projection] = theme('openlayers_ui_form_projection_description', 
+      array(
+        'projection_title' => $projection, 
+        'available_layers' => array_keys($projection_layers)
+      )
+    );
   }
 
   // $form['layerstyles']['projections'] = $base_fieldset;

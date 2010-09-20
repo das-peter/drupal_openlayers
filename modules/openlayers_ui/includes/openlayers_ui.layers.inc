@@ -22,7 +22,7 @@ function openlayers_ui_layers_types(&$form_state, $layer = NULL, $edit = FALSE) 
 /**
  * Layer add/edit form.
  */
-function openlayers_ui_layers_form(&$form_state, $layer = NULL) {
+function openlayers_ui_layers_form($form_state, $layer = NULL) {
   $form = array();
 
   $form['layer'] = openlayers_ui_get_layer_form($layer);
@@ -72,7 +72,7 @@ function openlayers_ui_layers_form_submit(&$form, &$form_state) {
  * Layer-wide-settings form
  */
 
-function openlayers_ui_layers_settings(&$form_state, $layer = NULL) {
+function openlayers_ui_layers_settings($form_state, $layer = NULL) {
   $form = array();
   $layer_types = openlayers_layer_types();
 

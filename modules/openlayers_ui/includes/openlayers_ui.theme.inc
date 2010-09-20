@@ -86,7 +86,10 @@ function theme_openlayers_ui_presets_form_layers($form) {
     $row[] = drupal_render($form['layers']['default_layer'][$key]);
     $rows[] = $row;
   }
-  $output .= theme('table', array(t('Base layers'), t('Enabled'), t('Default')), $rows);
+  $output .= theme('table', array(
+    'header' => array(t('Base layers'), t('Enabled'), t('Default')), 
+    'rows' => $rows)
+  );
 
   // Overlay layers
   $rows = array();
@@ -104,7 +107,13 @@ function theme_openlayers_ui_presets_form_layers($form) {
     $row[] = drupal_render($form['layer_styles'][$key]);
     $rows[] = array( 'data' => $row, 'class' => 'draggable' );
   }
-  $output .= theme('table', array(t('Overlay layers'), t('Weight'), t('Enabled'), t('Activated'), t('In Switcher'), t('Style')), $rows, array('id' => 'overlay-layer-table'));
+  $output .= theme('table', 
+    array(
+      'header' => array(t('Overlay layers'), t('Weight'), t('Enabled'), t('Activated'), t('In Switcher'), t('Style')), 
+      'rows' => $rows, 
+      array('id' => 'overlay-layer-table')
+    )
+  );
 
   drupal_add_tabledrag('overlay-layer-table', 'order', 'sibling', 'layer-weight');
   $output .= drupal_render($form);
@@ -126,6 +135,6 @@ function theme_openlayers_ui_presets_form_behaviors($form) {
   }
   
   // Create table
-  $output .= theme('table', array(t('Behaviors')), $rows);
+  $output .= theme('table', array('header' => array(t('Behaviors')), 'rows' => $rows));
   return $output;
 }
