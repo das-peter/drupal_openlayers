@@ -444,7 +444,10 @@ function openlayers_ui_object_list($type) {
   }
 
   // Output themed table
-  $output = theme('table', $header, $rows);
+  $output = theme('table', array(
+    'header' => $header, 
+    'rows' => $rows)
+  );
   return $output;
 }
 

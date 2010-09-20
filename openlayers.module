@@ -299,8 +299,7 @@ function openlayers_layers_load($reset = FALSE) {
   foreach ($layers as $layer) {
     $layer_objects[$layer->name] = openlayers_get_layer_object($layer);
   }
-  $layer_objects = array_filter($layer_objects, 'openlayers_layer_sanity_check');
-  return $layer_objects;
+  return array_filter($layer_objects, 'openlayers_layer_sanity_check');
 }
 
 /**
@@ -903,20 +902,16 @@ class openlayers_layer_type {
 }
 
 /**
- * Implements hook_ctools_plugin
+ * Implements hook_ctools_plugin_type
  */
-function openlayers_ctools_plugin_behaviors() {
+function openlayers_ctools_plugin_type() {
   return array(
-    'use hooks' => TRUE,
-  );
-}
-
-/**
- * Implements hook_ctools_plugin
- */
-function openlayers_ctools_plugin_layer_types() {
-  return array(
-    'use hooks' => TRUE,
+    'behaviors' => array(
+      'use hooks' => TRUE,
+    ),
+    'layer_types' => array(
+      'use hooks' => TRUE,
+    )
   );
 }
 
