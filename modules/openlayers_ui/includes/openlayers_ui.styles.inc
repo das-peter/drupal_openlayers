@@ -12,7 +12,7 @@
 /**
  * Styles add/edit form.
  */
-function openlayers_ui_styles_form(&$form_state, $style = NULL, $edit = FALSE) {
+function openlayers_ui_styles_form($form_state, $style = NULL, $edit = FALSE) {
   $form = array();
   
   // Available styling properies.  Defaults and descriptions are taken

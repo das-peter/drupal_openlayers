@@ -12,7 +12,7 @@
 /**
  * Layer add/edit form.
  */
-function openlayers_ui_layers_types(&$form_state, $layer = NULL, $edit = FALSE) {
+function openlayers_ui_layers_types($form_state, $layer = NULL, $edit = FALSE) {
   $form = array();
   $form['layer_types'] = openlayers_ui_get_layer_type_options('map');
   return $form;

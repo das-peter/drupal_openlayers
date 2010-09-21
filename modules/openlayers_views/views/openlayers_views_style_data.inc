@@ -28,7 +28,7 @@ class openlayers_views_style_data extends views_plugin_style {
   /**
    * Options form
    */
-  function options_form(&$form, &$form_state) {
+  function options_form($form, &$form_state) {
     parent::options_form($form, $form_state);
 
     $fields = array();
