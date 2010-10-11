@@ -112,8 +112,11 @@ function openlayers_ui_layers_settings_submit(&$form, &$form_state) {
 /**
  * Get an actual layer form
  */
-function openlayers_ui_get_layer_form($type, $layer = FALSE) {
+function openlayers_ui_get_layer_form($args, $layer = FALSE) {
   $form = array();
+
+  // TODO: this shouldn't be necessary. this is ugly code.
+  $type = $args['build_info']['args'][0];
 
   // @TODO: clarify use of data, and of layer_type in overriding it
   $form['data'] = array(

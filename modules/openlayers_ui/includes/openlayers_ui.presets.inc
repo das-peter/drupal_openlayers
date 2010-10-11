@@ -22,11 +22,13 @@ function openlayers_ui_presets_clone($preset) {
 /**
  * Menu Callback for Add Preset
  */
-function openlayers_ui_presets_form($form_state, $preset = NULL, $edit = FALSE) {
+function openlayers_ui_presets_form($form_state, $args = NULL, $edit = FALSE) {
   openlayers_include();
   ctools_include('dependent');
   drupal_add_js(drupal_get_path('module', 'openlayers_ui') . '/js/openlayers_ui.presets.js', 'module');
   drupal_add_css(drupal_get_path('module', 'openlayers_ui') . '/openlayers_ui.css');
+
+  $preset = $args['build_info']['args'][0];
 
   // If cloning or editing, attempt to get preset
   if (empty($preset)) {

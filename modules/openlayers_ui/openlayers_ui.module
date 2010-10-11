@@ -334,14 +334,14 @@ function openlayers_ui_menu() {
 function openlayers_ui_theme($existing, $type, $theme, $path) {
   return array(
     'openlayers_ui_form_layer_description' => array(
-      'arguments' => array(
+      'variables' => array(
         'layer_title' => '',
         'layer_description' => '',
       ),
       'file' => 'includes/openlayers_ui.theme.inc',
     ),
     'openlayers_ui_form_projection_description' => array(
-      'arguments' => array(
+      'variables' => array(
         'projection_title' => '',
         'available_layers' => array(),
         'layers' => array(),
@@ -349,15 +349,15 @@ function openlayers_ui_theme($existing, $type, $theme, $path) {
       'file' => 'includes/openlayers_ui.theme.inc',
     ),
     'openlayers_ui_presets_form' => array(
-      'arguments' => array('form' => array()),
+      'variables' => array('form' => array()),
       'file' => 'includes/openlayers_ui.theme.inc',
     ),
     'openlayers_ui_presets_form_layers' => array(
-      'arguments' => array('form' => array()),
+      'variables' => array('form' => array()),
       'file' => 'includes/openlayers_ui.theme.inc',
     ),
     'openlayers_ui_presets_form_behaviors' => array(
-      'arguments' => array('form' => array()),
+      'variables' => array('form' => array()),
       'file' => 'includes/openlayers_ui.theme.inc',
     ),
   );
@@ -454,7 +454,9 @@ function openlayers_ui_object_list($type) {
 /**
  * Menu callback for object delete form.
  */
-function openlayers_ui_object_delete(&$form_state, $type, $object) {
+function openlayers_ui_object_delete($form_state, $args) {
+  $type = $args['build_info']['args'][0];
+  $object = $args['build_info']['args'][1];
   if ($object->export_type & EXPORT_IN_DATABASE) {
     // Create delete form
     $form = array(
