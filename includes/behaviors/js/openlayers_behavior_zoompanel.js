@@ -8,7 +8,9 @@
 /**
  * ZoomPanel Behavior
  */
-Drupal.behaviors.openlayers_behavior_zoompanel = function(context) {
+(function($) {
+Drupal.behaviors.openlayers_behavior_zoompanel = {
+  'attach': function(context, settings) {
   var data = $(context).data('openlayers');
   if (data && data.map.behaviors['openlayers_behavior_zoompanel']) {
     // Add control
@@ -17,3 +19,5 @@ Drupal.behaviors.openlayers_behavior_zoompanel = function(context) {
     control.activate();
   }
 }
+}
+})jQuery);

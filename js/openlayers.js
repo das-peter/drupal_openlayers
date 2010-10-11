@@ -5,7 +5,7 @@
 
 /**
  * @file
- * This file holds the main javascript API for OpenLayers. It is 
+ * This file holds the main javascript API for OpenLayers. It is
  * responsable for loading and displaying the map.
  *
  * @ingroup openlayers
@@ -19,6 +19,8 @@
 
 document.namespaces;
 
+(function ($) {
+
 Drupal.settings.openlayers = {};
 Drupal.settings.openlayers.maps = {};
 
@@ -26,83 +28,85 @@ Drupal.settings.openlayers.maps = {};
  * Minimal OpenLayers map bootstrap.
  * All additional operations occur in additional Drupal behaviors.
  */
-Drupal.behaviors.openlayers = function(context) {
-  if (typeof(Drupal.settings.openlayers) === 'object' && Drupal.settings.openlayers.maps && !$(context).data('openlayers')) {
-    $('.openlayers-map:not(.openlayers-processed)').each(function() {
-      $(this).addClass('openlayers-processed');
-      var map_id = $(this).attr('id');
+Drupal.behaviors.openlayers = {
+  'attach': function(context, settings) {
+    if (typeof(Drupal.settings.openlayers) === 'object' && Drupal.settings.openlayers.maps && !$(context).data('openlayers')) {
+      $('.openlayers-map:not(.openlayers-processed)').each(function() {
+        $(this).addClass('openlayers-processed');
+        var map_id = $(this).attr('id');
 
-      // Use try..catch for error handling.
-      try {
-        if (Drupal.settings.openlayers.maps[map_id]) {
-          // Set OpenLayers language based on document language, 
-          // rather than browser language
-          OpenLayers.Lang.setCode($('html').attr('lang'));
-  
-          var map = Drupal.settings.openlayers.maps[map_id];
-          
-          $(this)
-            // @TODO: move this into markup in theme function, doing this dynamically is a waste.
-            .css('width', map.width)
-            .css('height', map.height);
-  
-          var options = {};
-          // This is necessary because the input JSON cannot contain objects
-          options.projection = new OpenLayers.Projection('EPSG:' + map.projection);
-          options.displayProjection = new OpenLayers.Projection('EPSG:' + map.displayProjection);
+        // Use try..catch for error handling.
+        try {
+          if (Drupal.settings.openlayers.maps[map_id]) {
+            // Set OpenLayers language based on document language,
+            // rather than browser language
+            OpenLayers.Lang.setCode($('html').attr('lang'));
 
-          // TODO: work around this scary code
-          if (map.projection === '900913') {
-            options.maxExtent = new OpenLayers.Bounds(
-              -20037508.34, -20037508.34, 20037508.34, 20037508.34);
-          }
-          if (map.projection === '4326') {
-            options.maxExtent = new OpenLayers.Bounds(-180, -90, 180, 90);
-          }
+            var map = Drupal.settings.openlayers.maps[map_id];
 
-          options.maxResolution = 1.40625;
-          options.controls = [];
-  
-          // Change image, CSS, and proxy paths if specified
-          if (map.image_path) {
-            OpenLayers.ImgPath = Drupal.openlayers.relatePath(map.image_path, 
-              Drupal.settings.basePath);
-          }
-          if (map.css_path) {
-            options.theme = Drupal.openlayers.relatePath(map.css_path, 
-              Drupal.settings.basePath);
-          }
-          if (map.proxy_host) {
-            OpenLayers.ProxyHost = Drupal.openlayers.relatePath(map.proxy_host, 
-              Drupal.settings.basePath);
-          }
-  
-          // Initialize openlayers map
-          var openlayers = new OpenLayers.Map(map.id, options);
-  
-          // Run the layer addition first
-          Drupal.openlayers.addLayers(map, openlayers);
-  
-          // Attach data to map DOM object
-          $(this).data('openlayers', {'map': map, 'openlayers': openlayers});
-  
-          // Finally, attach behaviors
-          Drupal.attachBehaviors(this);
-  
-          if($.browser.msie) {
-            Drupal.openlayers.redrawVectors();
+            $(this)
+              // @TODO: move this into markup in theme function, doing this dynamically is a waste.
+              .css('width', map.width)
+              .css('height', map.height);
+
+            var options = {};
+            // This is necessary because the input JSON cannot contain objects
+            options.projection = new OpenLayers.Projection('EPSG:' + map.projection);
+            options.displayProjection = new OpenLayers.Projection('EPSG:' + map.displayProjection);
+
+            // TODO: work around this scary code
+            if (map.projection === '900913') {
+              options.maxExtent = new OpenLayers.Bounds(
+                -20037508.34, -20037508.34, 20037508.34, 20037508.34);
+            }
+            if (map.projection === '4326') {
+              options.maxExtent = new OpenLayers.Bounds(-180, -90, 180, 90);
+            }
+
+            options.maxResolution = 1.40625;
+            options.controls = [];
+
+            // Change image, CSS, and proxy paths if specified
+            if (map.image_path) {
+              OpenLayers.ImgPath = Drupal.openlayers.relatePath(map.image_path,
+                Drupal.settings.basePath);
+            }
+            if (map.css_path) {
+              options.theme = Drupal.openlayers.relatePath(map.css_path,
+                Drupal.settings.basePath);
+            }
+            if (map.proxy_host) {
+              OpenLayers.ProxyHost = Drupal.openlayers.relatePath(map.proxy_host,
+                Drupal.settings.basePath);
+            }
+
+            // Initialize openlayers map
+            var openlayers = new OpenLayers.Map(map.id, options);
+
+            // Run the layer addition first
+            Drupal.openlayers.addLayers(map, openlayers);
+
+            // Attach data to map DOM object
+            $(this).data('openlayers', {'map': map, 'openlayers': openlayers});
+
+            // Finally, attach behaviors
+            Drupal.attachBehaviors(this);
+
+            if ($.browser.msie) {
+              Drupal.openlayers.redrawVectors();
+            }
           }
         }
-      }
-      catch(e) {
-        if (typeof console != 'undefined') {
-          console.log(e);
+        catch (e) {
+          if (typeof console != 'undefined') {
+            console.log(e);
+          }
+          else {
+            $(this).text('Error during map rendering: ' + e);
+          }
         }
-        else {
-          $(this).text('Error during map rendering: ' + e);
-        }
-      }
-    });
+      });
+    }
   }
 };
 
@@ -110,10 +114,7 @@ Drupal.behaviors.openlayers = function(context) {
  * Collection of helper methods.
  */
 Drupal.openlayers = {
-
-  /**
-   * Determine path based on format.
-   */
+  // Determine path based on format.
   'relatePath': function(path, basePath) {
     // Check for a full URL or an absolute path.
     if (path.indexOf('://') >= 0 || path.indexOf('/') == 0) {
@@ -123,8 +124,7 @@ Drupal.openlayers = {
       return basePath + path;
     }
   },
-
-  /**
+  /*
    * Redraw Vectors.
    * This is necessary because various version of IE cannot draw vectors on
    * $(document).ready()
@@ -133,8 +133,8 @@ Drupal.openlayers = {
     $(window).load(
       function() {
         var map;
-        for(map in Drupal.settings.openlayers.maps) {
-          $.each($('#'+map).data('openlayers').openlayers.getLayersByClass('OpenLayers.Layer.Vector'), 
+        for (map in Drupal.settings.openlayers.maps) {
+          $.each($('#' + map).data('openlayers').openlayers.getLayersByClass('OpenLayers.Layer.Vector'),
             function(i, layer) {
               layer.redraw();
             }
@@ -143,29 +143,28 @@ Drupal.openlayers = {
       }
     );
   },
-
   /**
    * Add layers to the map
    *
-   * @param map Drupal settings object for the map
-   * @param openlayers OpenLayers Map Object
+   * @param map Drupal settings object for the map.
+   * @param openlayers OpenLayers Map Object.
    */
   'addLayers': function(map, openlayers) {
 
     var sorted = [];
     for (var name in map.layers) {
       sorted.push({'name': name, 'weight': map.layers[name].weight });
-    };
+    }
     sorted.sort(function(a, b) {
       var x = a.weight; var y = b.weight;
       return ((x < y) ? -1 : ((x > y) ? 1 : 0));
     });
 
-    for (var i=0; i<sorted.length; ++i) {
-      var layer;      
+    for (var i = 0; i < sorted.length; ++i) {
+      var layer;
       var name = sorted[i].name;
       var options = map.layers[name];
-      
+
       // Add reference to our layer ID
       options.drupalID = name;
       // Ensure that the layer handler is available
@@ -186,13 +185,13 @@ Drupal.openlayers = {
         openlayers.addLayer(layer);
       }
     }
-    
+
     openlayers.setBaseLayer(openlayers.getLayersBy('drupalID', map.default_layer)[0]);
-    
+
     // Zoom & center
     if (map.center.initial) {
       var center = OpenLayers.LonLat.fromString(map.center.initial.centerpoint).transform(
-            new OpenLayers.Projection('EPSG:4326'), 
+            new OpenLayers.Projection('EPSG:4326'),
             new OpenLayers.Projection('EPSG:' + map.projection));
       var zoom = parseInt(map.center.initial.zoom, 10);
       openlayers.setCenter(center, zoom, false, false);
@@ -224,10 +223,10 @@ Drupal.openlayers = {
         var newFeatureSet = [];
 
         // Check to see if it is a new feature, or an array of new features.
-        if (typeof(newFeatureObject[0]) === 'undefined'){
+        if (typeof(newFeatureObject[0]) === 'undefined') {
           newFeatureSet[0] = newFeatureObject;
         }
-        else{
+        else {
           newFeatureSet = newFeatureObject;
         }
 
@@ -237,9 +236,9 @@ Drupal.openlayers = {
 
           // Transform the geometry if the 'projection' property is different from the map projection
           if (feature.projection) {
-            if (feature.projection !== map.projection){
-              var featureProjection = new OpenLayers.Projection("EPSG:" + feature.projection);
-              var mapProjection = new OpenLayers.Projection("EPSG:" + map.projection);
+            if (feature.projection !== map.projection) {
+              var featureProjection = new OpenLayers.Projection('EPSG:' + feature.projection);
+              var mapProjection = new OpenLayers.Projection('EPSG:' + map.projection);
               newFeature.geometry.transform(featureProjection, mapProjection);
             }
           }
@@ -256,7 +255,7 @@ Drupal.openlayers = {
             // NOTE: 'drupalFID' is only unique within a single layer.
             newFeature.attributes = feature.attributes;
             newFeature.data = feature.attributes;
-            newFeature.drupalFID = key; 
+            newFeature.drupalFID = key;
           }
 
           // Add style information
@@ -271,7 +270,7 @@ Drupal.openlayers = {
     }
 
     // Add new features if there are any
-    if (newFeatures.length !== 0){
+    if (newFeatures.length !== 0) {
       layer.addFeatures(newFeatures);
     }
   },
@@ -293,14 +292,14 @@ Drupal.openlayers = {
     return new OpenLayers.StyleMap({
       'default': new OpenLayers.Style({
         pointRadius: 5,
-        fillColor: "#ffcc66",
-        strokeColor: "#ff9933",
+        fillColor: '#ffcc66',
+        strokeColor: '#ff9933',
         strokeWidth: 4,
-        fillOpacity:0.5
+        fillOpacity: 0.5
       }),
       'select': new OpenLayers.Style({
-        fillColor: "#66ccff",
-        strokeColor: "#3399ff"
+        fillColor: '#66ccff',
+        strokeColor: '#3399ff'
       })
     });
   },
@@ -311,9 +310,10 @@ Drupal.openlayers = {
       return wktFormat.read(feature.wkt);
     }
     else if (feature.lon) {
-      return wktFormat.read("POINT(" + feature.lon + " " + feature.lat + ")");
+      return wktFormat.read('POINT(' + feature.lon + ' ' + feature.lat + ')');
     }
   }
 };
 
 Drupal.openlayers.layer = {};
+})(jQuery);

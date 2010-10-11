@@ -8,7 +8,9 @@
 /**
  * Map Form Values Behavior
  */
-Drupal.behaviors.openlayers_behavior_mapformvalues = function(context) {
+(function($) {
+Drupal.behaviors.openlayers_behavior_mapformvalues = {
+  'attach': function(context, settings) {
   var data = $(context).data('openlayers');
   function updateForm(evt) {
     if (evt.object.centerpoint_form) {
@@ -45,3 +47,4 @@ Drupal.behaviors.openlayers_behavior_mapformvalues = function(context) {
     data.openlayers.events.on({'moveend': updateForm});
   }
 }
+})(jQuery);
