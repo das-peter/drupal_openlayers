@@ -46,24 +46,23 @@ class openlayers_views_style_map extends views_plugin_style {
    * Query - override to make sure this doesn't get run
    */
   function query() {
-    $this->view->built = TRUE;
+    //$this->view->built = TRUE;
+    $this->view->query->fields = array();
   }
 
   /**
    * Renders views (map)
    */
   function render() {
-    $output = '';
-
-    // Check for live preview.
-    if (!empty($this->view->live_preview)) {
-      return t('OpenLayers views are not compatible with live preview.');
-    }
-
     // Get selected preset
     $preset = openlayers_preset_load($this->options['preset']);
 
     $map = openlayers_render_map($preset->data, $preset->name);
-    return theme($this->theme_functions(), $this->view, $this->options, $map);
+
+    return theme($this->theme_functions(), array(
+      'view' => $this->view, 
+      'options' => $this->options, 
+      'map' => $map
+    ));
   }
 }
