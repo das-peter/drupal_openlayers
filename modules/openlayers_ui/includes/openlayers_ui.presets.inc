@@ -149,7 +149,8 @@ function openlayers_ui_presets_form($form_state, $args = NULL,
     '#title' => t('Hide empty map'),
     '#description' => t("Show views empty text or hide the map if there are 
     no map overlays with features. Otherwise an empty map is displayed."),
-    '#default_value' => isset($defaults['hide_empty_map']) ? $defaults['hide_empty_map'] : FALSE,  
+    '#default_value' => isset($defaults['hide_empty_map']) ?
+      $defaults['hide_empty_map'] : FALSE,  
   );
   
   // Center
@@ -159,7 +160,7 @@ function openlayers_ui_presets_form($form_state, $args = NULL,
     '#tree' => TRUE,
   );
   $form['center']['helpmap'] = array(
-    '#value' => '<div class="form-item openlayers-center-helpmap"
+    '#markup' => '<div class="form-item openlayers-center-helpmap"
       style="display:block">'. openlayers_ui_presets_form_center_map($defaults) .'</div>'
   );
   $form['center']['initial'] = array(
@@ -218,6 +219,7 @@ function openlayers_ui_presets_form($form_state, $args = NULL,
     '#theme' => 'openlayers_ui_presets_form_behaviors',
     '#tree' => TRUE
   );
+
   $form['behaviors'] = $form['behaviors'] + openlayers_ui_get_behavior_options('map', $defaults);
 
   // Layers & styles
@@ -676,6 +678,7 @@ function openlayers_ui_get_behavior_options($type, $defaults) {
       $key, 
       $plugin['name']);
     if (!empty($class)) {
+      echo $key;
       $options = isset($defaults['behaviors'][$key]) ?
         $defaults['behaviors'][$key] : array();
 

@@ -125,7 +125,9 @@ function theme_openlayers_ui_presets_form_layers($args) {
 /**
  * Drupal theme implementation for Behaviors in the Preset form
  */
-function theme_openlayers_ui_presets_form_behaviors($form) {
+function theme_openlayers_ui_presets_form_behaviors($args) {
+  $form = $args['form'];
+
   $rows = array();
   foreach (element_children($form) as $key) {
     $rows[] = drupal_render($form[$key]['enabled']) . 

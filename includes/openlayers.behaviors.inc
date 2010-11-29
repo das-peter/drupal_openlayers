@@ -15,10 +15,11 @@ function _openlayers_openlayers_behaviors() {
     'openlayers_behavior_attribution' => array(
       'title' => t('Attribution'),
       'description' => t('Allows layers to provide attribution to the map if it exists.'),
-      'type' => 'layer',
-      'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
-      'file' => 'openlayers_behavior_attribution.inc',
+      // 'type' => 'layer',
       'behavior' => array(
+        'type' => 'layer',
+        'path' => drupal_get_path('module', 'openlayers') .'/includes/behaviors',
+        'file' => 'openlayers_behavior_attribution.inc',
         'class' => 'openlayers_behavior_attribution',
         'parent' => 'openlayers_behavior',
       ),
