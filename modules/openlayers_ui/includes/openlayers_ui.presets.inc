@@ -14,7 +14,7 @@ function openlayers_ui_presets_clone($preset) {
   drupal_set_title(
     t('Clone preset %preset',
       array('%preset' => $preset->name)
-    )
+    ), PASS_THROUGH
   );
   return drupal_get_form('openlayers_ui_presets_form', $preset);
 }
@@ -48,11 +48,17 @@ function openlayers_ui_presets_form($form_state, $args = NULL, $preset = FALSE, 
     'default_map' => array('#type' => 'value', '#value' => $defaults),
   );
 
+  $form['ui'] = array(
+    '#type' => 'vertical_tabs'
+  );
+
   // General information
   $form['info'] = array(
     '#title' => t('General information'),
     '#tree' => FALSE,
+    '#group' => 'ui'
   );
+  
   $form['info']['name'] = array(
     '#type' => 'textfield',
     '#title' => t('Name'),
@@ -234,8 +240,11 @@ function openlayers_ui_presets_form($form_state, $args = NULL, $preset = FALSE, 
   // Projection options
   $projections = array();
   foreach (openlayers_ui_get_projection_options() as $projection) {
-    $projection_layers = array_merge(openlayers_ui_get_layer_options('baselayer', $projection), openlayers_ui_get_layer_options('overlay', $projection));
-    $projections[$projection] = theme('openlayers_ui_form_projection_description', 
+    $projection_layers = array_merge(
+      openlayers_ui_get_layer_options('baselayer', $projection),
+      openlayers_ui_get_layer_options('overlay', $projection));
+    $projections[$projection] = theme(
+      'openlayers_ui_form_projection_description', 
       array(
         'projection_title' => $projection, 
         'available_layers' => array_keys($projection_layers)
@@ -256,7 +265,9 @@ function openlayers_ui_presets_form($form_state, $args = NULL, $preset = FALSE, 
     '#type' => 'radios',
     '#title' => t('Map Projection'),
     '#description' => t('The !link_proj of this map: all layers will either be requested or reprojected to this format.', array(
-      '!link_proj' => l(t('geographical projection'), 'http://en.wikipedia.org/wiki/Map_projection'),
+      '!link_proj' => l(
+        t('geographical projection'),
+        'http://en.wikipedia.org/wiki/Map_projection'),
     )),
     '#default_value' => $defaults['projection'],
     '#options' => $projections,
@@ -293,12 +304,17 @@ function openlayers_ui_presets_form($form_state, $args = NULL, $preset = FALSE, 
   $form['layerstyles']['layers']['baselayers'] = array(
     '#type' => 'checkboxes',
     '#options' => $base_options,
-    '#default_value' => !empty($defaults['layers']) ? array_intersect_key($defaults['layers'], $base_options) : array(),
+    '#default_value' => !empty($defaults['layers']) ?
+      array_intersect_key($defaults['layers'], $base_options) :
+      array()
   );
   $form['layerstyles']['layers']['default_layer'] = array(
     '#type' => 'radios',
     '#options' => $base_options,
-    '#default_value' => !empty($defaults['default_layer']) && isset($base_options[$defaults['default_layer']]) ? $defaults['default_layer'] : NULL,
+    '#default_value' => !empty($defaults['default_layer']) &&
+      isset($base_options[$defaults['default_layer']]) ?
+      $defaults['default_layer'] :
+      NULL,
   );
 
   // Overlay layers
@@ -319,7 +335,8 @@ function openlayers_ui_presets_form($form_state, $args = NULL, $preset = FALSE, 
     $form['layerstyles']['layer_weight']['#tree'] = TRUE;
     foreach ($overlay_options_keys as $id) {
       $description = $overlay_options[$id];
-      $form['layerstyles']['layers']['overlaylabels'][$id] = array('#markup' => $description);
+      $form['layerstyles']['layers']['overlaylabels'][$id] = 
+        array('#markup' => $description);
       $form['layerstyles']['layer_styles'][$id] = array(
         '#type' => 'select',
         '#options' => array('-- '. t('Default style') .' --') + openlayers_ui_get_style_options(),
