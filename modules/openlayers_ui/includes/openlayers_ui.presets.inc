@@ -161,7 +161,7 @@ function openlayers_ui_presets_form($form_state, $args = NULL, $preset = FALSE, 
     '#title' => t('Centerpoint'),
     '#description' => t('Coordinates that are the intial focus of the map'),
     '#default_value' => $defaults['center']['initial']['centerpoint'],
-    '#attributes' => array('class' => 'openlayers-form-centerpoint'),
+    '#attributes' => array('class' => array('openlayers-form-centerpoint')),
     '#size' => 25,
   );
   $form['center']['initial']['zoom'] = array(
@@ -169,7 +169,7 @@ function openlayers_ui_presets_form($form_state, $args = NULL, $preset = FALSE, 
     '#title' => t('Zoom Level'),
     '#description' => t('Initial Zoom Level when the map intially displays'),
     '#default_value' => $defaults['center']['initial']['zoom'],
-    '#attributes' => array('class' => 'openlayers-form-zoom'),
+    '#attributes' => array('class' => array('openlayers-form-zoom')),
     '#size' => 25,
   );
   $form['center']['restrict'] = array(
@@ -193,7 +193,7 @@ function openlayers_ui_presets_form($form_state, $args = NULL, $preset = FALSE, 
     '#title' => t('Restricted Extent'),
     '#description' => t('Prevents users from panning outside of a specific bounding box'),
     '#default_value' => isset($defaults['center']['restrict']['restrictedExtent']) ? $defaults['center']['restrict']['restrictedExtent'] : '',
-    '#attributes' => array('class' => 'openlayers-form-restrictedExtent'),
+    '#attributes' => array('class' => array('openlayers-form-restrictedExtent')),
     '#size' => 25,
     '#process' => array('ctools_dependent_process'),
     '#dependency' => array('restrictextent' => array(1)),
@@ -260,7 +260,7 @@ function openlayers_ui_presets_form($form_state, $args = NULL, $preset = FALSE, 
     )),
     '#default_value' => $defaults['projection'],
     '#options' => $projections,
-    '#attributes' => array('class' => 'openlayers-form-easy-projection'),
+    '#attributes' => array('class' => array('openlayers-form-easy-projection')),
     '#ahah' => array(
       'path' => 'openlayers/ahah/preset',
       'wrapper' => 'openlayers-layers-select',
@@ -642,7 +642,11 @@ function openlayers_ui_get_behavior_options($type, $defaults) {
 
   foreach (openlayers_behaviors() as $key => $plugin) {
     // Get behavior class
-    $class = ctools_plugin_load_class($plugin['module'], 'behavior', $key, $plugin['name']);
+    $class = ctools_plugin_load_class(
+      $plugin['module'], 
+      'behavior', 
+      $key, 
+      $plugin['name']);
     if (!empty($class)) {
       $options = isset($defaults['behaviors'][$key]) ?
         $defaults['behaviors'][$key] : array();
