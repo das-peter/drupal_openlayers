@@ -30,7 +30,9 @@ Drupal.settings.openlayers.maps = {};
  */
 Drupal.behaviors.openlayers = {
   'attach': function(context, settings) {
-    if (typeof(Drupal.settings.openlayers) === 'object' && Drupal.settings.openlayers.maps && !$(context).data('openlayers')) {
+    if (typeof(Drupal.settings.openlayers) === 'object' &&
+        Drupal.settings.openlayers.maps &&
+        !$(context).data('openlayers')) {
       $('.openlayers-map:not(.openlayers-processed)').each(function() {
         $(this).addClass('openlayers-processed');
         var map_id = $(this).attr('id');
@@ -134,7 +136,8 @@ Drupal.openlayers = {
       function() {
         var map;
         for (map in Drupal.settings.openlayers.maps) {
-          $.each($('#' + map).data('openlayers').openlayers.getLayersByClass('OpenLayers.Layer.Vector'),
+          $.each($('#' + map).data('openlayers')
+            .openlayers.getLayersByClass('OpenLayers.Layer.Vector'),
             function(i, layer) {
               layer.redraw();
             }
@@ -261,7 +264,9 @@ Drupal.openlayers = {
 
           // Add style information
           if (feature.style) {
-            newFeature.style = jQuery.extend({}, OpenLayers.Feature.Vector.style['default'], feature.style);
+            newFeature.style = jQuery.extend({},
+                OpenLayers.Feature.Vector.style['default'],
+                feature.style);
           }
 
           // Push new features

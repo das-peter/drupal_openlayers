@@ -53,14 +53,16 @@ function openlayers_ui_presets_form($form_state, $args = NULL,
   );
 
   $form['ui'] = array(
-    '#type' => 'vertical_tabs'
+    '#type' => 'vertical_tabs',
+    '#default_tab' => 'info'
   );
 
   // General information
   $form['info'] = array(
     '#title' => t('General information'),
     '#tree' => FALSE,
-    '#group' => 'ui'
+    '#group' => 'ui',
+    '#type' => 'fieldset'
   );
   
   $form['info']['name'] = array(
@@ -158,6 +160,7 @@ function openlayers_ui_presets_form($form_state, $args = NULL,
     '#title' => t('Center & Bounds'),
     '#description' => t('Where the map will center itself initially. Shift-drag on the map to set the Restricted Extent.'),
     '#tree' => TRUE,
+    '#type' => 'fieldset',
     '#group' => 'ui'
   );
   $form['center']['helpmap'] = array(
@@ -213,15 +216,6 @@ function openlayers_ui_presets_form($form_state, $args = NULL,
     '#dependency' => array('restrictextent' => array(1))
   );
 
-  // Behaviors
-  $form['behaviors'] = array(
-    '#title' => t('Behaviors'),
-    '#description' => t('Configure interactive map behaviors.'),
-    '#theme' => 'openlayers_ui_presets_form_behaviors',
-    '#tree' => TRUE
-  );
-
-  $form['behaviors'] = $form['behaviors'] + openlayers_ui_get_behavior_options('map', $defaults);
 
   // Layers & styles
   $form['layerstyles'] = array(
@@ -229,6 +223,7 @@ function openlayers_ui_presets_form($form_state, $args = NULL,
     '#description' => t('Layer settings.  The Layer options will change based on the projection chosen.'),
     '#theme' => 'openlayers_ui_presets_form_layers',
     '#tree' => FALSE,
+    '#type' => 'fieldset',
     '#group' => 'ui'
   );
 
@@ -409,6 +404,18 @@ function openlayers_ui_presets_form($form_state, $args = NULL,
     '#default_value' => !empty($defaults['styles']['temporary']) ?
       $defaults['styles']['temporary'] : NULL,
   );
+
+  // Behaviors
+  $form['behaviors'] = array(
+    '#title' => t('Behaviors'),
+    '#description' => t('Configure interactive map behaviors.'),
+    '#theme' => 'openlayers_ui_presets_form_behaviors',
+    '#tree' => TRUE,
+    '#type' => 'fieldset',
+    '#group' => 'ui'
+  );
+
+  $form['behaviors'] = $form['behaviors'] + openlayers_ui_get_behavior_options('map', $defaults);
 
   // End AHAH Wrapper
   $form['layerstyles']['ahah-end'] = array('#value' => '</div>');
