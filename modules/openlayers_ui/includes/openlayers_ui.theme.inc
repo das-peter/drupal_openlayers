@@ -13,12 +13,11 @@
  */
 function theme_openlayers_ui_form_layer_description($layer_title = '', $layer_description = '') {
   if ($layer_description) {
-    $output = $layer_title .': <span class="openlayers-form-layer-description">' . $layer_description . '</span>';
+    return $layer_title .': <span class="openlayers-form-layer-description">' . $layer_description . '</span>';
   }
   else {
-    $output = $layer_title;
+    return $layer_title;
   }
-  return $output;
 }
 
 /**
@@ -72,19 +71,19 @@ function theme_openlayers_ui_presets_form($form) {
 
 function theme_openlayers_ui_presets_form_layers($form) {
   $output = '';
-  $output .= drupal_render($form['ahah-start']);
-  $output .= drupal_render($form['projections']);
+  $output .= drupal_render($form['ahah-start']) .
+    drupal_render($form['projections']);
 
   // Base layers
   $rows = array();
-  foreach (element_children($form['layers']['baselabels']) as $key) {
-    $row = array();
+  foreach (element_children($form['layers']['baselabels']) as $key) {s
     unset($form['layers']['default_layer'][$key]['#title']);
     unset($form['layers']['baselayers'][$key]['#title']);
-    $row[] = drupal_render($form['layers']['baselabels'][$key]);
-    $row[] = drupal_render($form['layers']['baselayers'][$key]);
-    $row[] = drupal_render($form['layers']['default_layer'][$key]);
-    $rows[] = $row;
+    
+    $rows[] = array(
+      drupal_render($form['layers']['baselabels'][$key]),
+      drupal_render($form['layers']['baselayers'][$key]),
+      drupal_render($form['layers']['default_layer'][$key]));
   }
   $output .= theme('table', array(
     'header' => array(t('Base layers'), t('Enabled'), t('Default')), 
@@ -94,18 +93,20 @@ function theme_openlayers_ui_presets_form_layers($form) {
   // Overlay layers
   $rows = array();
   foreach (element_children($form['layers']['overlaylabels']) as $key) {
-    $row = array();
     unset($form['layers']['overlays'][$key]['#title']);
     unset($form['layer_activated'][$key]['#title']);
     unset($form['layer_switcher'][$key]['#title']);
 
-    $row[] = drupal_render($form['layers']['overlaylabels'][$key]);
-    $row[] = drupal_render($form['layer_weight'][$key]); 
-    $row[] = drupal_render($form['layers']['overlays'][$key]);
-    $row[] = drupal_render($form['layer_activated'][$key]);
-    $row[] = drupal_render($form['layer_switcher'][$key]);
-    $row[] = drupal_render($form['layer_styles'][$key]);
-    $rows[] = array( 'data' => $row, 'class' => 'draggable' );
+    $rows[] = array(
+      'data' => array(
+        drupal_render($form['layers']['overlaylabels'][$key]),
+        drupal_render($form['layer_weight'][$key]),
+        drupal_render($form['layers']['overlays'][$key]),
+        drupal_render($form['layer_activated'][$key]),
+        drupal_render($form['layer_switcher'][$key]),
+        drupal_render($form['layer_styles'][$key])),
+      'class' => 'draggable'
+    );
   }
   $output .= theme('table', 
     array(
@@ -127,11 +128,9 @@ function theme_openlayers_ui_presets_form_behaviors($form) {
   $output = '';
   $rows = array();
   foreach (element_children($form) as $key) {
-    $row = array();
-    $row[] = drupal_render($form[$key]['enabled']) . 
+    $rows[] = drupal_render($form[$key]['enabled']) . 
       drupal_render($form[$key]['options_set']) . 
       drupal_render($form[$key]['dependencies']);
-    $rows[] = $row;
   }
   
   // Create table

@@ -296,6 +296,7 @@ function openlayers_ui_presets_form($form_state, $args = NULL, $preset = FALSE, 
   $form['layerstyles']['layers']['#tree'] = TRUE;
   $form['layerstyles']['layers']['baselabels'] = array();
   $base_options = openlayers_ui_get_layer_options('baselayer', $defaults['projection']);
+  print_r($base_options);
   if (!empty($base_options)) {
     foreach ($base_options as $id => $description) {
       $form['layerstyles']['layers']['baselabels'][$id] = array('#markup' => $description);
