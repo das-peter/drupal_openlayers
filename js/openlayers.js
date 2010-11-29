@@ -36,7 +36,7 @@ Drupal.behaviors.openlayers = {
         var map_id = $(this).attr('id');
 
         // Use try..catch for error handling.
-        // try {
+        try {
           if (Drupal.settings.openlayers.maps[map_id]) {
             // Set OpenLayers language based on document language,
             // rather than browser language
@@ -96,15 +96,15 @@ Drupal.behaviors.openlayers = {
               Drupal.openlayers.redrawVectors();
             }
           }
-        // }
-        // catch (e) {
-        //   if (typeof console != 'undefined') {
-        //     console.log(e);
-        //   }
-        //   else {
-        //     $(this).text('Error during map rendering: ' + e);
-        //   }
-        // }
+        }
+        catch (e) {
+          if (typeof console != 'undefined') {
+            console.log(e);
+          }
+          else {
+            $(this).text('Error during map rendering: ' + e);
+          }
+        }
       });
     }
   }
