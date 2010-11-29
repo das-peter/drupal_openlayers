@@ -19,7 +19,7 @@
 
 document.namespaces;
 
-(function ($) {
+(function($) {
 
 Drupal.settings.openlayers = {};
 Drupal.settings.openlayers.maps = {};
@@ -156,19 +156,20 @@ Drupal.openlayers = {
       sorted.push({'name': name, 'weight': map.layers[name].weight });
     }
     sorted.sort(function(a, b) {
-      var x = a.weight; var y = b.weight;
+      var x = a.weight, y = b.weight;
       return ((x < y) ? -1 : ((x > y) ? 1 : 0));
     });
 
     for (var i = 0; i < sorted.length; ++i) {
-      var layer;
-      var name = sorted[i].name;
-      var options = map.layers[name];
+      var layer,
+        name = sorted[i].name,
+        options = map.layers[name];
 
       // Add reference to our layer ID
       options.drupalID = name;
       // Ensure that the layer handler is available
-      if (options.layer_handler !== undefined && Drupal.openlayers.layer[options.layer_handler] !== undefined) {
+      if (options.layer_handler !== undefined &&
+        Drupal.openlayers.layer[options.layer_handler] !== undefined) {
         var layer = Drupal.openlayers.layer[options.layer_handler](map.layers[name].title, map, options);
 
         layer.visibility = !!(!map.layer_activated || map.layer_activated[name]);

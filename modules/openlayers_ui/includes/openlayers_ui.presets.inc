@@ -158,6 +158,7 @@ function openlayers_ui_presets_form($form_state, $args = NULL,
     '#title' => t('Center & Bounds'),
     '#description' => t('Where the map will center itself initially. Shift-drag on the map to set the Restricted Extent.'),
     '#tree' => TRUE,
+    '#group' => 'ui'
   );
   $form['center']['helpmap'] = array(
     '#markup' => '<div class="form-item openlayers-center-helpmap"
@@ -227,7 +228,8 @@ function openlayers_ui_presets_form($form_state, $args = NULL,
     '#title' => t('Layers & Styles'),
     '#description' => t('Layer settings.  The Layer options will change based on the projection chosen.'),
     '#theme' => 'openlayers_ui_presets_form_layers',
-    '#tree' => FALSE
+    '#tree' => FALSE,
+    '#group' => 'ui'
   );
 
   // Start AHAH Wrapper

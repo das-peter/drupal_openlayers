@@ -4,12 +4,12 @@
  * @file
  * JS Implementation of OpenLayers behavior.
  */
-var selections_layer;
 
 (function($) {
 /**
  * Box Select Behavior
  */
+var selections_layer;
 Drupal.behaviors.openlayers_behavior_boxselect = {
   'attach': function(context, settings) {
     function setRestrictedExtent(box) {
@@ -25,7 +25,11 @@ Drupal.behaviors.openlayers_behavior_boxselect = {
     var data = $(context).data('openlayers');
     if (data && data.map.behaviors['openlayers_behavior_boxselect']) {
       selections_layer = new OpenLayers.Layer.Vector('Temporary Box Layer');
-      control = new OpenLayers.Control.DrawFeature(selections_layer, OpenLayers.Handler.RegularPolygon, {featureAdded: setRestrictedExtent});
+      control = new OpenLayers.Control.DrawFeature(selections_layer,
+          OpenLayers.Handler.RegularPolygon, {
+              featureAdded: setRestrictedExtent
+          }
+      );
       control.handler.setOptions({
           'keyMask': OpenLayers.Handler.MOD_SHIFT,
           'sides': 4,
@@ -33,8 +37,8 @@ Drupal.behaviors.openlayers_behavior_boxselect = {
       control.events.on({'featureAdded': this.setRestrictedExtent});
       data.openlayers.addLayer(selections_layer);
       data.openlayers.addControl(control);
-      if ($('#edit-center-restrict-restrictedExtent').val() != '') {
-        bounds = $('#edit-center-restrict-restrictedExtent').val();
+      if ($('edit-center-restrict-restrictedextent').val()) {
+        bounds = $('edit-center-restrict-restrictedextent').val();
         geometry = new OpenLayers.Bounds.fromString(bounds).toGeometry();
         feature = new OpenLayers.Feature.Vector(geometry);
         selections_layer.addFeatures([feature]);
