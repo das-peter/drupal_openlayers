@@ -5,6 +5,8 @@
  * JS Implementation of OpenLayers behavior.
  */
 
+
+(function($) {
 /**
  * ArgParser Behavior
  */
@@ -18,4 +20,5 @@ Drupal.behaviors.openlayers_behavior_argparser = {
       control.activate();
     }
   }
-}
+};
+})(jQuery);

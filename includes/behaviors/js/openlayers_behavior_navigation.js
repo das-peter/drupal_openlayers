@@ -22,5 +22,5 @@ Drupal.behaviors.openlayers_behavior_navigation = {
       control.activate();
     }
   }
-}
+};
 })(jQuery);

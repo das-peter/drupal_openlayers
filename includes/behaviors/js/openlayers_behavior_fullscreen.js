@@ -4,7 +4,7 @@
  * @file
  * JS Implementation of OpenLayers behavior.
  */
- 
+
 /**
  * Global variables to help with scope
  *
@@ -23,7 +23,7 @@ Drupal.behaviors.openlayers_behavior_fullscreen = {
     var data = $(context).data('openlayers');
     if (data && data.map.behaviors['openlayers_behavior_fullscreen']) {
       var opts = data.map.behaviors['openlayers_behavior_fullscreen'];
-      
+
       // Create new panel control and add.
       fullscreenPanel = new OpenLayers.Control.Panel(
         {
@@ -31,24 +31,24 @@ Drupal.behaviors.openlayers_behavior_fullscreen = {
         }
       );
       data.openlayers.addControl(fullscreenPanel);
-      
+
       // Create toggleing control and cutton.
       var toggler = OpenLayers.Function.bind(
         Drupal.openlayers.fullscreen.fullscreenToggle, data);
       var button = new OpenLayers.Control.Button({
-        displayClass: 'openlayers_behavior_fullscreen_button', 
-        title: Drupal.t('Fullscreen'), 
+        displayClass: 'openlayers_behavior_fullscreen_button',
+        title: Drupal.t('Fullscreen'),
         trigger: toggler
       });
       fullscreenPanel.addControls([button]);
-      
+
       // Make fullscreen by default if activited.
       if (opts['activated'] == true) {
         toggler();
       }
     }
   }
-}
+};
 
 /**
  * Toggling function for FullScreen control.

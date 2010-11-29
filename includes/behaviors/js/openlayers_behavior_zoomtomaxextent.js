@@ -15,14 +15,14 @@
       if (data && data.map.behaviors['openlayers_behavior_zoomtomaxextent']) {
         var panel = new OpenLayers.Control.Panel({
           allowSelection: true
-        });  
-            
+        });
+
         data.openlayers.addControl(panel);
         panel.activate();
-            
+
         var button = new OpenLayers.Control.ZoomToMaxExtent();
         panel.addControls(button);
       }
     }
-  }
+  };
 })(jQuery);

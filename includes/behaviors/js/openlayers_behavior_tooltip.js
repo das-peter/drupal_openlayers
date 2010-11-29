@@ -6,9 +6,9 @@
  * To override
  *
  * @param feature
- *  OpenLayers feature object
+ *  OpenLayers feature object.
  * @return
- *  Formatted HTML
+ *  Formatted HTML.
  */
 Drupal.theme.prototype.openlayersTooltip = function(feature) {
   var output =
@@ -19,7 +19,7 @@ Drupal.theme.prototype.openlayersTooltip = function(feature) {
       feature.attributes.description +
     '</div>';
   return output;
-}
+};
 
 (function($) {
 /**
@@ -48,25 +48,25 @@ Drupal.behaviors.openlayers_behavior_tooltip = {
       }
 
       // Define feature select events for selected layers.
-      popupSelect = new OpenLayers.Control.SelectFeature(layers, 
+      popupSelect = new OpenLayers.Control.SelectFeature(layers,
         {
           hover: true,
           clickout: false,
           multiple: false,
-          onSelect: function (feature) {
+          onSelect: function(feature) {
             // Create FramedCloud popup for tooltip.
             popup = new OpenLayers.Popup.FramedCloud(
-              'tooltip', 
+              'tooltip',
               feature.geometry.getBounds().getCenterLonLat(),
               null,
               Drupal.theme('openlayersTooltip', feature),
-              null, 
+              null,
               true
             );
             feature.popup = popup;
             feature.layer.map.addPopup(popup);
           },
-          onUnselect: function (feature) {
+          onUnselect: function(feature) {
             // Remove popup.
             feature.layer.map.removePopup(feature.popup);
             feature.popup.destroy();
@@ -74,11 +74,11 @@ Drupal.behaviors.openlayers_behavior_tooltip = {
           }
         }
       );
-      
+
       // Actiate the popups
       map.addControl(popupSelect);
       popupSelect.activate();
     }
   }
-}
+};
 })(jQuery);

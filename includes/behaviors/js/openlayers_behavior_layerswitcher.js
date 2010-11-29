@@ -21,5 +21,5 @@
         control.activate();
       }
     }
-  }
+  };
 })(jQuery);

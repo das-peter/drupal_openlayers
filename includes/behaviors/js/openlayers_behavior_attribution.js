@@ -19,5 +19,5 @@ Drupal.behaviors.openlayers_behavior_attribution = {
       control.activate();
     }
   }
-}
+};
 })(jQuery);

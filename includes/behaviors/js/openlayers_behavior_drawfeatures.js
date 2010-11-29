@@ -13,16 +13,16 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = {
   'attach': function(context, settings) {
     function openlayers_behavior_drawfeatures_update(features) {
       WktWriter = new OpenLayers.Format.WKT();
-      while (features.type == 'featureadded' && this.feature_limit && 
+      while (features.type == 'featureadded' && this.feature_limit &&
         (this.feature_limit < features.object.features.length)) {
         features.feature.layer.removeFeatures(features.object.features.shift());
       }
 
       var features_copy = features.object.clone();
-      for(var i in features_copy.features) {
+      for (var i in features_copy.features) {
         features_copy.features[i].geometry.transform(
           features.object.map.projection,
-          new OpenLayers.Projection("EPSG:4326")
+          new OpenLayers.Projection('EPSG:4326')
         );
       }
       this.element.val(WktWriter.write(features_copy.features));
@@ -31,12 +31,12 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = {
     var data = $(context).data('openlayers');
     if (data && data.map.behaviors['openlayers_behavior_drawfeatures']) {
       var feature_types = data.map.behaviors['openlayers_behavior_drawfeatures'].feature_types;
-      this.element = 
-        $("#" + data.map.behaviors['openlayers_behavior_drawfeatures'].element_id);
-      this.feature_limit = 
+      this.element =
+        $('#' + data.map.behaviors['openlayers_behavior_drawfeatures'].element_id);
+      this.feature_limit =
         data.map.behaviors['openlayers_behavior_drawfeatures'].feature_limit;
       var dataLayer = new OpenLayers.Layer.Vector(
-        Drupal.t("Feature Layer"),
+        Drupal.t('Feature Layer'),
         {
           projection: new OpenLayers.Projection('EPSG:4326'),
           drupalID: 'openlayers_drawfeatures_layer'
@@ -76,7 +76,7 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = {
         openlayers_behavior_drawfeatures_update);
 
 
-      
+
       var control = new OpenLayers.Control.EditingToolbar(dataLayer);
       data.openlayers.addControl(control);
       control.activate();
@@ -90,7 +90,7 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = {
 
       var feature_classes = [];
       for (var i in feature_types) {
-        if ( feature_types[i] !== 0 ) {
+        if (feature_types[i] !== 0) {
           feature_classes.push(feature_classmap[feature_types[i]]);
         }
       }
@@ -100,8 +100,8 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = {
       // plus the navigation tool
       control.controls = $.map(control.controls,
         function(control) {
-          return ( control.CLASS_NAME == 'OpenLayers.Control.Navigation' || 
-            $.inArray(control.handler.CLASS_NAME, feature_classes) != -1 )
+          return (control.CLASS_NAME == 'OpenLayers.Control.Navigation' ||
+            $.inArray(control.handler.CLASS_NAME, feature_classes) != -1)
             ? control : null;
         }
       );
@@ -109,10 +109,10 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = {
       control.activateControl(control.getControlsByClass('OpenLayers.Control.Navigation')[0]);
       control.redraw();
 
-      this.element.parents('form').bind('submit', 
+      this.element.parents('form').bind('submit',
         {
-          control: control, 
-          dataLayer: dataLayer 
+          control: control,
+          dataLayer: dataLayer
         }, function(evt) {
           $.map(evt.data.control.controls, function(c) { c.deactivate(); });
           dataLayer.events.triggerEvent('featuremodified');
@@ -124,9 +124,9 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = {
         dataLayer, {
           displayClass: 'olControlModifyFeature',
           deleteCodes: [46, 68, 100],
-          handleKeypress: function(evt){                              
+          handleKeypress: function(evt) {
             if (this.feature && $.inArray(evt.keyCode, this.deleteCodes) > -1) {
-              // We must unselect the feature before we delete it 
+              // We must unselect the feature before we delete it
               var feature_to_delete = this.feature;
               this.selectControl.unselectAll();
               this.layer.removeFeatures([feature_to_delete]);

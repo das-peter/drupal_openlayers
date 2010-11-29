@@ -15,7 +15,7 @@ Drupal.behaviors.openlayers_behavior_mapformvalues = {
   function updateForm(evt) {
     if (evt.object.centerpoint_form) {
       center = evt.object.getCenter().transform(
-        evt.object.projection, 
+        evt.object.projection,
         new OpenLayers.Projection('EPSG:4326')).toShortString();
         evt.object.centerpoint_form.val(center);
     }

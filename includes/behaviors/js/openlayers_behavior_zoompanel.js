@@ -19,5 +19,5 @@ Drupal.behaviors.openlayers_behavior_zoompanel = {
     control.activate();
   }
 }
-}
+};
 })jQuery);

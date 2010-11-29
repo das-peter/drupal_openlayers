@@ -6,6 +6,7 @@
  */
 var selections_layer;
 
+(function($) {
 /**
  * Box Select Behavior
  */
@@ -14,8 +15,8 @@ Drupal.behaviors.openlayers_behavior_boxselect = {
     function setRestrictedExtent(box) {
       bounding_box = box.geometry.getBounds().toBBOX();
       $('#edit-center-restrict-restrictedExtent').val(bounding_box);
-      for(i = 0; i < selections_layer.features.length; i++) {
-        if(selections_layer.features[i] != box) {
+      for (i = 0; i < selections_layer.features.length; i++) {
+        if (selections_layer.features[i] != box) {
           selections_layer.features[i].destroy();
         }
       }
@@ -29,7 +30,7 @@ Drupal.behaviors.openlayers_behavior_boxselect = {
           'keyMask': OpenLayers.Handler.MOD_SHIFT,
           'sides': 4,
           'irregular': true});
-      control.events.on({"featureAdded": this.setRestrictedExtent});
+      control.events.on({'featureAdded': this.setRestrictedExtent});
       data.openlayers.addLayer(selections_layer);
       data.openlayers.addControl(control);
       if ($('#edit-center-restrict-restrictedExtent').val() != '') {
@@ -41,4 +42,5 @@ Drupal.behaviors.openlayers_behavior_boxselect = {
       control.activate();
     }
   }
-}
+};
+})(jQuery);

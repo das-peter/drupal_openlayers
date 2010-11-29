@@ -5,6 +5,7 @@
  * JS Implementation of OpenLayers behavior.
  */
 
+(function($) {
 /**
  * DragPan Behavior
  */
@@ -17,3 +18,4 @@ Drupal.behaviors.openlayers_behavior_dragpan = function(context) {
     control.activate();
   }
 }
+})(jQuery);

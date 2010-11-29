@@ -10,15 +10,17 @@ Drupal.openlayers.popup = Drupal.openlayers.popup || {};
 Drupal.openlayers.popup.popupSelect = Drupal.openlayers.popup.popupSelect || {};
 Drupal.openlayers.popup.selectedFeature = Drupal.openlayers.popup.selectedFeature || {};
 
+
+(function($) {
 /**
  * Javascript Drupal Theming function for inside of Popups
  *
  * To override
  *
  * @param feature
- *  OpenLayers feature object
+ *  OpenLayers feature object.
  * @return
- *  Formatted HTML
+ *  Formatted HTML.
  */
 Drupal.theme.prototype.openlayersPopup = function(feature) {
   var output =
@@ -57,7 +59,7 @@ Drupal.behaviors.openlayers_behavior_popup = function(context) {
 
     popupSelect = new OpenLayers.Control.SelectFeature(layers,
       {
-        onSelect: function (feature) {
+        onSelect: function(feature) {
           // Create FramedCloud popup.
           popup = new OpenLayers.Popup.FramedCloud(
             'popup',
@@ -66,19 +68,19 @@ Drupal.behaviors.openlayers_behavior_popup = function(context) {
             Drupal.theme('openlayersPopup', feature),
             null,
             true,
-            function (evt) {
+            function(evt) {
               Drupal.openlayers.popup.popupSelect.unselect(
                 Drupal.openlayers.popup.selectedFeature
               );
             }
           );
-          
+
           // Assign popup to feature and map.
           feature.popup = popup;
           feature.layer.map.addPopup(popup);
           Drupal.openlayers.popup.selectedFeature = feature;
         },
-        onUnselect: function (feature) {
+        onUnselect: function(feature) {
           // Remove popup if feature is unselected.
           feature.layer.map.removePopup(feature.popup);
           feature.popup.destroy();
@@ -92,3 +94,4 @@ Drupal.behaviors.openlayers_behavior_popup = function(context) {
     Drupal.openlayers.popup.popupSelect = popupSelect;
   }
 }
+})(jQuery);

@@ -8,6 +8,7 @@
 /**
  * Keyboard Defaults Behavior
  */
+(function($) {
 Drupal.behaviors.openlayers_behavior_keyboarddefaults = function(context) {
   var data = $(context).data('openlayers');
   if (data && data.map.behaviors['openlayers_behavior_keyboarddefaults']) {
@@ -17,3 +18,4 @@ Drupal.behaviors.openlayers_behavior_keyboarddefaults = function(context) {
     control.activate();
   }
 }
+})(jQuery);

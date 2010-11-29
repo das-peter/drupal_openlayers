@@ -8,7 +8,6 @@
 /**
  * Pan Zoom Bar Behavior
  */
-
 (function($) {
     Drupal.behaviors.openlayers_behavior_panzoombar = {
     'attach': function(context, settings) {
@@ -20,5 +19,5 @@
         control.activate();
       }
     }
-  }
+  };
 })(jQuery);
