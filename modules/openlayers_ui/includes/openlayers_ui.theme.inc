@@ -11,22 +11,20 @@
 /**
  * Theme function for form description of layers
  */
-function theme_openlayers_ui_form_layer_description($layer_title = '', $layer_description = '') {
-  if ($layer_description) {
-    return $layer_title .': <span class="openlayers-form-layer-description">' . $layer_description . '</span>';
-  }
-  else {
-    return $layer_title;
-  }
+function theme_openlayers_ui_form_layer_description($args) {
+  return $args['layer_title'] . ($args['layer_description'] ?
+    ': <span class="openlayers-form-layer-description">' .
+    $args['layer_description'] . '</span>' :
+    '');
 }
 
 /**
  * Theme function for form description of projection
  */
-function theme_openlayers_ui_form_projection_description($projection_title = '', $layers = array()) {
-  $output = $projection_title;
-  if (count($layers)) {
-    $names = implode(', ', $layers);
+function theme_openlayers_ui_form_projection_description($args) {
+  $output = $args['projection_title'];
+  if (count($args['available_layers'])) {
+    $names = implode(', ', $args['available_layers']);
     $output .= " - <span class='openlayers-form-projection-description'>$names</span>";
   }
   return $output;
@@ -76,7 +74,7 @@ function theme_openlayers_ui_presets_form_layers($form) {
 
   // Base layers
   $rows = array();
-  foreach (element_children($form['layers']['baselabels']) as $key) {s
+  foreach (element_children($form['layers']['baselabels']) as $key) {
     unset($form['layers']['default_layer'][$key]['#title']);
     unset($form['layers']['baselayers'][$key]['#title']);
     
@@ -110,7 +108,9 @@ function theme_openlayers_ui_presets_form_layers($form) {
   }
   $output .= theme('table', 
     array(
-      'header' => array(t('Overlay layers'), t('Weight'), t('Enabled'), t('Activated'), t('In Switcher'), t('Style')), 
+      'header' => array(t('Overlay layers'),
+        t('Weight'), t('Enabled'), t('Activated'),
+        t('In Switcher'), t('Style')), 
       'rows' => $rows, 
       array('id' => 'overlay-layer-table')
     )

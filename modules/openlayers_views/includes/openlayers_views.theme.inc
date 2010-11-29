@@ -22,8 +22,7 @@ function theme_openlayers_views_group_display_item($name = '', $description = ''
   } 
   if (!empty($description)) {
     $output .= '<div class="point-content openlayers-views-group-feature-description">' . $description . '</div>';
-  } 
-
+  }
   return $output;
 }
 

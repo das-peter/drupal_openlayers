@@ -181,7 +181,10 @@ function openlayers_render_map($map = array(), $preset_name = '') {
       drupal_add_js($js, 'setting');
     }
     // Push map through theme function and return
-    $output = theme('openlayers_map', $map, $preset_name);
+    $output = theme('openlayers_map', array(
+      'map' => $map,
+      'preset_name' => $preset_name
+    ));
   }
   return $output;
 }
