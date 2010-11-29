@@ -22,17 +22,21 @@ function openlayers_ui_presets_clone($preset) {
 /**
  * Menu Callback for Add Preset
  */
-function openlayers_ui_presets_form($form_state, $args = NULL, $preset = FALSE, $edit = FALSE) {
+function openlayers_ui_presets_form($form_state, $args = NULL,
+  $preset = FALSE, $edit = FALSE) {
   openlayers_include();
   ctools_include('dependent');
-  drupal_add_js(drupal_get_path('module', 'openlayers_ui') . '/js/openlayers_ui.presets.js', 'module');
-  drupal_add_css(drupal_get_path('module', 'openlayers_ui') . '/openlayers_ui.css');
+  drupal_add_js(drupal_get_path('module', 'openlayers_ui') .
+    '/js/openlayers_ui.presets.js', 'module');
+  drupal_add_css(drupal_get_path('module', 'openlayers_ui') .
+    '/openlayers_ui.css');
 
   /// $preset = $args['build_info']['args'][0];
 
   // If cloning or editing, attempt to get preset
   if (empty($preset)) {
-    $default_preset = openlayers_preset_load(variable_get('openlayers_default_preset', 'default'));
+    $default_preset = openlayers_preset_load(
+      variable_get('openlayers_default_preset', 'default'));
     if ($default_preset) {
       $defaults = $default_preset->data;
     }
@@ -192,17 +196,19 @@ function openlayers_ui_presets_form($form_state, $args = NULL, $preset = FALSE, 
       so setting restricted zoom levels (via individual layer settings) is
       recommended.'),
     '#id' => 'restrictextent',
-    '#default_value' => isset($defaults['center']['restrict']['restrictextent']) ? $defaults['center']['restrict']['restrictextent'] : '',
+    '#default_value' => isset($defaults['center']['restrict']['restrictextent']) ?
+      $defaults['center']['restrict']['restrictextent'] : '',
   );
   $form['center']['restrict']['restrictedExtent'] = array(
     '#type' => 'textfield',
     '#title' => t('Restricted Extent'),
     '#description' => t('Prevents users from panning outside of a specific bounding box'),
-    '#default_value' => isset($defaults['center']['restrict']['restrictedExtent']) ? $defaults['center']['restrict']['restrictedExtent'] : '',
+    '#default_value' => isset($defaults['center']['restrict']['restrictedExtent']) ?
+      $defaults['center']['restrict']['restrictedExtent'] : '',
     '#attributes' => array('class' => array('openlayers-form-restrictedExtent')),
     '#size' => 25,
     '#process' => array('ctools_dependent_process'),
-    '#dependency' => array('restrictextent' => array(1)),
+    '#dependency' => array('restrictextent' => array(1))
   );
 
   // Behaviors
@@ -210,7 +216,7 @@ function openlayers_ui_presets_form($form_state, $args = NULL, $preset = FALSE, 
     '#title' => t('Behaviors'),
     '#description' => t('Configure interactive map behaviors.'),
     '#theme' => 'openlayers_ui_presets_form_behaviors',
-    '#tree' => TRUE,
+    '#tree' => TRUE
   );
   $form['behaviors'] = $form['behaviors'] + openlayers_ui_get_behavior_options('map', $defaults);
 
@@ -219,14 +225,13 @@ function openlayers_ui_presets_form($form_state, $args = NULL, $preset = FALSE, 
     '#title' => t('Layers & Styles'),
     '#description' => t('Layer settings.  The Layer options will change based on the projection chosen.'),
     '#theme' => 'openlayers_ui_presets_form_layers',
-    '#tree' => FALSE,
+    '#tree' => FALSE
   );
 
   // Start AHAH Wrapper
   $form['layerstyles']['ahah-start'] = array('#value' => '<div id="openlayers-layers-select">');
 
   // Projections
-
   // Grab default from submitted form values on AHAH rebuild.
   if (isset($form_state['values']['projections'])) {
     if ($form_state['values']['projections']['easy_projection'] == 'other') {
@@ -243,6 +248,7 @@ function openlayers_ui_presets_form($form_state, $args = NULL, $preset = FALSE, 
     $projection_layers = array_merge(
       openlayers_ui_get_layer_options('baselayer', $projection),
       openlayers_ui_get_layer_options('overlay', $projection));
+      
     $projections[$projection] = theme(
       'openlayers_ui_form_projection_description', 
       array(
@@ -258,8 +264,11 @@ function openlayers_ui_presets_form($form_state, $args = NULL, $preset = FALSE, 
 
   $form['layerstyles']['projections']['#title'] = t('Projection');
   $form['layerstyles']['projections']['#description'] = t('Select the EPSG code of the !link_proj for your map.
-    The list next to each projection is the layers that support this projection.', array(
-    '!link_proj' => l(t('geographical projection'), 'http://en.wikipedia.org/wiki/Map_projection'),
+    The list next to each projection is the layers that support this projection.',
+      array(
+        '!link_proj' => l(
+          t('geographical projection'),
+          'http://en.wikipedia.org/wiki/Map_projection'),
   ));
   $form['layerstyles']['projections']['easy_projection'] = array(
     '#type' => 'radios',
@@ -296,11 +305,9 @@ function openlayers_ui_presets_form($form_state, $args = NULL, $preset = FALSE, 
   $form['layerstyles']['layers']['#tree'] = TRUE;
   $form['layerstyles']['layers']['baselabels'] = array();
   $base_options = openlayers_ui_get_layer_options('baselayer', $defaults['projection']);
-  print_r($base_options);
-  if (!empty($base_options)) {
-    foreach ($base_options as $id => $description) {
-      $form['layerstyles']['layers']['baselabels'][$id] = array('#markup' => $description);
-    }
+  foreach ($base_options as $id => $description) {
+    $form['layerstyles']['layers']['baselabels'][$id] =
+      array('#markup' => $description);
   }
   $form['layerstyles']['layers']['baselayers'] = array(
     '#type' => 'checkboxes',
@@ -326,9 +333,7 @@ function openlayers_ui_presets_form($form_state, $args = NULL, $preset = FALSE, 
     // Have enabled layers maintain their order
     $available = array_keys($overlay_options);
     $enabled = array_intersect(array_keys($defaults['layers']), $available);
-    //$enabled = array_reverse($enabled);
     $disabled = array_diff($available, $enabled);
-    //$overlay_options_keys = array_merge($enabled, $disabled);
     $overlay_options_keys = array_merge($disabled, $enabled);
 
     $nextweight = -10;
@@ -340,7 +345,8 @@ function openlayers_ui_presets_form($form_state, $args = NULL, $preset = FALSE, 
         array('#markup' => $description);
       $form['layerstyles']['layer_styles'][$id] = array(
         '#type' => 'select',
-        '#options' => array('-- '. t('Default style') .' --') + openlayers_ui_get_style_options(),
+        '#options' => array('-- '. t('Default style') .' --') + 
+          openlayers_ui_get_style_options(),
         '#default_value' => !empty($defaults['layer_styles'][$id]) ?
           $defaults['layer_styles'][$id] : '',
       );
@@ -489,8 +495,10 @@ function openlayers_ui_presets_form_validate($form, &$form_state) {
   if ($found_error) {
     // Add OpenLayers CSS & Javascript, because the form function will not be run on rebuild
     openlayers_include();
-    drupal_add_js(drupal_get_path('module', 'openlayers_ui') . '/js/openlayers_ui.presets.js', 'module');
-    drupal_add_css(drupal_get_path('module', 'openlayers_ui') . '/openlayers_ui.css');
+    drupal_add_js(drupal_get_path('module', 'openlayers_ui') .
+      '/js/openlayers_ui.presets.js', 'module');
+    drupal_add_css(drupal_get_path('module', 'openlayers_ui') .
+      '/openlayers_ui.css');
     $form_state['rebuild'] = TRUE;
   }
 }
@@ -601,7 +609,8 @@ function openlayers_ui_presets_form_process($values = array()) {
         $processed['behaviors'] = array();
         foreach ($values['behaviors'] as $behavior => $settings) {
           if ($settings['enabled']) {
-            $processed['behaviors'][$behavior] = isset($settings['options_set']['options']) ?
+            $processed['behaviors'][$behavior] =
+              isset($settings['options_set']['options']) ?
               $settings['options_set']['options'] : array();
           }
         }
@@ -635,7 +644,8 @@ function openlayers_ui_presets_form_process($values = array()) {
         break;
 
       default:
-        $processed[$key] = is_array($values[$key]) ? array_filter($values[$key]) : $values[$key];
+        $processed[$key] = is_array($values[$key]) ?
+          array_filter($values[$key]) : $values[$key];
         break;
 
     }
@@ -689,7 +699,8 @@ function openlayers_ui_get_behavior_options($type, $defaults) {
         // Create options items
         $options = $behavior->options_form($options);
         if (!empty($options)) {
-          // HACK.  In order to use ctools form dependencies, we have to use a hidden
+          // HACK.  In order to use ctools form 
+          // dependencies, we have to use a hidden
           // field as it supports processing and IDs.
           $form[$key]['options_set'][$key . '-prefix'] = array(
             '#type' => 'hidden',

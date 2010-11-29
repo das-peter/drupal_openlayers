@@ -290,7 +290,6 @@ function openlayers_ui_styles_form_submit(&$form, &$form_state) {
 
   $success = openlayers_style_save($style);
   
-
   // Redirect to edit page
   if ($success) {
     drupal_set_message(t('Style saved.'));

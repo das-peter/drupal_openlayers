@@ -67,8 +67,9 @@ function theme_openlayers_ui_presets_form($form) {
 }
  */
 
-function theme_openlayers_ui_presets_form_layers($form) {
+function theme_openlayers_ui_presets_form_layers($args) {
   $output = '';
+  $form = $args['elements'];
   $output .= drupal_render($form['ahah-start']) .
     drupal_render($form['projections']);
 
@@ -116,16 +117,15 @@ function theme_openlayers_ui_presets_form_layers($form) {
     )
   );
 
-  drupal_add_tabledrag('overlay-layer-table', 'order', 'sibling', 'layer-weight');
-  $output .= drupal_render($form);
-  return $output;
+  drupal_add_tabledrag('overlay-layer-table', 'order', 'sibling',
+    'layer-weight');
+  return $output . drupal_render_children($form);
 }
 
 /**
  * Drupal theme implementation for Behaviors in the Preset form
  */
 function theme_openlayers_ui_presets_form_behaviors($form) {
-  $output = '';
   $rows = array();
   foreach (element_children($form) as $key) {
     $rows[] = drupal_render($form[$key]['enabled']) . 
@@ -133,7 +133,8 @@ function theme_openlayers_ui_presets_form_behaviors($form) {
       drupal_render($form[$key]['dependencies']);
   }
   
-  // Create table
-  $output .= theme('table', array('header' => array(t('Behaviors')), 'rows' => $rows));
-  return $output;
+  return theme('table',
+    array(
+      'header' => array(t('Behaviors')),
+      'rows' => $rows));
 }

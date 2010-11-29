@@ -29,7 +29,6 @@ function theme_openlayers_map($args) {
       <div style="width: ' . $map['width'] . '; height: ' . $map['height'] . ';" id="'.
       $map['id'] .'" class="openlayers-map openlayers-preset-' . $preset_name .'"></div>
     </div>';
-    
   return $output;
 }
 

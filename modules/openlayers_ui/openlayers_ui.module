@@ -117,15 +117,6 @@ function openlayers_ui_menu() {
     'type' => MENU_NORMAL_ITEM,
     'tab_parent' => 'admin/build/openlayers/layers',
   );
-  $items['admin/build/openlayers/layers/import'] = array(
-    'title' => 'Import',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('openlayers_ui_layers_import_form'),
-    'access arguments' => array('administer openlayers'),
-    'file' => 'includes/openlayers_ui.layers.inc',
-    'type' => MENU_LOCAL_TASK,
-    'weight' => -10,
-  );
   // Edit-layer form
   $items['admin/build/openlayers/layers/%openlayers_layer/edit'] = array(
     'title' => 'Edit layer',
@@ -337,15 +328,15 @@ function openlayers_ui_theme($existing, $type, $theme, $path) {
       'file' => 'includes/openlayers_ui.theme.inc',
     ),
     'openlayers_ui_presets_form' => array(
-      'variables' => array('form' => array()),
+      'render element' => 'elements',
       'file' => 'includes/openlayers_ui.theme.inc',
     ),
     'openlayers_ui_presets_form_layers' => array(
-      'variables' => array('form' => array()),
+      'render element' => 'elements',
       'file' => 'includes/openlayers_ui.theme.inc',
     ),
     'openlayers_ui_presets_form_behaviors' => array(
-      'variables' => array('form' => array()),
+      'render element' => 'elements',
       'file' => 'includes/openlayers_ui.theme.inc',
     ),
   );
@@ -637,12 +628,16 @@ function openlayers_ui_get_layer_options($type = 'baselayer', $projection = NULL
     ) {
       if ($type == 'baselayer' && $layer->data['baselayer']) {
         $options[$key] = theme('openlayers_ui_form_layer_description', 
-          $layer->title, $layer->description);
+          array(
+            'layer_title' => $layer->title,
+            'layer_description' => $layer->description));
       }
       elseif ($type != 'baselayer' && 
         empty($layer->data['baselayer'])) {
         $options[$key] = theme('openlayers_ui_form_layer_description', 
-          $layer->title, $layer->description);
+          array(
+            'layer_title' => $layer->title,
+            'layer_description' => $layer->description));
       }
     }
   }
