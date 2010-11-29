@@ -35,7 +35,6 @@ function theme_openlayers_ui_form_projection_description($projection_title = '',
 
 /**
  * Theme function for presets form
- */
 function theme_openlayers_ui_presets_form($form) {
   $links = $panels = array();
   $first = TRUE;
@@ -69,6 +68,7 @@ function theme_openlayers_ui_presets_form($form) {
   $right = "<div class='openlayers-column-right'>{$panels}{$form}</div>";
   return $right . $left;
 }
+ */
 
 function theme_openlayers_ui_presets_form_layers($form) {
   $output = '';

@@ -22,13 +22,13 @@ function openlayers_ui_presets_clone($preset) {
 /**
  * Menu Callback for Add Preset
  */
-function openlayers_ui_presets_form($form_state, $args = NULL, $edit = FALSE) {
+function openlayers_ui_presets_form($form_state, $args = NULL, $preset = FALSE, $edit = FALSE) {
   openlayers_include();
   ctools_include('dependent');
   drupal_add_js(drupal_get_path('module', 'openlayers_ui') . '/js/openlayers_ui.presets.js', 'module');
   drupal_add_css(drupal_get_path('module', 'openlayers_ui') . '/openlayers_ui.css');
 
-  $preset = $args['build_info']['args'][0];
+  /// $preset = $args['build_info']['args'][0];
 
   // If cloning or editing, attempt to get preset
   if (empty($preset)) {
@@ -413,12 +413,8 @@ function openlayers_ui_presets_form_validate($form, &$form_state) {
   $found_error = FALSE;
 
   // Check if ahah submitting
-  if ($form_state['clicked_button']['#id'] == 'edit-openlayers-projection-ahah') {
-    return TRUE;
-  }
-
-  // Check for cancel
-  if ($form_state['clicked_button']['#id'] == 'edit-openlayers-cancel') {
+  if ($form_state['clicked_button']['#id'] == 'edit-openlayers-projection-ahah' ||
+      $form_state['clicked_button']['#id'] == 'edit-openlayers-cancel') {
     return TRUE;
   }
 
@@ -453,7 +449,8 @@ function openlayers_ui_presets_form_validate($form, &$form_state) {
 
   // Check if adding and name already exists
   $existing = openlayers_preset_load($values['name'], TRUE);
-  if (!empty($existing) && (!$form_state['values']['preset_edit']) && ($existing->export_type & EXPORT_IN_DATABASE)) {
+  if (!empty($existing) && (!$form_state['values']['preset_edit']) &&
+      ($existing->export_type & EXPORT_IN_DATABASE)) {
     form_set_error('name', t('The Preset Name already exists.'));
     $found_error = TRUE;
   }
@@ -645,7 +642,7 @@ function openlayers_ui_get_behavior_options($type, $defaults) {
 
   foreach (openlayers_behaviors() as $key => $plugin) {
     // Get behavior class
-    $class = ctools_plugin_get_class($plugin, 'behavior');
+    $class = ctools_plugin_load_class($plugin['module'], 'behavior', $key, $plugin['name']);
     if (!empty($class)) {
       $options = isset($defaults['behaviors'][$key]) ?
         $defaults['behaviors'][$key] : array();

@@ -31,6 +31,7 @@ function _function_exists(head, f) {
   }
 }
 
+(function ($) {
 /**
  * Drupal behaviors for OpenLayers UI form.
  */
@@ -54,7 +55,10 @@ Drupal.behaviors.openlayers_ui = function(context) {
     $(this).addClass('openlayers-ui-processed');
     $(this).change(function() {
       var $thisCheck = $(this);
-      var $autoOptions = $thisCheck.parent().parent().parent().find('input:not("#edit-options-automatic-options")');
+      var $autoOptions = $thisCheck.parent()
+        .parent()
+        .parent()
+        .find('input:not("#edit-options-automatic-options")');
       if ($thisCheck.is(':checked')) {
         $autoOptions.attr('disabled', 'disabled');
       }
@@ -95,8 +99,12 @@ Drupal.behaviors.openlayers_ui = function(context) {
 Drupal.behaviors.openlayers_ui_center = function(context) {
   var data = $(context).data('openlayers');
   if (data) {
-    data.openlayers.events.register('moveend', data.map, function() { Drupal.openlayers_ui.updateCenterFormValues() });
-    data.openlayers.events.register('zoomend', data.map, function() { Drupal.openlayers_ui.updateCenterFormValues() });
+    data.openlayers.events.register('moveend', data.map, function() {
+        Drupal.openlayers_ui.updateCenterFormValues()
+    });
+    data.openlayers.events.register('zoomend', data.map, function() {
+        Drupal.openlayers_ui.updateCenterFormValues()
+    });
   }
 }
 
@@ -119,9 +127,13 @@ Drupal.openlayers_ui = {
       var lonlat = $('#edit-center-initial-centerpoint').val();
       if (typeof lonlat == Array) {
         // Create new center
-        var center = new OpenLayers.LonLat(parseFloat(lonlat[0]), parseFloat(lonlat[1]));
+        var center = new OpenLayers.LonLat(
+            parseFloat(lonlat[0]),
+            parseFloat(lonlat[1]));
         // Transform for projection
-        center.transform(new OpenLayers.Projection('EPSG:' + projection), new OpenLayers.Projection('EPSG:4326'));
+        center.transform(
+            new OpenLayers.Projection('EPSG:' + projection),
+            new OpenLayers.Projection('EPSG:4326'));
         // Set center of map.
         data.openlayers.setCenter(center, zoom);
       }
@@ -129,7 +141,8 @@ Drupal.openlayers_ui = {
   },
 
   /**
-   * Event callback for updating center form field values when map is dragged or zoomed.
+   * Event callback for updating center form field values when map 
+   * is dragged or zoomed.
    */
   'updateCenterFormValues': function() {
     var data = $('#openlayers-center-helpmap').data('openlayers');
@@ -140,7 +153,9 @@ Drupal.openlayers_ui = {
       var center = helpmap.getCenter();
 
       // Transform center
-      center.transform(new OpenLayers.Projection('EPSG:4326'), new OpenLayers.Projection('EPSG:' + projection));
+      center.transform(
+          new OpenLayers.Projection('EPSG:4326'),
+          new OpenLayers.Projection('EPSG:' + projection));
 
       // Get new lat and lon
       var lat = center.lat;
@@ -153,3 +168,4 @@ Drupal.openlayers_ui = {
     }
   }
 }
+})(jQuery);

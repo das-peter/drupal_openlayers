@@ -47,4 +47,5 @@ Drupal.behaviors.openlayers_behavior_mapformvalues = {
     data.openlayers.events.on({'moveend': updateForm});
   }
 }
+}
 })(jQuery);
