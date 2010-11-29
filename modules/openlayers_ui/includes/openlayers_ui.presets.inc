@@ -676,11 +676,10 @@ function openlayers_ui_get_behavior_options($type, $defaults) {
     // Get behavior class
     $class = ctools_plugin_load_class(
       $plugin['module'], 
-      'behavior', 
+      'behaviors', 
       $key, 
-      $plugin['name']);
+      'behavior');
     if (!empty($class)) {
-      echo $key;
       $options = isset($defaults['behaviors'][$key]) ?
         $defaults['behaviors'][$key] : array();
 

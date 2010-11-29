@@ -126,15 +126,15 @@ function theme_openlayers_ui_presets_form_layers($args) {
  * Drupal theme implementation for Behaviors in the Preset form
  */
 function theme_openlayers_ui_presets_form_behaviors($args) {
-  $form = $args['form'];
+  $form = $args['elements'];
 
   $rows = array();
   foreach (element_children($form) as $key) {
-    $rows[] = drupal_render($form[$key]['enabled']) . 
+    $rows[] = array(drupal_render($form[$key]['enabled']) . 
       drupal_render($form[$key]['options_set']) . 
-      drupal_render($form[$key]['dependencies']);
+      drupal_render($form[$key]['dependencies']));
   }
-  
+
   return theme('table',
     array(
       'header' => array(t('Behaviors')),
