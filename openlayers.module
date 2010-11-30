@@ -362,26 +362,6 @@ function openlayers_layer_sanity_check($layer, $projection = FALSE, $strict = FA
 }
 
 /**
- * Save layer.
- * @ingroup openlayers_api
- *
- * @param $layer
- *   Layer object
- * @return
- *   bool for success in saving
- */
-function openlayers_layer_save($layer) {
-  if (!empty($layer->name)) {
-    $exists = db_query("SELECT name FROM {openlayers_layers} WHERE name = '%s'", array($layer->name))->
-        fetchField();
-    return $exists ?
-      drupal_write_record('openlayers_layers', $layer, 'name') :
-      drupal_write_record('openlayers_layers', $layer);
-  }
-  return FALSE;
-}
-
-/**
  * Delete a layer object from the database.
  *
  * @ingroup openlayers_api
