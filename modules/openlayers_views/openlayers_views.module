@@ -108,7 +108,7 @@ function openlayers_views_openlayers_layers() {
       }
     }
     $view->destroy();
-  }  
+  }
   cache_set('openlayers_views', $layers);
   return $layers;
 } 

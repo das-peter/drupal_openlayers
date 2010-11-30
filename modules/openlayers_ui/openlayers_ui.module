@@ -499,7 +499,6 @@ function openlayers_ui_object_export(&$form_state, $type, $object) {
     case 'presets':
       $api = 'openlayers_map_presets';
       break;
-
   }
   
   // Use CTools to create export code
@@ -568,7 +567,8 @@ function openlayers_ui_import_validate($form, &$form_state) {
   }
 
   // View name must be alphanumeric or underscores, no other punctuation.
-  if (!empty($form_state['values']['name']) && preg_match('/[^a-zA-Z0-9_]/', $form_state['values']['name'])) {
+  if (!empty($form_state['values']['name']) &&
+    preg_match('/[^a-zA-Z0-9_]/', $form_state['values']['name'])) {
     form_error($form['name'], t('Preset name must be alphanumeric or underscores only.'));
   }
 
@@ -607,7 +607,8 @@ function openlayers_ui_get_projection_options() {
 /**
  * Get layer options.
  */
-function openlayers_ui_get_layer_options($type = 'baselayer', $projection = NULL) {
+function openlayers_ui_get_layer_options($type = 'baselayer',
+  $projection = NULL) {
   $options = array();
   $layers = array();
 
@@ -670,10 +671,11 @@ function openlayers_dependency_widget($dependencies) {
     $dependency_form = array();
     foreach ($dependencies as $dependency) {
       $dependency_form[] = array(
-        '#markup' => "<div class='openlayers-dependency-flag'>
-             <span class='openlayers-dependency-value'>$dependency</span>" . 
-            "<span class='openlayers-dependency-broken'>" . t('Dependency not found:') . ' ' . $dependency . "</span>" .
-            "</div>"
+        '#markup' => "<div class='openlayers-dependency-flag'>"
+            . "<span class='openlayers-dependency-value'>$dependency</span>"
+            . "<span class='openlayers-dependency-broken'>"
+            . t('Dependency not found:') . ' ' . $dependency . "</span>"
+            . "</div>"
       );
     }
     return $dependency_form;

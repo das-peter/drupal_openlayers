@@ -641,13 +641,18 @@ function openlayers_ui_presets_form_process($values = array()) {
 
         // Sort overlay layers by weight, in case browser didn't
         // send them already sorted
+        /*
+        print_r($values);
         $overlays = array();
         asort($values['layer_weight']);
         foreach (array_keys($values['layer_weight']) as $key) {
-          if ( $values['layers']['overlays'][$key] ) {
+          if ($values['layers']['overlays'][$key]) {
              $overlays[$key] = $key;
           }
         }
+         */
+        // TODO: Above code is terrrrrrrrible. rewrite when I have the time
+        $overlays = $values['layers']['overlays'];
 
         // Merge our different layer sections together
         $processed['layers'] = array_merge($baselayers, $overlays);
@@ -655,10 +660,10 @@ function openlayers_ui_presets_form_process($values = array()) {
         break;
 
       default:
-        $processed[$key] = is_array($values[$key]) ?
-          array_filter($values[$key]) : $values[$key];
+        // $processed[$key] = is_array($values[$key]) ?
+        //   array_filter($values[$key]) : $values[$key];
+        $processed[$key] = isset($values[$key]) ? $values[$key] : array();
         break;
-
     }
   }
 
