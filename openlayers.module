@@ -648,28 +648,14 @@ function openlayers_preset_options($reset = FALSE) {
  */
 function openlayers_object_delete($ol_object, $type) {
   // Check for object or name
-  if (is_object($ol_object) && isset($ol_object->name)) {
+  $tables = array(
+      'style' => 'openlayers_styles',
+      'layer' => 'openlayers_layers',
+      'preset' => 'openlayers_map_presets');
+  if (is_object($ol_object) && isset($ol_object->name) && isset($tables[$type])) {
     $ol_object = $ol_object->name;
+    return db_delete($tables[$type])->condition('name', $ol_object)->execute();
   }
-  
-  // Determine query to use
-  switch ($type) {
-    case 'style':
-      $query = "DELETE FROM {openlayers_styles} WHERE name = ':object_name'";
-      break;
-      
-    case 'layer':
-      $query = "DELETE FROM {openlayers_layers} WHERE name = ':object_name'";
-      break;
-      
-    case 'preset':
-      $query = "DELETE FROM {openlayers_map_presets} WHERE name = ':object_name'";
-      break;
-      
-    default:
-      return FALSE;
-  }
-  return db_query($query, array(':object_name' => $ol_object));
 }
 
 /**
