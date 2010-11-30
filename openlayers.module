@@ -372,7 +372,8 @@ function openlayers_layer_sanity_check($layer, $projection = FALSE, $strict = FA
  */
 function openlayers_layer_save($layer) {
   if (!empty($layer->name)) {
-    $exists = db_query("SELECT name FROM {openlayers_layers} WHERE name = '%s'", $layer->name)->fetchField();
+    $exists = db_query("SELECT name FROM {openlayers_layers} WHERE name = '%s'", array($layer->name))->
+        fetchField();
     return $exists ?
       drupal_write_record('openlayers_layers', $layer, 'name') :
       drupal_write_record('openlayers_layers', $layer);
@@ -500,7 +501,7 @@ function openlayers_style_load($name, $reset = FALSE) {
 function openlayers_style_save($style) {
   if (!empty($style->name)) {
     $exists = db_query("SELECT name FROM {openlayers_styles} 
-      WHERE name = '%s'", $style->name)->fetchField();
+      WHERE name = '%s'", array($style->name))->fetchField();
     return $exists ?
       drupal_write_record('openlayers_styles', $style, 'name') :
       drupal_write_record('openlayers_styles', $style);
@@ -589,7 +590,7 @@ function openlayers_preset_load($name = '', $reset = FALSE) {
 function openlayers_preset_save($preset) {
   if (!empty($preset->name)) {
     $exists = db_query("SELECT name FROM {openlayers_map_presets} 
-      WHERE name = '%s'", $preset->name)->fetchField();
+      WHERE name = '%s'", array($preset->name))->fetchField();
     return $exists ?
       drupal_write_record('openlayers_map_presets', $preset, 'name') :
       drupal_write_record('openlayers_map_presets', $preset);

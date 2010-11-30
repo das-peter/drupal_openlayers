@@ -353,7 +353,7 @@ function openlayers_ui_presets_form($form_state, $args = NULL,
         '#type' => 'weight',
         '#default_value' => $nextweight++,
         '#attributes' => array(
-          'class' => 'layer-weight'
+          'class' => array('layer-weight')
         )
       );
     }
