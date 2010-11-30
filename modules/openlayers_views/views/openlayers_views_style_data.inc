@@ -26,6 +26,16 @@ class openlayers_views_style_data extends views_plugin_style {
   }
 
   /**
+   * Basically a macro because
+   * #state is rather verbose
+   */
+  function datasource_dependent($type) {
+    return array('visible' => array(
+        '#edit-style-options-data-source-value' => 
+            array('value' => $type)));
+  }
+
+  /**
    * Options form
    */
   function options_form(&$form, &$form_state) {
@@ -84,8 +94,7 @@ class openlayers_views_style_data extends views_plugin_style {
         '#description' => t('Choose a field for Latitude.  This should be a field that is a decimal or float value.'),
         '#options' => $fields,
         '#default_value' => $this->options['data_source']['other_lat'],
-        '#process' => array('views_process_dependency'),
-        '#dependency' => array('edit-style-options-data-source-value' => array('other_latlon')),
+        '#states' => $this->datasource_dependent('other_latlon')
       );
       $form['data_source']['other_lon'] = array(
         '#type' => 'select',
@@ -93,8 +102,7 @@ class openlayers_views_style_data extends views_plugin_style {
         '#description' => t('Choose a field for Longitude.  This should be a field that is a decimal or float value.'),
         '#options' => $fields,
         '#default_value' => $this->options['data_source']['other_lon'],
-        '#process' => array('views_process_dependency'),
-        '#dependency' => array('edit-style-options-data-source-value' => array('other_latlon')),
+        '#states' => $this->datasource_dependent('other_latlon')
       );
 
       $form['data_source']['openlayers_wkt'] = array(
@@ -103,8 +111,7 @@ class openlayers_views_style_data extends views_plugin_style {
         '#description' => t('Choose the OpenLayers WKT field.'),
         '#options' => $fields,
         '#default_value' => $this->options['data_source']['openlayers_wkt'],
-        '#process' => array('views_process_dependency'),
-        '#dependency' => array('edit-style-options-data-source-value' => array('openlayers_wkt')),
+        '#states' => $this->datasource_dependent('openlayers_wkt')
       );
 
       $form['data_source']['other_top'] = array(
@@ -113,8 +120,7 @@ class openlayers_views_style_data extends views_plugin_style {
         '#description' => t('Choose a field for Top.  This should be a field that is a decimal or float value.'),
         '#options' => $fields,
         '#default_value' => $this->options['data_source']['other_top'],
-        '#process' => array('views_process_dependency'),
-        '#dependency' => array('edit-style-options-data-source-value' => array('other_boundingbox')),
+        '#states' => $this->datasource_dependent('other_boundingbox')
       );
       $form['data_source']['other_right'] = array(
         '#type' => 'select',
@@ -122,8 +128,7 @@ class openlayers_views_style_data extends views_plugin_style {
         '#description' => t('Choose a field for Right.  This should be a field that is a decimal or float value.'),
         '#options' => $fields,
         '#default_value' => $this->options['data_source']['other_right'],
-        '#process' => array('views_process_dependency'),
-        '#dependency' => array('edit-style-options-data-source-value' => array('other_boundingbox')),
+        '#states' => $this->datasource_dependent('other_boundingbox')
       );
       $form['data_source']['other_bottom'] = array(
         '#type' => 'select',
@@ -131,8 +136,7 @@ class openlayers_views_style_data extends views_plugin_style {
         '#description' => t('Choose a field for Bottom.  This should be a field that is a decimal or float value.'),
         '#options' => $fields,
         '#default_value' => $this->options['data_source']['other_bottom'],
-        '#process' => array('views_process_dependency'),
-        '#dependency' => array('edit-style-options-data-source-value' => array('other_boundingbox')),
+        '#states' => $this->datasource_dependent('other_boundingbox')
       );
       $form['data_source']['other_left'] = array(
         '#type' => 'select',
@@ -140,8 +144,7 @@ class openlayers_views_style_data extends views_plugin_style {
         '#description' => t('Choose a field for Left.  This should be a field that is a decimal or float value.'),
         '#options' => $fields,
         '#default_value' => $this->options['data_source']['other_left'],
-        '#process' => array('views_process_dependency'),
-        '#dependency' => array('edit-style-options-data-source-value' => array('other_boundingbox')),
+        '#states' => $this->datasource_dependent('other_boundingbox')
       );
     }
     $form['data_source']['name_field'] = array(
