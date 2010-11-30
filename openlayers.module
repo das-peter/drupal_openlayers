@@ -500,9 +500,11 @@ function openlayers_style_load($name, $reset = FALSE) {
  */
 function openlayers_style_save($style) {
   if (!empty($style->name)) {
-    $exists = db_query("SELECT name FROM {openlayers_styles} 
-      WHERE name = '%s'", array($style->name))->fetchField();
-    return $exists ?
+    return (db_select('openlayers_styles')
+          ->fields('openlayers_styles', array('name'))
+          ->condition('name', $style->name)
+          ->execute()
+          ->fetchCol()) ?
       drupal_write_record('openlayers_styles', $style, 'name') :
       drupal_write_record('openlayers_styles', $style);
   }
@@ -589,9 +591,11 @@ function openlayers_preset_load($name = '', $reset = FALSE) {
  */
 function openlayers_preset_save($preset) {
   if (!empty($preset->name)) {
-    $exists = db_query("SELECT name FROM {openlayers_map_presets} 
-      WHERE name = '%s'", array($preset->name))->fetchField();
-    return $exists ?
+     return (db_select('openlayers_map_presets')
+          ->fields('openlayers_map_presets', array('name'))
+          ->condition('name', $preset->name)
+          ->execute()
+          ->fetchCol()) ?
       drupal_write_record('openlayers_map_presets', $preset, 'name') :
       drupal_write_record('openlayers_map_presets', $preset);
   }
@@ -879,10 +883,11 @@ class openlayers_layer_type {
    */
   function save() {
     if (!empty($this->name)) {
-      $exists = db_query("SELECT name FROM {openlayers_layers} WHERE name = ':layer_name'", array(':layer_name' => $this->name))->fetchField();
-      // If this layer exists, specify that 'name' is
-      // the primary key for the layer which will be updated
-      return $exists ?
+      return (db_select('openlayers_layers')
+          ->fields('openlayers_layers', array('name'))
+          ->condition('name', $this->name)
+          ->execute()
+          ->fetchCol()) ?
         drupal_write_record('openlayers_layers', $this->to_record(), 'name') :
         drupal_write_record('openlayers_layers', $this->to_record());
     }
