@@ -10,7 +10,7 @@
 
 /**
  * @class
- * Extension of the Views Plugin Syle for OpenLayers
+ * Extension of the Views Plugin Style for OpenLayers
  *
  * This class extended the default views plugin class to provide
  * a style plugin for the Open Layers module.
@@ -28,10 +28,8 @@ class openlayers_views_style_data extends views_plugin_style {
   /**
    * Options form
    */
-  function options_form($form, &$form_state) {
+  function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
-
-    $fields = array();
 
     // Get list of fields in this view & flag available geodata fields
     $handlers = $this->display->handler->get_handlers('field');
@@ -46,7 +44,7 @@ class openlayers_views_style_data extends views_plugin_style {
       return;
     }
 
-    // Go through fields
+    $fields = array();
     foreach ($handlers as $field_id => $handler) {
         if ($handler->content_field['type'] == 'openlayers_wkt' &&
           $handler->options['format'] !== 'openlayers_wkt'
@@ -60,7 +58,6 @@ class openlayers_views_style_data extends views_plugin_style {
         }
     }
 
-    // Data Source options
     $form['data_source'] = array(
       '#type' => 'fieldset',
       '#tree' => TRUE,
@@ -79,7 +76,7 @@ class openlayers_views_style_data extends views_plugin_style {
       ),
       '#default_value' => $this->options['data_source']['value'],
     );
-    // Other Lat and Lon data sources
+
     if (count($fields > 0)) {
       $form['data_source']['other_lat'] = array(
         '#type' => 'select',
@@ -100,7 +97,6 @@ class openlayers_views_style_data extends views_plugin_style {
         '#dependency' => array('edit-style-options-data-source-value' => array('other_latlon')),
       );
 
-      // Other: WKT
       $form['data_source']['openlayers_wkt'] = array(
         '#type' => 'select',
         '#title' => t('WKT Field'),
@@ -111,7 +107,6 @@ class openlayers_views_style_data extends views_plugin_style {
         '#dependency' => array('edit-style-options-data-source-value' => array('openlayers_wkt')),
       );
 
-      // Other: Bounding Box
       $form['data_source']['other_top'] = array(
         '#type' => 'select',
         '#title' => t('Top Field'),
@@ -165,7 +160,6 @@ class openlayers_views_style_data extends views_plugin_style {
         '#default_value' => $this->options['data_source']['description_field'],
     );
 
-    // Attributes and variable styling description
     $form['attributes'] = array(
       '#type' => 'fieldset',
       '#title' => t('Attributes and Styling'),
@@ -173,16 +167,13 @@ class openlayers_views_style_data extends views_plugin_style {
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
     );
-    // Make array of attributes
     $variable_fields = array();
-    // Add name and description
     if (!empty($this->options['data_source']['name_field'])) {
       $variable_fields['name'] = '${name}';
     }
     if (!empty($this->options['data_source']['description_field'])) {
       $variable_fields['description'] = '${description}';
     }
-    // Go through fields
     foreach ($this->view->display_handler->get_handlers('field') as $field => $handler) {
       if (($field != $this->options['data_source']['name_field']) && ($field != $this->options['data_source']['description_field'])) {
         $variable_fields[$field] = '${' . $field . '}';
@@ -200,6 +191,8 @@ class openlayers_views_style_data extends views_plugin_style {
 
   /**
    * Map features
+   *
+   * @param $records ...
    */
   function map_features($records = array()) {
     $features = array();
@@ -423,12 +416,10 @@ class openlayers_views_style_data extends views_plugin_style {
    * Render the map features.
    */
   function render($result) {
-    // Check for live preview.
     if (!empty($this->view->live_preview)) {
       return t('OpenLayers views are not compatible with live preview.');
     }
 
-    // Group the rows according to the grouping field, if specified.
     $sets = $this->render_grouping($result, $this->options['grouping']);
     return $this->map_features($sets);
   }

@@ -10,3 +10,4 @@ files[] = openlayers_views.module
 files[] = views/openlayers_views_style_map.inc
 files[] = views/openlayers_views_style_data.inc
 files[] = views/openlayers_views_plugin_display_openlayers.inc
+files[] = includes/layer_types/openlayers_views_vector.inc
