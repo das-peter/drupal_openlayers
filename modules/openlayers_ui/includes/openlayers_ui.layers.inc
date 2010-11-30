@@ -71,7 +71,6 @@ function openlayers_ui_layers_form_submit(&$form, &$form_state) {
 /**
  * Layer-wide-settings form
  */
-
 function openlayers_ui_layers_settings($form_state, $layer = NULL) {
   $form = array();
   $layer_types = openlayers_layer_types();
@@ -97,7 +96,6 @@ function openlayers_ui_layers_settings($form_state, $layer = NULL) {
 /**
  * Submit handler for openlayers_ui_layers_settings
  */
-
 function openlayers_ui_layers_settings_submit(&$form, &$form_state) {
   $layer_types = openlayers_layer_types();
   foreach ($form_state['values'] as $key => $value) {
@@ -156,7 +154,7 @@ function openlayers_ui_get_layer_type_options($type) {
   $form = array();
   $form['layer_type_help'] = array(
     '#type' => 'item',
-    '#value' => t('Select a layer type to create a new layer.')
+    '#markup' => t('Select a layer type to create a new layer.')
   );
   foreach (openlayers_layer_types() as $key => $plugin) {
     $class = ctools_plugin_get_class($plugin, 'layer_type');

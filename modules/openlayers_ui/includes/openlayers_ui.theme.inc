@@ -30,47 +30,10 @@ function theme_openlayers_ui_form_projection_description($args) {
   return $output;
 }
 
-/**
- * Theme function for presets form
-function theme_openlayers_ui_presets_form($form) {
-  $links = $panels = array();
-  $first = TRUE;
-
-  foreach (element_children($form) as $key) {
-    if (!isset($form[$key]['#type']) && element_children($form[$key]) && $key != 'buttons') {
-      $class = $first ? 'openlayers-panel-active' : '';
-
-      $links[$key] = array(
-        'title' => $form[$key]['#title'],
-        'href' => $_GET['q'],
-        'fragment' => "openlayers-panel-{$key}",
-        'attributes' => array('class' => $class),
-      );
-
-      unset($form[$key]['#title']);
-      $panels[$key] = "<div class='openlayers-panel openlayers-panel-{$key} {$class}'>";
-      $panels[$key] .= isset($form[$key]['#description']) ? "<div class='description'>{$form[$key]['#description']}</div>" : '';
-      $panels[$key] .= drupal_render($form[$key]);
-      $panels[$key] .= "</div>";
-      $first = FALSE;
-    }
-  }
-
-  $panels = implode("\n", $panels);
-  $links = theme('links', $links, array('id' => 'openlayers-panel-links'));
-  $buttons = drupal_render($form['buttons']);
-  $form = drupal_render($form);
-
-  $left = "<div class='openlayers-column-left'>{$links}<div class='buttons'>{$buttons}</div></div>";
-  $right = "<div class='openlayers-column-right'>{$panels}{$form}</div>";
-  return $right . $left;
-}
- */
-
 function theme_openlayers_ui_presets_form_layers($args) {
-  $output = '';
   $form = $args['elements'];
-  $output .= drupal_render($form['ahah-start']) .
+
+  $output = drupal_render($form['ahah-start']) .
     drupal_render($form['projections']);
 
   // Base layers
@@ -104,7 +67,7 @@ function theme_openlayers_ui_presets_form_layers($args) {
         drupal_render($form['layer_activated'][$key]),
         drupal_render($form['layer_switcher'][$key]),
         drupal_render($form['layer_styles'][$key])),
-      'class' => 'draggable'
+      'class' => array('draggable')
     );
   }
   $output .= theme('table', 
