@@ -12,7 +12,7 @@
 /**
  * Styles add/edit form.
  */
-function openlayers_ui_styles_form($form_state, $style = NULL, $edit = FALSE) {
+function openlayers_ui_styles_form($form, $form_state, $style = NULL, $edit = FALSE) {
   $form = array();
   
   // Available styling properies.  Defaults and descriptions are taken
@@ -264,7 +264,7 @@ function openlayers_ui_styles_form_submit(&$form, &$form_state) {
   $style_data = $form_state['values']['style_data'];
   
   // Cast and unset values so JS can handle them better,
-  // Unless vluase is in form ${attribute}
+  // Unless values are in the form ${attribute}
   foreach ($form_state['values']['data'] as $key => $value) {
     if ($form_state['values']['data'][$key] === '') {
       unset($form_state['values']['data'][$key]);
