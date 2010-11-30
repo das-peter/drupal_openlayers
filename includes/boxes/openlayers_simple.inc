@@ -10,10 +10,7 @@ class openlayers_simple extends boxes_box {
    */
   public function options_defaults() {
     return array(
-      'body' => array(
-        'value' => '',
-        'format' => filter_default_format(),
-      ),
+      'preset' => ''
     );
   }
 
