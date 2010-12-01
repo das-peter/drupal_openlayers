@@ -18,21 +18,17 @@ class openlayers_simple extends boxes_box {
    * Implementation of boxes_content::options_form().
    */
   public function options_form() {
-    $format = filter_format_load($this->options['body']['format']);
-
-    if (filter_access($format)) {
-      $form = array();
-      // Map Preset
-      $form['preset'] = array(
-        '#type' => 'select',
-        '#title' => t('Map preset'),
-        '#description' => t('This is map that will be used to render the view.'),
-        '#options' => openlayers_preset_options(),
-        '#default_value' => $this->options['preset'] ?
-          $this->options['preset'] : variable_get('openlayers_default_preset', 'default'),
-      );
-      return $form;
-    }
+    $form = array();
+    // Map Preset
+    $form['preset'] = array(
+      '#type' => 'select',
+      '#title' => t('Map preset'),
+      '#description' => t('This is map that will be used to render the view.'),
+      '#options' => openlayers_preset_options(),
+      '#default_value' => $this->options['preset'] ?
+        $this->options['preset'] : variable_get('openlayers_default_preset', 'default'),
+    );
+    return $form;
   }
 
   /**
