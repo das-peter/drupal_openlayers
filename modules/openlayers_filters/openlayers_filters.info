@@ -1,6 +1,0 @@
-; $Id$
-name = OpenLayers Filters
-description = The OpenLayers Filters module provides input filters to allow for inline maps.
-core = 7.x
-package = OpenLayers
-dependencies[] = openlayers
