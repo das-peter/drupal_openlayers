@@ -15,7 +15,10 @@
 function openlayers_views_help($path, $arg) {
   switch ($path) {
     case 'admin/help#openlayers_views':
-      return '<p>'. t('The OpenLayers Views module provides a set of plugins for Views.') .'</p>';
+      return '<p>'
+        . t('The OpenLayers Views module provides a set of plugins '
+        . 'for Views.')
+        . '</p>';
   }
 }
 
@@ -38,6 +41,16 @@ function openlayers_views_theme($existing, $type, $theme, $path) {
       ),
       'file' => 'includes/openlayers_views.theme.inc',
     ),
+    'openlayers_row_geometry' => array(
+      'arguments' => array(
+        'view' => '',
+        'options' => '',
+        'row' => '',
+        'field_alias' => '',
+      ),
+      'file' => 'views/openlayers_views.views.theme.inc',
+    ),
+
   );
 }
 
@@ -46,7 +59,7 @@ function openlayers_views_theme($existing, $type, $theme, $path) {
  */
 function openlayers_views_views_api() {
   return array(
-    'api' => 2,
+    'api' => 3,
     'path' => drupal_get_path('module', 'openlayers_views') .'/views',
   );
 }

@@ -21,7 +21,8 @@ class openlayers_views_style_map extends views_plugin_style {
    */
   function option_definition() {
     $options = parent::option_definition();
-    $options['preset'] = array('default' => variable_get('openlayers_default_preset', 'default'));
+    $options['preset'] = array(
+        'default' => variable_get('openlayers_default_preset', 'default'));
     return $options;
   }
 
@@ -38,7 +39,8 @@ class openlayers_views_style_map extends views_plugin_style {
       '#description' => t('This is map that will be used to render the view.'),
       '#options' => openlayers_preset_options(),
       '#default_value' => $this->options['preset'] ?
-        $this->options['preset'] : variable_get('openlayers_default_preset', 'default'),
+        $this->options['preset'] :
+        variable_get('openlayers_default_preset', 'default'),
     );
   }
   
@@ -46,7 +48,6 @@ class openlayers_views_style_map extends views_plugin_style {
    * Query - override to make sure this doesn't get run
    */
   function query() {
-    //$this->view->built = TRUE;
     $this->view->query->fields = array();
   }
 
@@ -57,12 +58,10 @@ class openlayers_views_style_map extends views_plugin_style {
     // Get selected preset
     $preset = openlayers_preset_load($this->options['preset']);
 
-    $map = openlayers_render_map($preset->data, $preset->name);
-
     return theme($this->theme_functions(), array(
       'view' => $this->view, 
       'options' => $this->options, 
-      'map' => $map
+      'map' => openlayers_render_map($preset->data, $preset->name)
     ));
   }
 }

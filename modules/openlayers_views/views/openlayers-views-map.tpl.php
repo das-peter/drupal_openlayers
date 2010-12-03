@@ -4,6 +4,8 @@
 /**
  * @file
  * Template file for map
+ *
+ * @param map String rendered map HTML.
  */
 ?>
 <?php if (!empty($map)): ?>

@@ -42,9 +42,6 @@ class openlayers_views_plugin_display_openlayers extends views_plugin_display {
 
     // Overrides for standard stuff:
     $options['style_plugin']['default'] = 'openlayers_data';
-    $options['row_plugin']['default'] = '';
-    $options['defaults']['default']['row_plugin'] = FALSE;
-    $options['defaults']['default']['row_options'] = FALSE;
     return $options;
   }
 
