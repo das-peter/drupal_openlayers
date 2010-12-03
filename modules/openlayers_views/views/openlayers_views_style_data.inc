@@ -47,7 +47,8 @@ class openlayers_views_style_data extends views_plugin_style {
     // Check for any fields, as the view needs them
     if (empty($handlers)) {
       $form['error_markup'] = array(
-        '#value' => t('You need to enable at least one field before you can configure your field settings'),
+          '#value' => t('You need to enable at least one field before you can '
+          . 'configure your field settings'),
         '#prefix' => '<div class="error form-item description">',
         '#suffix' => '</div>',
       );
@@ -93,7 +94,7 @@ class openlayers_views_style_data extends views_plugin_style {
       $form['data_source']['other_lat'] = array(
         '#type' => 'select',
         '#title' => t('Latitude Field'),
-        '#description' => t('Choose a field for Latitude.  This should be a 
+        '#description' => t('Choose a field for Latitude.  This should be a '
         . 'field that is a decimal or float value.'),
         '#options' => $fields,
         '#default_value' => $this->options['data_source']['other_lat'],
@@ -207,151 +208,46 @@ class openlayers_views_style_data extends views_plugin_style {
       . 'interface.  The %rendered one means that it has been processed '
       . 'by Views and may have a different value.',
       array(
-          '%syntax' => '${field_name}',
-          '%rendered' => '_rendered'))
-          . '</p>'
-          . theme('item_list', $variable_fields)
-          . '<p>'
-          . t('Please note that this does not apply to Grouped Displays.')
-          . '</p>',
+        '%syntax' => '${field_name}',
+        '%rendered' => '_rendered'))
+      . '</p>'
+      . theme('item_list', $variable_fields)
+      . '<p>'
+      . t('Please note that this does not apply to Grouped Displays.')
+      . '</p>',
     );
   }
 
   /**
    * Map features
    *
+   * Excluded fields are still rendered so they can be used as render tokens
    * @param $records ...
    */
-  function map_features($records = array()) {
-    $features = array();
+  function map_features($sets = array()) {
+    $features = $excluded_fields = array();
     $data_source = $this->options['data_source'];
-
-    // Get list of fields in this view
     $handlers = $this->display->handler->get_handlers('field');
-    $fields = array();
-    foreach ($handlers as $field_id => $handler) {
-      $fields[$field_id] = $handler->definition;
-      $fields[$field_id]['field_alias'] = $handler->field_alias;
-    }
-    
-    // Small fix to solve backwards compatability and bad commit
-    // and release.  This should be in an update function.
-    // See: http://drupal.org/node/895082
-    $ds = $data_source['value'];       
-    if (is_array($ds)) {
-      $ds = array_shift(array_keys($data_source['value']));
-    } 
 
-    // Build feature. We create one feature per field per row.
-
-    // @TODO: Redo the grouped-version of this style plugin.
-    // Separate mapping for grouped views.  Currently only adds name and count.
-    if (!empty($this->options['grouping'])) {
-      $this->view->row_index = 0;
+    foreach ($sets as $title => $records) {
       foreach ($records as $id => $record) {
         $feature = array();
-        $feature['attributes']['name'] = $id;
 
-        switch ($ds) {
-          case 'other_latlon':
-            $lat_field = $fields[$data_source['other_lat']]['field_alias'];
-            $lon_field = $fields[$data_source['other_lon']]['field_alias'];
-            $lon = current($record)->$lon_field;
-            $lat = current($record)->$lat_field;
-            if (isset($lat) && isset($lon)) {
-              $feature['wkt'] = 'POINT(' . $lon . ' ' . $lat . ')';
-              $feature['projection'] = '4326';
-            }
-            break;
-          case 'openlayers_wkt':
-            $wkt_field = $fields[$data_source['openlayers_wkt']]['field_alias'];
-            $wkt = current($record)->$wkt_field;
-            if ($wkt) {
-              $feature['wkt'] = $wkt;
-              $feature['projection'] = '4326';
-            }
-            break;
-          case 'other_boundingbox':
-            $top_field = $fields[$data_source['other_top']]['field_alias'];
-            $right_field = $fields[$data_source['other_right']]['field_alias'];
-            $left_field = $fields[$data_source['other_left']]['field_alias'];
-            $bottom_field = $fields[$data_source['other_bottom']]['field_alias'];
-            $top = current($record)->$top_field;
-            $right = current($record)->$right_field;
-            $left = current($record)->$left_field;
-            $bottom = current($record)->$bottom_field;
-            if (isset($lat) && isset($lon)) {
-              $feature['wkt'] = 'MULTIPOLYGON(' .
-                $left . ' ' . $top . ', ' .
-                $right . ' ' . $top . ', ' .
-                $right . ' ' . $bottom . ', ' .
-                $left . ' ' . $bottom . ')';
-              $feature['projection'] = '4326';
-            }
-            break;
-        }
-
-        $descriptions = array();
-        $excluded_fields = array();
-        foreach ($record as $k => $v) {
-          foreach ($handlers as $hid => $handler) {
-            $rendered_record[$handler->field_alias] = $handler->advanced_render($v);
-            if (!empty($handler->options['exclude'])) {
-              $excluded_fields[] = $handler->field_alias;
-            }
-          }
-
-          // Get aliases name
-          $name_field = (!empty($data_source['name_field'])) ? 
-            $fields[$data_source['name_field']]['field_alias'] : NULL;
-          $description_field = (!empty($data_source['description_field'])) ? 
-            $fields[$data_source['description_field']]['field_alias'] : NULL;
-          // Create output
-          $descriptions[] = theme('openlayers_views_group_display_item', 
-            $rendered_record[$name_field], $rendered_record[$description_field]);
-        }
-
-        $grouped_description = theme('item_list', $descriptions);
-
-        $feature['attributes']['description'] = $grouped_description;
-        $feature['attributes']['count'] = count($record);
-
-        foreach ($fields as $fid => $field) {
-          $field_alias = $field['field_alias'];
-          if (!in_array($field_alias, $excluded_fields, TRUE)) {
-            // Use regular field name as this is easier to understand
-            $feature['attributes'][$fid . "_rendered"] = $rendered_record[$field_alias];
-          }
-        }
-
-        // Only add features with WKT data
-        if (!empty($feature['wkt'])) {
-          $features[] = theme('openlayers_views_render_feature', $feature, $record);
-        }
-        $this->view->row_index++;
-      }
-      unset($this->view->row_index);
-      return $features;
-    }
-
-    // Separate mapping for non-grouped views.
-    else {
-      $excluded_fields = array();
-
-      $records = array_shift($records);
-      foreach ($records as $id => $record) {
-        $feature = array();
-        $rendered_record = array();
-        // Note that excluded fields are still rendered in case they are used
-        // as render tokens in later fields.
         foreach ($handlers as $hid => $handler) {
-          $rendered_record[$handler->field_alias] = $handler->advanced_render($record);
           if (!empty($handler->options['exclude'])) {
             $excluded_fields[] = $handler->field_alias;
           }
+          else {
+            $feature[$handler->field_alias] = $record->{$handler->field_alias};
+            $feature[$handler->field_alias . '_rendered'] =
+              $handler->advanced_render($record);
+          }
         }
 
-        switch ($ds) {
+        $features[] = $feature;
+
+        /*
+        switch ($data_source['value']) {
           case 'other_latlon':
             $lat_field = $fields[$data_source['other_lat']]['field_alias'];
             $lon_field = $fields[$data_source['other_lon']]['field_alias'];
@@ -397,10 +293,6 @@ class openlayers_views_style_data extends views_plugin_style {
               $left_field, $bottom_field);
         }
 
-        // Add the name and description attributes
-        // as choosen through interface
-        $name_field = NULL;
-        $description_field = NULL;
         if ($data_source['name_field']) {
           $name_field = $fields[$data_source['name_field']]['field_alias'];
           $feature['attributes']['name'] = $rendered_record[$name_field];
@@ -435,20 +327,20 @@ class openlayers_views_style_data extends views_plugin_style {
         if (!empty($feature['wkt'])) {
           $features[] = theme('openlayers_views_render_feature', $feature, $record);
         }
+         */
       }
-      return $features;
     }
+    print_r($features);
+    return $features;
   }
 
   /**
    * Render the map features.
    */
   function render($result) {
-    if (!empty($this->view->live_preview)) {
-      return t('OpenLayers views are not compatible with live preview.');
-    }
-
-    $sets = $this->render_grouping($result, $this->options['grouping']);
-    return $this->map_features($sets);
+    return empty($this->view->live_preview) ?
+      $this->map_features(
+        $this->render_grouping($result, $this->options['grouping'])) :
+      t('OpenLayers views are not compatible with live preview.');
   }
 }
