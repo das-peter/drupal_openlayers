@@ -85,7 +85,7 @@ class openlayers_views_style_data extends views_plugin_style {
       '#options' => array(
         'other_latlon' => t('Other: Lat/Lon Point'),
         'other_boundingbox' => t('Other: Bounding Box'),
-        'openlayers_wkt' => t('OpenLayers WKT')
+        'wkt' => t('WKT')
       ),
       '#default_value' => $this->options['data_source']['value'],
     );
@@ -110,13 +110,13 @@ class openlayers_views_style_data extends views_plugin_style {
         '#states' => $this->datasource_dependent('other_latlon')
       );
 
-      $form['data_source']['openlayers_wkt'] = array(
+      $form['data_source']['wkt'] = array(
         '#type' => 'select',
         '#title' => t('WKT Field'),
         '#description' => t('Choose the OpenLayers WKT field.'),
         '#options' => $fields,
-        '#default_value' => $this->options['data_source']['openlayers_wkt'],
-        '#states' => $this->datasource_dependent('openlayers_wkt')
+        '#default_value' => $this->options['data_source']['wkt'],
+        '#states' => $this->datasource_dependent('wkt')
       );
 
       $form['data_source']['other_top'] = array(
@@ -218,6 +218,16 @@ class openlayers_views_style_data extends views_plugin_style {
     );
   }
 
+  function coalesce_wkt($feature, $handlers, $ds) {
+    switch ($ds['value']) {
+      case 'wkt':
+        $feature['wkt'] = $feature[
+          $handlers[$ds['wkt']]->field_alias . '_rendered'];
+        break;
+    }
+    return $feature;
+  }
+
   /**
    * Map features
    *
@@ -226,7 +236,6 @@ class openlayers_views_style_data extends views_plugin_style {
    */
   function map_features($sets = array()) {
     $features = $excluded_fields = array();
-    $data_source = $this->options['data_source'];
     $handlers = $this->display->handler->get_handlers('field');
 
     foreach ($sets as $title => $records) {
@@ -244,93 +253,11 @@ class openlayers_views_style_data extends views_plugin_style {
           }
         }
 
-        $features[] = $feature;
-
-        /*
-        switch ($data_source['value']) {
-          case 'other_latlon':
-            $lat_field = $fields[$data_source['other_lat']]['field_alias'];
-            $lon_field = $fields[$data_source['other_lon']]['field_alias'];
-            $lon = $record->$lon_field;
-            $lat = $record->$lat_field;
-            if (isset($lat) && isset($lon)) {
-              $feature['wkt'] = 'POINT(' . $lon . ' ' . $lat . ')';
-              $feature['projection'] = '4326';
-            }
-
-            $excluded_fields[] = $lat_field;
-            $excluded_fields[] = $lon_field;
-            break;
-          case 'openlayers_wkt':
-            $wkt_field = $fields[$data_source['openlayers_wkt']]['field_alias'];
-            $wkt = $record->$wkt_field;
-            if ($wkt) {
-              $feature['wkt'] = $wkt;
-              $feature['projection'] = '4326';
-            }
-
-            $excluded_fields[] = $wkt_field;
-            break;
-          case 'other_boundingbox':
-            $top_field = $fields[$data_source['other_top']]['field_alias'];
-            $right_field = $fields[$data_source['other_right']]['field_alias'];
-            $left_field = $fields[$data_source['other_left']]['field_alias'];
-            $bottom_field = $fields[$data_source['other_bottom']]['field_alias'];
-            $top = $record->$top_field;
-            $right = $record->$right_field;
-            $left = $record->$left_field;
-            $bottom = $record->$bottom_field;
-            if (isset($top) && isset($left)) {
-              $feature['wkt'] = 'MULTIPOLYGON(' .
-                $left . ' ' . $top . ', ' .
-                $right . ' ' . $top . ', ' .
-                $right . ' ' . $bottom . ', ' .
-                $left . ' ' . $bottom . ')';
-              $feature['projection'] = '4326';
-            }
-
-            array_push($excluded_fields, $top_field, $right_field,
-              $left_field, $bottom_field);
-        }
-
-        if ($data_source['name_field']) {
-          $name_field = $fields[$data_source['name_field']]['field_alias'];
-          $feature['attributes']['name'] = $rendered_record[$name_field];
-          $excluded_fields[] = $name_field;
-        }
-        else {
-          $feature['attributes']['name'] = '';
-        }
-        if ($data_source['description_field']) {
-          $description_field = $fields[$data_source['description_field']]['field_alias'];
-          $feature['attributes']['description'] = $rendered_record[$description_field];
-          $excluded_fields[] = $description_field;
-        }
-        else {
-          $feature['attributes']['description'] = '';
-        }
-
-        // Fill in attributes that are not:
-        // - Coordinate/bounding box fields
-        // - Name/description (already processed)
-        // - Views "excluded" fields
-        foreach ($fields as $fid => $field) {
-          $field_alias = $field['field_alias'];
-          if (!in_array($field_alias, $excluded_fields, TRUE)) {
-            // Use regular field name as this is easier to understand
-            $feature['attributes'][$fid] = $record->$field_alias;
-            $feature['attributes'][$fid . "_rendered"] = $rendered_record[$field_alias];
-          }
-        }
-
-        // Only add features with WKT data
-        if (!empty($feature['wkt'])) {
-          $features[] = theme('openlayers_views_render_feature', $feature, $record);
-        }
-         */
+        $features[] = $this->coalesce_wkt($feature,
+            $handlers,
+            $this->options['data_source']);
       }
     }
-    print_r($features);
     return $features;
   }
 
