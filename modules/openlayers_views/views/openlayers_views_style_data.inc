@@ -219,6 +219,7 @@ class openlayers_views_style_data extends views_plugin_style {
   }
 
   function coalesce_wkt($feature, $handlers, $ds) {
+    $feature['projection'] = '4326';
     switch ($ds['value']) {
       case 'wkt':
         $feature['wkt'] = $feature[
