@@ -61,7 +61,8 @@ class openlayers_views_style_data extends views_plugin_style {
         ) {
           form_set_error('', t('WKT Field %field not available 
             because it is formatted as a map. Set its format to WKT Value to 
-            make it available.', array('%field' => $handler->definition['title'])));
+            make it available.', array(
+                '%field' => $handler->definition['title'])));
         }
         else {
           $fields[$field_id] = $handler->definition['title'];
@@ -78,7 +79,8 @@ class openlayers_views_style_data extends views_plugin_style {
     $form['data_source']['value'] = array(
       '#type' => 'select',
       '#title' => t('Map Data Sources'),
-      '#description' => t('Choose which sources of data that the map will provide features for.'),
+      '#description' => t('Choose which sources of data that the map will '
+      . 'provide features for.'),
       '#options' => array(
         'other_latlon' => t('Other: Lat/Lon Point'),
         'other_boundingbox' => t('Other: Bounding Box'),
@@ -91,7 +93,8 @@ class openlayers_views_style_data extends views_plugin_style {
       $form['data_source']['other_lat'] = array(
         '#type' => 'select',
         '#title' => t('Latitude Field'),
-        '#description' => t('Choose a field for Latitude.  This should be a field that is a decimal or float value.'),
+        '#description' => t('Choose a field for Latitude.  This should be a 
+        . 'field that is a decimal or float value.'),
         '#options' => $fields,
         '#default_value' => $this->options['data_source']['other_lat'],
         '#states' => $this->datasource_dependent('other_latlon')
@@ -99,7 +102,8 @@ class openlayers_views_style_data extends views_plugin_style {
       $form['data_source']['other_lon'] = array(
         '#type' => 'select',
         '#title' => t('Longitude Field'),
-        '#description' => t('Choose a field for Longitude.  This should be a field that is a decimal or float value.'),
+        '#description' => t('Choose a field for Longitude.  This should be a '
+        . 'field that is a decimal or float value.'),
         '#options' => $fields,
         '#default_value' => $this->options['data_source']['other_lon'],
         '#states' => $this->datasource_dependent('other_latlon')
@@ -117,7 +121,8 @@ class openlayers_views_style_data extends views_plugin_style {
       $form['data_source']['other_top'] = array(
         '#type' => 'select',
         '#title' => t('Top Field'),
-        '#description' => t('Choose a field for Top.  This should be a field that is a decimal or float value.'),
+        '#description' => t('Choose a field for Top.  This should be a '
+        . 'field that is a decimal or float value.'),
         '#options' => $fields,
         '#default_value' => $this->options['data_source']['other_top'],
         '#states' => $this->datasource_dependent('other_boundingbox')
@@ -125,7 +130,8 @@ class openlayers_views_style_data extends views_plugin_style {
       $form['data_source']['other_right'] = array(
         '#type' => 'select',
         '#title' => t('Right Field'),
-        '#description' => t('Choose a field for Right.  This should be a field that is a decimal or float value.'),
+        '#description' => t('Choose a field for Right.  This should be a field '
+        . 'that is a decimal or float value.'),
         '#options' => $fields,
         '#default_value' => $this->options['data_source']['other_right'],
         '#states' => $this->datasource_dependent('other_boundingbox')
@@ -133,7 +139,8 @@ class openlayers_views_style_data extends views_plugin_style {
       $form['data_source']['other_bottom'] = array(
         '#type' => 'select',
         '#title' => t('Bottom Field'),
-        '#description' => t('Choose a field for Bottom.  This should be a field that is a decimal or float value.'),
+        '#description' => t('Choose a field for Bottom.  This should be a '
+        . 'field that is a decimal or float value.'),
         '#options' => $fields,
         '#default_value' => $this->options['data_source']['other_bottom'],
         '#states' => $this->datasource_dependent('other_boundingbox')
@@ -141,7 +148,8 @@ class openlayers_views_style_data extends views_plugin_style {
       $form['data_source']['other_left'] = array(
         '#type' => 'select',
         '#title' => t('Left Field'),
-        '#description' => t('Choose a field for Left.  This should be a field that is a decimal or float value.'),
+        '#description' => t('Choose a field for Left.  This should be a field '
+        . 'that is a decimal or float value.'),
         '#options' => $fields,
         '#default_value' => $this->options['data_source']['other_left'],
         '#states' => $this->datasource_dependent('other_boundingbox')
@@ -150,14 +158,16 @@ class openlayers_views_style_data extends views_plugin_style {
     $form['data_source']['name_field'] = array(
         '#type' => 'select',
         '#title' => t('Title Field'),
-        '#description' => t('Choose the field which will appear as a title on tooltips.'),
+        '#description' => t('Choose the field which will appear as a title on '
+        . 'tooltips.'),
         '#options' => array_merge(array('' => ''), $fields),
         '#default_value' => $this->options['data_source']['name_field'],
     );
     $form['data_source']['description_field'] = array(
         '#type' => 'select',
         '#title' => t('Description Field'),
-        '#description' => t('Choose the field which will appear as a description on tooltips.'),
+        '#description' => t('Choose the field which will appear as a '
+        . 'description on tooltips.'),
         '#required' => FALSE,
         '#options' => array_merge(array('' => ''), $fields),
         '#default_value' => $this->options['data_source']['description_field'],
@@ -166,7 +176,8 @@ class openlayers_views_style_data extends views_plugin_style {
     $form['attributes'] = array(
       '#type' => 'fieldset',
       '#title' => t('Attributes and Styling'),
-      '#description' => t('Attributes are field data attached to each feature.  This can be used with styling to create Variable styling.'),
+      '#description' => t('Attributes are field data attached to each '
+      . 'feature.  This can be used with styling to create Variable styling.'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
     );
@@ -177,18 +188,32 @@ class openlayers_views_style_data extends views_plugin_style {
     if (!empty($this->options['data_source']['description_field'])) {
       $variable_fields['description'] = '${description}';
     }
-    foreach ($this->view->display_handler->get_handlers('field') as $field => $handler) {
-      if (($field != $this->options['data_source']['name_field']) && ($field != $this->options['data_source']['description_field'])) {
+    foreach ($this->view->display_handler->get_handlers('field') as
+      $field => $handler) {
+          if (($field != $this->options['data_source']['name_field']) &&
+              ($field != $this->options['data_source']['description_field'])) {
         $variable_fields[$field] = '${' . $field . '}';
         $variable_fields[$field . '_rendered'] = '${' . $field . '_rendered}';
       }
     }
     $form['attributes']['styling'] = array(
       '#markup' => '
-        <p>' . t('Any fields that you add to this view will be attached to their respective feature (point, line, polygon) as attributes.  These attributes can then be used to add variable styling to your themes.  This is accomplished by using the %syntax syntax in the values for a style.  The following is a list of formatted variables that are currently available; these can be placed right in the style interface.  The %rendered one means that it has been processed by Views and may have a different value.', array('%syntax' => '${field_name}', '%rendered' => '_rendered')) . '</p>
-        ' . theme('item_list', $variable_fields) . '
-        <p>' . t('Please note that this does not apply to Grouped Displays.') . '</p>
-      ',
+      <p>' . t('Any fields that you add to this view will be attached to '
+      . 'their respective feature (point, line, polygon) as attributes.  '
+      . 'These attributes can then be used to add variable styling to your '
+      . 'themes.  This is accomplished by using the %syntax syntax in the '
+      . 'values for a style.  The following is a list of formatted variables '
+      . 'that are currently available; these can be placed right in the style '
+      . 'interface.  The %rendered one means that it has been processed '
+      . 'by Views and may have a different value.',
+      array(
+          '%syntax' => '${field_name}',
+          '%rendered' => '_rendered'))
+          . '</p>'
+          . theme('item_list', $variable_fields)
+          . '<p>'
+          . t('Please note that this does not apply to Grouped Displays.')
+          . '</p>',
     );
   }
 
