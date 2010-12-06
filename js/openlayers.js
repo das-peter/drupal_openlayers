@@ -294,20 +294,21 @@ Drupal.openlayers = {
       }
       return new OpenLayers.StyleMap(stylesAdded);
     }
-    // Default styles
-    return new OpenLayers.StyleMap({
-      'default': new OpenLayers.Style({
-        pointRadius: 5,
-        fillColor: '#ffcc66',
-        strokeColor: '#ff9933',
-        strokeWidth: 4,
-        fillOpacity: 0.5
-      }),
-      'select': new OpenLayers.Style({
-        fillColor: '#66ccff',
-        strokeColor: '#3399ff'
-      })
-    });
+    else {
+      return new OpenLayers.StyleMap({
+        'default': new OpenLayers.Style({
+          pointRadius: 5,
+          fillColor: '#ffcc66',
+          strokeColor: '#ff9933',
+          strokeWidth: 4,
+          fillOpacity: 0.5
+        }),
+        'select': new OpenLayers.Style({
+          fillColor: '#66ccff',
+          strokeColor: '#3399ff'
+        })
+      });
+    }
   },
   'objectFromFeature': function(feature) {
     var wktFormat = new OpenLayers.Format.WKT();

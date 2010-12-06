@@ -35,7 +35,6 @@ function theme_openlayers_map($args) {
 /**
  * Theme function to be able to override styles
  */
-function theme_openlayers_styles($styles = array(), $map = array()) {
-  // Default is to just send the processed styles back
-  return $styles;
+function theme_openlayers_styles($args) {
+  return $args['styles'];
 }

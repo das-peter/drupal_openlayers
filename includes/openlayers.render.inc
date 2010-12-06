@@ -61,6 +61,8 @@ function _openlayers_behaviors_render($behaviors = array(), &$map = array()) {
  *
  * Get full data for any styles
  *
+ * TODO: KILL KILL KILL
+ *
  * @param $styles
  *   Array of map styles ( <style_role> : <style_name> | <style_array> )
  * @param $layer_styles
