@@ -735,6 +735,8 @@ function openlayers_ui_get_behavior_options($type, $defaults) {
         }
       }
     }
+    else {
+    }
   }
   return $form;
 }

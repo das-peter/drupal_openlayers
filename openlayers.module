@@ -883,9 +883,11 @@ function openlayers_ctools_plugin_type() {
   return array(
     'behaviors' => array(
       'use hooks' => TRUE,
+      'classes' => array('behavior')
     ),
     'layer_types' => array(
       'use hooks' => TRUE,
+      'classes' => array('layer_type')
     )
   );
 }

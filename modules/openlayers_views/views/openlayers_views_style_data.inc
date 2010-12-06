@@ -21,7 +21,7 @@ class openlayers_views_style_data extends views_plugin_style {
    */
   function option_definition() {
     $options = parent::option_definition();
-    $options['data_source'] = 'openlayers_wkt';
+    $options['data_source'] = array('default' => 'openlayers_wkt');
     return $options;
   }
 
@@ -268,7 +268,8 @@ class openlayers_views_style_data extends views_plugin_style {
   function render($result) {
     return empty($this->view->live_preview) ?
       $this->map_features(
-        $this->render_grouping($result, $this->options['grouping'])) :
+        $this->render_grouping($result, $this->options['grouping'])
+      ) :
       t('OpenLayers views are not compatible with live preview.');
   }
 }
