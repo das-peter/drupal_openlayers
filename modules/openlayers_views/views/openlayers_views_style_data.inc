@@ -242,13 +242,13 @@ class openlayers_views_style_data extends views_plugin_style {
   function reduce_features($is_grouped, $features, $feature, $group) {
     if ($is_grouped) {
       if (isset($features[$group])) {
-        $features[$group]['count']++;
+        $features[$group]['attributes']['count']++;
         $features[$group]['features'][] = $feature;
         return $features;
       }
       else {
         $features[$group] = array(
-          'count' => 1,
+          'attributes' => array('count' => 1),
           'wkt' => $feature['wkt'],
           'projection' => $feature['projection'],
           'features' => array($feature)
@@ -268,7 +268,6 @@ class openlayers_views_style_data extends views_plugin_style {
     $features = $excluded_fields = array();
     $handlers = $this->display->handler->get_handlers('field');
 
-    // print_r($sets);
     foreach ($sets as $title => $records) {
       foreach ($records as $id => $record) {
         foreach ($handlers as $hid => $handler) {
@@ -290,7 +289,6 @@ class openlayers_views_style_data extends views_plugin_style {
           $title);
       }
     }
-    print_r($features);
     return $features;
   }
 
