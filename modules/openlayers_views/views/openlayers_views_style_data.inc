@@ -246,13 +246,13 @@ class openlayers_views_style_data extends views_plugin_style {
               $feature[
               $handlers[
                 $ds['name_field']
-              ]->field_alias] : false,
+              ]->field_alias . '_rendered'] : false,
             'description' => isset($handlers[
                 $ds['description_field']]) ?
               $feature[
               $handlers[
                 $ds['description_field']
-              ]->field_alias] : false
+              ]->field_alias . '_rendered'] : false
           )
         );
       }
