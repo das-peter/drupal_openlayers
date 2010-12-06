@@ -218,6 +218,10 @@ class openlayers_views_style_data extends views_plugin_style {
     );
   }
 
+  /**
+   * Find the data source of an element and pull it into a
+   * wkt field
+   */
   function coalesce_wkt($feature, $handlers, $ds) {
     $feature['projection'] = '4326';
     switch ($ds['value']) {
@@ -230,19 +234,43 @@ class openlayers_views_style_data extends views_plugin_style {
   }
 
   /**
-   * Map features
-   *
-   * Excluded fields are still rendered so they can be used as render tokens
+   * Basically an algebraic reduction; given whether to group,
+   * a feature, a list of features, etc., return a full $features
+   * array with the element added, either straight non-grouped, 
+   * or within a new or existing group
+   */
+  function reduce_features($is_grouped, $features, $feature, $group) {
+    if ($is_grouped) {
+      if (isset($features[$group])) {
+        $features[$group]['count']++;
+        $features[$group]['features'][] = $feature;
+        return $features;
+      }
+      else {
+        $features[$group] = array(
+          'count' => 1,
+          'wkt' => $feature['wkt'],
+          'projection' => $feature['projection'],
+          'features' => array($feature)
+        );
+        return $features;
+      }
+    }
+    else {
+      return array_push($features, $feature);;
+    }
+  }
+
+  /**
    * @param $records ...
    */
   function map_features($sets = array()) {
     $features = $excluded_fields = array();
     $handlers = $this->display->handler->get_handlers('field');
 
+    // print_r($sets);
     foreach ($sets as $title => $records) {
       foreach ($records as $id => $record) {
-        $feature = array();
-
         foreach ($handlers as $hid => $handler) {
           if (!empty($handler->options['exclude'])) {
             $excluded_fields[] = $handler->field_alias;
@@ -253,12 +281,16 @@ class openlayers_views_style_data extends views_plugin_style {
               $handler->advanced_render($record);
           }
         }
-
-        $features[] = $this->coalesce_wkt($feature,
+        $features = $this->reduce_features(
+          $this->options['grouping'],
+          $features,
+          $this->coalesce_wkt($feature,
             $handlers,
-            $this->options['data_source']);
+            $this->options['data_source']),
+          $title);
       }
     }
+    print_r($features);
     return $features;
   }
 

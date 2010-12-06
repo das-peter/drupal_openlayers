@@ -406,7 +406,10 @@ function openlayers_layer_type_load($name, $reset = FALSE) {
   ctools_include('plugins');
 
   if ($layer_type_class = ctools_plugin_load_class(
-    'openlayers', 'layer_types', $name, 'layer_type')) {
+    'openlayers',
+    'layer_types',
+    $name,
+    'layer_type')) {
     $layer_type = new $layer_type_class();
     return $layer_type;
   }
