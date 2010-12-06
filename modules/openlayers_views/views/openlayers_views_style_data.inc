@@ -233,6 +233,38 @@ class openlayers_views_style_data extends views_plugin_style {
     return $feature;
   }
 
+  function coalesce_groups($features, $handlers, $ds) {
+    foreach ($features as $k => &$f) {
+      $f['attributes']['name'] = $k;
+
+      $formatted_features = array();
+      foreach ($f['features'] as $feature) {
+        $formatted_features[] = theme('openlayers_views_group_display_item',
+          array(
+            'name' => isset($handlers[
+                $ds['name_field']]) ?
+              $feature[
+              $handlers[
+                $ds['name_field']
+              ]->field_alias] : false,
+            'description' => isset($handlers[
+                $ds['description_field']]) ?
+              $feature[
+              $handlers[
+                $ds['description_field']
+              ]->field_alias] : false
+          )
+        );
+      }
+      $f['attributes']['description'] = theme('item_list',
+        array(
+          'items' => $formatted_features
+        )
+      );
+    }
+    return $features;
+  }
+
   /**
    * Basically an algebraic reduction; given whether to group,
    * a feature, a list of features, etc., return a full $features
@@ -289,7 +321,14 @@ class openlayers_views_style_data extends views_plugin_style {
           $title);
       }
     }
-    return $features;
+    if ($this->options['grouping']) {
+      return $this->coalesce_groups($features,
+        $handlers,
+        $this->options['data_source']);
+    }
+    else {
+      return $features;
+    }
   }
 
   /**
