@@ -98,7 +98,8 @@ function openlayers_build_map($map = array()) {
 
   // If no map is specified, use the default preset.
   if (empty($map)) {
-    if ($preset = openlayers_preset_load(variable_get('openlayers_default_preset', 'default'))) {
+    if ($preset = openlayers_preset_load(
+      variable_get('openlayers_default_preset', 'default'))) {
       $map = $preset->data;
     }
   }

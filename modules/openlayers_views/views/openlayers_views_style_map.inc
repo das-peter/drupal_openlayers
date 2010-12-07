@@ -49,6 +49,7 @@ class openlayers_views_style_map extends views_plugin_style {
    */
   function query() {
     $this->view->query->fields = array();
+    $this->view->executed = TRUE;
   }
 
   /**
