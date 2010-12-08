@@ -46,7 +46,7 @@ function openlayers_views_theme($existing, $type, $theme, $path) {
         'map' => array(),
         'title' => '',
       ),
-      'file' => 'includes/openlayers_views.theme.inc',
+      'file' => 'views/openlayers_views.views.theme.inc',
     ),
     'openlayers_row_geometry' => array(
       'arguments' => array(

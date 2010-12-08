@@ -289,7 +289,13 @@ class openlayers_views_style_data extends views_plugin_style {
       }
     }
     else {
-      return array_push($features, $feature);;
+      array_push($features, array(
+        'attributes' => $feature,
+        'wkt' => $feature['wkt'],
+        'projection' => $feature['projection'],
+        'features' => array($feature)
+      ));;
+      return $features;
     }
   }
 
@@ -321,14 +327,9 @@ class openlayers_views_style_data extends views_plugin_style {
           $title);
       }
     }
-    if ($this->options['grouping']) {
-      return $this->coalesce_groups($features,
-        $handlers,
-        $this->options['data_source']);
-    }
-    else {
-      return $features;
-    }
+    return $this->coalesce_groups($features,
+      $handlers,
+      $this->options['data_source']);
   }
 
   /**

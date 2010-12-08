@@ -121,8 +121,5 @@ function _openlayers_styles_process($styles = array(),
  *   New map id
  */
 function _openlayers_create_map_id() {
-  static $map_count = 0;
-  $id = 'openlayers-map-auto-id-'. $map_count;
-  $map_count++;
-  return $id;
+  return 'openlayers-map-' . substr(md5(uniqid(mt_rand())), 0, 8);
 }
