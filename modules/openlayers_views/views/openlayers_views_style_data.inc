@@ -233,6 +233,10 @@ class openlayers_views_style_data extends views_plugin_style {
     return $feature;
   }
 
+  /**
+   * Coalesce features into single grouped feature when
+   * grouping is enabled.
+   */
   function coalesce_groups($features, $handlers, $ds) {
     foreach ($features as $k => &$f) {
       $f['attributes']['name'] = $k;
@@ -261,6 +265,22 @@ class openlayers_views_style_data extends views_plugin_style {
           'items' => $formatted_features
         )
       );
+    }
+    return $features;
+  }
+
+  /**
+   * Retrieve name and description for individual features when
+   * grouping is not enabled.
+   */
+  function coalesce_features($features, $handlers, $ds) {
+    foreach ($features as $k => &$f) {
+      $f['attributes']['name'] = isset($handlers[$ds['name_field']])
+        ? $f['attributes'][$handlers[$ds['name_field']]->field_alias . '_rendered']
+        : false;
+      $f['attributes']['description'] = isset($handlers[$ds['description_field']])
+        ? $f['attributes'][$handlers[$ds['description_field']]->field_alias . '_rendered']
+        : false;
     }
     return $features;
   }
@@ -313,9 +333,14 @@ class openlayers_views_style_data extends views_plugin_style {
             $excluded_fields[] = $handler->field_alias;
           }
           else {
-            $feature[$handler->field_alias] = $record->{$handler->field_alias};
+            $feature[$handler->field_alias] =
+              isset($record->{$handler->field_alias})
+              ? $record->{$handler->field_alias}
+              : NULL;
             $feature[$handler->field_alias . '_rendered'] =
-              $handler->advanced_render($record);
+              $handler->allow_advanced_render()
+              ? $handler->advanced_render($record)
+              : $handler->render($record);
           }
         }
         $features = $this->reduce_features(
@@ -327,9 +352,16 @@ class openlayers_views_style_data extends views_plugin_style {
           $title);
       }
     }
-    return $this->coalesce_groups($features,
-      $handlers,
-      $this->options['data_source']);
+    if ($this->options['grouping']) {
+      return $this->coalesce_groups($features,
+        $handlers,
+        $this->options['data_source']);
+    }
+    else {
+      return $this->coalesce_features($features,
+        $handlers,
+        $this->options['data_source']);
+    }
   }
 
   /**
