@@ -103,18 +103,16 @@ class openlayers_layer_type_google extends openlayers_layer_type {
       if (!empty($lang)) {
         $lang = '&hl=' . $lang;
       }
-      $url = check_url(
-        'http://maps.google.com/maps?file=api&v=2' .
-        $lang . '&sensor=false&key=' . 
-        variable_get('openlayers_layers_google_api', 
-          variable_get('googlemap_api_key', '')
-        )
-      );
       
       // Include files.
       drupal_add_js(drupal_get_path('module', 'openlayers') . 
         '/includes/layer_types/js/google.js');
-      drupal_add_js($url, 'external');
+      drupal_add_js(
+        'http://maps.google.com/maps?file=api&v=2' .
+        $lang . '&sensor=false&key=' . 
+        variable_get('openlayers_layers_google_api', 
+          variable_get('googlemap_api_key', '')
+        ), 'external');
       $google_maps_included = TRUE;
     }
     return $this->options;
