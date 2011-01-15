@@ -238,8 +238,8 @@ function openlayers_ui_styles_form($form, $form_state, $style = NULL, $edit = FA
   foreach ($properties as $key => $prop) {
     $form['data'][$key] = array(
       '#type' => !isset($prop['options']) ? 'textfield' : 'select',
-      '#title' => $key,
-      '#description' => $prop['desc'],
+      '#title' => check_plain($key),
+      '#description' => check_plain($prop['desc']),
       '#default_value' => isset($style->data[$key]) ?
         $style->data[$key] : $prop['default'],
     );
