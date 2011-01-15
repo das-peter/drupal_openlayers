@@ -250,13 +250,13 @@ class openlayers_views_style_data extends views_plugin_style {
               $feature[
               $handlers[
                 $ds['name_field']
-              ]->field_alias . '_rendered'] : false,
+              ]->field_alias . '_rendered'] : FALSE,
             'description' => isset($handlers[
                 $ds['description_field']]) ?
               $feature[
               $handlers[
                 $ds['description_field']
-              ]->field_alias . '_rendered'] : false
+              ]->field_alias . '_rendered'] : FALSE
           )
         );
       }
@@ -277,10 +277,10 @@ class openlayers_views_style_data extends views_plugin_style {
     foreach ($features as $k => &$f) {
       $f['attributes']['name'] = isset($handlers[$ds['name_field']])
         ? $f['attributes'][$handlers[$ds['name_field']]->field_alias . '_rendered']
-        : false;
+        : FALSE;
       $f['attributes']['description'] = isset($handlers[$ds['description_field']])
         ? $f['attributes'][$handlers[$ds['description_field']]->field_alias . '_rendered']
-        : false;
+        : FALSE;
     }
     return $features;
   }

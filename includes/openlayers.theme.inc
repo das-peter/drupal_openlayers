@@ -24,10 +24,10 @@ function theme_openlayers_map($args) {
   // Create output
   $output = '
     <div style="width: ' . $container_width . '; height: ' . $container_height .
-      ';" id="openlayers-container-'. $map['id'] .
-      '" class="openlayers-container openlayers-container-preset-' . $preset_name .'">
-      <div style="width: ' . $map['width'] . '; height: ' . $map['height'] . ';" id="'.
-      $map['id'] .'" class="openlayers-map openlayers-preset-' . $preset_name .'"></div>
+      ';" id="openlayers-container-' . $map['id'] .
+      '" class="openlayers-container openlayers-container-preset-' . $preset_name . '">
+      <div style="width: ' . $map['width'] . '; height: ' . $map['height'] . ';" id="' .
+      $map['id'] . '" class="openlayers-map openlayers-preset-' . $preset_name . '"></div>
     </div>';
   return $output;
 }

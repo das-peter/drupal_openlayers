@@ -165,7 +165,8 @@ function openlayers_ui_presets_form($form_state, $args = NULL,
   );
   $form['center']['helpmap'] = array(
     '#markup' => '<div class="form-item openlayers-center-helpmap"
-      style="display:block">'. openlayers_ui_presets_form_center_map($defaults) .'</div>'
+      style="display:block">' .
+      openlayers_ui_presets_form_center_map($defaults) . '</div>'
   );
   $form['center']['initial'] = array(
     '#type' => 'fieldset',
@@ -344,7 +345,7 @@ function openlayers_ui_presets_form($form_state, $args = NULL,
         array('#markup' => $description);
       $form['layerstyles']['layer_styles'][$id] = array(
         '#type' => 'select',
-        '#options' => array('-- '. t('Default style') .' --') + 
+        '#options' => array('-- ' . t('Default style') . ' --') + 
           openlayers_ui_get_style_options(),
         '#default_value' => !empty($defaults['layer_styles'][$id]) ?
           $defaults['layer_styles'][$id] : '',

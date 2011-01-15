@@ -22,8 +22,8 @@
 function openlayers_help($path, $arg) {
   switch ($path) {
     case 'admin/help#openlayers':
-      $output = '<p>'. t('The OpenLayers module is the base module for the 
-        OpenLayers suite of modules, and provides the main API.') .'</p>';
+      $output = '<p>' . t('The OpenLayers module is the base module for the 
+        OpenLayers suite of modules, and provides the main API.') . '</p>';
   }
   return '';
 }

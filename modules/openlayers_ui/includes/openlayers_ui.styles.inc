@@ -160,7 +160,7 @@ function openlayers_ui_styles_form($form, $form_state, $style = NULL, $edit = FA
     'label' => array(
       'default' => '',
       'desc' => t('A label to show for features. '
-         . 'Tipically used with ${attribute} syntax.'),	 
+        . 'Tipically used with ${attribute} syntax.')
     ),
     'labelAlign' => array(
       'default' => 'cm',
