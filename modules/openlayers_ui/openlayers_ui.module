@@ -45,10 +45,15 @@ function openlayers_ui_help($path, $arg) {
 }
 
 /**
- * Implements hook_perm
+ * Implements hook_permission().
  */
-function openlayers_ui_perm() {
-  return array('administer openlayers');
+function openlayers_ui_permission() {
+  return array(
+    'administer openlayers' => array(
+      'title' => t('Administer OpenLayers'),
+      'description' => t('Configure OpenLayers settings, styles, presets, and layers.'),
+    ),
+  );
 }
 
 /**
