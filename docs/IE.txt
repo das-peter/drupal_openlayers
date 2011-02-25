@@ -1,4 +1,3 @@
-; $Id$
 
 Using the OpenLayers Javascript from the OpenLayers module can present some
 problems with rendering vector layers in IE.

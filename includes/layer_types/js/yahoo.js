@@ -1,4 +1,3 @@
-// $Id$
 
 /**
  * Process Yahoo Layers

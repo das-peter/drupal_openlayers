@@ -1,4 +1,3 @@
-$Id$
 
 Raw layers are an addition to OpenLayers post-alpha7 which allow users to 
 manually add points to a layer type. In comparison to the layer_type 

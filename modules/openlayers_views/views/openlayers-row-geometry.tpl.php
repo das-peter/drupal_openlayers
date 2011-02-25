@@ -1,5 +1,4 @@
 <?php
-// $Id$
 /**
  *
  * @ingroup views_templates

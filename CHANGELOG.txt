@@ -1,4 +1,3 @@
-$Id$
 
 OpenLayers 6.x-2.0-alpha7, XXXX-XX-XX
 ----------------------

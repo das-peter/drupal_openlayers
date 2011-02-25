@@ -1,4 +1,3 @@
-// $Id$
 
 /**
  * Global variables to help with scope

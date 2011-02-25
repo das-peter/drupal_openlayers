@@ -1,4 +1,3 @@
-// $Id$
 
 /**
  * OpenLayers Raw Layer Handler

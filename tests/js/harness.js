@@ -1,4 +1,3 @@
-// $Id$
 Drupal = {};
 Drupal.openlayers = {};
 Drupal.settings = {};

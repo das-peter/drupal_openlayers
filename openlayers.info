@@ -1,4 +1,3 @@
-; $Id$
 name = OpenLayers
 description = OpenLayers base API module
 core = 7.x

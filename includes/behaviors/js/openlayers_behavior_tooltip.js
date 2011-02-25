@@ -1,4 +1,3 @@
-// $Id$
 
 /**
  * Javascript Drupal Theming function for inside of Tooltips

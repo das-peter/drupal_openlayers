@@ -1,4 +1,3 @@
-// $Id$
 
 /**
  * OpenLayers Views Vector Layer Handler

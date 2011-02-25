@@ -1,4 +1,3 @@
-// $Id$
 /*jslint white: false */
 /*jslint forin: true */
 /*global OpenLayers Drupal $ document jQuery window */

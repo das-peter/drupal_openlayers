@@ -1,4 +1,3 @@
-// $Id$
 
 /**
  * OpenLayers Zoom to Layer Behavior

@@ -1,4 +1,3 @@
-; $Id$
 name = OpenLayers Views
 description = Provides OpenLayers Views plugins.
 core = 7.x
