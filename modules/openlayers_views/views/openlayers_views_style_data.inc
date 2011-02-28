@@ -225,8 +225,10 @@ class openlayers_views_style_data extends views_plugin_style {
     $feature['projection'] = '4326';
     switch ($ds['value']) {
       case 'wkt':
-        $feature['wkt'] = $feature[
-          $handlers[$ds['wkt']]->field_alias . '_rendered'];
+        $feature['wkt'] = $feature[$ds['wkt']];
+        break;
+      case 'other_latlon':
+        $feature['wkt'] = 'POINT(' . $feature[$ds['other_lon']] . ' ' . $feature[$ds['other_lat']] . ')';
         break;
     }
     return $feature;
@@ -244,18 +246,10 @@ class openlayers_views_style_data extends views_plugin_style {
       foreach ($f['features'] as $feature) {
         $formatted_features[] = theme('openlayers_views_group_display_item',
           array(
-            'name' => isset($handlers[
-                $ds['name_field']]) ?
-              $feature[
-              $handlers[
-                $ds['name_field']
-              ]->field_alias . '_rendered'] : FALSE,
-            'description' => isset($handlers[
-                $ds['description_field']]) ?
-              $feature[
-              $handlers[
-                $ds['description_field']
-              ]->field_alias . '_rendered'] : FALSE
+            'name' => isset($handlers[$ds['name_field']]) ?
+              $feature[$ds['name_field'] . '_rendered'] : false,
+            'description' => isset($handlers[$ds['description_field']]) ?
+              $feature[$ds['description_field'] . '_rendered'] : false
           )
         );
       }
@@ -275,11 +269,11 @@ class openlayers_views_style_data extends views_plugin_style {
   function coalesce_features($features, $handlers, $ds) {
     foreach ($features as $k => &$f) {
       $f['attributes']['name'] = isset($handlers[$ds['name_field']])
-        ? $f['attributes'][$handlers[$ds['name_field']]->field_alias . '_rendered']
-        : FALSE;
+        ? $f['attributes'][$ds['name_field'] . '_rendered']
+        : false;
       $f['attributes']['description'] = isset($handlers[$ds['description_field']])
-        ? $f['attributes'][$handlers[$ds['description_field']]->field_alias . '_rendered']
-        : FALSE;
+        ? $f['attributes'][$ds['description_field'] . '_rendered']
+        : false;
     }
     return $features;
   }
@@ -327,21 +321,29 @@ class openlayers_views_style_data extends views_plugin_style {
 
     foreach ($sets as $title => $records) {
       foreach ($records as $id => $record) {
-        foreach ($handlers as $hid => $handler) {
+        foreach ($handlers as $hid => $handler) { 
           if (!empty($handler->options['exclude'])) {
-            $excluded_fields[] = $handler->field_alias;
+            $excluded_fields[] = $hid;
           }
           else {
-            $feature[$handler->field_alias] =
-              isset($record->{$handler->field_alias})
-              ? $record->{$handler->field_alias}
-              : NULL;
-            $feature[$handler->field_alias . '_rendered'] =
-              $handler->allow_advanced_render()
-              ? $handler->advanced_render($record)
-              : $handler->render($record);
+            if ($handler->real_field == 'entity_id') {
+              $type = $handler->definition['field_info']['type'];
+              $entity = $record->_field_data[$handler->field_alias]['entity'];
+              $language = $handler->field_language();
+              if (in_array($type, array('text', 'text_long', 'text_with_summary', 'number_integer', 'number_decimal','number_float'))) {
+                  $feature[$hid] = $entity->{$handler->definition['field_name']}[$language][0]['value'];
+              }
+              else {
+                  $feature[$hid] = isset($handler->original_value) ? $handler->original_value : NULL;
+              }
+            }
+            else {
+              $feature[$hid] = isset($handler->original_value) ? $handler->original_value : NULL;
+            }
+            $feature[$hid . '_rendered'] = $handler->allow_advanced_render() ? $handler->advanced_render($record) : $handler->render($record);
           }
         }
+        
         $features = $this->reduce_features(
           $this->options['grouping'],
           $features,
