@@ -35,7 +35,8 @@ Drupal.theme.prototype.openlayersPopup = function(feature) {
 /**
  * OpenLayers Popup Behavior
  */
-Drupal.behaviors.openlayers_behavior_popup = function(context) {
+Drupal.behaviors.openlayers_behavior_popup =  {
+  attach: function(context) {
   var layers, data = $(context).data('openlayers');
   if (data && data.map.behaviors['openlayers_behavior_popup']) {
     var map = data.openlayers;
@@ -91,6 +92,7 @@ Drupal.behaviors.openlayers_behavior_popup = function(context) {
     map.addControl(popupSelect);
     popupSelect.activate();
     Drupal.openlayers.popup.popupSelect = popupSelect;
+  }
   }
 }
 })(jQuery);
