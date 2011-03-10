@@ -268,12 +268,12 @@ class openlayers_views_style_data extends views_plugin_style {
    */
   function coalesce_features($features, $handlers, $ds) {
     foreach ($features as $k => &$f) {
-      $f['attributes']['name'] = isset($handlers[$ds['name_field']])
-        ? $f['attributes'][$ds['name_field'] . '_rendered']
-        : false;
-      $f['attributes']['description'] = isset($handlers[$ds['description_field']])
-        ? $f['attributes'][$ds['description_field'] . '_rendered']
-        : false;
+      if (isset($handlers[$ds['name_field']])) {
+        $f['attributes']['name'] = $f['attributes'][$ds['name_field'] . '_rendered'];
+      }
+      if (isset($handlers[$ds['description_field']])) {
+        $f['attributes']['description'] = $f['attributes'][$ds['description_field'] . '_rendered'];
+      }
     }
     return $features;
   }
@@ -321,29 +321,16 @@ class openlayers_views_style_data extends views_plugin_style {
 
     foreach ($sets as $title => $records) {
       foreach ($records as $id => $record) {
-        foreach ($handlers as $hid => $handler) { 
+        foreach ($handlers as $hid => $handler) {
           if (!empty($handler->options['exclude'])) {
             $excluded_fields[] = $hid;
           }
           else {
-            if ($handler->real_field == 'entity_id') {
-              $type = $handler->definition['field_info']['type'];
-              $entity = $record->_field_data[$handler->field_alias]['entity'];
-              $language = $handler->field_language();
-              if (in_array($type, array('text', 'text_long', 'text_with_summary', 'number_integer', 'number_decimal','number_float'))) {
-                  $feature[$hid] = $entity->{$handler->definition['field_name']}[$language][0]['value'];
-              }
-              else {
-                  $feature[$hid] = isset($handler->original_value) ? $handler->original_value : NULL;
-              }
-            }
-            else {
-              $feature[$hid] = isset($handler->original_value) ? $handler->original_value : NULL;
-            }
             $feature[$hid . '_rendered'] = $handler->allow_advanced_render() ? $handler->advanced_render($record) : $handler->render($record);
+            $feature[$hid] = isset($handler->original_value) ? $handler->original_value : NULL;
           }
         }
-        
+                
         $features = $this->reduce_features(
           $this->options['grouping'],
           $features,
@@ -353,6 +340,7 @@ class openlayers_views_style_data extends views_plugin_style {
           $title);
       }
     }
+    
     if ($this->options['grouping']) {
       return $this->coalesce_groups($features,
         $handlers,
