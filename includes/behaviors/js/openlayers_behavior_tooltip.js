@@ -10,13 +10,16 @@
  *  Formatted HTML.
  */
 Drupal.theme.prototype.openlayersTooltip = function(feature) {
-  var output =
-    '<div class="openlayers-popup openlayers-tooltip-name">' +
-      feature.attributes.name +
-    '</div>' +
-    '<div class="openlayers-popup openlayers-tooltip-description">' +
-      feature.attributes.description +
-    '</div>';
+  var output = '';
+  
+  if (feature.attributes.name) {
+    output += '<div class="openlayers-popup openlayers-tooltip-name">' + feature.attributes.name + '</div>';
+  }
+  
+  if (feature.attributes.description) {
+    output += '<div class="openlayers-popup openlayers-tooltip-description">' + feature.attributes.description + '</div>';
+  }
+  
   return output;
 };
 

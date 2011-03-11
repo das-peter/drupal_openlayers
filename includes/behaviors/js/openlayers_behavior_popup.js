@@ -22,13 +22,16 @@ Drupal.openlayers.popup.selectedFeature = Drupal.openlayers.popup.selectedFeatur
  *  Formatted HTML.
  */
 Drupal.theme.prototype.openlayersPopup = function(feature) {
-  var output =
-    '<div class="openlayers-popup openlayers-popup-name">' +
-      feature.attributes.name +
-    '</div>' +
-    '<div class="openlayers-popup openlayers-popup-description">' +
-      feature.attributes.description +
-    '</div>';
+  var output = '';
+  
+  if (feature.attributes.name) {
+    output += '<div class="openlayers-popup openlayers-tooltip-name">' + feature.attributes.name + '</div>';
+  }
+  
+  if (feature.attributes.description) {
+    output += '<div class="openlayers-popup openlayers-tooltip-description">' + feature.attributes.description + '</div>';
+  }
+  
   return output;
 }
 
