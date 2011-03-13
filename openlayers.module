@@ -50,6 +50,15 @@ function openlayers_theme($existing, $type, $theme, $path) {
 }
 
 /**
+ * Implements hook_ctools_plugin_directory().
+ */
+function openlayers_ctools_plugin_directory($module, $plugin) {
+  if ($plugin == 'content_types') {
+    return "includes/$plugin";
+  }
+}
+
+/**
  * Include necessary CSS and JS for rendering maps
  *
  * @ingroup openlayers_api
@@ -181,6 +190,34 @@ function openlayers_render_map($map = array(), $preset_name = '') {
     ));
   }
   return $output;
+}
+
+/**
+ * Render a preset by name
+ *
+ * Given a preset name render it into a map.
+ *
+ * @ingroup openlayers_api
+ *
+ * @param $preset_name
+ *   Name of the preset
+ * @return
+ *   Map HTML.
+ */
+function openlayers_render_preset($preset = '') {
+  // If it's a sting, then we are passing a preset name instead of the whole preset ojbject
+  if (!$preset || is_string($preset)) {
+    $preset_name = $preset;
+    if (!$preset_name) {
+      $preset_name = variable_get('openlayers_default_preset', 'default');
+    }
+    $preset = openlayers_preset_load($preset_name);
+  }
+  if (!$preset_name) {
+    $preset_name = $preset->name;
+  }
+  $map = $preset->data;
+  return openlayers_render_map($map, $preset_name);
 }
 
 /**
