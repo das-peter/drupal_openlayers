@@ -30,7 +30,7 @@ function openlayers_openlayers_map_content_type_content_types($plugin) {
       'preset' => $preset->name,
       'title' => $preset->title,
       'description' => $preset->description,
-      'category' => t('OpenLayers Maps'),
+      'category' => t('OpenLayers Preset Maps'),
     );
   }
 
