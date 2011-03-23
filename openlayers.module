@@ -213,7 +213,7 @@ function openlayers_render_preset($preset = '') {
     }
     $preset = openlayers_preset_load($preset_name);
   }
-  if (!$preset_name) {
+  if (!isset($preset_name)) {
     $preset_name = $preset->name;
   }
   $map = $preset->data;
