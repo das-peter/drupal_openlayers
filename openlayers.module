@@ -35,7 +35,7 @@ function openlayers_theme($existing, $type, $theme, $path) {
     'openlayers_map' => array(
       'arguments' => array(
         'map' => array(),
-        'preset_name' => '',
+        'map_name' => '',
       ),
       'file' => 'includes/openlayers.theme.inc',
     ),
@@ -104,11 +104,11 @@ function openlayers_build_map($map = array()) {
   openlayers_include();
   module_load_include('inc', 'openlayers', 'includes/openlayers.render');
 
-  // If no map is specified, use the default preset.
+  // If no map is specified, use the default map.
   if (empty($map)) {
-    if ($preset = openlayers_preset_load(
-      variable_get('openlayers_default_preset', 'default'))) {
-      $map = $preset->data;
+    if ($loaded_map = openlayers_map_load(
+      variable_get('openlayers_default_map', 'default'))) {
+      $map = $loaded_map->data;
     }
   }
 
@@ -155,12 +155,12 @@ function openlayers_build_map($map = array()) {
  *
  * @param $map
  *   Associative array of map paramters.
- * @param $preset_name
- *   Name of the preset used for use in the theme function.
+ * @param $map_name
+ *   Name of the map used for use in the theme function.
  * @return
  *   Map HTML.
  */
-function openlayers_render_map($map = array(), $preset_name = '') {
+function openlayers_render_map_data($map = array(), $map_name = '') {
   // Run map through build process
   $map = openlayers_build_map($map);
 
@@ -186,38 +186,38 @@ function openlayers_render_map($map = array(), $preset_name = '') {
     // Push map through theme function and return
     $output = theme('openlayers_map', array(
       'map' => $map,
-      'preset_name' => $preset_name
+      'map_name' => $map_name
     ));
   }
   return $output;
 }
 
 /**
- * Render a preset by name
+ * Render a map by name
  *
- * Given a preset name render it into a map.
+ * Given a map name render it into a full map object.
  *
  * @ingroup openlayers_api
  *
- * @param $preset_name
- *   Name of the preset
+ * @param $map
+ *   Name of the map
  * @return
  *   Map HTML.
  */
-function openlayers_render_preset($preset = '') {
-  // If it's a sting, then we are passing a preset name instead of the whole preset ojbject
-  if (!$preset || is_string($preset)) {
-    $preset_name = $preset;
-    if (!$preset_name) {
-      $preset_name = variable_get('openlayers_default_preset', 'default');
+function openlayers_render_map($map = '') {
+  // If it's a sting, then we are passing a map name instead of the whole map object
+  if (!$map || is_string($map)) {
+    $map_name = $map;
+    if (!$map_name) {
+      $map_name = variable_get('openlayers_default_map', 'default');
     }
-    $preset = openlayers_preset_load($preset_name);
+    $map = openlayers_map_load($map_name);
   }
-  if (!isset($preset_name)) {
-    $preset_name = $preset->name;
+  if (!isset($map_name)) {
+    $map_name = $map->name;
   }
-  $map = $preset->data;
-  return openlayers_render_map($map, $preset_name);
+  $map = $map->data;
+  return openlayers_render_map_data($map, $map_name);
 }
 
 /**
@@ -397,7 +397,7 @@ function openlayers_layer_sanity_check($layer, $projection = FALSE, $strict = FA
  *
  * @ingroup openlayers_api
  *
- * @param $preset
+ * @param $layer
  *   String identifier of a layer or layer object with name.
  * @return
  *   The results of DB delete.
@@ -530,7 +530,7 @@ function openlayers_style_save($style) {
  *
  * @ingroup openlayers_api
  *
- * @param $preset
+ * @param $style
  *   String identifier of a style or style object with name.
  * @return
  *   The results of DB delete.
@@ -540,28 +540,28 @@ function openlayers_style_delete($style) {
 }
 
 /**
- * Get Presets from DB or code, via cache.
+ * Get maps from DB or code, via cache.
  *
  * @ingroup openlayers_api
  *
  * @param $reset
  *   Boolean whether to reset or not.
  * @return
- *   Return array of presets.
+ *   Return array of maps.
  */
-function openlayers_presets($reset = FALSE) {
+function openlayers_maps($reset = FALSE) {
   ctools_include('export');
   if ($reset) {
-    ctools_export_load_object_reset('openlayers_map_presets');
+    ctools_export_load_object_reset('openlayers_maps');
   }
   
-  $presets = ctools_export_load_object(
-    'openlayers_map_presets', 'all', array());
-  return $presets;
+  $maps = ctools_export_load_object(
+    'openlayers_maps', 'all', array());
+  return $maps;
 }
 
 /**
- * Given a preset name, get full preset object.
+ * Given a map name, get full map object.
  *
  * This function can also be used as a 
  * menu loader for a style.
@@ -569,69 +569,69 @@ function openlayers_presets($reset = FALSE) {
  * @ingroup openlayers_api
  *
  * @param $name
- *   String identifier of the preset.
+ *   String identifier of the map.
  * @param $reset
  *   Boolean whether to reset cache.
  * @return
- *   Preset object or FALSE if not found.
+ *   map object or FALSE if not found.
  */
-function openlayers_preset_load($name = '', $reset = FALSE) {
+function openlayers_map_load($name = '', $reset = FALSE) {
   ctools_include('export');
   if ($reset) {
-    ctools_export_load_object_reset('openlayers_map_presets');
+    ctools_export_load_object_reset('openlayers_maps');
   }
   
-  $presets = ctools_export_load_object(
-    'openlayers_map_presets', 'names', array($name));
-  if (empty($presets[$name])) {
+  $maps = ctools_export_load_object(
+    'openlayers_maps', 'names', array($name));
+  if (empty($maps[$name])) {
     return FALSE;
   }
   else {
-    $preset = $presets[$name];
-    $preset->data['preset_name'] = $name;
-    return $preset;
+    $map = $maps[$name];
+    $map->data['map_name'] = $name;
+    return $map;
   }
 }
 
 /**
- * Save a preset object to the database.
+ * Save a map object to the database.
  *
  * @ingroup openlayers_api
  *
- * @param $preset
- *   Preset object.
+ * @param $map
+ *   map object.
  * @return
  *   The results of DB write or FALSE if no name.
  */
-function openlayers_preset_save($preset) {
-  if (!empty($preset->name)) {
-     return (db_select('openlayers_map_presets')
-          ->fields('openlayers_map_presets', array('name'))
-          ->condition('name', $preset->name)
+function openlayers_map_save($map) {
+  if (!empty($map->name)) {
+     return (db_select('openlayers_maps')
+          ->fields('openlayers_maps', array('name'))
+          ->condition('name', $map->name)
           ->execute()
           ->fetchCol()) ?
-      drupal_write_record('openlayers_map_presets', $preset, 'name') :
-      drupal_write_record('openlayers_map_presets', $preset);
+      drupal_write_record('openlayers_maps', $map, 'name') :
+      drupal_write_record('openlayers_maps', $map);
   }
   return FALSE;
 }
 
 /**
- * Delete a preset object from the database.
+ * Delete a map object from the database.
  *
  * @ingroup openlayers_api
  *
- * @param $preset
- *   String identifier of a preset or preset object with name.
+ * @param $map
+ *   String identifier of a map or map object with name.
  * @return
  *   The results of DB delete.
  */
-function openlayers_preset_delete($preset) {
-  return openlayers_object_delete($preset, 'preset');
+function openlayers_map_delete($map) {
+  return openlayers_object_delete($map, 'map');
 }
 
 /**
- * Get preset options in an array suitable for a FormAPI element.
+ * Get map options in an array suitable for a FormAPI element.
  *
  * @ingroup openlayers_api
  *
@@ -640,11 +640,11 @@ function openlayers_preset_delete($preset) {
  * @return
  *   Return array of formatted data.
  */
-function openlayers_preset_options($reset = FALSE) {
-  $presets = openlayers_presets($reset);
+function openlayers_map_options($reset = FALSE) {
+  $maps = openlayers_maps($reset);
   $options = array();
-  foreach ($presets as $preset) {
-    $options[$preset->name] = $preset->title;
+  foreach ($maps as $map) {
+    $options[$map->name] = $map->title;
   }
   return $options;
 }
@@ -660,7 +660,7 @@ function openlayers_preset_options($reset = FALSE) {
  *   Type of object to delete.  The options are the following:
  *   - 'layer'
  *   - 'style'
- *   = 'preset'
+ *   = 'map'
  * @return
  *   The results of the DB delete.
  */
@@ -669,7 +669,7 @@ function openlayers_object_delete($ol_object, $type) {
   $tables = array(
       'style' => 'openlayers_styles',
       'layer' => 'openlayers_layers',
-      'preset' => 'openlayers_map_presets');
+      'map' => 'openlayers_maps');
   if (is_object($ol_object) && isset($ol_object->name) && isset($tables[$type])) {
     $ol_object = $ol_object->name;
     return db_delete($tables[$type])->condition('name', $ol_object)->execute();
@@ -932,7 +932,7 @@ function openlayers_ctools_plugin_type() {
 function openlayers_ctools_plugin_api($module, $api) {
   if ($module == "openlayers") {
     switch ($api) {
-      case 'openlayers_presets':
+      case 'openlayers_maps':
         return array('version' => 1);
 
       case 'openlayers_layers':
@@ -973,11 +973,11 @@ function openlayers_openlayers_styles() {
 }
 
 /**
- * Implements hook_openlayers_presets().
+ * Implements hook_openlayers_maps().
  */
-function openlayers_openlayers_presets() {
-  module_load_include('inc', 'openlayers', 'includes/openlayers.presets');
-  return _openlayers_openlayers_presets();
+function openlayers_openlayers_maps() {
+  module_load_include('inc', 'openlayers', 'includes/openlayers.maps');
+  return _openlayers_openlayers_maps();
 }
 
 /**
