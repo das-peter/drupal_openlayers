@@ -2,26 +2,26 @@
 
 /**
  * @file
- * This file contains preset implementations
+ * This file contains map implementations
  *
  * @ingroup openlayers
  */
 
 /**
- * Preset Implementation
+ * Map definitions
  *
- * Internal callback for openlayers preset implementation.
+ * Internal callback for openlayers map implementation.
  *
  * @return
- *   Array of presets
+ *   Array of maps
  */
-function _openlayers_openlayers_presets() {
-  // Create full preset array
+function _openlayers_openlayers_maps() {
+  // Create full map array
   $default = new stdClass();
   $default->api_version = 1;
   $default->name = 'default';
   $default->title = t('Default Map');
-  $default->description = t('This is the default map preset that comes with the OpenLayers module.');
+  $default->description = t('This is the default map that comes with the OpenLayers module.');
   $default->data = array(
     'projection' => '900913',
     'width' => 'auto',

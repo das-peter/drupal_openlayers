@@ -35,13 +35,13 @@ function openlayers_ui_admin_settings() {
     '#default_value' => variable_get('openlayers_source', 'http://openlayers.org/api/2.9/OpenLayers.js'),
   );
 
-  $form['openlayers_default_preset'] = array(
+  $form['openlayers_default_map'] = array(
     '#type' => 'select',
-    '#title' => t('OpenLayers Default Preset'),
-    '#description' => t('This is the default preset that will be used
-      in cases where one is not defined.  It will also be used as the default when creating new presets.'),
-    '#options' => openlayers_preset_options(),
-    '#default_value' => variable_get('openlayers_default_preset', 'default'),
+    '#title' => t('OpenLayers Default Map'),
+    '#description' => t('This is the default map that will be used
+      in cases where one is not defined.  It will also be used as the default when creating new maps.'),
+    '#options' => openlayers_map_options(),
+    '#default_value' => variable_get('openlayers_default_map', 'default'),
   );
 
   // Make a system setting form and return
