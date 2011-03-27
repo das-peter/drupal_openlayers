@@ -225,10 +225,11 @@ class openlayers_views_style_data extends views_plugin_style {
     $feature['projection'] = '4326';
     switch ($ds['value']) {
       case 'wkt':
-        $feature['wkt'] = $feature[$ds['wkt']];
+        $feature['wkt'] = strip_tags($feature[$ds['wkt']]);
         break;
+
       case 'other_latlon':
-        $feature['wkt'] = 'POINT(' . $feature[$ds['other_lon']] . ' ' . $feature[$ds['other_lat']] . ')';
+        $feature['wkt'] = 'POINT(' . strip_tags($feature[$ds['other_lon']]) . ' ' . strip_tags($feature[$ds['other_lat']]) . ')';
         break;
     }
     return $feature;
@@ -330,7 +331,7 @@ class openlayers_views_style_data extends views_plugin_style {
             $feature[$hid] = isset($handler->original_value) ? $handler->original_value : NULL;
           }
         }
-                
+
         $features = $this->reduce_features(
           $this->options['grouping'],
           $features,
