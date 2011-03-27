@@ -82,8 +82,8 @@ class openlayers_views_style_data extends views_plugin_style {
       '#description' => t('Choose which sources of data that the map will '
       . 'provide features for.'),
       '#options' => array(
-        'other_latlon' => t('Other: Lat/Lon Point'),
-        'other_boundingbox' => t('Other: Bounding Box'),
+        'other_latlon' => t('Lat/Lon Pair'),
+        'other_boundingbox' => t('Bounding Box'),
         'wkt' => t('WKT')
       ),
       '#default_value' => $this->options['data_source']['value'],
