@@ -357,10 +357,9 @@ class openlayers_views_style_data extends views_plugin_style {
    * Render the map features.
    */
   function render($result) {
-    return empty($this->view->live_preview) ?
-      $this->map_features(
-        $this->render_grouping($result, $this->options['grouping'])
-      ) :
-      t('OpenLayers views are not compatible with live preview.');
+    $data = $this->map_features($this->render_grouping($result, $this->options['grouping']));
+    return empty($this->view->live_preview) ? $data : 
+      t('The following is a dump of the data that is rendered from this display.  It is used for debugging purposes only.') . '
+      ' . var_export($data, TRUE);
   }
 }
