@@ -57,22 +57,27 @@ Drupal.behaviors.openlayers_behavior_tooltip = {
           multiple: false,
           onSelect: function(feature) {
             // Create FramedCloud popup for tooltip.
-            popup = new OpenLayers.Popup.FramedCloud(
-              'tooltip',
-              feature.geometry.getBounds().getCenterLonLat(),
-              null,
-              Drupal.theme('openlayersTooltip', feature),
-              null,
-              true
-            );
-            feature.popup = popup;
-            feature.layer.map.addPopup(popup);
+            var output = Drupal.theme('openlayersTooltip', feature);
+            if (typeof output != 'undefined') {
+              popup = new OpenLayers.Popup.FramedCloud(
+                'tooltip',
+                feature.geometry.getBounds().getCenterLonLat(),
+                null,
+                output,
+                null,
+                true
+              );
+              feature.popup = popup;
+              feature.layer.map.addPopup(popup);
+            }
           },
           onUnselect: function(feature) {
             // Remove popup.
-            feature.layer.map.removePopup(feature.popup);
-            feature.popup.destroy();
-            feature.popup = null;
+            if (typeof feature.popup != 'undefined') {
+              feature.layer.map.removePopup(feature.popup);
+              feature.popup.destroy();
+              feature.popup = null;
+            }
           }
         }
       );
