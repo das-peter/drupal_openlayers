@@ -21,9 +21,6 @@
   display:none;
 }
 
-/**
- * Preset form
- */
 div.openlayers-column-right input.form-text,
 div.openlayers-column-left input.form-text { width:90%; }
 

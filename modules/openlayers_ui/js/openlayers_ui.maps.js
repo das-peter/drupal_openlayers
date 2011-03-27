@@ -1,7 +1,7 @@
 
 /**
  * @file
- * This file holds the javascript functions for the preset UI
+ * This file holds the javascript functions for the map UI
  *
  * @ingroup openlayers
  */
