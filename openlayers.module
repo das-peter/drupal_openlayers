@@ -204,7 +204,7 @@ function openlayers_render_map_data($map = array(), $map_name = '') {
  * @return
  *   Map HTML.
  */
-function openlayers_render_map($map = '') {
+function openlayers_render_map($map = '') { 
   // If it's a sting, then we are passing a map name instead of the whole map object
   if (!$map || is_string($map)) {
     $map_name = $map;

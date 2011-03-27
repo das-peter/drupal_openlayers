@@ -167,3 +167,16 @@ function openlayers_schema() {
   );
   return $schema;
 }
+
+/**
+ * Implements hook_update_N().
+ *
+ * Rename of presets to maps.
+ */
+function openlayers_update_7201() {
+  // Change table name
+  db_rename_table('openlayers_map_presets', 'openlayers_maps');
+  // Set default map variable
+  variable_set('openlayers_default_map', variable_get('openlayers_default_preset', 'default'));
+  variable_del('openlayers_default_preset');
+}

@@ -538,7 +538,7 @@ function openlayers_ui_maps_form_submit($form, &$form_state) {
     // Save map
     $map = new stdClass();
     $map->name = $form_state['values']['name'];
-    map->title = $form_state['values']['title'];
+    $map->title = $form_state['values']['title'];
     $map->description = $form_state['values']['description'];
     $map->data = $map;
     $success = openlayers_map_save($map);
