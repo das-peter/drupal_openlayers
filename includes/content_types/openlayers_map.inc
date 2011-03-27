@@ -1,9 +1,7 @@
 <?php
-// $Id: no_context_content_type.inc,v 1.2 2010/01/29 19:53:48 merlinofchaos Exp $
-
 /**
  * @file
- * OpenLayers Map Content Type. Displays a map from a preset
+ * OpenLayers Map Content Type. Displays a Map.
  */
 
 /**
@@ -23,14 +21,14 @@ $plugin = array(
  */
 function openlayers_openlayers_map_content_type_content_types($plugin) {
   $types = array();
-  $presets = openlayers_presets();
+  $maps = openlayers_maps();
 
-  foreach ($presets as $preset) {
-    $types[$preset->name] = array (
-      'preset' => $preset->name,
-      'title' => $preset->title,
-      'description' => $preset->description,
-      'category' => t('OpenLayers Preset Maps'),
+  foreach ($maps as $map) {
+    $types[$map->name] = array (
+      'map' => $map->name,
+      'title' => $map->title,
+      'description' => $map->description,
+      'category' => t('OpenLayers Maps'),
     );
   }
 
@@ -51,15 +49,14 @@ function openlayers_openlayers_map_content_type_content_types($plugin) {
  *   An object with at least title and content members.
  */
 function openlayers_map_content_type_render($subtype, $conf, $args, $context) {
-  $preset = openlayers_preset_load($subtype);
+  $map = openlayers_map_load($subtype);
 
   $block = new stdClass();
-  $block->title = $preset->title;
-  $block->content = openlayers_render_preset($preset);
+  $block->title = $map->title;
+  $block->content = openlayers_render_map($map);
   
   return $block;
 }
-
 
 /**
  * Empty form so we can have the default override title.
