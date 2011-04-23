@@ -778,6 +778,7 @@ function openlayers_ui_maps_form_center_map($defaults = array()) {
       'osm_mapnik',
     ),
     'behaviors' => array(
+      'openlayers_behavior_navigation' => array(),
       'openlayers_behavior_panzoombar' => array(),
       'openlayers_behavior_dragpan' => array(),
       'openlayers_behavior_mapformvalues' => array(),
