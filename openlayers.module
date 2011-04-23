@@ -588,8 +588,6 @@ function openlayers_map_load($name = '', $reset = FALSE) {
   }
   else {
     $map = $maps[$name];
-    var_dump($map);
-    return;
     $map->data['map_name'] = $name;
     return $map;
   }
