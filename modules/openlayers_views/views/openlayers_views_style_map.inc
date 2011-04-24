@@ -61,7 +61,7 @@ class openlayers_views_style_map extends views_plugin_style {
     return theme($this->theme_functions(), array(
       'view' => $this->view, 
       'options' => $this->options, 
-      'map' => openlayers_render_map($map->data, $map->name)
+      'map' => openlayers_render_map($map, $map->name)
     ));
   }
 }
