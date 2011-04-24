@@ -784,5 +784,5 @@ function openlayers_ui_maps_form_center_map($defaults = array()) {
       'openlayers_behavior_boxselect' => array(),
     ),
   );
-  return openlayers_render_map($centermap_def);
+  return openlayers_render_map_data($centermap_def);
 }
