@@ -204,8 +204,15 @@ function openlayers_render_map_data($map = array(), $map_name = '') {
  * @return
  *   Map HTML.
  */
-function openlayers_render_map($map = '') { 
-  // If it's a sting, then we are passing a map name instead of the whole map object
+function openlayers_render_map($map = '') {
+  
+  // If it's an array, then we have been passed the map data array
+  if (is_array($map)) {
+    return openlayres_render_map_data($map);
+  }
+  
+  // If it's a string, then we are passing a map name instead of the whole map object
+  // so we need to load the object
   if (!$map || is_string($map)) {
     $map_name = $map;
     if (!$map_name) {
@@ -213,11 +220,12 @@ function openlayers_render_map($map = '') {
     }
     $map = openlayers_map_load($map_name);
   }
+  
   if (!isset($map_name)) {
     $map_name = $map->name;
   }
-  $map = $map->data;
-  return openlayers_render_map_data($map, $map_name);
+  
+  return openlayers_render_map_data($map->data, $map_name);
 }
 
 /**
