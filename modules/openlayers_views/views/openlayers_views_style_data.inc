@@ -15,8 +15,39 @@
  * a style plugin for the Open Layers module.
  */
 class openlayers_views_style_data extends views_plugin_style {
+ 
+   /**
+   * Render the map features.
+   *
+   * Overrides views_plugin_style->render
+   */
+  function render($result) {
+    $data = $this->map_features($this->render_grouping($result, $this->options['grouping']));
+    
+    // If we are not in preview, just return the data
+    if (empty($this->view->live_preview)) {
+      return $data;
+    }
+    else {
+      // If we are in preview mode, dump out some useful information about this data layer
+      $output = "You can use the following parameters in your styles as dynamic values";
+      $output .= "\n------------\n";
+      foreach ($data[0]['attributes'] as $key => $value) {
+        $output .= '${'.$key."}\n";
+      }
+      $output .= "\n------------\n";
+      
+      $output .= t('The following is a dump of the data that is rendered from this display. It is used for debugging purposes only.') . '
+        ' . var_export($data, TRUE);
+      
+      return $output;
+    }
+  }
+   
   /**
    * Set default options
+   *
+   * Overrides views_plugin_style->option_definition
    */
   function option_definition() {
     $options = parent::option_definition();
@@ -25,17 +56,9 @@ class openlayers_views_style_data extends views_plugin_style {
   }
 
   /**
-   * Basically a macro because
-   * #state is rather verbose
-   */
-  function datasource_dependent($type) {
-    return array('visible' => array(
-        '#edit-style-options-data-source-value' => 
-            array('value' => $type)));
-  }
-
-  /**
    * Options form
+   *
+   * Overrides views_plugin_style->options_form
    */
   function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
@@ -218,8 +241,19 @@ class openlayers_views_style_data extends views_plugin_style {
   }
 
   /**
-   * Find the data source of an element and pull it into a
-   * wkt field
+   * Basically a macro because
+   * #state is rather verbose
+   *
+   * openlayers_views_style_data specific
+   */
+  function datasource_dependent($type) {
+    return array('visible' => array('#edit-style-options-data-source-value' => array('value' => $type)));
+  }
+  
+  /**
+   * Find the data source of an element and pull it into a wkt field
+   *
+   * openlayers_views_style_data specific
    */
   function coalesce_wkt($feature, $handlers, $ds) {
     $feature['projection'] = '4326';
@@ -236,8 +270,9 @@ class openlayers_views_style_data extends views_plugin_style {
   }
 
   /**
-   * Coalesce features into single grouped feature when
-   * grouping is enabled.
+   * Coalesce features into single grouped feature when grouping is enabled.
+   *
+   * openlayers_views_style_data specific
    */
   function coalesce_groups($features, $handlers, $ds) {
     foreach ($features as $k => &$f) {
@@ -264,8 +299,9 @@ class openlayers_views_style_data extends views_plugin_style {
   }
 
   /**
-   * Retrieve name and description for individual features when
-   * grouping is not enabled.
+   * Retrieve name and description for individual features when grouping is not enabled.
+   * 
+   * openlayers_views_style_data specific
    */
   function coalesce_features($features, $handlers, $ds) {
     foreach ($features as $k => &$f) {
@@ -284,6 +320,8 @@ class openlayers_views_style_data extends views_plugin_style {
    * a feature, a list of features, etc., return a full $features
    * array with the element added, either straight non-grouped, 
    * or within a new or existing group
+   *
+   * openlayers_views_style_data specific
    */
   function reduce_features($is_grouped, $features, $feature, $group) {
     if ($is_grouped) {
@@ -315,6 +353,8 @@ class openlayers_views_style_data extends views_plugin_style {
 
   /**
    * @param $records ...
+   *
+   * openlayers_views_style_data specific
    */
   function map_features($sets = array()) {
     $features = $excluded_fields = array();
@@ -353,30 +393,5 @@ class openlayers_views_style_data extends views_plugin_style {
         $this->options['data_source']);
     }
   }
-
-  /**
-   * Render the map features.
-   */
-  function render($result) {
-    $data = $this->map_features($this->render_grouping($result, $this->options['grouping']));
-    
-    // If we are not in preview, just return the data
-    if (empty($this->view->live_preview)) {
-      return $data;
-    }
-    else {
-      // If we are in preview mode, dump out some useful information about this openlayers data layer
-      $output = "You can use the following parameters in your styles as dynamic values";
-      $output .= "\n------------\n";
-      foreach ($data[0]['attributes'] as $key => $value) {
-        $output .= '${'.$key."}\n";
-      }
-      $output .= "\n------------\n";
-      
-      $output .= t('The following is a dump of the data that is rendered from this display. It is used for debugging purposes only.') . '
-        ' . var_export($data, TRUE);
-      
-      return $output;
-    }
-  }
+  
 }
