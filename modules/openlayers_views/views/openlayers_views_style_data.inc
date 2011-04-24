@@ -33,7 +33,8 @@ class openlayers_views_style_data extends views_plugin_style {
       // If we are in preview mode, dump out some useful information about this data layer
       $output = "You can use the following parameters in your styles as dynamic values";
       $output .= "\n------------\n";
-      foreach ($data[0]['attributes'] as $key => $value) {
+      $keys = array_keys($data);
+      foreach ($data[$keys[0]]['attributes'] as $key => $value) {
         $output .= '${'.$key."}\n";
       }
       $output .= "\n------------\n";
@@ -231,6 +232,51 @@ class openlayers_views_style_data extends views_plugin_style {
     );
   }
 
+
+  /**
+   * @param $records ...
+   *
+   * openlayers_views_style_data specific
+   */
+  function map_features($sets = array()) {
+    $features = $excluded_fields = array();
+    $handlers = $this->display->handler->get_handlers('field');
+    foreach ($sets as $title => $records) {
+      foreach ($records as $id => $record) {
+        $attributes = array();
+        foreach ($handlers as $hid => $handler) {
+          if (!empty($handler->options['exclude'])) {
+            $excluded_fields[] = $hid;
+          }
+          else {
+            $attributes[$hid . '_rendered'] = $handler->allow_advanced_render() ? $handler->advanced_render($record) : $handler->render($record);
+            $attributes[$hid] = isset($handler->original_value) ? $handler->original_value : NULL;
+          }
+        }
+        
+        $feature = array(
+          'projection' => '4326',
+          'attributes' => $attributes,
+          'wkt' => $this->get_wkt($attributes, $handlers, $this->options['data_source']),
+        );
+
+        $features = $this->reduce_features($this->options['grouping'], $features, $feature, $title);
+      }
+    }
+    
+    if ($this->options['grouping']) {
+      $features = $this->coalesce_groups($features,
+        $handlers,
+        $this->options['data_source']);
+    }
+    else {
+      $features = $this->coalesce_features($features,
+        $handlers,
+        $this->options['data_source']);
+    }
+    return $features;
+  }
+
   /**
    * Basically a macro because
    * #state is rather verbose
@@ -265,27 +311,74 @@ class openlayers_views_style_data extends views_plugin_style {
    * openlayers_views_style_data specific
    */
   function coalesce_groups($features, $handlers, $ds) {
-    foreach ($features as $k => &$f) {
-      $f['attributes']['name'] = $k;
-
+    
+    // Combine wkt into geometry collections if they are an array
+    // @@TODO: Check to make sure we are not making geometry collections out of GEOMETRYCOLLECTION
+    foreach ($features as &$feature) {
+      if (is_array($feature['wkt'])) {
+        if (count($feature['wkt']) > 1) {
+          $feature['wkt'] = $this->get_group_wkt($feature['wkt']);
+        }
+        else {
+          $feature['wkt'] = $feature['wkt'][0];
+        }
+      }
+    }
+    
+    // Process title and description
+    foreach ($features as $k => &$feature) {
+      $feature['attributes']['name'] = $k;
+      $feature['attributes'] = array_merge($feature['attributes'], $feature['features'][0]['attributes']);
+      
       $formatted_features = array();
-      foreach ($f['features'] as $feature) {
+      foreach ($feature['features'] as $subfeature) {
         $formatted_features[] = theme('openlayers_views_group_display_item',
           array(
-            'name' => isset($handlers[$ds['name_field']]) ?
-              $feature[$ds['name_field'] . '_rendered'] : false,
-            'description' => isset($handlers[$ds['description_field']]) ?
-              $feature[$ds['description_field'] . '_rendered'] : false
+            'name' => isset($handlers[$ds['name_field']]) ? $subfeature['attributes'][$ds['name_field'] . '_rendered'] : false,
+            'description' => isset($handlers[$ds['description_field']]) ? $subfeature['attributes'][$ds['description_field'] . '_rendered'] : false
           )
         );
       }
-      $f['attributes']['description'] = theme('item_list',
+      
+      $feature['attributes']['description'] = theme('item_list',
         array(
           'items' => $formatted_features
         )
       );
     }
     return $features;
+  }
+  
+  /**
+   * Combine all group wkt into a single geometry collection
+   * 
+   * openlayers_views_style_data specific
+   */
+  function get_group_wkt($wkt_array) {
+    //@@TODO: DO this in geoPHP - two lines of code...
+    $output = 'GEOMETRYCOLLECTION(';
+    $i = 0;
+    foreach ($wkt_array as $wkt) {
+      if ($i != 0) {
+        $output .= ',';
+      }
+      switch (substr($wkt,0,5)) {
+        case 'POINT':
+        case 'LINES':
+        case 'POLYG':
+          $output .= $wkt;
+          break;
+        case 'MULTI':
+          //@@TODO: Do string replacements on the multi
+          break;
+        case 'GEOME':
+          $output .= trim(substr($wkt,18,-1));
+          break;  
+      }
+      $i++;
+    }
+    $output .= ')';
+    return $output;
   }
 
   /**
@@ -317,13 +410,14 @@ class openlayers_views_style_data extends views_plugin_style {
     if ($is_grouped) {
       if (isset($features[$group])) {
         $features[$group]['attributes']['count']++;
+        $features[$group]['wkt'][] = $feature['wkt'];
         $features[$group]['features'][] = $feature;
         return $features;
       }
       else {
         $features[$group] = array(
           'attributes' => array('count' => 1),
-          'wkt' => $feature['wkt'],
+          'wkt' => array($feature['wkt']),
           'projection' => $feature['projection'],
           'features' => array($feature)
         );
@@ -333,49 +427,6 @@ class openlayers_views_style_data extends views_plugin_style {
     else {
       array_push($features, $feature);
       return $features;
-    }
-  }
-
-  /**
-   * @param $records ...
-   *
-   * openlayers_views_style_data specific
-   */
-  function map_features($sets = array()) {
-    $features = $excluded_fields = array();
-    $handlers = $this->display->handler->get_handlers('field');
-    foreach ($sets as $title => $records) {
-      foreach ($records as $id => $record) {
-        $attributes = array();
-        foreach ($handlers as $hid => $handler) {
-          if (!empty($handler->options['exclude'])) {
-            $excluded_fields[] = $hid;
-          }
-          else {
-            $attributes[$hid . '_rendered'] = $handler->allow_advanced_render() ? $handler->advanced_render($record) : $handler->render($record);
-            $attributes[$hid] = isset($handler->original_value) ? $handler->original_value : NULL;
-          }
-        }
-        
-        $feature = array(
-          'projection' => '4326',
-          'attributes' => $attributes,
-          'wkt' => $this->get_wkt($attributes, $handlers, $this->options['data_source']),
-        );
-
-        $features = $this->reduce_features($this->options['grouping'], $features, $feature, $title);
-      }
-    }
-    
-    if ($this->options['grouping']) {
-      return $this->coalesce_groups($features,
-        $handlers,
-        $this->options['data_source']);
-    }
-    else {
-      return $this->coalesce_features($features,
-        $handlers,
-        $this->options['data_source']);
     }
   }
   
