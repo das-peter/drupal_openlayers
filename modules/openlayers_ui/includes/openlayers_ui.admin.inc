@@ -16,7 +16,7 @@ function openlayers_ui_admin_settings() {
   $source_description = '<p>'
     . t('By default the your site will point to a hosted version of
     the OpenLayers library, at <code>@ol_api_url.</code>',
-    array('@ol_api_url' => 'http://openlayers.org/api/2.9/OpenLayers.js'))
+    array('@ol_api_url' => 'http://openlayers.org/api/2.10/OpenLayers.js'))
     . t('Alternately, you can <a href="!ol_url">download OpenLayers</a>,
     add it to your Drupal installation, and use a relative path like
     <code>@suggested_path</code>',
@@ -32,7 +32,7 @@ function openlayers_ui_admin_settings() {
     '#type' => 'textfield',
     '#title' => t('OpenLayers Source'),
     '#description' => $source_description,
-    '#default_value' => variable_get('openlayers_source', 'http://openlayers.org/api/2.9/OpenLayers.js'),
+    '#default_value' => variable_get('openlayers_source', 'http://openlayers.org/api/2.10/OpenLayers.js'),
   );
 
   $form['openlayers_default_map'] = array(
