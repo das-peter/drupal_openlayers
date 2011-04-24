@@ -202,9 +202,9 @@ class openlayers_views_style_data extends views_plugin_style {
       . 'their respective feature (point, line, polygon) as attributes.  '
       . 'These attributes can then be used to add variable styling to your '
       . 'themes.  This is accomplished by using the %syntax syntax in the '
-      . 'values for a style.  The following is a list of formatted variables '
-      . 'that are currently available; these can be placed right in the style '
-      . 'interface.  The %rendered one means that it has been processed '
+      . 'values for a style.  You can see a list of available variables in '
+      . 'the view preview; these can be placed right in the style interface. '
+      . 'The %rendered one means that it has been processed '
       . 'by Views and may have a different value.',
       array(
         '%syntax' => '${field_name}',
@@ -359,8 +359,17 @@ class openlayers_views_style_data extends views_plugin_style {
    */
   function render($result) {
     $data = $this->map_features($this->render_grouping($result, $this->options['grouping']));
-    return empty($this->view->live_preview) ? $data : 
-      t('The following is a dump of the data that is rendered from this display.  It is used for debugging purposes only.') . '
+    
+    $output = "You can use the following parameters in your styles as dynamic values";
+    $output .= "\n------------\n";
+    foreach ($data[0]['attributes'] as $key => $value) {
+      $output .= '${'.$key."}\n";
+    }
+    $output .= "\n------------\n";
+    
+    $output .= empty($this->view->live_preview) ? $data : 
+      t('The following is a dump of the data that is rendered from this display. It is used for debugging purposes only.') . '
       ' . var_export($data, TRUE);
+    return $output;
   }
 }
