@@ -1016,9 +1016,16 @@ function openlayers_boxes_plugins() {
 function openlayers_build_preset($map = array())                        { return openlayers_build_map($map); }
 function openlayers_preset_load($name = '', $reset = FALSE)             { return openlayers_map_load($name, $reset); }
 function openlayers_render_preset_data($map = array(), $map_name = '')  { return openlayers_render_map_data($map, $map_name); }
-function openlayers_render_preset($map = '')                            { return openlayers_render_map($map); }
 function openlayers_presets($reset = FALSE)                             { return openlayers_maps($reset); }
 function openlayers_preset_save($map)                                   { return openlayers_map_save($map); }
 function openlayers_preset_delete($map)                                 { return openlayers_map_delete($map); }
 function openlayers_preset_options($reset = FALSE)                      { return openlayers_map_options($reset); }
 function openlayers_error_check_preset($map, $log_errors = TRUE)        { return openlayers_error_check_map($map, $log_errors); }
+function openlayers_render_preset($map = '', $map_name = '') {
+  if (is_array($map)) {
+    return openlayers_render_preset_data($map, $map_name);
+  }
+  else {
+    return openlayers_render_map($map);
+  }
+}
