@@ -265,14 +265,10 @@ class openlayers_views_style_data extends views_plugin_style {
     }
     
     if ($this->options['grouping']) {
-      $features = $this->coalesce_groups($features,
-        $handlers,
-        $this->options['data_source']);
+      $features = $this->coalesce_groups($features, $handlers, $this->options['data_source']);
     }
     else {
-      $features = $this->coalesce_features($features,
-        $handlers,
-        $this->options['data_source']);
+      $features = $this->add_title_desc($features, $handlers, $this->options['data_source']);
     }
     return $features;
   }
@@ -313,7 +309,6 @@ class openlayers_views_style_data extends views_plugin_style {
   function coalesce_groups($features, $handlers, $ds) {
     
     // Combine wkt into geometry collections if they are an array
-    // @@TODO: Check to make sure we are not making geometry collections out of GEOMETRYCOLLECTION
     foreach ($features as &$feature) {
       if (is_array($feature['wkt'])) {
         if (count($feature['wkt']) > 1) {
@@ -355,10 +350,11 @@ class openlayers_views_style_data extends views_plugin_style {
    * openlayers_views_style_data specific
    */
   function get_group_wkt($wkt_array) {
-    //@@TODO: DO this in geoPHP - two lines of code...
+    //@@TODO: DO this in geoPHP - four lines of code...
     $output = 'GEOMETRYCOLLECTION(';
     $i = 0;
     foreach ($wkt_array as $wkt) {
+      $wkt = strtoupper($wkt);
       if ($i != 0) {
         $output .= ',';
       }
@@ -369,7 +365,42 @@ class openlayers_views_style_data extends views_plugin_style {
           $output .= $wkt;
           break;
         case 'MULTI':
-          //@@TODO: Do string replacements on the multi
+          $subwkt = str_replace(array('MULTIPOINT','MULTIPOLYGON','MULTILINESTRING'),'',$wkt);
+          $subwkt = str_replace(', ',',',$subwkt);
+          $subwkt = trim($subwkt);
+          switch (substr($wkt,0,10)) {
+            case 'MULTIPOINT':
+              $subwkt = str_replace(array('(',')'),'',$subwkt);
+              $parts = explode(',',$subwkt);
+              $j = 0;
+              foreach ($parts as $part) {
+                if ($j != 0) $output .= ',';
+                $output .= 'POINT('.$part.')';
+                $j++;
+              }
+              break;
+            case 'MULTILINES':
+              $subwkt = str_replace(array('((','))'),'',$subwkt);
+              $parts = explode('),(',$subwkt);
+              $j = 0;
+              foreach ($parts as $part) {
+                if ($j != 0) $output .= ',';
+                $output .= 'LINESTRING('.$part.')';
+                $j++;
+              }
+              break;
+            case 'MULTIPOLYG':
+              //@@TODO: This does not support polygons with holes
+              $subwkt = str_replace(array('(((',')))'),'',$subwkt);
+              $parts = explode(')),((',$subwkt);
+              $j = 0;
+              foreach ($parts as $part) {
+                if ($j != 0) $output .= ',';
+                $output .= 'POLYGON(('.$part.'))';
+                $j++;
+              }
+              break;
+          }
           break;
         case 'GEOME':
           $output .= trim(substr($wkt,18,-1));
@@ -386,7 +417,7 @@ class openlayers_views_style_data extends views_plugin_style {
    * 
    * openlayers_views_style_data specific
    */
-  function coalesce_features($features, $handlers, $ds) {
+  function add_title_desc($features, $handlers, $ds) {
     foreach ($features as $k => &$f) {
       if (isset($handlers[$ds['name_field']])) {
         $f['attributes']['name'] = $f['attributes'][$ds['name_field'] . '_rendered'];
@@ -396,6 +427,15 @@ class openlayers_views_style_data extends views_plugin_style {
       }
     }
     return $features;
+  }
+
+  /**
+   * Split string according to first match of passed regEx index of $regExes
+   */
+  function preg_explode($regEx, $str) {
+    $matches = array();
+    preg_match($this->regExes[$regEx], $str, $matches);
+    return empty($matches)?array(trim($str)):explode($matches[0], trim($str));
   }
 
   /**
