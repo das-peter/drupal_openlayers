@@ -41,7 +41,7 @@ class openlayers_simple extends boxes_box {
       'delta' => $this->delta, // Crucial.
       'title' => $title,
       'subject' => $title,
-      'content' => openlayers_render_map($map->data, $map->name)
+      'content' => openlayers_render_map($map, $map->name)
     );
   }
 }
