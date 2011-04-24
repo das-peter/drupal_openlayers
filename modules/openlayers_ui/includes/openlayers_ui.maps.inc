@@ -533,20 +533,20 @@ function openlayers_ui_maps_form_submit($form, &$form_state) {
 
   // Only save if save button is pressed
   if ($form_state['clicked_button']['#id'] == 'edit-openlayers-save') {
-    $map = openlayers_ui_maps_form_process($form_state['values']);
+    $map_data = openlayers_ui_maps_form_process($form_state['values']);
 
     // Save map
-    $map = new stdClass();
-    $map->name = $form_state['values']['name'];
-    $map->title = $form_state['values']['title'];
-    $map->description = $form_state['values']['description'];
-    $map->data = $map;
-    $success = openlayers_map_save($map);
+    $map_object = new stdClass();
+    $map_object->name = $form_state['values']['name'];
+    $map_object->title = $form_state['values']['title'];
+    $map_object->description = $form_state['values']['description'];
+    $map_object->data = $map_data;
+    $success = openlayers_map_save($map_object);
 
     // Redirect to edit page
     if ($success) {
       drupal_set_message(t('Map saved.'));
-      $form_state['redirect'] = "admin/build/openlayers/maps/{$map->name}/edit";
+      $form_state['redirect'] = "admin/build/openlayers/maps/{$map_object->name}/edit";
     }
     else {
       form_set_error('openlayers', t('Error trying to save map'));
