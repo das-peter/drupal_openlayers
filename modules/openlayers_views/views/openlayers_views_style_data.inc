@@ -22,7 +22,8 @@ class openlayers_views_style_data extends views_plugin_style {
    * Overrides views_plugin_style->render
    */
   function render($result) {
-    $data = $this->map_features($this->render_grouping($result, $this->options['grouping']));
+    $grouped_results = $this->render_grouping($result, $this->options['grouping']);
+    $data = $this->map_features($grouped_results);
     
     // If we are not in preview, just return the data
     if (empty($this->view->live_preview)) {
@@ -79,17 +80,7 @@ class openlayers_views_style_data extends views_plugin_style {
 
     $fields = array();
     foreach ($handlers as $field_id => $handler) {
-        if ($handler->content_field['type'] == 'openlayers_wkt' &&
-          $handler->options['format'] !== 'openlayers_wkt'
-        ) {
-          form_set_error('', t('WKT Field %field not available 
-            because it is formatted as a map. Set its format to WKT Value to 
-            make it available.', array(
-                '%field' => $handler->definition['title'])));
-        }
-        else {
-          $fields[$field_id] = $handler->definition['title'];
-        }
+      $fields[$field_id] = $handler->definition['title'];
     }
 
     $form['data_source'] = array(
@@ -255,18 +246,17 @@ class openlayers_views_style_data extends views_plugin_style {
    *
    * openlayers_views_style_data specific
    */
-  function coalesce_wkt($feature, $handlers, $ds) {
+  function get_wkt($feature, $handlers, $datasource) {
     $feature['projection'] = '4326';
-    switch ($ds['value']) {
+    switch ($datasource['value']) {
       case 'wkt':
-        $feature['wkt'] = strip_tags($feature[$ds['wkt']]);
+        return strip_tags($feature[$datasource['wkt']]);
         break;
 
       case 'other_latlon':
-        $feature['wkt'] = 'POINT(' . strip_tags($feature[$ds['other_lon']]) . ' ' . strip_tags($feature[$ds['other_lat']]) . ')';
+        return 'POINT(' . strip_tags($feature[$datasource['other_lon']]) . ' ' . strip_tags($feature[$datasource['other_lat']]) . ')';
         break;
     }
-    return $feature;
   }
 
   /**
@@ -341,12 +331,7 @@ class openlayers_views_style_data extends views_plugin_style {
       }
     }
     else {
-      array_push($features, array(
-        'attributes' => $feature,
-        'wkt' => $feature['wkt'],
-        'projection' => $feature['projection'],
-        'features' => array($feature)
-      ));;
+      array_push($features, $feature);
       return $features;
     }
   }
@@ -359,26 +344,26 @@ class openlayers_views_style_data extends views_plugin_style {
   function map_features($sets = array()) {
     $features = $excluded_fields = array();
     $handlers = $this->display->handler->get_handlers('field');
-
     foreach ($sets as $title => $records) {
       foreach ($records as $id => $record) {
+        $attributes = array();
         foreach ($handlers as $hid => $handler) {
           if (!empty($handler->options['exclude'])) {
             $excluded_fields[] = $hid;
           }
           else {
-            $feature[$hid . '_rendered'] = $handler->allow_advanced_render() ? $handler->advanced_render($record) : $handler->render($record);
-            $feature[$hid] = isset($handler->original_value) ? $handler->original_value : NULL;
+            $attributes[$hid . '_rendered'] = $handler->allow_advanced_render() ? $handler->advanced_render($record) : $handler->render($record);
+            $attributes[$hid] = isset($handler->original_value) ? $handler->original_value : NULL;
           }
         }
+        
+        $feature = array(
+          'projection' => '4326',
+          'attributes' => $attributes,
+          'wkt' => $this->get_wkt($attributes, $handlers, $this->options['data_source']),
+        );
 
-        $features = $this->reduce_features(
-          $this->options['grouping'],
-          $features,
-          $this->coalesce_wkt($feature,
-            $handlers,
-            $this->options['data_source']),
-          $title);
+        $features = $this->reduce_features($this->options['grouping'], $features, $feature, $title);
       }
     }
     
