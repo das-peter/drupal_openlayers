@@ -489,7 +489,9 @@ function openlayers_ui_object_delete_submit($form, &$form_state) {
 /**
  * Menu callback for object export form.
  */
-function openlayers_ui_object_export(&$form_state, $type, $object) {
+function openlayers_ui_object_export($form, $form_state, $type, $object) {
+  drupal_set_title(t('OpenLayers @type export', array('@type' => ucwords($type))));
+
   // Determine type
   switch ($type) {
     case 'styles':
@@ -501,7 +503,7 @@ function openlayers_ui_object_export(&$form_state, $type, $object) {
       break;
       
     case 'maps':
-      $api = 'openlayers_map_maps';
+      $api = 'openlayers_maps';
       break;
   }
   
