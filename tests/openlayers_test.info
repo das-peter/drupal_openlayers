@@ -1,5 +1,6 @@
-
 name = OpenLayers Tests
 description = OpenLayers test module.  There is no reason to install this.
 core = 7.x
 package = OpenLayers
+dependencies[] = openlayers
+hidden = TRUE
