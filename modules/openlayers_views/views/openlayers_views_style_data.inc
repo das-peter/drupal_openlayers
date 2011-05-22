@@ -225,7 +225,7 @@ class openlayers_views_style_data extends views_plugin_style {
         '%syntax' => '${field_name}',
         '%rendered' => '_rendered'))
       . '</p>'
-      . theme('item_list', $variable_fields)
+      . theme('item_list', array('items' => $variable_fields))
       . '<p>'
       . t('Please note that this does not apply to Grouped Displays.')
       . '</p>',
