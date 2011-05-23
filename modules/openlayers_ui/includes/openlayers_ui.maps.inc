@@ -25,7 +25,7 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
   openlayers_include();
   ctools_include('dependent');
   drupal_add_js(drupal_get_path('module', 'openlayers_ui') .
-    '/js/openlayers_ui.maps.js', 'module');
+    '/js/openlayers_ui.maps.js');
   drupal_add_css(drupal_get_path('module', 'openlayers_ui') .
     '/openlayers_ui.css');
 
