@@ -257,7 +257,7 @@ function _openlayers_openlayers_behaviors() {
     ),
     'openlayers_behavior_geolocate' => array(
       'title' => t('Geolocate'),
-      'description' => t('Provides the geolcoation control.'),
+      'description' => t('Provides the geolcoation control and simply zooms to users location.'),
       'path' => drupal_get_path('module', 'openlayers') . '/includes/behaviors',
       'file' => 'openlayers_behavior_geolocate.inc',
       'behavior' => array(
