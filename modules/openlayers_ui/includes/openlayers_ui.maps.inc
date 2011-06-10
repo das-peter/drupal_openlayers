@@ -635,13 +635,10 @@ function openlayers_ui_maps_form_process($values = array()) {
         // Put the default layer in the right place.
         // TODO: finish port here
         $processed['default_layer'] = $values['layers']['default_layer'];
-
         $baselayers = array_filter($values['layers']['baselayers']);
-
+        $overlays = array_filter($values['layers']['overlays']);
         // Sort overlay layers by weight, in case browser didn't
         // send them already sorted
-        /*
-        print_r($values);
         $overlays = array();
         asort($values['layer_weight']);
         foreach (array_keys($values['layer_weight']) as $key) {
@@ -649,13 +646,10 @@ function openlayers_ui_maps_form_process($values = array()) {
              $overlays[$key] = $key;
           }
         }
-         */
         // TODO: Above code is terrrrrrrrible. rewrite when I have the time
-        $overlays = $values['layers']['overlays'];
 
         // Merge our different layer sections together
         $processed['layers'] = array_merge($baselayers, $overlays);
-
         break;
 
       default:
