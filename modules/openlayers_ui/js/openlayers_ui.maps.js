@@ -83,7 +83,7 @@ Drupal.behaviors.openlayers_ui = {
     // Since CTools dependency is not working
     $('#edit-behaviors:not(.openlayers-behaviors-checks-processed)').each(function () {
       $('#edit-behaviors').addClass('openlayers-behaviors-checks-processed');
-      $('#edit-behaviors table tbody tr td div.form-type-checkbox').each(function () {
+      $('#edit-behaviors table tbody tr td > div.form-type-checkbox').each(function () {
         var $thisBehavior = $(this);
         var $thisCheck = $('input[type=checkbox]', $thisBehavior);
 
