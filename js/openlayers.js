@@ -33,9 +33,8 @@ Drupal.behaviors.openlayers = {
         Drupal.settings.openlayers.maps &&
         !$(context).data('openlayers')) {
       $('.openlayers-map:not(.openlayers-processed)').each(function() {
-      
         // By setting the stop_render variable to TRUE, this will
-        // halt the render process.  One could remove this setting
+        // halt the render process.  If set, one could remove this setting
         // then call Drupal.attachBehaviors again to get it started
         var map_id = $(this).attr('id');
         if (Drupal.settings.openlayers.maps[map_id] && Drupal.settings.openlayers.maps[map_id].stop_render != true) {
@@ -47,7 +46,6 @@ Drupal.behaviors.openlayers = {
             // Set OpenLayers language based on document language,
             // rather than browser language
             OpenLayers.Lang.setCode($('html').attr('lang'));
-
 
             $(this)
               // @TODO: move this into markup in theme function, doing this dynamically is a waste.

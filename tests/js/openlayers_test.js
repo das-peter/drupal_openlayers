@@ -1,3 +1,7 @@
+/**
+ * @file
+ * OpenLayers JS test file, utilizing QUnit.
+ */
 (function ($) {
   $(document).ready(function() {
     module('Utility Functions');
@@ -28,13 +32,14 @@
       equals(40,  wktobj.geometry.y, 'Latitude is correct');
     });
     
-    module('Rendering.');
+    module('Rendering');
     test('Testing basic rendering', function() {
       // Remove stop_render
       $('.openlayers-map:not(.openlayers-processed)').each(function() {
         var map_id = $(this).attr('id');
         Drupal.settings.openlayers.maps[map_id].stop_render = false;
-        Drupal.behaviors.openlayers.attach($('body'), Drupal.settings);
+        Drupal.attachBehaviors($('body'), Drupal.settings);
+        ok($('#' + map_id).children().hasClass('olMapViewport'), 'Map ' + map_id + ' rendered');
       });
     });
   });
