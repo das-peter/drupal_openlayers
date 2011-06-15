@@ -94,6 +94,11 @@ function openlayers_test_openlayers_map_preprocess_alter(&$map) {
     drupal_set_message(t('OpenLayers preprocess map alter hook fired.'));
     $performed = TRUE;
   }
+  
+  // Add stop render for JS testing
+  if ($_GET['q'] == 'admin/structure/openlayers/test/js') {
+    $map['stop_render'] = TRUE;
+  }
 }
 
 /**
