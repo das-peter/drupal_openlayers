@@ -10,13 +10,20 @@
  * limited in ensuring that the OpenLayers module
  * functions 100% correctly.
  *
+ * For reference, @see:
+ * http://api.drupal.org/api/drupal/modules--simpletest--drupal_web_test_case.php/class/DrupalWebTestCase/7
+ *
  * @ingroup openlayers
  */
-class OpenLayersUI extends DrupalWebTestCase {
+ 
+/**
+ * Test the OpenLayers core functionality.
+ */
+class OpenLayersCore extends DrupalWebTestCase {
   public static function getInfo() {
     return array(
-      'name' => 'OpenLayers UI',
-      'description' => 'Tests OpenLayers core settings.',
+      'name' => 'OpenLayers Core',
+      'description' => 'Tests OpenLayers core functions.',
       'group' => 'OpenLayers',
     );
   }
@@ -27,23 +34,65 @@ class OpenLayersUI extends DrupalWebTestCase {
   }
 
   /**
-   * Ensure that the map shows up in the interface
+   * Test openlayers_include
    */
-  function testOpenLayersMaps() {
+  function testInclude() {
+    $user = $this->drupalCreateUser(array('administer openlayers'));
+    $this->drupalLogin($user);
+    
+    // Go to test page and ensure includes happened.
+    $this->drupalGet('admin/structure/openlayers/test');
+    $this->assertRaw('openlayers.css', t('The OpenLayers CSS file was included'));
+    $this->assertRaw('openlayers.js', t('The OpenLayers JS file was included'));
+  }
+
+  /**
+   * Test map rendering
+   */
+  function testInclude() {
+    $map = openlayers_render_map();
+    
+    // Go to test page and ensure includes happened.
+    $this->drupalGet('admin/structure/openlayers/test');
+    $this->assertRaw('openlayers.css', t('The OpenLayers CSS file was included'));
+    $this->assertRaw('openlayers.js', t('The OpenLayers JS file was included'));
+  }
+}
+
+/**
+ * Test OpenLayers basic UI
+ */
+class OpenLayersUI extends DrupalWebTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'OpenLayers UI',
+      'description' => 'Tests OpenLayers basic UI.',
+      'group' => 'OpenLayers',
+    );
+  }
+
+  function setUp() {
+    // Install modules
+    parent::setUp('openlayers', 'ctools', 'openlayers_ui', 'openlayers_test');
+  }
+
+  /**
+   * Ensure that the source can be updated
+   */
+  function testSourceChange() {
     $user = $this->drupalCreateUser(array('administer openlayers'));
     $this->drupalLogin($user);
 
-    $new_openlayers_source = "http://openlayers.org/nightly/OpenLayers.js";
+    // Update source settings
+    $new_openlayers_source = 'http://openlayers.org/nightly/OpenLayers.js';
     $openlayers_settings = array('openlayers_source' => $new_openlayers_source);
     $this->drupalPost('admin/structure/openlayers', $openlayers_settings, t('Save configuration'));
-
     // Go to map page
     $this->drupalGet('admin/structure/openlayers');
     $this->assertResponse(200, t('User can reach the settings page.'));
-
+    // Check that the new source change is represented
     $this->drupalGet('admin/structure/openlayers');
     $this->assertRaw($new_openlayers_source, t('The OpenLayers source was changed'));
-    // maps
   }
 }
 
