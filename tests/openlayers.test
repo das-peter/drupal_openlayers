@@ -107,7 +107,7 @@ class OpenLayersUI extends DrupalWebTestCase {
 class OpenLayersMaps extends DrupalWebTestCase {
   public static function getInfo() {
     return array(
-      'name' => 'OpenLayers maps',
+      'name' => 'OpenLayers Maps',
       'description' => 'Tests the OpenLayers maps system.',
       'group' => 'OpenLayers',
     );
@@ -142,6 +142,24 @@ class OpenLayersMaps extends DrupalWebTestCase {
 
     $this->drupalGet('admin/structure/openlayers/maps/add');
     $this->assertResponse(200, t('User can reach map add page.'));
+  }
+
+  /**
+   * Add a new map
+   */
+  function testMapAdd() {
+    $user = $this->drupalCreateUser(array('administer openlayers'));
+    $this->drupalLogin($user);
+
+    // Add new map
+    $map_settings = array(
+      'name' => 'testing_map',
+      'title' => t('Testing Map'),
+      'description' => t('Testing Map description.'),
+    );
+    $this->drupalPost('admin/structure/openlayers/maps/add', $map_settings, t('Save'));
+    $this->assertText(t('Map saved.'), t('The map was successfully saved.'));
+
   }
 }
 
