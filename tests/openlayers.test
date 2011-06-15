@@ -151,15 +151,20 @@ class OpenLayersMaps extends DrupalWebTestCase {
     $user = $this->drupalCreateUser(array('administer openlayers'));
     $this->drupalLogin($user);
 
-    // Add new map
+    // Add new map.  Add scaleline so we can look for it later
     $map_settings = array(
       'name' => 'testing_map',
       'title' => t('Testing Map'),
       'description' => t('Testing Map description.'),
+      'behaviors[openlayers_behavior_scaleline][enabled]' => TRUE,
     );
     $this->drupalPost('admin/structure/openlayers/maps/add', $map_settings, t('Save'));
     $this->assertText(t('Map saved.'), t('The map was successfully saved.'));
 
+    // Remove Map
+    $this->drupalPost('admin/structure/openlayers/maps/' . $map_settings['name'] . '/delete', 
+      array(), t('Confirm'));
+    $this->assertText($map_settings['name'] .' was deleted.', t('Map removed succesfully.'));
   }
 }
 
