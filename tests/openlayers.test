@@ -49,13 +49,18 @@ class OpenLayersCore extends DrupalWebTestCase {
   /**
    * Test map rendering
    */
-  function testInclude() {
-    $map = openlayers_render_map();
-    
-    // Go to test page and ensure includes happened.
-    $this->drupalGet('admin/structure/openlayers/test');
-    $this->assertRaw('openlayers.css', t('The OpenLayers CSS file was included'));
-    $this->assertRaw('openlayers.js', t('The OpenLayers JS file was included'));
+  function testRender() {
+    $rendered = openlayers_render_map();
+    //$this->verbose('Map output: ' . var_export($rendered, TRUE));
+
+    // Check output
+    $this->assertTrue((stripos($rendered, 'default') !== FALSE), t('Default name found'));
+    $this->assertTrue((stripos($rendered, 'id="openlayers-container-openlayers-map') !== FALSE), 
+      t('Container ID found'));
+    $this->assertTrue((stripos($rendered, 'id="openlayers-map') !== FALSE), 
+      t('Map ID found'));
+    $this->assertTrue((stripos($rendered, 'class="openlayers-map') !== FALSE), 
+      t('Map Class found'));
   }
 }
 
