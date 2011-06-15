@@ -639,14 +639,16 @@ function openlayers_ui_maps_form_process($values = array()) {
         $overlays = array_filter($values['layers']['overlays']);
         // Sort overlay layers by weight, in case browser didn't
         // send them already sorted
-        $overlays = array();
-        asort($values['layer_weight']);
-        foreach (array_keys($values['layer_weight']) as $key) {
-          if ($values['layers']['overlays'][$key]) {
-             $overlays[$key] = $key;
+        if (isset($values['layer_weight'])) {
+          $overlays = array();
+          asort($values['layer_weight']);
+          foreach (array_keys($values['layer_weight']) as $key) {
+            if ($values['layers']['overlays'][$key]) {
+               $overlays[$key] = $key;
+            }
           }
+          // TODO: Above code is terrrrrrrrible. rewrite when I have the time
         }
-        // TODO: Above code is terrrrrrrrible. rewrite when I have the time
 
         // Merge our different layer sections together
         $processed['layers'] = array_merge($baselayers, $overlays);
