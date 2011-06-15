@@ -1,6 +1,7 @@
-name = OpenLayers Tests
-description = OpenLayers test module.  There is no reason to install this.
+name = "OpenLayers Tests"
+description = "OpenLayers test module.  There is no reason to install this."
 core = 7.x
-package = OpenLayers
+package = "OpenLayers"
 dependencies[] = openlayers
 hidden = TRUE
+files[] = openlayers.test
