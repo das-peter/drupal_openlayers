@@ -17,13 +17,29 @@ function openlayers_test_menu() {
   $items = array();
 
   $items['admin/structure/openlayers/test'] = array(
-    'title' => 'OpenLayers Test Page',
-    'description' => 'Test Page for OpenLayers.',
-    'page callback' => 'openlayers_test_page',
+    'title' => 'Tests',
+    'description' => 'Test Pages for OpenLayers.',
+    'page callback' => 'openlayers_test_show_maps',
     'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers_test.pages.inc',
     'type' => MENU_LOCAL_TASK,
     'weight' => 9999,
   );
+  $items['admin/structure/openlayers/test/list'] = array(
+    'title' => 'Show Maps',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -20,
+  );
+  $items['admin/structure/openlayers/test/js'] = array(
+    'title' => 'JS Tests',
+    'description' => 'Test Pages for OpenLayers Javascript.',
+    'page callback' => 'openlayers_test_js',
+    'access arguments' => array('administer openlayers'),
+    'file' => 'includes/openlayers_test.pages.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => -10,
+  );
+  
 
   return $items;
 }
@@ -48,52 +64,6 @@ function openlayers_test_ctools_plugin_api($module, $api) {
 function openlayers_test_openlayers_maps() {
   module_load_include('inc', 'openlayers_test', 'includes/openlayers_test.maps');
   return _openlayers_test_openlayers_maps();
-}
-
-/**
- * Callback for OpenLayers Test Page
- */
-function openlayers_test_page() {
-  drupal_add_js(drupal_get_path('module', 'openlayers_test') . '/js/qunit/qunit.js');
-  drupal_add_css(drupal_get_path('module', 'openlayers_test') . '/js/qunit/qunit.css');
-  drupal_add_js(drupal_get_path('module', 'openlayers_test') . '/js/openlayers_test.js');
-  $output = '';
-  
-  // Display QUnit stuff
-  $output .= '
-    <h1 id="qunit-header">OpenLayers QUnit Tests</h1>
-    <h2 id="qunit-banner"></h2>
-    <h2 id="qunit-userAgent"></h2>
-    <ol id="qunit-tests"></ol>
-  ';
-
-  // Render all maps
-  $maps = openlayers_maps();
-  foreach ($maps as $name => $map) {
-    $output .= '
-      <h3>' . $map->title . '</h3>
-      ' . openlayers_render_map($map) . '
-    ';
-  }
-
-  /*
-  // Create collapsed fieldset
-  //$render_fieldset = openlayers_render_map();
-  $element = array(
-    '#value' => $render_fieldset['themed'],
-    '#title' => t('Fieldset Example'),
-    '#collapsed' => TRUE,
-    '#collapsible' => TRUE,
-  );
-  $fieldset = theme_fieldset($element);
-  */
-
-  // Create output
-  $output .= '
-    <!-- Not including fieldset cause its broken -->
-  ';
-
-  return $output;
 }
 
 /**
