@@ -5,3 +5,5 @@ package = "OpenLayers"
 dependencies[] = openlayers
 hidden = TRUE
 files[] = openlayers.test
+files[] = includes/openlayers_test.maps.inc
+files[] = includes/openlayers_test.views.inc
