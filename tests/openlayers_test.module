@@ -218,16 +218,18 @@ function openlayers_test_openlayers_maps() {
  * Callback for OpenLayers Test Page
  */
 function openlayers_test_page() {
+  drupal_add_js(drupal_get_path('module', 'openlayers_test') . '/js/qunit/qunit.js');
+  drupal_add_css(drupal_get_path('module', 'openlayers_test') . '/js/qunit/qunit.css');
+  drupal_add_js(drupal_get_path('module', 'openlayers_test') . '/js/openlayers_test.js');
   $output = '';
-  $js_test_link = l(t('JS Testing Page.'), 
-    drupal_get_path('module', 'openlayers_test') . '/js/index.html');
   
-  // Add link to JS testing page for easy access.  
+  // Display QUnit stuff
   $output .= '
-    <h3>' . t('Info') . '</h3>
-    <ul>
-      <li>' . $js_test_link . '</li>
-    </ul>';
+    <h1 id="qunit-header">OpenLayers QUnit Tests</h1>
+    <h2 id="qunit-banner"></h2>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+  ';
 
   // Render all maps
   $maps = openlayers_maps();
