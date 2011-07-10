@@ -333,24 +333,20 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
     $enabled = array_intersect(array_keys($defaults['layers']), $available);
     $disabled = array_diff($available, $enabled);
     $overlay_options_keys = array_merge($disabled, $enabled);
-
-    $nextweight = -10;
+    
     $form['layerstyles']['layer_styles']['#tree'] = TRUE;
     $form['layerstyles']['layer_weight']['#tree'] = TRUE;
     foreach ($overlay_options_keys as $id) {
       $description = $overlay_options[$id];
-      $form['layerstyles']['layers']['overlaylabels'][$id] = 
-        array('#markup' => $description);
+      $form['layerstyles']['layers']['overlaylabels'][$id] = array('#markup' => $description);
       $form['layerstyles']['layer_styles'][$id] = array(
         '#type' => 'select',
-        '#options' => array('-- ' . t('Default style') . ' --') + 
-          openlayers_ui_get_style_options(),
-        '#default_value' => !empty($defaults['layer_styles'][$id]) ?
-          $defaults['layer_styles'][$id] : '',
+        '#options' => array('-- ' . t('Default style') . ' --') + openlayers_ui_get_style_options(),
+        '#default_value' => !empty($defaults['layer_styles'][$id]) ? $defaults['layer_styles'][$id] : '',
       );
       $form['layerstyles']['layer_weight'][$id] = array(
         '#type' => 'weight',
-        '#default_value' => $nextweight++,
+        '#default_value' => !empty($defaults['layer_weight'][$id]) ? $defaults['layer_weight'][$id] : 0,
         '#attributes' => array(
           'class' => array('layer-weight')
         )
@@ -603,6 +599,7 @@ function openlayers_ui_maps_form_process($values = array()) {
     'center',
     'behaviors',
     'layers',
+    'layer_weight',
     'layer_styles',
     'layer_activated',
     'layer_switcher',
@@ -663,7 +660,7 @@ function openlayers_ui_maps_form_process($values = array()) {
   }
 
   // Ensure these values are arrays
-  $ensure_array = array('behaviors', 'layers', 'layer_styles', 'styles');
+  $ensure_array = array('behaviors', 'layers', 'layer_weight', 'layer_styles', 'styles');
   foreach ($ensure_array as $key) {
     if (empty($processed[$key])) {
       $processed[$key] = array();
