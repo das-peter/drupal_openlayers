@@ -848,10 +848,10 @@ class openlayers_behavior {
   }
 
   /*
-   * @param $defaults default values for the form
+   * @param $defaults default values for the form as an array
    * @return a FormAPI form
    */
-  function options_form($defaults = array()) {
+  function options_form($defaults) {
     return array();
   }
 
