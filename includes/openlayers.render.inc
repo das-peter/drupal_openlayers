@@ -18,18 +18,44 @@
  */
 function _openlayers_layers_process($layers = array(), &$map = array()) {
   $layer_data = array();
-
-  $weight = 0;
-  foreach ($layers as $layer) {
+  
+  // Load Layers and assign weights
+  foreach ($layers as $key => $layer){
     if ($layer_object = openlayers_layer_load($layer)) {
-      $layer_object->render($map);
-      $layer_object->data['title'] = $layer_object->title;
-      $layer_object->data['weight'] = ++$weight;
-      $layer_data[$layer_object->name] = $layer_object->data;
+      $layers[$key] = $layer_object;
+      if (!empty($map['layer_weight'][$key])) {
+        $layers[$key]->weight = $map['layer_weight'][$key];
+      }
+      else $layers[$key]->weight = 0;
     }
+  }
+  
+  // Sort layers
+  usort($layers, '_openlayers_layers_process_sort');
+  
+  // Process into array-based layer data for the map
+  foreach ($layers as $layer_object) {
+    $layer_object->render($map);
+    $layer_object->data['title'] = $layer_object->title;
+    $layer_object->data['weight'] = $layer_object->weight;
+    $layer_data[$layer_object->name] = $layer_object->data;
   }
 
   return $layer_data;
+}
+
+/**
+ * Callback function for sorting
+ *
+ * @param $a
+ *   Layer $a
+ * @param $b
+ *   Layer $b
+ * @return $a_greater_b
+ *   Return the weight different - allowing usort to sort
+ */
+function _openlayers_layers_process_sort($a, $b) {
+  return intval($a->weight - $b->weight);
 }
 
 /**
