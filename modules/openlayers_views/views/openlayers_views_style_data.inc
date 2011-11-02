@@ -81,7 +81,7 @@ class openlayers_views_style_data extends views_plugin_style {
 
     $fields = array();
     foreach ($handlers as $field_id => $handler) {
-      $fields[$field_id] = $handler->definition['title'];
+      $fields[$field_id] = $handler->ui_name();
     }
 
     $form['data_source'] = array(
