@@ -40,6 +40,7 @@ class openlayers_layer_type_google extends openlayers_layer_type {
       'hybrid' => 'Hybrid',
       'normal' => 'Normal',
       'satellite' => 'Satellite',
+      'physical' => 'Physical',
     );
     return array(
       'type' => array(
@@ -74,9 +75,9 @@ class openlayers_layer_type_google extends openlayers_layer_type {
         '#description' => t('If you use Google Maps v3, an API key is not necessary.'),
         '#options' => array(
           '2' => t('v2'),
-          '3.2' => t('v3.2'),
+          '3.5' => t('v3.5'),
         ),
-        '#default_value' => variable_get('openlayers_google_version', '2'),
+        '#default_value' => variable_get('openlayers_google_version', '3.5'),
       ),
       'openlayers_layers_google_api' => array(
         '#type' => 'textfield',
@@ -112,18 +113,21 @@ class openlayers_layer_type_google extends openlayers_layer_type {
       drupal_add_js(drupal_get_path('module', 'openlayers') . 
         '/includes/layer_types/js/google.js');
         
-      // Create URL for google include
-      $url = '';
-      $url .= 'http://maps.google.com/maps?file=api';
-      $url .= '&sensor=false';
-      $url .= '&v=' . variable_get('openlayers_google_version', '2');
+      $version = variable_get('openlayers_google_version', '3.5');
+      if ($version == '2') {
+        // Create URL for google include
+        $url = 'http://maps.google.com/maps?file=api&sensor=false&v=' . $version;
+        $key = variable_get('openlayers_layers_google_api', variable_get('googlemap_api_key', ''));
+        $url = !empty($key) ? '&key=' . $key : '';  
+      }
+      else {
+        // Create URL for google include
+        $url = 'http://maps.google.com/maps/api/js?sensor=false&v=' . $version;
+      }
       
       $lang = variable_get('openlayers_layers_google_language', '');
       $url .= !empty($lang) ? '&hl=' . $lang : '';
       
-      $key = variable_get('openlayers_layers_google_api', variable_get('googlemap_api_key', ''));
-      $url .= !empty($key) ? '&key=' . $key : '';
-        
       drupal_add_js($url, 'external');
       $google_maps_included = TRUE;
     }
