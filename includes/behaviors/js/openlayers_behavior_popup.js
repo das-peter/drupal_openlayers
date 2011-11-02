@@ -81,6 +81,7 @@ Drupal.behaviors.openlayers_behavior_popup =  {
           // Assign popup to feature and map.
           feature.popup = popup;
           feature.layer.map.addPopup(popup);
+          Drupal.attachBehaviors();
           Drupal.openlayers.popup.selectedFeature = feature;
         },
         onUnselect: function(feature) {

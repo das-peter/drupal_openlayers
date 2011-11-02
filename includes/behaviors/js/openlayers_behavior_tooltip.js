@@ -69,6 +69,7 @@ Drupal.behaviors.openlayers_behavior_tooltip = {
               );
               feature.popup = popup;
               feature.layer.map.addPopup(popup);
+              Drupal.attachBehaviors();
             }
           },
           onUnselect: function(feature) {
