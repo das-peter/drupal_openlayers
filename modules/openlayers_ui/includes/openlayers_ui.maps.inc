@@ -65,7 +65,7 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
   
   $form['info']['name'] = array(
     '#type' => 'textfield',
-    '#title' => t('Name'),
+    '#title' => t('Map Machine Name'),
     '#description' => t('This is the machine readable identifier.
       This should be all lowercase characters, numbers, or underscores (_).'),
     '#maxlength' => 255,
@@ -77,7 +77,7 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
   }
   $form['info']['title'] = array(
     '#type' => 'textfield',
-    '#title' => t('Title'),
+    '#title' => t('Map Title'),
     '#description' => t('This is the descriptive title of the map and will show up most often in the interface.'),
     '#maxlength' => 255,
     '#default_value' => !empty($map->title) ? $map->title : '',
@@ -104,20 +104,38 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
     '#default_value' => !empty($defaults['height']) ? $defaults['height'] : '',
     '#maxlength' => 128,
   );
+
+  // Only show this if Openlayers Views is enabled
+  if (module_exists('openlayers_views')) {
+    $form['info']['hide_empty_map'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Hide empty map for Views'),
+      '#description' => t("Show views empty text or hide the map if there are 
+        no map overlays with features. Otherwise an empty map is displayed."),
+      '#default_value' => isset($defaults['hide_empty_map']) ?
+        $defaults['hide_empty_map'] : FALSE,  
+    );
+  }
   
   $default_image_path = drupal_get_path('module', 'openlayers') . '/img/default_theme/';
   $form['info']['image_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Image Path'),
-    '#description' => t('The path to a directory of UI graphics. Leave blank for
-      default graphics as provided by the OpenLayers library. Use either <strong>
-      relative Drupal path</strong> (without leading slash and the base path will be 
-      prepended, ex. "sites/all/themes/path/to/images/"), an <strong>absolute 
-      path</strong> (with leading slash and path will start from sites root
-      directory, ex. "/path/to/images/") or a <strong>full URL</strong>. Always 
-      include trailing slash.  The default path provide with this module is: %default
-      <strong>This is actually a setting for the OpenLayers 
-      object and will affect all maps on the same page.</strong>',
+    '#description' => t('<p>The path to a directory of UI graphics. Use any of the
+      following:</p>
+      <ul>
+        <li><strong>Leave blank</strong> for default graphics as provided 
+          by the OpenLayers library. </li>
+        <li><strong>Relative Drupal path</strong> a path without leading slash and 
+          the base path will be prepended, ex. "sites/all/themes/path/to/images/"</li>
+        <li><strong>Absolute path</strong> a path with leading slash and path will 
+          start from sites root directory, ex. "/path/to/images/"</li>
+        <li><strong>Full URL</strong> such as "http://example.com/image/"</li>
+      </ul>
+      <p>Always include trailing slash.  The default path provide with this module 
+      is: %default</p>
+      <p><strong>This is actually a setting for the OpenLayers 
+      object and will affect all maps on the same page.</strong></p>',
       array('%default' => $default_image_path)
     ),
     '#default_value' => !empty($defaults['image_path']) ?
@@ -127,12 +145,22 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
   $form['info']['css_path'] = array(
     '#type' => 'textfield',
     '#title' => t('CSS Path'),
-    '#description' => t('The path to a CSS file for overriding CSS. The default
-      hosted OpenLayers URL is !link.  Use either a <strong>relative Drupal path</strong>
-      (without leading slash and base path will be prepended, ex. 
-      "sites/all/themes/path/to/css/file.css"), an <strong>absolute path</strong>
-      (with leading slash, ex. "/path/to/css/file.css"), or a <strong>full URL</strong>.',
-      array('!link' => l('http://openlayers.org/api/theme/default/style.css', 'http://openlayers.org/api/theme/default/style.css'))
+    '#description' => t('<p>The path to a CSS file for overriding CSS. You
+      don\'t really need to override this as CSS is almost always overridable.
+      Use any of the following:</p>
+      <ul>
+        <li><strong>Leave blank</strong> for default hosted OpenLayers which
+          is !link</li>
+        <li><strong>Relative Drupal path</strong> a path without leading slash and 
+          the base path will be prepended, ex. "sites/all/themes/path/to/style.css"</li>
+        <li><strong>Absolute path</strong> a path with leading slash and path will 
+          start from sites root directory, ex. "/path/to/style.css"</li>
+        <li><strong>Full URL</strong> such as "http://example.com/style.css"</li>
+      </ul>
+      <p><strong>This is actually a setting for the OpenLayers 
+      object and will affect all maps on the same page.</strong></p>',
+      array('!link' => l('http://openlayers.org/api/theme/default/style.css', 
+        'http://openlayers.org/api/theme/default/style.css'))
     ),
     '#default_value' => !empty($defaults['css_path']) ?
       $defaults['css_path'] : '',
@@ -141,29 +169,29 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
   $form['info']['proxy_host'] = array(
     '#type' => 'textfield',
     '#title' => t('Proxy Host'),
-    '#description' => t('A proxy (typically on the same domain as this site)
+    '#description' => t('<p>A proxy (typically on the same domain as this site)
       which enables requests to cross-domain AJAX resources (including remote
-      KML).  Use either a Drupal path (and the appropriate base path will
-      be prepended), an absolute path (such as !ab_example), or a full URL.',
-      array('!ab_example' => '/cgi_proxy?request=')
+      KML).  Use any of the following:</p>
+      <ul>
+        <li><strong>Leave blank</strong> no proxy path.</li>
+        <li><strong>Relative Drupal path</strong> a path without leading slash and 
+          the base path will be prepended, ex. "proxy?request="</li>
+        <li><strong>Absolute path</strong> a path with leading slash and path will 
+          start from sites root directory, ex. "/cgi_proxy?request="</li>
+        <li><strong>Full URL</strong> such as "http://example.com/proxy?request="</li>
+      </ul>
+      <p><strong>This is actually a setting for the OpenLayers 
+      object and will affect all maps on the same page.</strong></p>'
     ),
     '#default_value' => !empty($defaults['proxy_host']) ?
       $defaults['proxy_host'] : '',
-  );
-
-  $form['info']['hide_empty_map'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Hide empty map'),
-    '#description' => t("Show views empty text or hide the map if there are 
-    no map overlays with features. Otherwise an empty map is displayed."),
-    '#default_value' => isset($defaults['hide_empty_map']) ?
-      $defaults['hide_empty_map'] : FALSE,  
   );
   
   // Center
   $form['center'] = array(
     '#title' => t('Center & Bounds'),
-    '#description' => t('Where the map will center itself initially. Shift-drag on the map to set the Restricted Extent.'),
+    '#description' => t('Where the map will center itself initially. 
+      <strong>Shift-drag</strong> a box on the map to set the Restricted Extent.'),
     '#tree' => TRUE,
     '#type' => 'fieldset',
     '#group' => 'ui'
@@ -180,7 +208,8 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
   $form['center']['initial']['centerpoint'] = array(
     '#type' => 'textfield',
     '#title' => t('Centerpoint'),
-    '#description' => t('Coordinates that are the intial focus of the map'),
+    '#description' => t('Coordinates that are the intial focus of the map.  This
+      is formated like <em>longitude,latitude</em>.'),
     '#default_value' => $defaults['center']['initial']['centerpoint'],
     '#attributes' => array('class' => array('openlayers-form-centerpoint')),
     '#size' => 25,
@@ -188,7 +217,8 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
   $form['center']['initial']['zoom'] = array(
     '#type' => 'textfield',
     '#title' => t('Zoom Level'),
-    '#description' => t('Initial Zoom Level when the map intially displays'),
+    '#description' => t('Initial Zoom Level when the map intially displays.
+      Higher is more zoomed in.'),
     '#default_value' => $defaults['center']['initial']['zoom'],
     '#attributes' => array('class' => array('openlayers-form-zoom')),
     '#size' => 25,
@@ -202,7 +232,7 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
     '#title' => t('Restrict Extent'),
     '#description' => t('Setting the restricted extent of a map prevents users
       from panning the map outside a specified area. This can be set
-      interactively by holding the shift key and dragging a box over the map
+      interactively by <strong>holding the shift key and dragging a box</strong> over the map
       above. Setting the extent does not restrict how far users can zoom out,
       so setting restricted zoom levels (via individual layer settings) is
       recommended.'),
@@ -264,7 +294,8 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
   }
 
   // $form['layerstyles']['projections'] = $base_fieldset;
-  $form['layerstyles']['projections']['#collapsible'] = FALSE;
+  $form['layerstyles']['projections']['#collapsible'] = TRUE;
+  $form['layerstyles']['projections']['#collapsed'] = TRUE;
   $form['layerstyles']['projections']['#tree'] = TRUE;
 
   $form['layerstyles']['projections']['#title'] = t('Projection');
