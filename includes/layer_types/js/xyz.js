@@ -19,6 +19,12 @@ Drupal.openlayers.layer.xyz = function(title, map, options) {
   if (r == null || typeof r == 'undefined' || r.length == 0) {
     options.serverResolutions = null;
   }
+  
+  // Wrap Date Line does not seem to work for 2.10.  This may
+  // have something to do with our extent definitions.
+  if (OpenLayers.VERSION_NUMBER.indexOf('2.10') >= 0) {
+    options.wrapDateLine = null;
+  }
 
   var layer = new OpenLayers.Layer.XYZ(title, options.url, options);
   layer.styleMap = styleMap;

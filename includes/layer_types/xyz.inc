@@ -30,6 +30,7 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
       'layer_handler' => 'xyz',
       'baselayer' => TRUE,
       'sphericalMercator' => TRUE,
+      'wrapDateLine' => FALSE,
     );
   }
 
@@ -59,6 +60,12 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
         '#title' => t('Zoom Level Range'),
         '#default_value' => isset($this->data['serverResolutions']) ?
           $this->data['serverResolutions'] : array(),
+      ),
+      'wrapDateLine' => array(
+        '#type' => 'checkbox',
+        '#title' => t('Wrap Date Line'),
+        '#default_value' => isset($this->data['wrapDateLine']) ? $this->data['wrapDateLine'] : FALSE,
+        '#description' => t('This allows the user to continually pan left and right as the tiles will repeat themselves.  Note that this option is known to not work well with the 2.10 OL library.'),
       ),
       'projection' =>
         array(

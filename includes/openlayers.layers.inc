@@ -82,6 +82,7 @@ function _openlayers_openlayers_layers() {
       'http://otile3.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png',
       'http://otile4.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png',
     ),
+    'wrapDateLine' => TRUE,
   );
   $layers[$layer->name] = $layer;
 
@@ -102,6 +103,7 @@ function _openlayers_openlayers_layers() {
       'http://oatile3.mqcdn.com/naip/${z}/${x}/${y}.png',
       'http://oatile4.mqcdn.com/naip/${z}/${x}/${y}.png',
     ),
+    'wrapDateLine' => TRUE,
   );
   $layers[$layer->name] = $layer;
 
@@ -201,6 +203,7 @@ function _openlayers_openlayers_layers() {
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_xyz',
     'url' => 'http://tile.openstreetmap.org/${z}/${x}/${y}.png',
+    'wrapDateLine' => TRUE,
   );
   $layers[$layer->name] = $layer;
 
@@ -222,6 +225,7 @@ function _openlayers_openlayers_layers() {
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_xyz',
     'url' => 'http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png',
+    'wrapDateLine' => TRUE,
   );
   $layers[$layer->name] = $layer;
 
@@ -243,6 +247,7 @@ function _openlayers_openlayers_layers() {
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_xyz',
     'url' => 'http://andy.sandbox.cloudmade.com/tiles/cycle/${z}/${x}/${y}.png',
+    'wrapDateLine' => TRUE,
   );
   $layers[$layer->name] = $layer;
 
