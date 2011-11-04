@@ -115,29 +115,39 @@ function openlayers_ui_get_layer_form($args, $layer = FALSE) {
   // TODO: this shouldn't be necessary. this is ugly code.
   $type = $args['build_info']['args'][0];
 
+  
+  $form['basics'] = array(
+    '#tree' => TRUE,
+    '#type' => 'fieldset',
+    '#title' => t('Layer Basics'),
+    '#description' => t('The following settings are for all layers.'),
+    '#tree' => FALSE,
+  );
+  $form['basics']['name'] = array(
+    '#type' => 'textfield',
+    '#default_value' => isset($type->name) ? $type->name : '',
+    '#title' => t('Layer Machine Name'),
+    '#description' => t('This is the unique name of the layer. It must contain only alphanumeric characters and underscores.'),
+  );
+  $form['basics']['title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Layer Title'),
+    '#default_value' => isset($type->title) ? $type->title : '',
+    '#description' => t('The friendly name of your layer, which will appear in the administration interface as well on the map interface if it is exposed.'),
+  );
+  $form['basics']['description'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Layer Description'),
+    '#default_value' => isset($type->description) ? $type->description : '',
+    '#description' => t('The description of your layer, which will appear in the administration interface.'),
+  );
+  
   // @TODO: clarify use of data, and of layer_type in overriding it
   $form['data'] = array(
     '#tree' => TRUE,
     '#type' => 'fieldset',
-    '#title' => '',
-    '#description' => '',
-  );
-  $form['name'] = array(
-    '#type' => 'textfield',
-    '#default_value' => isset($type->name) ? $type->name : '',
-    '#title' => t('Layer Name'),
-    '#description' => t('This is the unique name of the layer. It must contain only alphanumeric characters and underscores.'),
-  );
-  $form['title'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Layer Title'),
-    '#default_value' => isset($type->title) ? $type->title : '',
-    '#description' => t('The friendly name of your layer, which will appear in the administration interface.'),
-  );
-  $form['description'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Layer Description'),
-    '#default_value' => isset($type->description) ? $type->description : '',
+    '#title' => t('Layer Specifics'),
+    '#description' => t('The following settings are specific to the layer type.'),
   );
 
   // Arrays merged in order so that options_form can override defaults
