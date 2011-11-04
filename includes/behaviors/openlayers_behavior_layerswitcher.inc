@@ -16,6 +16,8 @@ class openlayers_behavior_layerswitcher extends openlayers_behavior {
     return array(
       'layerswitcher' => '',
       'ascending' => TRUE,
+      'roundedCorner' => TRUE,
+      'roundedCornerColor' => '#222222',
     );
   }
 
@@ -29,8 +31,20 @@ class openlayers_behavior_layerswitcher extends openlayers_behavior {
         '#type' => 'checkbox',
         '#title' => t('Show layers in ascending order'),
         '#description' => t('Higher layers shown toward the bottom'),
-        '#default_value' => isset($defaults['ascending']) ? $defaults['ascending'] : TRUE 
-      )
+        '#default_value' => isset($defaults['ascending']) ? $defaults['ascending'] : TRUE,
+      ),
+      'roundedCorner' => array(
+        '#type' => 'checkbox',
+        '#title' => t('Rounded corners'),
+        '#description' => t('If true the Rico library is used for rounding the corners of the layer switcher box.'),
+        '#default_value' => isset($defaults['roundedCorner']) ? $defaults['roundedCorner'] : TRUE,
+      ),
+      'roundedCornerColor' => array(
+        '#type' => 'textfield',
+        '#title' => t('Rounded corners color'),
+        '#description' => t('For rounded corners, this is the CSS color to use for the corners.'),
+        '#default_value' => isset($defaults['roundedCornerColor']) ? $defaults['roundedCornerColor'] : '#222222', 
+      ),
     );
   }
 
@@ -38,6 +52,15 @@ class openlayers_behavior_layerswitcher extends openlayers_behavior {
    * Render.
    */
   function render(&$map) {
+    // Legacy code for maps not using the default images now
+    // provided with the code, or for maps that dont have images
+    // set.  We have to set the rounded corner color and add a 
+    // class for CSS to style
+    if (empty($map['image_path'])) {
+      $this->options['roundedCornerColor'] = 'darkblue';
+      $this->options['displayClass'] = 'olControlLayerSwitcher legacy';
+    }
+  
     drupal_add_js(drupal_get_path('module', 'openlayers') . 
       '/includes/behaviors/js/openlayers_behavior_layerswitcher.js');
     return $this->options;

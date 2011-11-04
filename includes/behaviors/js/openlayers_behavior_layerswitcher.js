@@ -12,10 +12,10 @@
     'attach': function(context, settings) {
       var data = $(context).data('openlayers');
       if (data && data.map.behaviors['openlayers_behavior_layerswitcher']) {
+        var options = data.map.behaviors['openlayers_behavior_layerswitcher'];
+
         // Add control
-        var control = new OpenLayers.Control.LayerSwitcher({
-          'ascending': !!data.map.behaviors['openlayers_behavior_layerswitcher'].ascending
-        });
+        var control = new OpenLayers.Control.LayerSwitcher(options);
         data.openlayers.addControl(control);
         control.activate();
       }

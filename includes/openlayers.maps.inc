@@ -35,6 +35,7 @@ function _openlayers_openlayers_maps() {
         'zoom' => '2'
       )
     ),
+    'image_path' => drupal_get_path('module', 'openlayers') . '/img/default_theme/',
     'displayProjection' => '4326',
     'maxExtent' => openlayers_get_extent('4326'),
     'behaviors' => array(

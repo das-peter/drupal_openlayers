@@ -104,6 +104,8 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
     '#default_value' => !empty($defaults['height']) ? $defaults['height'] : '',
     '#maxlength' => 128,
   );
+  
+  $default_image_path = drupal_get_path('module', 'openlayers') . '/img/default_theme/';
   $form['info']['image_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Image Path'),
@@ -113,7 +115,10 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
       prepended, ex. "sites/all/themes/path/to/images/"), an <strong>absolute 
       path</strong> (with leading slash and path will start from sites root
       directory, ex. "/path/to/images/") or a <strong>full URL</strong>. Always 
-      include trailing slash.'
+      include trailing slash.  The default path provide with this module is: %default
+      <strong>This is actually a setting for the OpenLayers 
+      object and will affect all maps on the same page.</strong>',
+      array('%default' => $default_image_path)
     ),
     '#default_value' => !empty($defaults['image_path']) ?
       $defaults['image_path'] : '',
