@@ -381,14 +381,19 @@ function openlayers_ui_object_list($type) {
 
   switch ($type) {
     case 'styles':
-      $header = array(t('Icon'), t('Title'), t('Description'), t('Actions'));
+      $header = array(t('Preview'), t('Title'), t('Description'), t('Actions'));
       $objects = openlayers_styles(TRUE);
+      drupal_add_js(drupal_get_path('module', 'openlayers_ui') . '/js/openlayers_ui.styles.js');
+      drupal_add_css(drupal_get_path('module', 'openlayers_ui') . '/openlayers_ui.css');
+      openlayers_include();
       break;
+      
     case 'layers':
       $header = array(t('Title'), t('Type'), t('Description'), t('Actions'));
       $layer_types = openlayers_layer_types();
       $objects = openlayers_layers_load(TRUE);
       break;
+      
     case 'maps':
       $header = array(t('Title'), t('Layers'), t('Description'), t('Actions'));
       $layers = openlayers_layers_load();
@@ -405,7 +410,20 @@ function openlayers_ui_object_list($type) {
     switch ($type) {
       case 'styles':
       	// Add the icon as an image in the row if it exists.
-      	$row[] = isset($object->data['externalGraphic']) ? theme('image',array('path'=>$object->data['externalGraphic'])) : NULL;
+        if (isset($object->data['externalGraphic'])) {
+          $row[] = theme('image', array('path' => $object->data['externalGraphic']));
+      	}
+      	else {
+          // Let's make a tiny map for a preview
+          $row[] = '<div id="' . $object->name . '"class="openlayers-ui-style-preview"></div>';
+          drupal_add_js(array('openlayers_ui' => 
+            array(
+              'style_preview' => array(
+                $object->name => $object,
+              ),
+            ),
+          ), 'setting');
+      	}
         break;
       
       default:

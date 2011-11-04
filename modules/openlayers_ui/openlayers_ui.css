@@ -67,4 +67,12 @@ div.vertical-tabs table tbody tr fieldset {
   position: inherit;
 }
 
-
+/**
+ * Style previews
+ */
+.openlayers-ui-style-preview {
+  width: 60px;
+  height: 60px;
+  background-color: #DDDDDD;
+  border: 1px solid #222222;
+}
