@@ -26,7 +26,7 @@ class openlayers_behavior_boxselect extends openlayers_behavior {
     );
   }
 
-  function options_form() {
+  function options_form($defaults) {
     return array(
     );
   }
