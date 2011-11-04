@@ -215,27 +215,37 @@ function openlayers_ui_styles_form($form, $form_state, $style = NULL, $edit = FA
   $form['info'] = array(
     '#type' => 'fieldset',
     '#tree' => FALSE,
+    '#title' => t('Style Basics'),
+    '#description' => t('The basic settings for the style.'),
   );
   $form['info']['name'] = array(
-    '#title' => t('Name'),
+    '#title' => t('Style Machine Name'),
     '#type' => 'textfield',
     '#required' => TRUE,
     '#default_value' => !empty($style->name) ? $style->name : '',
+    '#description' => t('This is the unique name of the style. It must contain only alphanumeric characters and underscores.'),
   );
   $form['info']['title'] = array(
-    '#title' => t('Title'),
+    '#title' => t('Style Title'),
     '#type' => 'textfield',
     '#required' => TRUE,
     '#default_value' => !empty($style->title) ? $style->title : '',
+    '#description' => t('The title of your style, which will appear in the administration interface.'),
   );
   $form['info']['description'] = array(
-    '#title' => t('Description'),
+    '#title' => t(' Style Description'),
     '#type' => 'textfield',
     '#default_value' => !empty($style->description) ? $style->description : '',
+    '#description' => t('The description of your style, which will appear in the administration interface.'),
   );
 
   // OpenLayers style properties
-  $form['data'] = array('#type' => 'fieldset', '#tree' => TRUE);
+  $form['data'] = array(
+    '#type' => 'fieldset', 
+    '#tree' => TRUE,
+    '#title' => t('Style Properties'),
+    '#description' => t('The specific properties for the style.'),
+  );
 
   foreach ($properties as $key => $prop) {
     $form['data'][$key] = array(
