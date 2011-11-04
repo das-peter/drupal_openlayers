@@ -76,7 +76,12 @@ function _openlayers_openlayers_layers() {
     ) . '. '. t('Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a>.'),
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_xyz',
-    'url' => 'http://otile1.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png',
+    'url' => array(
+      'http://otile1.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png',
+      'http://otile2.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png',
+      'http://otile3.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png',
+      'http://otile4.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png',
+    ),
   );
   $layers[$layer->name] = $layer;
 
@@ -91,7 +96,12 @@ function _openlayers_openlayers_layers() {
       . ' '. t('Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a>.'),
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_xyz',
-    'url' => 'http://oatile1.mqcdn.com/naip/${z}/${x}/${y}.png',
+    'url' => array(
+      'http://oatile1.mqcdn.com/naip/${z}/${x}/${y}.png',
+      'http://oatile2.mqcdn.com/naip/${z}/${x}/${y}.png',
+      'http://oatile3.mqcdn.com/naip/${z}/${x}/${y}.png',
+      'http://oatile4.mqcdn.com/naip/${z}/${x}/${y}.png',
+    ),
   );
   $layers[$layer->name] = $layer;
 
