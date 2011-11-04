@@ -3,5 +3,6 @@ description = "Provides a user interface to manage OpenLayers maps."
 core = "7.x"
 package = "OpenLayers"
 dependencies[] = "openlayers"
-; Core files
+
+configure = admin/structure/openlayers
 files[] = openlayers_ui.module
