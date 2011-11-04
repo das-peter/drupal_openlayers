@@ -28,7 +28,7 @@ function _openlayers_openlayers_maps() {
     'projection' => '900913',
     'width' => 'auto',
     'height' => '400px',
-    'default_layer' => 'osm_mapnik',
+    'default_layer' => 'mapquest_osm',
     'center' => array(
       'initial' => array(
         'centerpoint' => '0,0',
@@ -46,7 +46,8 @@ function _openlayers_openlayers_maps() {
       'openlayers_behavior_navigation' => array(),
     ),
     'layers' => array(
-      'osm_mapnik' => 'osm_mapnik',
+      'mapquest_osm' => 'mapquest_osm',
+      'mapquest_openaerial' => 'mapquest_openaerial',
     )
   );
   $items['default'] = $default;

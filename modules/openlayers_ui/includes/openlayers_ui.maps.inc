@@ -765,7 +765,7 @@ function openlayers_ui_maps_form_center_map($defaults = array()) {
     'id' => 'openlayers-center-helpmap',
     'projection' => '900913',
     'displayProjection' => '900913',
-    'default_layer' => 'osm_mapnik',
+    'default_layer' => 'mapquest_osm',
     'width' => '500px',
     'height' => '400px',
     'center' => array(
@@ -774,8 +774,9 @@ function openlayers_ui_maps_form_center_map($defaults = array()) {
         'zoom' => 2,
       ),
     ),
+    'image_path' => drupal_get_path('module', 'openlayers') . '/img/default_theme/',
     'layers' => array(
-      'osm_mapnik',
+      'mapquest_osm',
     ),
     'behaviors' => array(
       'openlayers_behavior_navigation' => array(),
@@ -783,6 +784,7 @@ function openlayers_ui_maps_form_center_map($defaults = array()) {
       'openlayers_behavior_dragpan' => array(),
       'openlayers_behavior_mapformvalues' => array(),
       'openlayers_behavior_boxselect' => array(),
+      'openlayers_behavior_attribution' => array(),
     ),
   );
   return openlayers_render_map_data($centermap_def);

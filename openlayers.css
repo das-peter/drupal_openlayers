@@ -37,6 +37,11 @@ body .olControlLayerSwitcher.legacy .layersDiv {
   background-color: darkblue;
 }
 
+body .olControlAttribution {
+  right: 5px;
+  bottom: 5px;
+}
+
 /**
  * This is a 'sensible default' for a weird decision
  * by OpenLayers to make 404 tiles pink.
