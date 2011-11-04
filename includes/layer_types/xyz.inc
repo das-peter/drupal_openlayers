@@ -25,10 +25,11 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
    */
   function options_init() {
     return array(
-      'serverResolutions' => openlayers_get_resolutions('900913'),
+      'serverResolutions' => array(),
       'maxExtent' => openlayers_get_extent('900913'),
       'layer_handler' => 'xyz',
       'baselayer' => TRUE,
+      'sphericalMercator' => TRUE,
     );
   }
 
@@ -41,22 +42,23 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
         '#type' => 'textfield',
         '#title' => t('Base URL (template)'),
         '#default_value' => isset($this->data['base_url']) ?
-          $this->data['base_url'] : ''
+          $this->data['base_url'] : '',
+        '#description' => t('This is the base URL template for the XYZ layer.  It should be something similar to <em>http://example.com/tiles/1.0.0/layer_name/${z}/${x}/${y}.png</em>.'),
       ),
       'layer_type' => array(
         '#type' => 'hidden',
         '#value' => 'openlayers_layer_type_xyz'
       ),
-      'resolutions' => array(
+      'serverResolutions' => array(
         '#type' => 'select',
         '#multiple' => TRUE,
+        '#description' => t('Only set this if you need a very specific resolution.'),
         '#options' => array_combine(
           array_map('strval', openlayers_get_resolutions('900913')),
           range(0, 18)),
         '#title' => t('Zoom Level Range'),
-        '#default_value' => isset($this->data['resolutions']) ?
-          $this->data['resolutions'] :
-          array_map('strval', openlayers_get_resolutions('900913'))
+        '#default_value' => isset($this->data['serverResolutions']) ?
+          $this->data['serverResolutions'] : array(),
       ),
       'projection' =>
         array(

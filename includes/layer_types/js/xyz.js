@@ -13,7 +13,12 @@ Drupal.openlayers.layer.xyz = function(title, map, options) {
     options.maxExtent = new OpenLayers.Bounds.fromArray(options.maxExtent) || new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
   }
   options.projection = 'EPSG:' + options.projection;
-  options.sphericalMercator = true;
+  
+  // Server resolutions are very particular in OL 2.11
+  var r = options.serverResolutions;
+  if (r == null || typeof r == 'undefined' || r.length == 0) {
+    options.serverResolutions = null;
+  }
 
   var layer = new OpenLayers.Layer.XYZ(title, options.url, options);
   layer.styleMap = styleMap;
