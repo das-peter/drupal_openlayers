@@ -16,6 +16,12 @@
  */
 
 /**
+ * OpenLayers hosted default library.
+ */
+define('OPENLAYERS_DEFAULT_LIBRARY', 'http://openlayers.org/api/2.11/OpenLayers.js');
+
+
+/**
  * Implements hook_help().
  */
 function openlayers_help($path, $arg) {
@@ -69,8 +75,7 @@ function openlayers_include() {
   if (!isset($once)) {
     $once = TRUE;
 
-    $path = check_plain(variable_get('openlayers_source', 
-      'http://openlayers.org/api/2.10/OpenLayers.js'));
+    $path = check_plain(variable_get('openlayers_source', OPENLAYERS_DEFAULT_LIBRARY));
     // Check for full URL and include it manually if external.
     if (valid_url($path, TRUE)) {
       drupal_add_js($path, 'external');

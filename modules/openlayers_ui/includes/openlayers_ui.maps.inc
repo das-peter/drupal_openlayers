@@ -32,9 +32,9 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
   /// $map = $args['build_info']['args'][0];
 
   // If cloning or editing, attempt to get map
+  $defaults = array();
   if (empty($map)) {
-    $default_map = openlayers_map_load(
-      variable_get('openlayers_default_map', 'default'));
+    $default_map = openlayers_map_load(variable_get('openlayers_default_map', 'default'));
     if ($default_map) {
       $defaults = $default_map->data;
     }
