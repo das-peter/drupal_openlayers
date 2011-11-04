@@ -263,11 +263,12 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
     '#group' => 'ui'
   );
 
+  // TODO: This projection stuff sucks.  See 
+  // http://drupal.org/node/1331410
+  //
+  // Grab default from submitted form values on AHAH rebuild.
   // Start AHAH Wrapper
   $form['layerstyles']['ahah-start'] = array('#value' => '<div id="openlayers-layers-select">');
-
-  // Projections
-  // Grab default from submitted form values on AHAH rebuild.
   if (isset($form_state['values']['projections'])) {
     if ($form_state['values']['projections']['easy_projection'] == 'other') {
       $defaults['projection'] = $form_state['values']['projections']['projection'];
@@ -293,19 +294,22 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
     );
   }
 
-  // $form['layerstyles']['projections'] = $base_fieldset;
-  $form['layerstyles']['projections']['#collapsible'] = TRUE;
-  $form['layerstyles']['projections']['#collapsed'] = TRUE;
-  $form['layerstyles']['projections']['#tree'] = TRUE;
-
-  $form['layerstyles']['projections']['#title'] = t('Projection');
-  $form['layerstyles']['projections']['#description'] = t('Select the EPSG code of the !link_proj for your map.
-    The list next to each projection is the layers that support this projection.',
-      array(
-        '!link_proj' => l(
-          t('geographical projection'),
-          'http://en.wikipedia.org/wiki/Map_projection'),
-  ));
+  // Just kind of hide the projection stuff for now.
+  $form['layerstyles']['projections'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Projections'),
+    '#description' => t('<p>Projections are not well supported in
+      this module.  If you need to handle non spherical mercator projections
+      you may be better using the API directly.</p>
+      <p>Select the EPSG code of the !link_proj for your map.  The list next 
+      to each projection is the layers that support this projection.</p>',
+      array('!link_proj' => l(t('geographical projection'), 
+        'http://en.wikipedia.org/wiki/Map_projection'))
+    ),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#tree' => TRUE,
+  );
   $form['layerstyles']['projections']['easy_projection'] = array(
     '#type' => 'radios',
     '#title' => t('Map Projection'),
@@ -314,7 +318,7 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
         t('geographical projection'),
         'http://en.wikipedia.org/wiki/Map_projection'),
     )),
-    '#default_value' => $defaults['projection'],
+    '#default_value' => isset($defaults['projection']) ? $defaults['projection'] : '900913',
     '#options' => $projections,
     '#attributes' => array('class' => array('openlayers-form-easy-projection')),
     '#ahah' => array(
@@ -336,7 +340,7 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
       $defaults['displayProjection'] : '4326',
     '#maxlength' => 6
   );
-
+  
   // Construct data for theme_openlayers_ui_maps_form_layers
   $form['layerstyles']['layers']['#tree'] = TRUE;
   $form['layerstyles']['layers']['baselabels'] = array();
@@ -411,7 +415,13 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
   );
 
   // Styles
-  $form['layerstyles']['styles'] = array('#tree' => TRUE);
+  $form['layerstyles']['styles'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Default Styles'),
+    '#description' => t('Define default style designations for layers when there 
+      are no overrides.'),
+    '#tree' => TRUE,
+  );
   $form['layerstyles']['styles']['default'] = array(
     '#type' => 'select',
     '#title' => t('Default style'),
