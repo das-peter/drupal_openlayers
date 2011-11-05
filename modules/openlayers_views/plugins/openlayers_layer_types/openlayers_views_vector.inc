@@ -1,9 +1,21 @@
 <?php
-
 /**
  * @file
  * OpenLayers Views Vector Layer Type
  */
+ 
+/**
+ * Ctools plugin definition
+ */
+$plugin = array(
+  'title' => t('OpenLayers_Views'),
+  'description' => t('OpenLayers Views Vector'),
+  'layer_type' => array(
+    'class' => 'openlayers_layer_type_openlayers_views_vector',
+    'parent' => 'openlayers_layer_type',
+  ),
+);
+ 
 class openlayers_layer_type_openlayers_views_vector
   extends openlayers_layer_type {
   /**
@@ -62,7 +74,7 @@ class openlayers_layer_type_openlayers_views_vector
    */
   function render(&$map) {
     drupal_add_js(drupal_get_path('module', 'openlayers_views') .
-      '/includes/layer_types/openlayers_views_vector.js');
+      '/plugins/openlayers_layer_types/openlayers_views_vector.js');
     $features = $this->get_features($this->data['views']['view'],
       $this->data['views']['display']);
     $this->data['features'] = $features;
