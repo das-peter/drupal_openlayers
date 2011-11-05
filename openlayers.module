@@ -464,7 +464,7 @@ function openlayers_layer_type_load($name, $reset = FALSE) {
 
   if ($layer_type_class = ctools_plugin_load_class(
     'openlayers',
-    'layer_types',
+    'openlayers_layer_types',
     $name,
     'layer_type')) {
     $layer_type = new $layer_type_class();
@@ -485,7 +485,7 @@ function openlayers_layer_type_load($name, $reset = FALSE) {
  */
 function openlayers_behaviors($reset = FALSE) {
   ctools_include('plugins');
-  return ctools_get_plugins('openlayers', 'behaviors');
+  return ctools_get_plugins('openlayers', 'openlayers_behaviors');
 }
 
 /**
@@ -970,14 +970,6 @@ function openlayers_ctools_plugin_api($module, $api) {
 function openlayers_openlayers_layers() {
   module_load_include('inc', 'openlayers', 'includes/openlayers.layers');
   return _openlayers_openlayers_layers();
-}
-
-/**
- * Implements hook_openlayers_behaviors().
- */
-function openlayers_openlayers_behaviors() {
-  module_load_include('inc', 'openlayers', 'includes/openlayers.behaviors');
-  return _openlayers_openlayers_behaviors();
 }
 
 /**

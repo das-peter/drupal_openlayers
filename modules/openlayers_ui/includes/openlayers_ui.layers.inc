@@ -165,6 +165,7 @@ function openlayers_ui_get_layer_type_options($type) {
     '#type' => 'item',
     '#markup' => t('Select a layer type to create a new layer.')
   );
+  
   foreach (openlayers_layer_types() as $key => $plugin) {
     $class = ctools_plugin_get_class($plugin, 'layer_type');
     if ($class) {
@@ -172,7 +173,7 @@ function openlayers_ui_get_layer_type_options($type) {
       $form[$key] = array(
         '#type' => 'item',
         '#title' => l($plugin['title'], "admin/structure/openlayers/layers/add/{$key}"),
-        '#value' =>  $plugin['description'],
+        '#description' => $plugin['description'],
       );
     }
   }
