@@ -86,13 +86,19 @@ function _openlayers_behaviors_render($behaviors = array(), &$map = array()) {
 /**
  * Process Styles
  *
- * Get full data for any styles
+ * Get full data for any styles.  The idea is that we load
+ * all the needed styles into the ['styles'] key of the
+ * map object, and keep a reference in ['layer_styles']
+ * and ['layer_styles_select'] for layer specific styling.
  *
- * TODO: KILL KILL KILL
+ * TODO: Overall, this is not a great approach to managing
+ * styles.
  *
  * @param $styles
  *   Array of map styles ( <style_role> : <style_name> | <style_array> )
  * @param $layer_styles
+ *   Array of layer styles ( <layer_name> : <style_name> )
+ * @param $layer_styles_select
  *   Array of layer styles ( <layer_name> : <style_name> )
  * @param $map
  *   Map array
@@ -100,7 +106,7 @@ function _openlayers_behaviors_render($behaviors = array(), &$map = array()) {
  *   Array of processed styles ( <style_name> => <style_array> )
  */
 function _openlayers_styles_process($styles = array(), 
-  $layer_styles = array(), &$map = array()) {
+  $layer_styles = array(), $layer_styles_select = array(), &$map = array()) {
 
   // Get styles info array
   $styles_info = openlayers_styles();
@@ -114,6 +120,24 @@ function _openlayers_styles_process($styles = array(),
     }
     elseif (!empty($styles_info[$style]) && $info = $styles_info[$style]->data) {
       $processed[$k] = $info;
+    }
+  }
+
+  // Add layer styles
+  foreach ($layer_styles as $style) {
+    if (!isset($processed[$style]) && 
+        !empty($styles_info[$style]) && 
+        $info = $styles_info[$style]->data) {
+      $processed[$style] = $info;
+    }
+  }
+
+  // Add layer styles select
+  foreach ($layer_styles_select as $style) {
+    if (!isset($processed[$style]) && 
+        !empty($styles_info[$style]) && 
+        $info = $styles_info[$style]->data) {
+      $processed[$style] = $info;
     }
   }
 

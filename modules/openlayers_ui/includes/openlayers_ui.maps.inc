@@ -727,7 +727,7 @@ function openlayers_ui_maps_form_process($values = array()) {
   }
 
   // Ensure these values are arrays
-  $ensure_array = array('behaviors', 'layers', 'layer_weight', 'layer_styles', 'styles');
+  $ensure_array = array('behaviors', 'layers', 'layer_weight', 'layer_styles', 'layer_styles_select', 'styles');
   foreach ($ensure_array as $key) {
     if (empty($processed[$key])) {
       $processed[$key] = array();
