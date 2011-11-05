@@ -92,7 +92,7 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
    */
   function render(&$map) {
     drupal_add_js(drupal_get_path('module', 'openlayers') 
-      . '/includes/layer_types/js/kml.js');
+      . '/plugins/openlayers_layer_types/openlayers_layer_type_kml.js');
     return $this->options;
   }
 }

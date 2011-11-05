@@ -122,7 +122,7 @@ class openlayers_layer_type_google extends openlayers_layer_type {
     if (!isset($google_maps_included)) {
       // Include files.
       drupal_add_js(drupal_get_path('module', 'openlayers') . 
-        '/includes/layer_types/js/google.js');
+        '/plugins/openlayers_layer_types/openlayers_layer_type_google.js');
         
       $version = variable_get('openlayers_google_version', '3.5');
       if ($version == '2') {

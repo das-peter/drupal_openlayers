@@ -88,6 +88,8 @@ class openlayers_layer_type_osm extends openlayers_layer_type {
    * Render.
    */
   function render(&$map) {
+    drupal_add_js(drupal_get_path('module', 'openlayers') .
+      '/plugins/openlayers_layer_types/openlayers_layer_type_osm.js');
     return $this->options;
   }
 }
