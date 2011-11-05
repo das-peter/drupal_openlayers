@@ -376,16 +376,32 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
     $disabled = array_diff($available, $enabled);
     $overlay_options_keys = array_merge($disabled, $enabled);
     
+    // Create overlay options.
     $form['layerstyles']['layer_styles']['#tree'] = TRUE;
+    $form['layerstyles']['layer_styles_select']['#tree'] = TRUE;
     $form['layerstyles']['layer_weight']['#tree'] = TRUE;
     foreach ($overlay_options_keys as $id) {
       $description = $overlay_options[$id];
       $form['layerstyles']['layers']['overlaylabels'][$id] = array('#markup' => $description);
+      
+      // Layer styles tha define the default style of layer.
       $form['layerstyles']['layer_styles'][$id] = array(
         '#type' => 'select',
-        '#options' => array('-- ' . t('Default style') . ' --') + openlayers_ui_get_style_options(),
-        '#default_value' => !empty($defaults['layer_styles'][$id]) ? $defaults['layer_styles'][$id] : '',
+        '#options' => array('<' . t('use default style') . '>') + openlayers_ui_get_style_options(),
+        '#default_value' => !empty($defaults['layer_styles'][$id]) ? 
+          $defaults['layer_styles'][$id] : '',
       );
+      
+      // Layer select style.
+      $form['layerstyles']['layer_styles_select'][$id] = array(
+        '#type' => 'select',
+        '#options' => array('<' . t('use default style') . '>') + openlayers_ui_get_style_options(),
+        '#default_value' => !empty($defaults['layer_styles_select'][$id]) ? 
+          $defaults['layer_styles_select'][$id] : '',
+      );
+      
+      // Weight of layer.  This will affect how the layer shows up in the
+      // switcher and is rendered.
       $form['layerstyles']['layer_weight'][$id] = array(
         '#type' => 'weight',
         '#default_value' => !empty($defaults['layer_weight'][$id]) ? $defaults['layer_weight'][$id] : 0,
@@ -394,25 +410,27 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
         )
       );
     }
+  
+    // Checkbox options for overlay layers.
+    $form['layerstyles']['layers']['overlays'] = array(
+      '#type' => 'checkboxes',
+      '#options' => $overlay_options,
+      '#default_value' => !empty($defaults['layers']) ?
+        array_intersect_key($defaults['layers'], $overlay_options) : array(),
+    );
+    $form['layerstyles']['layer_activated'] = array(
+      '#type' => 'checkboxes',
+      '#options' => $overlay_options,
+      '#default_value' => !empty($defaults['layer_activated']) ?
+        array_intersect_key($defaults['layer_activated'], $overlay_options) : array(),
+    );
+    $form['layerstyles']['layer_switcher'] = array(
+      '#type' => 'checkboxes',
+      '#options' => $overlay_options,
+      '#default_value' => !empty($defaults['layer_switcher']) ?
+        array_intersect_key($defaults['layer_switcher'], $overlay_options) : array(),
+    );
   }
-  $form['layerstyles']['layers']['overlays'] = array(
-    '#type' => 'checkboxes',
-    '#options' => $overlay_options,
-    '#default_value' => !empty($defaults['layers']) ?
-      array_intersect_key($defaults['layers'], $overlay_options) : array(),
-  );
-  $form['layerstyles']['layer_activated'] = array(
-    '#type' => 'checkboxes',
-    '#options' => $overlay_options,
-    '#default_value' => !empty($defaults['layer_activated']) ?
-      array_intersect_key($defaults['layer_activated'], $overlay_options) : array(),
-  );
-  $form['layerstyles']['layer_switcher'] = array(
-    '#type' => 'checkboxes',
-    '#options' => $overlay_options,
-    '#default_value' => !empty($defaults['layer_switcher']) ?
-      array_intersect_key($defaults['layer_switcher'], $overlay_options) : array(),
-  );
 
   // Styles
   $form['layerstyles']['styles'] = array(
@@ -649,6 +667,7 @@ function openlayers_ui_maps_form_process($values = array()) {
     'layers',
     'layer_weight',
     'layer_styles',
+    'layer_styles_select',
     'layer_activated',
     'layer_switcher',
     'projections',
