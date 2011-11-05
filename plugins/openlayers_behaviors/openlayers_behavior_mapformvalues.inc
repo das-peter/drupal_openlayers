@@ -13,6 +13,7 @@ $plugin = array(
   'type' => 'map',
   'ui_visibility' => FALSE,
   'behavior' => array(
+    'file' => 'openlayers_behavior_mapformvalues.inc',
     'class' => 'openlayers_behavior_mapformvalues',
     'parent' => 'openlayers_behavior',
   ),

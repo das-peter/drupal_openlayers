@@ -12,6 +12,7 @@ $plugin = array(
   'description' => t('Provides a Zoom In, Zoom Out, and Zoom to Max Extent Button'),
   'type' => 'map',
   'behavior' => array(
+    'file' => 'openlayers_behavior_zoompanel.inc',
     'class' => 'openlayers_behavior_zoompanel',
     'parent' => 'openlayers_behavior',
   ),

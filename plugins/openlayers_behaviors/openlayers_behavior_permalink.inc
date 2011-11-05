@@ -12,6 +12,7 @@ $plugin = array(
   'description' =>  t('Provides a URL that will link to a specific map position.'),
   'type' => 'map',
   'behavior' => array(
+    'file' => 'openlayers_behavior_permalink.inc',
     'class' => 'openlayers_behavior_permalink',
     'parent' => 'openlayers_behavior',
   ),

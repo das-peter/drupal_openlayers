@@ -12,6 +12,7 @@ $plugin = array(
   'title' => t('OSM'),
   'description' => t('OpenStreetMap Standard'),
   'layer_type' => array(
+    'file' => 'openlayers_layer_type_osm.inc',
     'class' => 'openlayers_layer_type_osm',
     'parent' => 'openlayers_layer_type',
   ),

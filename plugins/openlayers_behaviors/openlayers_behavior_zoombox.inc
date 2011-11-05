@@ -12,6 +12,7 @@ $plugin = array(
   'description' => t('Provides a zoom box that can be drawn on shift + click.'),
   'type' => 'map',
   'behavior' => array(
+    'file' => 'openlayers_behavior_zoombox.inc',
     'class' => 'openlayers_behavior_zoombox',
     'parent' => 'openlayers_behavior',
   ),

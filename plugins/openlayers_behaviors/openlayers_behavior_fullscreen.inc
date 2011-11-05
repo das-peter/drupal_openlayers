@@ -12,6 +12,7 @@ $plugin = array(
   'description' => t('Provides a button that expands maps to the size of the page.'),
   'type' => 'map',
   'behavior' => array(
+    'file' => 'openlayers_behavior_fullscreen.inc',
     'class' => 'openlayers_behavior_fullscreen',
     'parent' => 'openlayers_behavior',
   ),

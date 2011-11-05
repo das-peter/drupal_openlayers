@@ -13,6 +13,7 @@ $plugin = array(
     Permalink link to the map'),
   'type' => 'layer',
   'behavior' => array(
+    'file' => 'openlayers_behavior_argparser.inc',
     'class' => 'openlayers_behavior_argparser',
     'parent' => 'openlayers_behavior',
   ),

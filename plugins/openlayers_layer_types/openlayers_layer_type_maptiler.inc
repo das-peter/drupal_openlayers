@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * TileWarper Layer Type
@@ -13,6 +12,7 @@ $plugin = array(
   'description' => t('<a href="!url">MapTiler</a> or GDAL2Tiles',
     array('!url' => 'http://www.maptiler.org/')),
   'layer_type' => array(
+    'file' => 'openlayers_layer_type_maptiler.inc',
     'class' => 'openlayers_layer_type_maptiler',
     'parent' => 'openlayers_layer_type',
   ),

@@ -11,6 +11,7 @@ $plugin = array(
   'title' => t('Google'),
   'description' => t('Google Maps API Map'),
   'layer_type' => array(
+    'file' => 'openlayers_layer_type_google.inc',
     'class' => 'openlayers_layer_type_google',
     'parent' => 'openlayers_layer_type',
   ),

@@ -13,6 +13,7 @@ $plugin = array(
     not meant to be added with the UI.' 
   ),
   'layer_type' => array(
+    'file' => 'openlayers_layer_type_raw.inc',
     'class' => 'openlayers_layer_type_raw',
     'parent' => 'openlayers_layer_type',
   ),

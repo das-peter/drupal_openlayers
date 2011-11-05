@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * KML Layer Type
@@ -13,6 +12,7 @@ $plugin = array(
   'description' => t('<a href="!url">KML</a> overlay.', 
     array('!url' => 'http://en.wikipedia.org/wiki/Keyhole_Markup_Language')),
   'layer_type' => array(
+    'file' => 'openlayers_layer_type_kml.inc',
     'class' => 'openlayers_layer_type_kml',
     'parent' => 'openlayers_layer_type',
   ),

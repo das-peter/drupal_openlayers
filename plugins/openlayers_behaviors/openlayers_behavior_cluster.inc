@@ -12,6 +12,7 @@ $plugin = array(
   'description' => t('Provides vector layer features clustering by proximity.'),
   'type' => 'layer',
   'behavior' => array(
+    'file' => 'openlayers_behavior_cluster.inc',
     'class' => 'openlayers_behavior_cluster',
     'parent' => 'openlayers_behavior',
   ),

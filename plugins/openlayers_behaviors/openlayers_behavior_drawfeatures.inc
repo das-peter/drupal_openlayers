@@ -12,6 +12,7 @@ $plugin = array(
    'description' => t('Provides functionality for adding features to a map.'),
    'type' => 'layer',
    'behavior' => array(
+    'file' => 'openlayers_behavior_drawfeatures.inc',
      'class' => 'openlayers_behavior_drawfeatures',
      'parent' => 'openlayers_behavior',
    ),

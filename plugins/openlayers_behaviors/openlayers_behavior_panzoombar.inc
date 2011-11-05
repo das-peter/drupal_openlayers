@@ -12,6 +12,7 @@ $plugin = array(
   'description' => t('Gives user ability to pan and zoom, with a zoom bar, in the map interface.'),
   'type' => 'map',
   'behavior' => array(
+    'file' => 'openlayers_behavior_panzoombar.inc',
     'class' => 'openlayers_behavior_panzoombar',
     'parent' => 'openlayers_behavior',
   ),

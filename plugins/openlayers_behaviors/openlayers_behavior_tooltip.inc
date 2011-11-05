@@ -12,6 +12,7 @@ $plugin = array(
   'description' => t('Adds info boxes on hover to points or shapes on maps.'),
   'type' => 'layer',
   'behavior' => array(
+    'file' => 'openlayers_behavior_tooltip.inc',
     'class' => 'openlayers_behavior_tooltip',
     'parent' => 'openlayers_behavior',
   ),

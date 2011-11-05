@@ -12,6 +12,7 @@ $plugin = array(
   'description' => t('Provides a visual indication of the mouse position to the user.'),
   'type' => 'map',
   'behavior' => array(
+    'file' => 'openlayers_behavior_mouseposition.inc',
     'class' => 'openlayers_behavior_mouseposition',
     'parent' => 'openlayers_behavior',
   ),

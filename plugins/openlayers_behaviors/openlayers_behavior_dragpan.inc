@@ -12,6 +12,7 @@ $plugin = array(
   'description' => t('Provides the ability to pan in the map interface.'),
   'type' => 'map',
   'behavior' => array(
+    'file' => 'openlayers_behavior_dragpan.inc',
     'class' => 'openlayers_behavior_dragpan',
     'parent' => 'openlayers_behavior',
   ),

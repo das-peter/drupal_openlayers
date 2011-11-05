@@ -11,6 +11,7 @@ $plugin = array(
   'title' => t('Geolocate'),
   'description' => t('Provides the geolcoation control and simply zooms to users location.'),
   'behavior' => array(
+    'file' => 'openlayers_behavior_geolocate.inc',
     'class' => 'openlayers_behavior_geolocate',
     'parent' => 'openlayers_behavior',
   ),

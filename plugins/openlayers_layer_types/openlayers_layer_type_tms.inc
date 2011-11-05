@@ -12,6 +12,7 @@ $plugin = array(
   'description' => t('<a href="!url">Tile Map Service</a>',
     array('!url' => 'http://en.wikipedia.org/wiki/Tile_Map_Service')),
   'layer_type' => array(
+    'file' => 'openlayers_layer_type_tms.inc',
     'class' => 'openlayers_layer_type_tms',
     'parent' => 'openlayers_layer_type',
   ),

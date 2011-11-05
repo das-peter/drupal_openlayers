@@ -12,6 +12,7 @@ $plugin = array(
   'description' => t('Zooms to the extent of a given layer on map loading.'),
   'type' => 'layer',
   'behavior' => array(
+    'file' => 'openlayers_behavior_zoomtolayer.inc',
     'class' => 'openlayers_behavior_zoomtolayer',
     'parent' => 'openlayers_behavior',
   ),

@@ -12,6 +12,7 @@ $plugin = array(
   'description' => t('Allows layers to provide attribution to the map if it exists.'),
   'type' => 'layer',
   'behavior' => array(
+    'file' => 'openlayers_behavior_attribution.inc',
     'class' => 'openlayers_behavior_attribution',
     'parent' => 'openlayers_behavior',
   ),

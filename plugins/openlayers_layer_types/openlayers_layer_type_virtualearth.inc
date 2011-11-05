@@ -12,6 +12,7 @@ $plugin = array(
   'title' => t('Virtual Earth'),
   'description' => t('Microsoft Virtual Earth'),
   'layer_type' => array(
+    'file' => 'openlayers_layer_type_virtualearth.inc',
     'class' => 'openlayers_layer_type_virtualearth',
     'parent' => 'openlayers_layer_type',
   ),

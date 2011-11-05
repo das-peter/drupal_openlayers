@@ -12,6 +12,7 @@ $plugin = array(
   'description' => t('Allows the selection and display of a box.'),
   'type' => 'map',
   'behavior' => array(
+    'file' => 'openlayers_behavior_boxselect.inc',
     'class' => 'openlayers_behavior_boxselect',
     'parent' => 'openlayers_behavior',
   ),

@@ -12,6 +12,7 @@ $plugin = array(
   'description' => t('Adds clickable info boxes to points or shapes on maps.'),
   'type' => 'layer',
   'behavior' => array(
+    'file' => 'openlayers_behavior_popup.inc',
     'class' => 'openlayers_behavior_popup',
     'parent' => 'openlayers_behavior',
   ),

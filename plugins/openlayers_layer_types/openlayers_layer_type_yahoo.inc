@@ -11,6 +11,7 @@ $plugin = array(
   'title' => t('Yahoo'),
   'description' => t('Yahoo Maps API Map'),
   'layer_type' => array(
+    'file' => 'openlayers_layer_type_yahoo.inc',
     'class' => 'openlayers_layer_type_yahoo',
     'parent' => 'openlayers_layer_type',
   ),

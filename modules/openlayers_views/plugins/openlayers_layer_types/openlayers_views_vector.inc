@@ -11,6 +11,7 @@ $plugin = array(
   'title' => t('OpenLayers_Views'),
   'description' => t('OpenLayers Views Vector'),
   'layer_type' => array(
+    'file' => 'openlayers_views_vector.inc',
     'class' => 'openlayers_layer_type_openlayers_views_vector',
     'parent' => 'openlayers_layer_type',
   ),

@@ -12,6 +12,7 @@ $plugin = array(
   'description' => t('Provides keyboard shortcuts to pan and zoom the map.'),
   'type' => 'layer',
   'behavior' => array(
+    'file' => 'openlayers_behavior_keyboarddefaults.inc',
     'class' => 'openlayers_behavior_keyboarddefaults',
     'parent' => 'openlayers_behavior',
   ),

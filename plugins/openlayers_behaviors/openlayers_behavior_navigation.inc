@@ -12,6 +12,7 @@ $plugin = array(
   'description' => t('Provides the ability to navigate the map interface.'),
   'type' => 'map',
   'behavior' => array(
+    'file' => 'openlayers_behavior_navigation.inc',
     'class' => 'openlayers_behavior_navigation',
     'parent' => 'openlayers_behavior',
   ),

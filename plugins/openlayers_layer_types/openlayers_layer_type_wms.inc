@@ -12,6 +12,7 @@ $plugin = array(
   'description' => t('<a href="!url">Web Map Service</a>',
     array('!url' => 'http://en.wikipedia.org/wiki/Web_Map_Service')),
   'layer_type' => array(
+    'file' => 'openlayers_layer_type_wms.inc',
     'class' => 'openlayers_layer_type_wms',
     'parent' => 'openlayers_layer_type',
   ),
