@@ -33,9 +33,11 @@ class openlayers_views_style_data extends views_plugin_style {
       // If we are in preview mode, dump out some useful information about this data layer
       $output = "You can use the following parameters in your styles as dynamic values";
       $output .= "\n------------\n";
-      $keys = array_keys($data);
-      foreach ($data[$keys[0]]['attributes'] as $key => $value) {
-        $output .= '${'.$key."}\n";
+      if (!empty($data)) {
+        $keys = array_keys($data);
+        foreach ($data[$keys[0]]['attributes'] as $key => $value) {
+          $output .= '${'.$key."}\n";
+        }
       }
       $output .= "\n------------\n";
       
