@@ -1,4 +1,3 @@
-
 /**
  * @file
  * JS Implementation of OpenLayers behavior.
@@ -7,20 +6,7 @@
 /**
  * Navigation Behavior
  */
-(function($) {
-Drupal.behaviors.openlayers_behavior_navigation = {
-  'attach': function(context, settings) {
-    var data = $(context).data('openlayers');
-    if (data && data.map.behaviors['openlayers_behavior_navigation']) {
-      // Add control
-      var options = {
-        'zoomWheelEnabled': data.map.behaviors['openlayers_behavior_navigation'].zoomWheelEnabled,
-        'documentDrag': Boolean(data.map.behaviors['openlayers_behavior_navigation'].documentDrag)
-      };
-      var control = new OpenLayers.Control.Navigation(options);
-      data.openlayers.addControl(control);
-      control.activate();
-    }
-  }
-};
-})(jQuery);
+Drupal.openlayers.addBehavior('openlayers_behavior_navigation', function (data, options) {
+  options.documentDrag = !!options.documentDrag;
+  Drupal.openlayers.addControl(data.openlayers, 'Navigation', options);
+});

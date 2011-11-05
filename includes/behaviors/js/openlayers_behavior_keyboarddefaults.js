@@ -5,16 +5,9 @@
  */
 
 /**
- * Keyboard Defaults Behavior
+ * Keyboard Defaults Behavior.  Implements the KeyboardDefaults OpenLayers
+ * Control.
  */
-(function($) {
-Drupal.behaviors.openlayers_behavior_keyboarddefaults = function(context) {
-  var data = $(context).data('openlayers');
-  if (data && data.map.behaviors['openlayers_behavior_keyboarddefaults']) {
-    // Add control
-    var control = new OpenLayers.Control.KeyboardDefaults();
-    data.openlayers.addControl(control);
-    control.activate();
-  }
-}
-})(jQuery);
+Drupal.openlayers.addBehavior('openlayers_behavior_keyboarddefaults', function (data, options) {
+  Drupal.openlayers.addControl(data.openlayers, 'KeyboardDefaults');
+});

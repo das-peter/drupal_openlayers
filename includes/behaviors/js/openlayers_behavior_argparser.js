@@ -1,23 +1,12 @@
-
 /**
  * @file
  * JS Implementation of OpenLayers behavior.
  */
-
-
-(function($) {
+ 
 /**
- * ArgParser Behavior
+ * ArgParser Behavior.  Implements the ArgParser OpenLayers
+ * Control.
  */
-Drupal.behaviors.openlayers_behavior_argparser = {
-  'attach': function(context, settings) {
-    var data = $(context).data('openlayers');
-    if (data && data.map.behaviors['openlayers_behavior_argparser']) {
-      // Add control
-      var control = new OpenLayers.Control.ArgParser();
-      data.openlayers.addControl(control);
-      control.activate();
-    }
-  }
-};
-})(jQuery);
+Drupal.openlayers.addBehavior('openlayers_behavior_argparser', function (data, options) {
+  Drupal.openlayers.addControl(data.openlayers, 'ArgParser');
+});

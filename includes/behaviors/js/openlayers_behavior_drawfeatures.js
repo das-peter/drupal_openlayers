@@ -1,14 +1,15 @@
-
 /**
  * @file
  * DrawFeatures Behavior
  */
 
-/**
- * Behavior for Draw Features
- */
 (function($) {
-Drupal.behaviors.openlayers_behavior_drawfeatures = {
+  /**
+   * Behavior for Draw Features.
+   *
+   * TODO: Update this to use the addBehaviors helper function.
+   */
+  Drupal.behaviors.openlayers_behavior_drawfeatures = {
     'attach': function(context, settings) {
       function openlayers_behavior_drawfeatures_update(features) {
         WktWriter = new OpenLayers.Format.WKT();
@@ -27,8 +28,9 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = {
         this.element.val(WktWriter.write(features_copy.features));
       }
   
-      var data = $(context).data('openlayers');
-      if (data && data.map.behaviors['openlayers_behavior_drawfeatures']) {
+      var data = $(context).data('openlayers'),
+          behavior = data && data.map.behaviors['openlayers_behavior_drawfeatures'];
+      if (!$(context).hasClass('openlayers-drawfeatures-processed') && behavior) {
         var feature_types = data.map.behaviors['openlayers_behavior_drawfeatures'].feature_types;
         this.element =
           $('#' + data.map.behaviors['openlayers_behavior_drawfeatures'].element_id);
@@ -134,7 +136,8 @@ Drupal.behaviors.openlayers_behavior_drawfeatures = {
           }
           )
         );
+        $(context).addClass('openlayers-drawfeatures-processed');
       }
-  }
-  }
+    }
+  };
 })(jQuery);
