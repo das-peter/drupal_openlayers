@@ -281,18 +281,26 @@ Drupal.openlayers = {
       layer.addFeatures(newFeatures);
     }
   },
+  
   'getStyleMap': function(map, layername) {
     if (map.styles) {
       var stylesAdded = {};
+      
       // Grab and map base styles.
       for (var style in map.styles) {
         stylesAdded[style] = new OpenLayers.Style(map.styles[style]);
       }
-      // Implement layer-specific styles.
+      
+      // Implement layer-specific styles.  First default, then select.
       if (map.layer_styles !== undefined && map.layer_styles[layername]) {
         var style = map.layer_styles[layername];
         stylesAdded['default'] = new OpenLayers.Style(map.styles[style]);
       }
+      if (map.layer_styles_select !== undefined && map.layer_styles_select[layername]) {
+        var style = map.layer_styles_select[layername];
+        stylesAdded['select'] = new OpenLayers.Style(map.styles[style]);
+      }
+      
       return new OpenLayers.StyleMap(stylesAdded);
     }
     else {

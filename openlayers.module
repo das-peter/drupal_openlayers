@@ -164,7 +164,7 @@ function openlayers_build_map($map = array()) {
   // behaviors will not get rendered.
   // hook_openlayers_map_alter($map)
   drupal_alter('openlayers_map', $map);
-  
+
   // Check map for errors
   $map['errors'] = openlayers_error_check_map($map);
   return $map;
