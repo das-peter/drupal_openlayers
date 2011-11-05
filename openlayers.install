@@ -37,6 +37,8 @@ function openlayers_schema() {
     'description' => 'Storage for User defined OpenLayers maps.',
     'export' => array(
       'key' => 'name',
+      'key name' => 'Name',
+      'primary key' => 'name',
       'identifier' => 'openlayers_maps',
       'default hook' => 'openlayers_maps',
       'api' => array(
@@ -78,6 +80,8 @@ function openlayers_schema() {
     'description' => 'Storage for user defined OpenLayers layers.',
     'export' => array(
       'key' => 'name',
+      'key name' => 'Name',
+      'primary key' => 'name',
       'identifier' => 'openlayers_layers',
       'default hook' => 'openlayers_layers',
       'api' => array(
@@ -124,6 +128,8 @@ function openlayers_schema() {
     'description' => 'Storage for user defined OpenLayers styles.',
     'export' => array(
       'key' => 'name',
+      'key name' => 'Name',
+      'primary key' => 'name',
       'identifier' => 'openlayers_styles',
       'default hook' => 'openlayers_styles',
       'api' => array(
