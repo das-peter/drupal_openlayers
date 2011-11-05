@@ -26,6 +26,9 @@ Drupal.theme.prototype.openlayersPopup = function(feature) {
   return output;
 };
 
+// Make sure the namespace exists
+Drupal.openlayers.popup = Drupal.openlayers.popup || {};
+
 /**
  * OpenLayers Popup Behavior
  */
