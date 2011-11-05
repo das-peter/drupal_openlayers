@@ -13,6 +13,8 @@ function openlayers_init() {
   // For backwards compability for the change from maps to presets
   // in the 7.x-2.x version, we want to make it really obvious that
   // administrators and developers should be updating their maps
+  //
+  // Remove in 7.x-3.x
   if (strpos($_GET['q'], 'admin/structure/openlayers') === 0) {
     include_once DRUPAL_ROOT . '/includes/install.inc';
     drupal_load_updates();
