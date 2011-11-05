@@ -35,7 +35,7 @@ class openlayers_behavior_zoomtomaxextent extends openlayers_behavior {
    */
   function render(&$map) {
     drupal_add_js(drupal_get_path('module', 'openlayers') . 
-      '/includes/behaviors/js/openlayers_behavior_zoomtomaxextent.js');
+      '/plugins/openlayers_behaviors/openlayers_behavior_zoomtomaxextent.js');
     return $this->options;
   }
 }

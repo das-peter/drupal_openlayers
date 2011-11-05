@@ -74,7 +74,7 @@ class openlayers_behavior_layerswitcher extends openlayers_behavior {
     }
   
     drupal_add_js(drupal_get_path('module', 'openlayers') . 
-      '/includes/behaviors/js/openlayers_behavior_layerswitcher.js');
+      '/plugins/openlayers_behaviors/openlayers_behavior_layerswitcher.js');
     return $this->options;
   }
 }

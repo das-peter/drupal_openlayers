@@ -60,8 +60,8 @@ class openlayers_behavior_tooltip extends openlayers_behavior {
    * Render.
    */
   function render(&$map) {
-    drupal_add_js(drupal_get_path('module', 'openlayers') .
-      '/includes/behaviors/js/openlayers_behavior_tooltip.js');
+    drupal_add_js(drupal_get_path('module', 'openlayers') . 
+      '/plugins/openlayers_behaviors/openlayers_behavior_tooltip.js');
     return $this->options;
   }
 }
