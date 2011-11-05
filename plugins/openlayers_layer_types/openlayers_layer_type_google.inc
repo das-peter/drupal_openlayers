@@ -1,9 +1,20 @@
 <?php
-
 /**
  * @file
  * Google Layer Type
  */
+
+/**
+ * Define the Ctools plugin options.
+ */
+$plugin = array(
+  'title' => t('Google'),
+  'description' => t('Google Maps API Map'),
+  'layer_type' => array(
+    'class' => 'openlayers_layer_type_google',
+    'parent' => 'openlayers_layer_type',
+  ),
+);
 
 /**
  * OpenLayers Google Layer Type class

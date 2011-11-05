@@ -2,19 +2,29 @@
 
 /**
  * @file
- * TileWarper Layer Type
+ * OSM Layer Type
  */
 
 /**
- * OpenLayers MapTiler Layer Type class
+ * Define the Ctools plugin options.
  */
-class openlayers_layer_type_maptiler extends openlayers_layer_type {
+$plugin = array(
+  'title' => t('OSM'),
+  'description' => t('OpenStreetMap Standard'),
+  'layer_type' => array(
+    'class' => 'openlayers_layer_type_osm',
+    'parent' => 'openlayers_layer_type',
+  ),
+);
 
+/**
+ * OpenLayers OSM Layer Type class
+ */
+class openlayers_layer_type_osm extends openlayers_layer_type {
   function __construct($layer = array(), $map = array()) {
     parent::__construct($layer, $map);
     if (isset($this->data)) {
       $this->data += $this->options_init();
-      $this->data['baselayer'] = $this->data['isBaseLayer'];
     }
     else {
       $this->data = $this->options_init();
@@ -29,9 +39,10 @@ class openlayers_layer_type_maptiler extends openlayers_layer_type {
       'serverResolutions' => openlayers_get_resolutions('900913'),
       'maxExtent' => openlayers_get_extent('900913'),
       'projection' => array('900913'),
-      'baselayer' => TRUE,
+      'layer_handler' => 'xyz',
+      'layer_type' => 'osm',
       'type' => 'png',
-      'layer_handler' => 'maptiler',
+      'baselayer' => TRUE,
     );
   }
 
@@ -43,31 +54,32 @@ class openlayers_layer_type_maptiler extends openlayers_layer_type {
       'base_url' => array(
         '#type' => 'textfield',
         '#title' => t('Base URL'),
-        '#default_value' => isset($this->data['base_url']) ? 
+        '#default_value' => isset($this->data['base_url']) ?
           $this->data['base_url'] : ''
       ),
-      'isBaseLayer' => array(
-        '#type' => 'checkbox',
-        '#default_value' => isset($this->data['isBaseLayer']) ?
-          $this->data['isBaseLayer'] : TRUE,
-        '#title' => t('BaseLayer'),
-        '#description' => t('Uncheck to make this map an overlay')
+      'layer_type' => array(
+        '#type' => 'hidden',
+        '#value' => 'openlayers_layer_type_osm'
+      ),
+      'type' => array(
+        '#type' => 'select',
+        '#title' => t('File Format'),
+        '#options' => array(
+          'png' => 'png',
+          'jpg' => 'jpg'),
+        '#default_value' => isset($this->data['type']) ?
+          $this->data['type'] : 'png'
       ),
       'resolutions' => array(
         '#type' => 'select',
         '#multiple' => TRUE,
         '#options' => array_combine(
           array_map('strval', openlayers_get_resolutions('900913')),
-          range(0, 18)
-        ),
+          range(0, 18)),
         '#title' => t('Zoom Level Range'),
         '#default_value' => isset($this->data['resolutions']) ?
-          $this->data['resolutions'] :
+          $this->data['resolutions'] : 
           array_map('strval', openlayers_get_resolutions('900913'))
-      ),
-      'layer_type' => array(
-        '#type' => 'hidden',
-        '#value' => 'openlayers_layer_type_maptiler'
       ),
     );
   }
@@ -76,8 +88,6 @@ class openlayers_layer_type_maptiler extends openlayers_layer_type {
    * Render.
    */
   function render(&$map) {
-    drupal_add_js(drupal_get_path('module', 'openlayers') 
-      . '/includes/layer_types/js/maptiler.js');
     return $this->options;
   }
 }

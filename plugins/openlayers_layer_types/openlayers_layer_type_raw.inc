@@ -1,4 +1,22 @@
 <?php
+/**
+ * @file
+ * Raw Layer Type
+ */
+
+/**
+ * Define the Ctools plugin options.
+ */
+$plugin = array(
+  'title' => t('Raw'),
+  'description' => t('Layer type for raw data input - 
+    not meant to be added with the UI.' 
+  ),
+  'layer_type' => array(
+    'class' => 'openlayers_layer_type_raw',
+    'parent' => 'openlayers_layer_type',
+  ),
+);
 
 /**
  * @file

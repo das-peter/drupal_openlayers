@@ -1,10 +1,21 @@
 <?php
-
 /**
  * @file
  * XYZ Layer Type
  * http://dev.openlayers.org/docs/files/OpenLayers/Layer/XYZ-js.html
  */
+
+/**
+ * Define the Ctools plugin options.
+ */
+$plugin = array(
+  'title' => t('XYZ'),
+  'description' => t('XYZ'),
+  'layer_type' => array(
+    'class' => 'openlayers_layer_type_xyz',
+    'parent' => 'openlayers_layer_type',
+  ),
+);
 
 /**
  * OpenLayers XYZ Layer Type class

@@ -1,9 +1,21 @@
 <?php
-
 /**
  * @file
  * TMS Layer Type
  */
+
+/**
+ * Define the Ctools plugin options.
+ */
+$plugin = array(
+  'title' => t('TMS'),
+  'description' => t('<a href="!url">Tile Map Service</a>',
+    array('!url' => 'http://en.wikipedia.org/wiki/Tile_Map_Service')),
+  'layer_type' => array(
+    'class' => 'openlayers_layer_type_tms',
+    'parent' => 'openlayers_layer_type',
+  ),
+);
 
 /**
  * OpenLayers TMS Layer Type class

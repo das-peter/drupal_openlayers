@@ -300,7 +300,6 @@ function _openlayers_openlayers_layers() {
   );
   $layers[$layer->name] = $layer;
 
-
   return $layers;
 }
 

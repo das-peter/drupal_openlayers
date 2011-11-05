@@ -1,9 +1,20 @@
 <?php
-
 /**
  * @file
  * Yahoo Layer Type
  */
+
+/**
+ * Define the Ctools plugin options.
+ */
+$plugin = array(
+  'title' => t('Yahoo'),
+  'description' => t('Yahoo Maps API Map'),
+  'layer_type' => array(
+    'class' => 'openlayers_layer_type_yahoo',
+    'parent' => 'openlayers_layer_type',
+  ),
+);
 
 /**
  * OpenLayers Yahoo Layer Type class

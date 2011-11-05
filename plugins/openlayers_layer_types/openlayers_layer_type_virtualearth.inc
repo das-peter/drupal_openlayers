@@ -1,10 +1,21 @@
 <?php
-
 /**
  * @file
  *
  * OpenLayers VirtualEarth layer type
  */
+
+/**
+ * Define the Ctools plugin options.
+ */
+$plugin = array(
+  'title' => t('Virtual Earth'),
+  'description' => t('Microsoft Virtual Earth'),
+  'layer_type' => array(
+    'class' => 'openlayers_layer_type_virtualearth',
+    'parent' => 'openlayers_layer_type',
+  ),
+);
 
 /**
  * OpenLayers VirtualEarth Layer Type class
