@@ -59,9 +59,22 @@ function openlayers_theme($existing, $type, $theme, $path) {
  * Implements hook_ctools_plugin_directory().
  */
 function openlayers_ctools_plugin_directory($module, $plugin) {
-  if ($plugin == 'content_types') {
-    return "includes/$plugin";
+  if ($plugin == 'content_types' && !empty($plugin)) {
+    return 'includes/' . $plugin;
   }
+  if ($plugin == 'openlayers' && !empty($plugin)) {
+    return 'plugins/' . $plugin;
+  }
+}
+
+/**
+ * Implements hook_ctools_plugin_type
+ */
+function openlayers_ctools_plugin_type() {
+  return array(
+    'openlayers_behaviors' => array(),
+    'openlayers_layer_types' => array()
+  );
 }
 
 /**
@@ -924,22 +937,6 @@ class openlayers_layer_type {
 }
 
 /**
- * Implements hook_ctools_plugin_type
- */
-function openlayers_ctools_plugin_type() {
-  return array(
-    'behaviors' => array(
-      'use hooks' => TRUE,
-      'classes' => array('behavior')
-    ),
-    'layer_types' => array(
-      'use hooks' => TRUE,
-      'classes' => array('layer_type')
-    )
-  );
-}
-
-/**
  * Implements hook_ctools_plugin_api().
  */
 function openlayers_ctools_plugin_api($module, $api) {
@@ -952,6 +949,12 @@ function openlayers_ctools_plugin_api($module, $api) {
         return array('version' => 1);
 
       case 'openlayers_styles':
+        return array('version' => 1);
+
+      case 'openlayers_layer_types':
+        return array('version' => 1);
+
+      case 'openlayers_behaviors':
         return array('version' => 1);
 
     }
