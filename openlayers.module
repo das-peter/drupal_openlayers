@@ -20,7 +20,6 @@
  */
 define('OPENLAYERS_DEFAULT_LIBRARY', 'http://openlayers.org/api/2.11/OpenLayers.js');
 
-
 /**
  * Implements hook_help().
  */
