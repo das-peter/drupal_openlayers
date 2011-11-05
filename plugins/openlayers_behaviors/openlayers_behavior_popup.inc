@@ -1,20 +1,31 @@
 <?php
-
 /**
  * @file
- * Implementation of OpenLayers behavior for tooltips.
+ * Implementation of OpenLayers behavior.
  */
+
+/**
+ * Ctools plugin definition.
+ */
+$plugin = array(
+  'title' => t('Pop Up'),
+  'description' => t('Adds clickable info boxes to points or shapes on maps.'),
+  'type' => 'layer',
+  'behavior' => array(
+    'class' => 'openlayers_behavior_popup',
+    'parent' => 'openlayers_behavior',
+  ),
+);
 
 /**
  * Attribution Behavior
  */
-class openlayers_behavior_tooltip extends openlayers_behavior {
+class openlayers_behavior_popup extends openlayers_behavior {
   /**
    * Provide initial values for options.
    */
   function options_init() {
     return array(
-      'attribution' => '',
       'layers' => array(),
     );
   }
@@ -37,7 +48,7 @@ class openlayers_behavior_tooltip extends openlayers_behavior {
         '#title' => t('Layers'),
         '#type' => 'checkboxes',
         '#options' => $vector_layers,
-        '#description' => t('Select layer to apply tooltips to.'),
+        '#description' => t('Select layer to apply popups to.'),
         '#default_value' => isset($defaults['layers']) ? 
           $defaults['layers'] : array(),
       ),
@@ -48,8 +59,8 @@ class openlayers_behavior_tooltip extends openlayers_behavior {
    * Render.
    */
   function render(&$map) {
-    drupal_add_js(drupal_get_path('module', 'openlayers') .
-      '/includes/behaviors/js/openlayers_behavior_tooltip.js');
+    drupal_add_js(drupal_get_path('module', 'openlayers') . 
+      '/includes/behaviors/js/openlayers_behavior_popup.js');
     return $this->options;
   }
 }

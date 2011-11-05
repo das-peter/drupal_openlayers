@@ -1,9 +1,21 @@
 <?php
-
 /**
  * @file
  * Implementation of OpenLayers behavior.
  */
+
+/**
+ * Ctools plugin definition.
+ */
+$plugin = array(
+  'title' => t('Mouse Position'),
+  'description' => t('Provides a visual indication of the mouse position to the user.'),
+  'type' => 'map',
+  'behavior' => array(
+    'class' => 'openlayers_behavior_mouseposition',
+    'parent' => 'openlayers_behavior',
+  ),
+);
 
 /**
  * Mouse Position Behavior

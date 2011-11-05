@@ -1,9 +1,21 @@
 <?php
-
 /**
  * @file
  * Implementation of OpenLayers behavior.
  */
+
+/**
+ * Ctools plugin definition.
+ */
+$plugin = array(
+  'title' => t('Layer Switcher'),
+  'description' => t('Provides the ability to switch layers in the map interface.'),
+  'type' => 'map',
+  'behavior' => array(
+    'class' => 'openlayers_behavior_layerswitcher',
+    'parent' => 'openlayers_behavior',
+  ),
+);
 
 /**
  * Layer Switcher Behavior

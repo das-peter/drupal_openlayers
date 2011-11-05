@@ -1,9 +1,21 @@
 <?php
-
 /**
  * @file
  * Implementation of OpenLayers behavior.
  */
+
+/**
+ * Ctools plugin definition.
+ */
+$plugin = array(
+  'title' => t('Permalink'),
+  'description' =>  t('Provides a URL that will link to a specific map position.'),
+  'type' => 'map',
+  'behavior' => array(
+    'class' => 'openlayers_behavior_permalink',
+    'parent' => 'openlayers_behavior',
+  ),
+);
 
 /**
  * PermaLink Behavior

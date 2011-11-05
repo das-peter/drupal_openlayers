@@ -1,9 +1,21 @@
 <?php
-
 /**
  * @file
  * Implementation of OpenLayers behavior.
  */
+
+/**
+ * Ctools plugin definition.
+ */
+$plugin = array(
+  'title' => t('Zoom Box'),
+  'description' => t('Provides a zoom box that can be drawn on shift + click.'),
+  'type' => 'map',
+  'behavior' => array(
+    'class' => 'openlayers_behavior_zoombox',
+    'parent' => 'openlayers_behavior',
+  ),
+);
 
 /**
  * Zoom Box Behavior

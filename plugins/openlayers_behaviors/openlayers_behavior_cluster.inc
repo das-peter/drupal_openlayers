@@ -1,9 +1,21 @@
 <?php
-
 /**
  * @file
  * Implementation of OpenLayers Cluster behavior.
  */
+
+/**
+ * Ctools plugin definition.
+ */
+$plugin = array(
+  'title' => t('Cluster'),
+  'description' => t('Provides vector layer features clustering by proximity.'),
+  'type' => 'layer',
+  'behavior' => array(
+    'class' => 'openlayers_behavior_cluster',
+    'parent' => 'openlayers_behavior',
+  ),
+);
 
 /**
  * Cluster behavior

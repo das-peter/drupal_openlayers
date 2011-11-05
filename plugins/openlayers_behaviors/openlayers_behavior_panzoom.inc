@@ -1,9 +1,21 @@
 <?php
-
 /**
  * @file
  * Implementation of OpenLayers behavior.
  */
+
+/**
+ * Ctools plugin definition.
+ */
+$plugin = array(
+  'title' => t('PanZoom'),
+  'description' => t('Provides the ability to pan and zoom in the map interface.'),
+  'type' => 'map',
+  'behavior' => array(
+    'class' => 'openlayers_behavior_panzoom',
+    'parent' => 'openlayers_behavior',
+  ),
+);
 
 /**
  * Pan Zoom Bar Behavior

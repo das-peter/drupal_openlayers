@@ -1,9 +1,21 @@
 <?php
-
 /**
  * @file
  * Implementation of OpenLayers behavior.
  */
+
+/**
+ * Ctools plugin definition.
+ */
+$plugin = array(
+  'title' => t('Zoom to Max Extent'),
+  'description' => t('Provides button to zoom to the maximum extent of the map.'),
+  'type' => 'map',
+  'behavior' => array(
+    'class' => 'openlayers_behavior_zoomtomaxextent',
+    'parent' => 'openlayers_behavior',
+  ),
+);
 
 /**
  * Zoom to Max Extent Behavior

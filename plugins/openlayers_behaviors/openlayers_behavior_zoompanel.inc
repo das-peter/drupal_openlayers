@@ -1,9 +1,21 @@
 <?php
-
 /**
  * @file
  * Implementation of OpenLayers behavior.
  */
+
+/**
+ * Ctools plugin definition.
+ */
+$plugin = array(
+  'title' => t('Zoom Panel'),
+  'description' => t('Provides a Zoom In, Zoom Out, and Zoom to Max Extent Button'),
+  'type' => 'map',
+  'behavior' => array(
+    'class' => 'openlayers_behavior_zoompanel',
+    'parent' => 'openlayers_behavior',
+  ),
+);
 
 /**
  * Zoom Panel Behavior

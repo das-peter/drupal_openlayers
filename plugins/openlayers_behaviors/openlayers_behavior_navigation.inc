@@ -1,9 +1,21 @@
 <?php
-
 /**
  * @file
  * Implementation of OpenLayers behavior.
  */
+
+/**
+ * Ctools plugin definition.
+ */
+$plugin = array(
+  'title' => t('Navigation'),
+  'description' => t('Provides the ability to navigate the map interface.'),
+  'type' => 'map',
+  'behavior' => array(
+    'class' => 'openlayers_behavior_navigation',
+    'parent' => 'openlayers_behavior',
+  ),
+);
 
 /**
  * Navigation Behavior

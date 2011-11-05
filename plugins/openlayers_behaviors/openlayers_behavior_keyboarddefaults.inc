@@ -1,9 +1,21 @@
 <?php
-
 /**
  * @file
  * Implementation of OpenLayers behavior.
  */
+
+/**
+ * Ctools plugin definition.
+ */
+$plugin = array(
+  'title' => t('Keyboard Defaults'),
+  'description' => t('Provides keyboard shortcuts to pan and zoom the map.'),
+  'type' => 'layer',
+  'behavior' => array(
+    'class' => 'openlayers_behavior_keyboarddefaults',
+    'parent' => 'openlayers_behavior',
+  ),
+);
 
 /**
  * Keyboard Defaults Behavior

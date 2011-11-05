@@ -1,9 +1,21 @@
 <?php
-
 /**
  * @file
  * Implementation of OpenLayers behavior.
  */
+
+/**
+ * Ctools plugin definition.
+ */
+$plugin = array(
+  'title' => t('Boxselect'),
+  'description' => t('Allows the selection and display of a box.'),
+  'type' => 'map',
+  'behavior' => array(
+    'class' => 'openlayers_behavior_boxselect',
+    'parent' => 'openlayers_behavior',
+  ),
+);
 
 /**
  * BoxSelect Behavior

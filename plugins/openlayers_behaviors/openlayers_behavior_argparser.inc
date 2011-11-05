@@ -1,9 +1,22 @@
 <?php
-
 /**
  * @file
  * Implementation of OpenLayers behavior.
  */
+
+/**
+ * Ctools plugin definition.
+ */
+$plugin = array(
+  'title' => t('ArgParser'),
+  'description' => t('Parses Permalink-formatted arguments without adding a 
+    Permalink link to the map'),
+  'type' => 'layer',
+  'behavior' => array(
+    'class' => 'openlayers_behavior_argparser',
+    'parent' => 'openlayers_behavior',
+  ),
+);
 
 /**
  * Attribution Behavior

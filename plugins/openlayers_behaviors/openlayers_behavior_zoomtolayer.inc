@@ -1,9 +1,21 @@
 <?php
-
 /**
  * @file
  * Implementation of OpenLayers behavior.
  */
+
+/**
+ * Ctools plugin definition.
+ */
+$plugin = array(
+  'title' => t('Zoom to Layer'),
+  'description' => t('Zooms to the extent of a given layer on map loading.'),
+  'type' => 'layer',
+  'behavior' => array(
+    'class' => 'openlayers_behavior_zoomtolayer',
+    'parent' => 'openlayers_behavior',
+  ),
+);
 
 /**
  * Attribution Behavior

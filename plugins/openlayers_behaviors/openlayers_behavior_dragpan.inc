@@ -1,9 +1,21 @@
 <?php
-
 /**
  * @file
  * Implementation of OpenLayers behavior.
  */
+
+/**
+ * Ctools plugin definition.
+ */
+$plugin = array(
+  'title' => t('DragPan'),
+  'description' => t('Provides the ability to pan in the map interface.'),
+  'type' => 'map',
+  'behavior' => array(
+    'class' => 'openlayers_behavior_dragpan',
+    'parent' => 'openlayers_behavior',
+  ),
+);
 
 /**
  * DragPan Behavior

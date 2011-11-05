@@ -1,9 +1,21 @@
 <?php
-
 /**
  * @file
  * Implementation of OpenLayers behavior.
  */
+
+/**
+ * Ctools plugin definition.
+ */
+$plugin = array(
+  'title' => t('Fullscreen'),
+  'description' => t('Provides a button that expands maps to the size of the page.'),
+  'type' => 'map',
+  'behavior' => array(
+    'class' => 'openlayers_behavior_fullscreen',
+    'parent' => 'openlayers_behavior',
+  ),
+);
 
 /**
  * Fullscreen Behavior

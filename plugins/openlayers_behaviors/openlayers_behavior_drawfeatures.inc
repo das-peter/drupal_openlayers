@@ -1,9 +1,21 @@
 <?php
-
 /**
  * @file
  * Implementation of OpenLayers behavior.
  */
+
+/**
+ * Ctools plugin definition.
+ */
+$plugin = array(
+   'title' => t('Draw Features'),
+   'description' => t('Provides functionality for adding features to a map.'),
+   'type' => 'layer',
+   'behavior' => array(
+     'class' => 'openlayers_behavior_drawfeatures',
+     'parent' => 'openlayers_behavior',
+   ),
+);
 
 /**
  * Draw Features behavior

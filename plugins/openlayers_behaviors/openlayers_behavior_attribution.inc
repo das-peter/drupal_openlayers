@@ -1,9 +1,21 @@
 <?php
-
 /**
  * @file
  * Implementation of OpenLayers behavior.
  */
+
+/**
+ * Ctools plugin definition.
+ */
+$plugin = array(
+  'title' => t('Attribution'),
+  'description' => t('Allows layers to provide attribution to the map if it exists.'),
+  'type' => 'layer',
+  'behavior' => array(
+    'class' => 'openlayers_behavior_attribution',
+    'parent' => 'openlayers_behavior',
+  ),
+);
 
 /**
  * Attribution Behavior

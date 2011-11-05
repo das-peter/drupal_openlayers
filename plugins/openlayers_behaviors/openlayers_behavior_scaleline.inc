@@ -1,9 +1,21 @@
 <?php
-
 /**
  * @file
  * Implementation of OpenLayers behavior.
  */
+
+/**
+ * Ctools plugin definition.
+ */
+$plugin = array(
+  'title' => t('Scale Line'),
+  'description' => t('Provides a line of scale in the map interface.'),
+  'type' => 'map',
+  'behavior' => array(
+    'class' => 'openlayers_behavior_scaleline',
+    'parent' => 'openlayers_behavior',
+  ),
+);
 
 /**
  * Scaleline Behavior
