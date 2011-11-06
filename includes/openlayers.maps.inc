@@ -36,7 +36,7 @@ function _openlayers_openlayers_maps() {
       )
     ),
     'image_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/img/',
-    'image_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/style.css',
+    'css_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/style.css',
     'displayProjection' => '4326',
     'maxExtent' => openlayers_get_extent('4326'),
     'behaviors' => array(
@@ -49,7 +49,12 @@ function _openlayers_openlayers_maps() {
     'layers' => array(
       'mapquest_osm' => 'mapquest_osm',
       'mapquest_openaerial' => 'mapquest_openaerial',
-    )
+    ),
+    'styles' => array(
+      'default' => 'default',
+      'select' => 'default_select',
+      'temporary' => 'default',
+    ),
   );
   $items['default'] = $default;
   
