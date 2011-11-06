@@ -94,7 +94,7 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
    */
   function render(&$map) {
     drupal_add_js(drupal_get_path('module', 'openlayers') .
-      '/plugins/openlayers_layer_types/openlayers_layer_type_xyz.js');
+      '/plugins/layer_types/openlayers_layer_type_xyz.js');
     return $this->options;
   }
 }

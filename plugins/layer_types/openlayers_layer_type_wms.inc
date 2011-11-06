@@ -160,7 +160,7 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
    */
   function render(&$map) {
     drupal_add_js(drupal_get_path('module', 'openlayers') .
-      '/plugins/openlayers_layer_types/openlayers_layer_type_wms.js');
+      '/plugins/layer_types/openlayers_layer_type_wms.js');
     return $this->options;
   }
 }

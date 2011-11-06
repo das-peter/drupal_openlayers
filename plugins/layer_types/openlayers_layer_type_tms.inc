@@ -71,7 +71,7 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
         '#type' => 'checkbox',
         '#default_value' => $this->data['baselayer'],
         '#title' => t('BaseLayer'),
-        '#description' => t('Uncheck to make this map an overlay.')
+        '#description' => tplugins/layer_types
       ),
       'type' => array(
         '#type' => 'select',
@@ -114,7 +114,7 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
    */
   function render(&$map) {
     drupal_add_js(drupal_get_path('module', 'openlayers') .
-      '/plugins/openlayers_layer_types/openlayers_layer_type_tms.js');
+      '/plugins/layer_types/openlayers_layer_type_tms.js');
     return $this->options;
   }
 }

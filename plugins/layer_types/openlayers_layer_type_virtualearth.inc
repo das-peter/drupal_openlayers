@@ -77,7 +77,7 @@ class openlayers_layer_type_virtualearth extends openlayers_layer_type {
     
     if (!isset($virtualearth_maps_included)) {
       drupal_add_js(drupal_get_path('module', 'openlayers') .
-      '/plugins/openlayers_layer_types/openlayers_layer_type_virtualearth.js');
+      '/plugins/layer_types/openlayers_layer_type_virtualearth.js');
       drupal_add_js('http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.1',
         'external');
       $virtualearth_maps_included = TRUE;
