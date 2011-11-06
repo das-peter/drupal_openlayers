@@ -23,6 +23,8 @@ function _openlayers_test_openlayers_maps() {
     'width' => 'auto',
     'default_layer' => 'osm_mapnik',
     'height' => '400px',
+    'image_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/img/',
+    'css_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/style.css',
     'center' => array(
       'initial' => array(
         'centerpoint' => '0,0',
@@ -54,57 +56,8 @@ function _openlayers_test_openlayers_maps() {
   );
   $items['behaviors_test'] = $behaviors_test;
 
-  /*
-  // Map with popups
-  $popup_test = new stdClass();
-  $popup_test->api_version = 1;
-  $popup_test->name = 'popup_test';
-  $popup_test->title = t('Test: Popups');
-  $popup_test->description = t('This is a test map.');
-  $popup_test->data = array(
-    'projection' => '4326',
-    'projection' => '900913',
-    'width' => 'auto',
-    'default_layer' => 'osm_mapnik',
-    'height' => '400px',
-    'center' => array(
-      'initial' => array(
-        'centerpoint' => '0,0',
-        'zoom' => '2'
-      )
-    ),
-    'options' => array(
-      'displayProjection' => '4326',
-      'maxExtent' => openlayers_get_extent('4326'),
-    ),
-    'behaviors' => array(
-      'openlayers_behavior_panzoombar' => array(),
-      'openlayers_behavior_layerswitcher' => array(),
-      'openlayers_behavior_attribution' => array(),
-      'openlayers_behavior_keyboarddefaults' => array(),
-      'openlayers_behavior_navigation' => array(),
-    ),
-    'layers' => array(
-      'osm_mapnik' => 'osm_mapnik',
-    )
-  );
-  // Add features
-  $features = array();
-  for ($i = 0; $i < 30; $i++) {
-    $x = 2 + rand(-30, 30);
-    $y = 2 + rand(-30, 30);
-    $features['feature_' . $i . $j] = array(
-      'wkt' => 'POINT(' . $x . ' ' . $y . ')',
-      'projection' => '4326',
-    );
-  }
-  $popup_test->data['layers']['style_vector']['features'] = $features;
-
-  $items['popup_test'] = $popup_test;
-  */
-
+  // Map integrating a Views overlay
   $openlayers_maps_cck_views = new stdClass;
-  $openlayers_maps_cck_views->disabled = FALSE; /* Edit this to true to make a default openlayers_maps disabled initially */
   $openlayers_maps_cck_views->api_version = 1;
   $openlayers_maps_cck_views->name = 'openlayers_test_map_cck_views';
   $openlayers_maps_cck_views->title = 'Test: OpenLayers Test Views';
@@ -112,9 +65,8 @@ function _openlayers_test_openlayers_maps() {
   $openlayers_maps_cck_views->data = array(
     'width' => 'auto',
     'height' => '400px',
-    'image_path' => '',
-    'css_path' => '',
-    'proxy_host' => '',
+    'image_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/img/',
+    'css_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/style.css',
     'center' => array(
       'initial' => array(
         'centerpoint' => '0,0',
@@ -155,17 +107,18 @@ function _openlayers_test_openlayers_maps() {
     'options' => NULL,
   );
   
-  // GeoJSON ditect data example
+  // GeoJSON example
   $openlayers_maps = new stdClass;
   $openlayers_maps->disabled = FALSE;
   $openlayers_maps->api_version = 1;
   $openlayers_maps->name = 'geojson';
-  $openlayers_maps->title = 'Using GeoJSON';
+  $openlayers_maps->title = 'Test: Using GeoJSON';
   $openlayers_maps->description = 'This map uses direct data in a GeoJSON layer, as well as a URL based GeoJSON layer.';
   $openlayers_maps->data = array(
     'width' => 'auto',
     'height' => '400px',
-    'image_path' => drupal_get_path('module', 'openlayers') . '/img/default_theme/',
+    'image_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/img/',
+    'css_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/style.css',
     'center' => array(
       'initial' => array(
         'centerpoint' => '0,0',
