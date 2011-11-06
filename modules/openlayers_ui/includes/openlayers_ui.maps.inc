@@ -21,7 +21,7 @@ function openlayers_ui_maps_clone($map) {
 /**
  * Menu Callback for Add Map
  */
-function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit = FALSE) {
+function openlayers_ui_maps_form($form, &$form_state, $map = FALSE, $edit = FALSE) {
   openlayers_include();
   ctools_include('dependent');
   drupal_add_js(drupal_get_path('module', 'openlayers_ui') .
@@ -29,9 +29,7 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
   drupal_add_css(drupal_get_path('module', 'openlayers_ui') .
     '/openlayers_ui.css');
 
-  /// $map = $args['build_info']['args'][0];
-
-  // If cloning or editing, attempt to get map
+  // If cloning or editing, attempt to get map.
   $defaults = array();
   if (empty($map)) {
     $default_map = openlayers_map_load(variable_get('openlayers_default_map', 'default'));
@@ -43,6 +41,7 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
     $defaults = $map->data;
   }
 
+  // Start the form
   $form = array(
     '#tree' => TRUE,
     '#cache' => TRUE,
@@ -50,12 +49,44 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
     'default_map' => array('#type' => 'value', '#value' => $defaults),
   );
 
+  // Map preview.  It's a little in the way, so we allow the user
+  // to turn it on or off.  Show on preview, otherwise look at setting.
+  // Might want to look at disableing the mousewheel zoom since
+  // the map could be very in the way.
+  $map_preview = (isset($form_state['values']) && $form_state['values']['preview_map']) ? 
+    $form_state['values']['preview_map'] : $map;
+  if (variable_get('openlayers_ui_preview_map', FALSE) || !empty($form_state['values']['preview_map'])) {
+    $form['preview'] = array(
+      '#tree' => FALSE,
+      '#type' => 'fieldset',
+      '#title' => t('Preview'),
+      '#description' => t('The following is a preview of your map.  Click <em>Preview</em>
+        to refresh the map with the new values.  ' . 
+        (!variable_get('openlayers_ui_preview_map', FALSE) ?
+          t('Turn map previews on by default on the !link.',
+          array('!link' => l(t('Settings page'), 'admin/structure/openlayers'))) : ''
+        )
+      ),
+    );
+    $form['preview']['map'] = array(
+      '#markup' => openlayers_render_map($map_preview),
+    );
+  }
+  else {
+    $form['preview'] = array();
+    $form['preview']['map'] = array(
+      '#markup' => '<p>' . t('Turn map previews on by default on the !link.',
+        array('!link' => l(t('Settings page'), 'admin/structure/openlayers'))) . '</p>',
+    );
+  }
+
+  // Utilize vertical tabs for a better interface.
   $form['ui'] = array(
     '#type' => 'vertical_tabs',
     '#default_tab' => 'info'
   );
 
-  // General information
+  // General map information.
   $form['info'] = array(
     '#title' => t('General information'),
     '#tree' => FALSE,
@@ -268,6 +299,7 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
   //
   // Grab default from submitted form values on AHAH rebuild.
   // Start AHAH Wrapper
+  /*
   $form['layerstyles']['ahah-start'] = array('#value' => '<div id="openlayers-layers-select">');
   if (isset($form_state['values']['projections'])) {
     if ($form_state['values']['projections']['easy_projection'] == 'other') {
@@ -277,6 +309,7 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
       $defaults['projection'] = $form_state['values']['projections']['easy_projection'];
     }
   }
+  */
 
   // Projection options
   $projections = array();
@@ -486,6 +519,10 @@ function openlayers_ui_maps_form($form_state, $args = NULL, $map = FALSE, $edit 
     '#type' => 'submit',
     '#value' => t('Save')
   );
+  $form['buttons']['openlayers_preview'] = array(
+    '#type' => 'submit',
+    '#value' => t('Preview')
+  );
   $form['buttons']['openlayers_cancel'] = array(
     '#type' => 'submit',
     '#value' => t('Cancel')
@@ -591,6 +628,13 @@ function openlayers_ui_maps_form_submit($form, &$form_state) {
   // Check for cancel
   if ($form_state['clicked_button']['#id'] == 'edit-openlayers-cancel') {
     $form_state['redirect'] = 'admin/structure/openlayers/maps/list';
+  }
+
+  // On preview, process, but don't save, rebuild.
+  if ($form_state['clicked_button']['#id'] == 'edit-openlayers-preview') {
+    $map_data = openlayers_ui_maps_form_process($form_state['values']);
+    $form_state['values']['preview_map'] = $map_data;
+    $form_state['rebuild'] = TRUE;
   }
 
   // Only save if save button is pressed

@@ -44,6 +44,14 @@ function openlayers_ui_admin_settings() {
     '#default_value' => variable_get('openlayers_default_map', 'default'),
   );
 
+  $form['openlayers_ui_preview_map'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Preview Map'),
+    '#description' => t('Turning this on will show you a map preview when editing it through the !link.',
+      array('!link' => l(t('Map Interface'), 'admin/structure/openlayers/maps'))),
+    '#default_value' => variable_get('openlayers_ui_preview_map', FALSE),
+  );
+
   // Make a system setting form and return
   return system_settings_form($form);
 }
