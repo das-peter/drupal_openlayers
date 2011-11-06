@@ -102,6 +102,7 @@ function openlayers_ui_maps_form($form, &$form_state, $map = FALSE, $edit = FALS
     '#maxlength' => 255,
     '#default_value' => !empty($map->name) ? $map->name : '',
     '#disabled' => $edit,
+    '#required' => TRUE,
   );
   if ($edit) {
     $form['info']['name']['#value'] = $map->name;
@@ -112,12 +113,14 @@ function openlayers_ui_maps_form($form, &$form_state, $map = FALSE, $edit = FALS
     '#description' => t('This is the descriptive title of the map and will show up most often in the interface.'),
     '#maxlength' => 255,
     '#default_value' => !empty($map->title) ? $map->title : '',
+    '#required' => TRUE,
   );
   $form['info']['description'] = array(
     '#type' => 'textfield',
     '#title' => t('Map Description'),
     '#description' => t('This is full description of the map and is mostly used on the map overview list page.'),
     '#default_value' => !empty($map->description) ? $map->description : '',
+    '#required' => TRUE,
   );
   $form['info']['width'] = array(
     '#type' => 'textfield',
@@ -126,6 +129,7 @@ function openlayers_ui_maps_form($form, &$form_state, $map = FALSE, $edit = FALS
       the space it is given; otherwise, enter a value in pixels, like 400px.'),
     '#default_value' => !empty($defaults['width']) ? $defaults['width'] : '',
     '#maxlength' => 128,
+    '#required' => TRUE,
   );
   $form['info']['height'] = array(
     '#type' => 'textfield',
@@ -134,6 +138,7 @@ function openlayers_ui_maps_form($form, &$form_state, $map = FALSE, $edit = FALS
       like 400px.'),
     '#default_value' => !empty($defaults['height']) ? $defaults['height'] : '',
     '#maxlength' => 128,
+    '#required' => TRUE,
   );
 
   // Only show this if Openlayers Views is enabled
@@ -549,29 +554,6 @@ function openlayers_ui_maps_form_validate($form, &$form_state) {
   if ($form_state['clicked_button']['#id'] == 'edit-openlayers-projection-ahah' ||
       $form_state['clicked_button']['#id'] == 'edit-openlayers-cancel') {
     return TRUE;
-  }
-
-  // Check for values.  We manually do required fields because, it would otherwise
-  // mess with the AHAH stuff.  Maybe a way around it.
-  if (empty($values['name'])) {
-    form_set_error('name', t('Map name is required.'));
-    $found_error = TRUE;
-  }
-  if (empty($values['title'])) {
-    form_set_error('title', t('Map title is required.'));
-    $found_error = TRUE;
-  }
-  if (empty($values['description'])) {
-    form_set_error('description', t('Map description is required.'));
-    $found_error = TRUE;
-  }
-  if (empty($values['width'])) {
-    form_set_error('width', t('Width is required.'));
-    $found_error = TRUE;
-  }
-  if (empty($values['height'])) {
-    form_set_error('height', t('Height is required.'));
-    $found_error = TRUE;
   }
 
   // Check map name first
