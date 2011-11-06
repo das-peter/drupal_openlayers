@@ -46,7 +46,7 @@ class openlayers_behavior_argparser extends openlayers_behavior {
    */
   function render(&$map) {
     drupal_add_js(drupal_get_path('module', 'openlayers') . 
-      '/plugins/openlayers_behaviors/openlayers_behavior_argparser.js');
+      '/plugins/behaviors/openlayers_behavior_argparser.js');
     return $this->options;
   }
 }

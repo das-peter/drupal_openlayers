@@ -36,7 +36,7 @@ class openlayers_behavior_keyboarddefaults extends openlayers_behavior {
    */
   function render(&$map) {
     drupal_add_js(drupal_get_path('module', 'openlayers') . 
-      '/plugins/openlayers_behaviors/openlayers_behavior_keyboarddefaults.js');
+      '/plugins/behaviors/openlayers_behavior_keyboarddefaults.js');
     return $this->options;
   }
 }

@@ -42,7 +42,7 @@ class openlayers_behavior_zoompanel extends openlayers_behavior {
    */
   function render(&$map) {
     drupal_add_js(drupal_get_path('module', 'openlayers') . 
-      '/plugins/openlayers_behaviors/openlayers_behavior_zoompanel.js');
+      '/plugins/behaviors/openlayers_behavior_zoompanel.js');
     return $this->options;
   }
 }

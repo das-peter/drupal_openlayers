@@ -492,7 +492,7 @@ function openlayers_layer_type_load($name, $reset = FALSE) {
  */
 function openlayers_behaviors($reset = FALSE) {
   ctools_include('plugins');
-  return ctools_get_plugins('openlayers', 'openlayers_behaviors');
+  return ctools_get_plugins('openlayers', 'behaviors');
 }
 
 /**
