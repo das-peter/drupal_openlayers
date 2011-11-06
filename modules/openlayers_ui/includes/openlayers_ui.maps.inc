@@ -744,7 +744,8 @@ function openlayers_ui_maps_form_process($values = array()) {
         // TODO: finish port here
         $processed['default_layer'] = $values['layers']['default_layer'];
         $baselayers = array_filter($values['layers']['baselayers']);
-        $overlays = array_filter($values['layers']['overlays']);
+        $overlays = (isset($values['layers']['overlays'])) ?
+          array_filter($values['layers']['overlays']) : array();
         // Sort overlay layers by weight, in case browser didn't
         // send them already sorted
         if (isset($values['layer_weight'])) {
