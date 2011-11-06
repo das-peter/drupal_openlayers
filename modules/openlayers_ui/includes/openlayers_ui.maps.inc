@@ -153,7 +153,7 @@ function openlayers_ui_maps_form($form, &$form_state, $map = FALSE, $edit = FALS
     );
   }
   
-  $default_image_path = drupal_get_path('module', 'openlayers') . '/img/default_theme/';
+  $default_image_path = drupal_get_path('module', 'openlayers') . '/themes/default_dark/img/';
   $form['info']['image_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Image Path'),
@@ -168,7 +168,7 @@ function openlayers_ui_maps_form($form, &$form_state, $map = FALSE, $edit = FALS
           start from sites root directory, ex. "/path/to/images/"</li>
         <li><strong>Full URL</strong> such as "http://example.com/image/"</li>
       </ul>
-      <p>Always include trailing slash.  The default path provide with this module 
+      <p>Always include trailing slash.  The default path provided with this module 
       is: %default</p>
       <p><strong>This is actually a setting for the OpenLayers 
       object and will affect all maps on the same page.</strong></p>',
@@ -178,6 +178,7 @@ function openlayers_ui_maps_form($form, &$form_state, $map = FALSE, $edit = FALS
       $defaults['image_path'] : '',
   );
 
+  $default_css_path = drupal_get_path('module', 'openlayers') . '/themes/default_dark/style.css';
   $form['info']['css_path'] = array(
     '#type' => 'textfield',
     '#title' => t('CSS Path'),
@@ -193,10 +194,15 @@ function openlayers_ui_maps_form($form, &$form_state, $map = FALSE, $edit = FALS
           start from sites root directory, ex. "/path/to/style.css"</li>
         <li><strong>Full URL</strong> such as "http://example.com/style.css"</li>
       </ul>
+      <p>The default path provided with this module 
+      is: %default</p>
       <p><strong>This is actually a setting for the OpenLayers 
       object and will affect all maps on the same page.</strong></p>',
-      array('!link' => l('http://openlayers.org/api/theme/default/style.css', 
-        'http://openlayers.org/api/theme/default/style.css'))
+      array(
+        '!link' => l('http://openlayers.org/api/theme/default/style.css', 
+          'http://openlayers.org/api/theme/default/style.css'),
+        '%default' => $default_css_path,
+      )
     ),
     '#default_value' => !empty($defaults['css_path']) ?
       $defaults['css_path'] : '',
