@@ -88,7 +88,7 @@ function openlayers_ui_maps_form($form, &$form_state, $map = FALSE, $edit = FALS
 
   // General map information.
   $form['info'] = array(
-    '#title' => t('General information'),
+    '#title' => t('Basics'),
     '#tree' => FALSE,
     '#group' => 'ui',
     '#type' => 'fieldset'
@@ -469,6 +469,27 @@ function openlayers_ui_maps_form($form, &$form_state, $map = FALSE, $edit = FALS
         array_intersect_key($defaults['layer_switcher'], $overlay_options) : array(),
     );
   }
+  
+  // Data overlay help.
+  $form['layerstyles']['help_data_overlays'] = array(
+    '#type' => 'item',
+    '#description' => t('<strong>Add Data Overlays</strong>: You can add regular 
+      overlays, like <a href="!geojson">GeoJSON</a> or <a href="!kml">KML</a>, 
+      or you can utilize <a href="!views_url">Views</a> to create data overlays.  
+      To create a Views-based overlay, you must choose the <strong>OpenLayers 
+      Data Overlay Display Type</strong>, and then explicitly set the the 
+      <strong>same for the Format</strong>.  The options in the <em>Format 
+      Settings</em> will only use fields you have added. To learn more, take 
+      a look at the <a href="!online_url">online documentation on Drupal.org</a>.',
+      array(
+        '!views_url' => url('admin/structure/views'),
+        '!geojson' => url('admin/structure/openlayers/layers/add/openlayers_layer_type_geojson'),
+        '!kml' => url('admin/structure/openlayers/layers/add/openlayers_layer_type_kml'),
+        '!online_url' => url('http://drupal.org/node/595872'),
+      )
+    ),
+  );
+  
 
   // Styles
   $form['layerstyles']['styles'] = array(
@@ -513,12 +534,47 @@ function openlayers_ui_maps_form($form, &$form_state, $map = FALSE, $edit = FALS
     '#type' => 'fieldset',
     '#group' => 'ui'
   );
-
   $form['behaviors'] = $form['behaviors'] + openlayers_ui_get_behavior_options('map', $defaults);
 
-  // End AHAH Wrapper
-  $form['layerstyles']['ahah-end'] = array('#value' => '</div>');
+  // Displays
+  $form['displays'] = array(
+    '#title' => t('Displays'),
+    '#description' => t('Learn how to display your maps.'),
+    '#tree' => TRUE,
+    '#type' => 'fieldset',
+    '#group' => 'ui'
+  );
+  if (module_exists('openlayers_views')) {
+    $form['displays']['views'] = array(
+      '#type' => 'item',
+      '#title' => t('Views'),
+      '#description' => t('Utilize the <a href="!views_url">Views</a> module to 
+        display your map as page or in a block.  By creating a new Views Display of 
+        type <strong>Page</strong> or <strong>Block</strong> you can then choose 
+        the <strong>OpenLayers Map Format</strong>.  For more details, check out 
+        the <a href="!online_url">online documentation on Drupal.org</a>.',
+        array(
+          '!views_url' => url('admin/structure/views'),
+          '!online_url' => url('http://drupal.org/node/595872')
+        )
+      ),
+      '#suffix' => theme('image', array('path' => 
+        'https://img.skitch.com/20111106-c6ukwxgpgykxx8m41yrn8qew4n.png')),
+    );
+    $form['displays']['api'] = array(
+      '#type' => 'item',
+      '#title' => t('API'),
+      '#description' => t('You can always utilize the API to directly display 
+        your maps.  The key function to use is <code>openlayers_render_map()</code>.  
+        Most of the code is well documented.  To learn how to extend the module, 
+        take a look at the <a href="!online_url">online documentation on 
+        Drupal.org</a> as well as the files in the <code>docs/</code> folder.',
+        array('!online_url' => url('http://drupal.org/node/595872'))
+      ),
+    );
+  }
 
+  // Buttons
   $form['buttons'] = array('#tree' => FALSE);
   $form['buttons']['openlayers_save'] = array(
     '#type' => 'submit',
