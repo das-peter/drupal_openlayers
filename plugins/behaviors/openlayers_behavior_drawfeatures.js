@@ -11,6 +11,8 @@
    */
   Drupal.behaviors.openlayers_behavior_drawfeatures = {
     'attach': function(context, settings) {
+    
+      // Update function to write to element.
       function openlayers_behavior_drawfeatures_update(features) {
         WktWriter = new OpenLayers.Format.WKT();
         while (features.type == 'featureadded' && this.feature_limit &&
@@ -28,24 +30,24 @@
         this.element.val(WktWriter.write(features_copy.features));
       }
   
-      var data = $(context).data('openlayers'),
-          behavior = data && data.map.behaviors['openlayers_behavior_drawfeatures'];
+      // Start behavior process
+      var data = $(context).data('openlayers');
+      var behavior = data && data.map.behaviors['openlayers_behavior_drawfeatures'];
       if (!$(context).hasClass('openlayers-drawfeatures-processed') && behavior) {
+        // Create element
         var feature_types = data.map.behaviors['openlayers_behavior_drawfeatures'].feature_types;
-        this.element =
-          $('#' + data.map.behaviors['openlayers_behavior_drawfeatures'].element_id);
-        this.feature_limit =
-          data.map.behaviors['openlayers_behavior_drawfeatures'].feature_limit;
-        var dataLayer = new OpenLayers.Layer.Vector(
-          Drupal.t('Feature Layer'),
-          {
-            projection: new OpenLayers.Projection('EPSG:4326'),
-            drupalID: 'openlayers_drawfeatures_layer'
-          }
-        );
+        this.element = $('#' + data.map.behaviors['openlayers_behavior_drawfeatures'].element_id);
+        
+        // Handle vector layer for drawing on
+        this.feature_limit = data.map.behaviors['openlayers_behavior_drawfeatures'].feature_limit;
+        var dataLayer = new OpenLayers.Layer.Vector(Drupal.t('Feature Layer'), {
+          projection: new OpenLayers.Projection('EPSG:4326'),
+          drupalID: 'openlayers_drawfeatures_layer'
+        });
         dataLayer.styleMap = Drupal.openlayers.getStyleMap(data.map, 'openlayers_drawfeatures_layer');
         data.openlayers.addLayer(dataLayer);
   
+        // If there is data in there now, use to populate the layer.
         if (this.element.text() != '') {
           var wktFormat = new OpenLayers.Format.WKT();
           var features = wktFormat.read(this.element.text());
@@ -67,7 +69,7 @@
           dataLayer.addFeatures(features);
         }
   
-        // registering events late, because adding data
+        // Registering events late, because adding data
         // would result in a reprojection loop
         dataLayer.events.register('featureadded', this,
           openlayers_behavior_drawfeatures_update);
@@ -76,8 +78,7 @@
         dataLayer.events.register('featuremodified', this,
           openlayers_behavior_drawfeatures_update);
   
-  
-  
+        // Use the Editing Toolbar for creating features.
         var control = new OpenLayers.Control.EditingToolbar(dataLayer);
         data.openlayers.addControl(control);
         control.activate();
