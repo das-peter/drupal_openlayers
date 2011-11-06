@@ -84,7 +84,8 @@ div.vertical-tabs table tbody tr fieldset {
 
 #openlayers-ui-styles-form #edit-preview-style-container {
   float: right;
-  width: 300px;
+  width: 210px;
+  margin: 0 0 10px 10px;
 }
 
 .openlayers-ui-style-preview .openlayers-ui-style-preview-top,
