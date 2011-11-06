@@ -42,6 +42,15 @@ Drupal.behaviors.openlayers_ui_styles = {
       });
       vector.addFeatures([ feature ]);
       maps[id].addLayer(vector);
+      
+      // And finally, lets add a little crosshair so that
+      // the user can see how the style is centered.  If it is
+      // enabled;
+      if (Drupal.settings.openlayers_ui.style_preview[id + '_crosshairs']) {
+        $thisPreview.find('.olMapViewport')
+          .append('<div class="openlayers-ui-style-preview-top"></div>')
+          .append('<div class="openlayers-ui-style-preview-left"></div>');
+      }
     });
   }
 };

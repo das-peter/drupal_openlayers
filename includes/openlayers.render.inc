@@ -152,14 +152,7 @@ function _openlayers_styles_process($styles = array(),
   
   // Update URLs to support different types of paths
   foreach ($processed as $k => $style) {
-    if (!empty($style['externalGraphic'])) {
-      // Check full URL or absolute path
-      if (!valid_url($style['externalGraphic'], TRUE) 
-        && strpos($style['externalGraphic'], '/') !== 0) {
-        // Make full URL from Drupal path
-        $processed[$k]['externalGraphic'] = openlayers_style_path($style['externalGraphic']);
-      }
-    }
+    $processed[$k] = openlayers_render_style($style);
   }
 
   // Run through theme function
@@ -170,6 +163,26 @@ function _openlayers_styles_process($styles = array(),
 
   // Return processed
   return $processed;
+}
+
+/**
+ * Render style array.
+ *
+ * At the moment, this only makes the external grpahics
+ * relative.
+ */
+function openlayers_render_style($style = array()) {
+  // Relative path conversion
+  if (!empty($style['externalGraphic'])) {
+    // Check full URL or absolute path
+    if (!valid_url($style['externalGraphic'], TRUE) 
+      && strpos($style['externalGraphic'], '/') !== 0) {
+      // Make full URL from Drupal path
+      $style['externalGraphic'] = openlayers_style_path($style['externalGraphic']);
+    }
+  }
+  
+  return $style;
 }
 
 /**

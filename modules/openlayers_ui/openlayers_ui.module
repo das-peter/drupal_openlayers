@@ -385,9 +385,6 @@ function openlayers_ui_object_list($type) {
     case 'styles':
       $header = array(t('Preview'), t('Title'), t('Description'), t('Actions'));
       $objects = openlayers_styles(TRUE);
-      drupal_add_js(drupal_get_path('module', 'openlayers_ui') . '/js/openlayers_ui.styles.js');
-      drupal_add_css(drupal_get_path('module', 'openlayers_ui') . '/openlayers_ui.css');
-      openlayers_include();
       break;
       
     case 'layers':
@@ -416,15 +413,7 @@ function openlayers_ui_object_list($type) {
           $row[] = theme('image', array('path' => $object->data['externalGraphic']));
       	}
       	else {
-          // Let's make a tiny map for a preview
-          $row[] = '<div id="' . $object->name . '"class="openlayers-ui-style-preview"></div>';
-          drupal_add_js(array('openlayers_ui' => 
-            array(
-              'style_preview' => array(
-                $object->name => $object,
-              ),
-            ),
-          ), 'setting');
+      	  $row[] = openlayers_ui_style_preview($object);
       	}
         break;
       
@@ -740,4 +729,32 @@ function openlayers_dependency_widget($dependencies) {
     }
     return $dependency_form;
   }
+}
+
+/**
+ * Create Style Preview
+ *
+ * Create a style preview given style object.
+ */
+function openlayers_ui_style_preview($style, $crosshairs = FALSE) {
+  drupal_add_js(drupal_get_path('module', 'openlayers_ui') . '/js/openlayers_ui.styles.js');
+  drupal_add_css(drupal_get_path('module', 'openlayers_ui') . '/openlayers_ui.css');
+  module_load_include('inc', 'openlayers', 'includes/openlayers.render');
+  openlayers_include();
+  
+  // Render style data
+  $style->data = openlayers_render_style($style->data); 
+  
+  // Let's make a tiny map for a preview
+  drupal_add_js(array('openlayers_ui' => 
+    array(
+      'style_preview' => array(
+        $style->name => $style,
+        $style->name . '_crosshairs' => $crosshairs,
+      ),
+    ),
+  ), 'setting');
+  
+  // TODO: This should probably be in a theme function.
+  return '<div id="' . $style->name . '"class="openlayers-ui-style-preview"></div>';
 }
