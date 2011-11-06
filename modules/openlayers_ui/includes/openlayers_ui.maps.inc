@@ -923,7 +923,7 @@ function openlayers_ui_maps_form_center_map($defaults = array()) {
         'zoom' => 2,
       ),
     ),
-    'image_path' => drupal_get_path('module', 'openlayers') . '/img/default_theme/',
+    'image_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/img/',
     'layers' => array(
       'mapquest_osm',
     ),
