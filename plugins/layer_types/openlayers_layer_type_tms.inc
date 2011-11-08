@@ -71,7 +71,7 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
         '#type' => 'checkbox',
         '#default_value' => $this->data['baselayer'],
         '#title' => t('BaseLayer'),
-        '#description' => tplugins/layer_types
+        '#description' => t('Whether or not this layer is a base layer.'),
       ),
       'type' => array(
         '#type' => 'select',
