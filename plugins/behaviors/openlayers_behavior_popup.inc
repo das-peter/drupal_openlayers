@@ -9,7 +9,7 @@
  */
 $plugin = array(
   'title' => t('Pop Up'),
-  'description' => t('Adds clickable info boxes to points or shapes on maps.'),
+  'description' => t('Adds clickable info boxes to points or shapes on maps.  This does not work with the Tooltip behavior due to limitation of event handling in the OpenLayers library.'),
   'type' => 'layer',
   'behavior' => array(
     'file' => 'openlayers_behavior_popup.inc',
