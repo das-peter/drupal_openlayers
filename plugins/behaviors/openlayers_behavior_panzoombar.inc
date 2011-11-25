@@ -8,8 +8,8 @@
  * Ctools plugin definition.
  */
 $plugin = array(
-  'title' => t('PanZoomBar'),
-  'description' => t('Gives user ability to pan and zoom, with a zoom bar, in the map interface.'),
+  'title' => t('Pan and Zoom Bar Controls'),
+  'description' => t('Gives user ability to pan and zoom, with a full zoom bar in the map interface.  Do not use with Pan Zoom Contols or Zoom Panel Controls.'),
   'type' => 'map',
   'behavior' => array(
     'file' => 'openlayers_behavior_panzoombar.inc',
