@@ -31,9 +31,7 @@ function theme_openlayers_ui_form_projection_description($args) {
 
 function theme_openlayers_ui_maps_form_layers($args) {
   $form = $args['elements'];
-
-  $output = drupal_render($form['ahah-start']) .
-    drupal_render($form['projections']);
+  $output = '';
 
   // Base layers
   $rows = array();
