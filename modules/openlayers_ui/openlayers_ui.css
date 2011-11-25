@@ -67,6 +67,11 @@ div.vertical-tabs table tbody tr fieldset {
   position: inherit;
 }
 
+div.vertical-tabs table tbody tr.odd .form-item, 
+div.vertical-tabs table tbody tr.even .form-item {
+  white-space: normal;
+}
+
 /**
  * Style previews
  */
