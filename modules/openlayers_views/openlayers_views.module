@@ -47,16 +47,6 @@ function openlayers_views_theme($existing, $type, $theme, $path) {
       ),
       'file' => 'views/openlayers_views.views.theme.inc',
     ),
-    'openlayers_row_geometry' => array(
-      'arguments' => array(
-        'view' => '',
-        'options' => '',
-        'row' => '',
-        'field_alias' => '',
-      ),
-      'file' => 'views/openlayers_views.views.theme.inc',
-    ),
-
   );
 }
 
