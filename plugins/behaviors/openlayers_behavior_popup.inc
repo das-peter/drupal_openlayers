@@ -8,7 +8,7 @@
  * Ctools plugin definition.
  */
 $plugin = array(
-  'title' => t('Pop Up'),
+  'title' => t('Pop Up for Features'),
   'description' => t('Adds clickable info boxes to points or shapes on maps.  This does not work with the Tooltip behavior due to limitation of event handling in the OpenLayers library.'),
   'type' => 'layer',
   'behavior' => array(
