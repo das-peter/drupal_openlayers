@@ -38,7 +38,7 @@ Drupal.behaviors.openlayers_ui_styles = {
       var feature = new OpenLayers.Feature.Vector(
         new OpenLayers.Geometry.Point(point.lon, point.lat));
       var vector = new OpenLayers.Layer.Vector(Drupal.t('Preview'), {
-        styleMap: new OpenLayers.StyleMap(style),
+        styleMap: new OpenLayers.StyleMap(style)
       });
       vector.addFeatures([ feature ]);
       maps[id].addLayer(vector);
