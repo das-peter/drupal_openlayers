@@ -821,8 +821,9 @@ function openlayers_ui_maps_form_process($values = array()) {
  */
 function openlayers_ui_get_behavior_options($type, $defaults) {
   $form = array();
-
-  foreach (openlayers_behaviors() as $key => $plugin) {
+  $behaviors = openlayers_behaviors();
+  uasort($behaviors, '_openlayers_ui_sort_behaviors');
+  foreach ($behaviors as $key => $plugin) {
     // Get behavior class
     $class = ctools_plugin_load_class(
       'openlayers', 
@@ -877,6 +878,13 @@ function openlayers_ui_get_behavior_options($type, $defaults) {
     }
   }
   return $form;
+}
+
+/**
+ * Callback sorting behaviors alphabetically
+ */
+function _openlayers_ui_sort_behaviors($a, $b) {
+  return strnatcmp($a['title'], $b['title']);
 }
 
 /**
