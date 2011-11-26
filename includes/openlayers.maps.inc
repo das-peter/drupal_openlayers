@@ -18,12 +18,12 @@
 function _openlayers_openlayers_maps() {
   $items = array();
 
-  // Create full map array
+  // Defualt map with MapQuest
   $default = new stdClass();
   $default->api_version = 1;
   $default->name = 'default';
   $default->title = t('Default Map');
-  $default->description = t('This is the default map that comes with the OpenLayers module.');
+  $default->description = t('This is the default map that will be the basis for all maps, unless you have changed the !settings.  This is also a good example of a basic map.', array('!settings' => l(t('OpenLayers main settings'), 'admin/structure/openlayers')));
   $default->data = array(
     'projection' => '900913',
     'width' => 'auto',
@@ -57,6 +57,132 @@ function _openlayers_openlayers_maps() {
     ),
   );
   $items['default'] = $default;
+  
+  // An example Google map
+  $openlayers_maps = new stdClass;
+  $openlayers_maps->disabled = FALSE;
+  $openlayers_maps->api_version = 1;
+  $openlayers_maps->name = 'example_google';
+  $openlayers_maps->title = t('Example Google Map');
+  $openlayers_maps->description = t('An example map using Google Maps API layers.');
+  $openlayers_maps->data = array(
+    'width' => 'auto',
+    'height' => '400px',
+    'image_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/img/',
+    'css_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/style.css',
+    'center' => array(
+      'initial' => array(
+        'centerpoint' => '93.339846804269, 17.644019117279',
+        'zoom' => '3',
+      ),
+      'restrict' => array(
+        'restrictextent' => 0,
+        'restrictedExtent' => '',
+      ),
+    ),
+    'behaviors' => array(
+      'openlayers_behavior_attribution' => array(
+        'seperator' => '',
+      ),
+      'openlayers_behavior_keyboarddefaults' => array(),
+      'openlayers_behavior_layerswitcher' => array(
+        'ascending' => 1,
+        'roundedCorner' => 1,
+        'roundedCornerColor' => '#222222',
+      ),
+      'openlayers_behavior_navigation' => array(
+        'zoomWheelEnabled' => 1,
+        'zoomBoxEnabled' => 1,
+        'documentDrag' => 0,
+      ),
+      'openlayers_behavior_permalink' => array(
+        'anchor' => 1,
+      ),
+      'openlayers_behavior_zoompanel' => array(),
+    ),
+    'default_layer' => 'google_physical',
+    'layers' => array(
+      'google_satellite' => 'google_satellite',
+      'google_hybrid' => 'google_hybrid',
+      'google_normal' => 'google_normal',
+      'google_physical' => 'google_physical',
+    ),
+    'projection' => '900913',
+    'displayProjection' => '4326',
+    'styles' => array(
+      'default' => 'default',
+      'select' => 'default_select',
+      'temporary' => 'default',
+    ),
+  );
+  $items['default_google'] = $openlayers_maps;
+  
+  // Example map with MapQuest and GeoJSON
+  $openlayers_maps = new stdClass;
+  $openlayers_maps->disabled = FALSE;
+  $openlayers_maps->api_version = 1;
+  $openlayers_maps->name = 'example_geojson';
+  $openlayers_maps->title = t('Example GeoJSON Map');
+  $openlayers_maps->description = t('A simple map with a custom GeoJSON layer with direct data.');
+  $openlayers_maps->data = array(
+    'width' => 'auto',
+    'height' => '400px',
+    'image_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/img/',
+    'css_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/style.css',
+    'center' => array(
+      'initial' => array(
+        'centerpoint' => '0,0',
+        'zoom' => '2',
+      ),
+      'restrict' => array(
+        'restrictextent' => 0,
+        'restrictedExtent' => '',
+      ),
+    ),
+    'behaviors' => array(
+      'openlayers_behavior_attribution' => array(
+        'seperator' => '',
+      ),
+      'openlayers_behavior_keyboarddefaults' => array(),
+      'openlayers_behavior_layerswitcher' => array(
+        'ascending' => 1,
+        'roundedCorner' => 1,
+        'roundedCornerColor' => '#222222',
+      ),
+      'openlayers_behavior_navigation' => array(
+        'zoomWheelEnabled' => 1,
+        'zoomBoxEnabled' => 1,
+        'documentDrag' => 0,
+      ),
+      'openlayers_behavior_panzoombar' => array(
+        'zoomWorldIcon' => 0,
+        'panIcons' => 1,
+      ),
+      'openlayers_behavior_popup' => array(
+        'layers' => array(
+          'openlayers_geojson_picture_this' => 'openlayers_geojson_picture_this',
+        ),
+      ),
+      'openlayers_behavior_zoomtolayer' => array(
+        'zoomtolayer' => 'openlayers_geojson_picture_this',
+        'point_zoom_level' => '18',
+      ),
+    ),
+    'default_layer' => 'mapquest_openaerial',
+    'layers' => array(
+      'mapquest_osm' => 'mapquest_osm',
+      'mapquest_openaerial' => 'mapquest_openaerial',
+      'openlayers_geojson_picture_this' => 'openlayers_geojson_picture_this',
+    ),
+    'projection' => '900913',
+    'displayProjection' => '4326',
+    'styles' => array(
+      'default' => 'default',
+      'select' => 'default_select',
+      'temporary' => 'default',
+    ),
+  );
+  $items["example_geojson"] = $openlayers_maps;
   
   // Backwards compatibilty for features presets.  Since features
   // no longers cares about the preset hooks, we need to manually include

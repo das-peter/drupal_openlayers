@@ -280,6 +280,7 @@ function _openlayers_openlayers_layers() {
   );
   $layers[$layer->name] = $layer;
 
+  // MetaCarts base map
   $layer = new stdClass();
   $layer->api_version = 1;
   $layer->name = 'wms_default';
@@ -297,6 +298,43 @@ function _openlayers_openlayers_layers() {
       'layers' => array('basic'),
       'maxExtent' => openlayers_get_extent('4326'),
     ),
+  );
+  $layers[$layer->name] = $layer;
+  
+  // GeoJSON example with direct data
+  $layer = new stdClass();
+  $layer->api_version = 1;
+  $layer->name = 'openlayers_geojson_picture_this';
+  $layer->title = t('Example GeoJSON, "Picture This"');
+  $layer->description = t('Example that puts GeoJSON directly in layer without Views.');
+  $layer->data = array(
+    'layer_type' => 'openlayers_layer_type_geojson',
+    'layer_handler' => 'geojson',
+    'projection' => array('4326'),
+    'baselayer' => FALSE,
+    'vector' => TRUE,
+    'geojson_data' => '
+      {
+        "type": "Feature", 
+        "properties": {
+          "name": "' . t('Picture This') . '",
+          "description": "' . t('Outside of the North Carolina Museum of Art.') . '"
+        }, 
+        "geometry": {
+          "type": "Point", 
+          "coordinates": [
+            -78.702798,
+            35.809411
+          ]
+        }, 
+        "crs": {
+          "type": "name", 
+          "properties": {
+              "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+          }
+        }
+      }
+    ',
   );
   $layers[$layer->name] = $layer;
 

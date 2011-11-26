@@ -21,9 +21,18 @@
 }
 
 /**
+ * A few custom styles
+ */
+.openlayers-popup {
+  color: #EEEEEE;
+}
+
+
+/**
  * The following are images that are not in
  * this theme (but should be).
  */
+ 
 /*
 
 .openlayers-map .olControlOverviewMapRectReplacement {
