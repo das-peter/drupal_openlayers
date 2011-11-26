@@ -524,7 +524,7 @@ function openlayers_ui_maps_form($form, &$form_state, $map = FALSE, $edit = FALS
   // Behaviors
   $form['behaviors'] = array(
     '#title' => t('Behaviors'),
-    '#description' => t('Configure interactive map behaviors.'),
+    '#description' => t('Configure interactive map behaviors.  Behaviors are general interactions for the map, they can be anything from popups or keyboard handling.  Enable the ones you want and their respective options.  Note that some behaviors do not work with each other or one may encompass another.'),
     '#theme' => 'openlayers_ui_maps_form_behaviors',
     '#tree' => TRUE,
     '#type' => 'fieldset',
