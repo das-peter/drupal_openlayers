@@ -15,10 +15,11 @@
 function openlayers_ui_admin_settings() {
   $source_description = 
     t('By default the your site will point to a hosted version of the 
-      OpenLayers library, at %ol_api_url.  For better performance and 
+      OpenLayers library at %ol_api_url.  For better performance and 
       reliability, you should <a href="!ol_url">download the OpenLayers 
       library</a>, and add it to your Drupal installation. For instance, 
-      you could use a Drupal relative path like: %suggested_path.',
+      you could use a Drupal relative path like: %suggested_path. <br /><br />
+      The default suggested, compatible version: <strong>%ol_api_url</strong>',
       array(
         '%ol_api_url' => OPENLAYERS_DEFAULT_LIBRARY,
         '!ol_url' => 'http://openlayers.org/',

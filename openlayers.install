@@ -180,6 +180,49 @@ function openlayers_schema() {
 function openlayers_requirements($phase) {
   $req = array();
   $t = get_t();
+  
+  // We should not require a specfic version of the OpenLayers library, but
+  // we should tell the administrator that specific versions are more
+  // compatible than others.
+  if ($phase == 'runtime') {
+    $ol_library_version = 0;
+    $current_library = variable_get('openlayers_source', OPENLAYERS_DEFAULT_LIBRARY);
+    
+    // As of 2.11 as defualt, the hosted version supports the newest
+    // stable with an actual version number
+    if (strpos($current_library, '2.11') > 0) {
+      $ol_library_version = 2.11;
+    }
+    
+    // Check if it is the default hosted.
+    if ($current_library == 'http://openlayers.org/api/OpenLayers.js') {
+      $ol_library_version = OPENLAYERS_HOSTED_API_LIBRARY;
+    }
+    
+    // Check if suggest version.
+    if ($ol_library_version == OPENLAYERS_SUGGESTED_LIBRARY) {
+      $req['openlayers_old_presets'] = array(
+        'title' => $t('OpenLayers library version'), 
+        'value' => $t('Using suggested compatible version %suggested.',
+          array(
+            '%suggested' => OPENLAYERS_SUGGESTED_LIBRARY,
+          )),
+        'severity' => REQUIREMENT_OK,
+      );
+    }
+    else {
+      $req['openlayers_old_presets'] = array(
+        'title' => $t('OpenLayers library version'), 
+        'value' => $t('Not suggested compatible version.'),
+        'description' => $t('Though you are very welcome to use whatever version of the OpenLayers library you want, it is suggested that you use version %suggested.  You are currently not using that version or we are unable to determine which version you are using.  Update your library settings at !settings.',
+          array(
+            '%suggested' => OPENLAYERS_SUGGESTED_LIBRARY,
+            '!settings' => l(t('OpenLayers settings'), 'admin/structure/openlayers'),
+          )), 
+        'severity' => REQUIREMENT_WARNING,
+      );
+    }
+  }
 
   // There are some backwards compability for the shift from
   // preset to maps.  We want to communicate to administrators

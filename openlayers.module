@@ -21,6 +21,17 @@
 define('OPENLAYERS_DEFAULT_LIBRARY', 'http://openlayers.org/api/2.11/OpenLayers.js');
 
 /**
+ * OpenLayers library compatible suggestion.
+ */
+define('OPENLAYERS_SUGGESTED_LIBRARY', 2.11);
+
+/**
+ * OpenLayers hosted API version.  What version is used when going to
+ * http://openlayers.org/api/OpenLayers.js
+ */
+define('OPENLAYERS_HOSTED_API_LIBRARY', 2.11);
+
+/**
  * Implements hook_help().
  */
 function openlayers_help($path, $arg) {
