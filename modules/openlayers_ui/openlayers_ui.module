@@ -332,13 +332,6 @@ function openlayers_ui_menu() {
     'type' => MENU_LOCAL_TASK,
     'tab_parent' => 'admin/structure/openlayers/maps',
   );
-  $items['openlayers/ahah/map'] = array(
-    'title' => 'OpenLayers AHAH',
-    'page callback' => 'openlayers_ui_map_ahah',
-    'access callback' => TRUE,
-    'file' => 'includes/openlayers_ui.maps.inc',
-    'type' => MENU_CALLBACK,
-  );
 
   return $items;
 }
