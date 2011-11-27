@@ -188,15 +188,23 @@ function openlayers_requirements($phase) {
     $ol_library_version = 0;
     $current_library = variable_get('openlayers_source', OPENLAYERS_DEFAULT_LIBRARY);
     
-    // As of 2.11 as defualt, the hosted version supports the newest
-    // stable with an actual version number
-    if (strpos($current_library, '2.11') > 0) {
-      $ol_library_version = 2.11;
+    // As of 2.11, the hosted version supports the newest hosted
+    // stable with an actual version number.  This used to be just under
+    // the 'api' path.
+    if (strpos($current_library, (string) OPENLAYERS_SUGGESTED_LIBRARY) !== FALSE) {
+      $ol_library_version = OPENLAYERS_SUGGESTED_LIBRARY;
     }
     
     // Check if it is the default hosted.
     if ($current_library == 'http://openlayers.org/api/OpenLayers.js') {
       $ol_library_version = OPENLAYERS_HOSTED_API_LIBRARY;
+    }
+    
+    // Finally, let's see if the client has sent us a value
+    // from the UI module AJAX magic.
+    $client = variable_get('openlayers_ui_version_check', '');
+    if (strpos($client, (string) OPENLAYERS_SUGGESTED_LIBRARY) !== FALSE) {
+      $ol_library_version = OPENLAYERS_SUGGESTED_LIBRARY;
     }
     
     // Check if suggest version.
