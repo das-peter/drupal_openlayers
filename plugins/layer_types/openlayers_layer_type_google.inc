@@ -41,7 +41,7 @@ class openlayers_layer_type_google extends openlayers_layer_type {
       'layer_type' => 'google',
       'layer_handler' => 'google',
       'baselayer' => TRUE,
-      'animationEnabled' => FALSE,
+      'animationEnabled' => TRUE,
     );
   }
 
@@ -77,10 +77,11 @@ class openlayers_layer_type_google extends openlayers_layer_type {
       'animationEnabled' => array(
         '#type' => 'checkbox',
         '#title' => t('Animation Enabled'),
-        '#description' => t('This enables the Google Maps API zooming animation,
-          but it is suggested to keep it off as it may break your map.'),
+        '#description' => t('This enables the Google Maps API zooming animation.
+          If you are having issues with your Google layer, it may be helpful
+          to turn this off.'),
         '#default_value' => isset($this->data['animationEnabled']) ?
-          $this->data['animationEnabled'] : FALSE
+          $this->data['animationEnabled'] : TRUE
       ),
     );
   }
