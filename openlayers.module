@@ -354,6 +354,11 @@ function openlayers_layer_load($name, $reset = FALSE) {
       return $layer_object;
     }
   }
+  else {
+    watchdog('openlayers', 'Layer %layer not found.',
+      array('%layer' => $name), WATCHDOG_ERROR);
+    return FALSE;
+  }
 }
 
 /**
