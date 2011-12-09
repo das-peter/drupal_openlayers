@@ -7,6 +7,22 @@
 function _openlayers_test_openlayers_layers() {
   $layers = array();
 
+  // KML example with URL
+  $layer = new stdClass();
+  $layer->api_version = 1;
+  $layer->name = 'test_kml_url';
+  $layer->title = t('KML Test URL');
+  $layer->description = t('Testing GeoJSON layer via an URL.');
+  $layer->data = array(
+    'layer_type' => 'openlayers_layer_type_kml',
+    'layer_handler' => 'kml',
+    'projection' => array('4326'),
+    'baselayer' => FALSE,
+    'vector' => TRUE,
+    'url' => url(drupal_get_path('module', 'openlayers_test') . '/data/openlayers_test.kml'),
+  );
+  $layers[$layer->name] = $layer;
+
   // GeoJSON example with URL
   $layer = new stdClass();
   $layer->api_version = 1;
