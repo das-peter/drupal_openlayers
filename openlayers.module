@@ -347,16 +347,12 @@ function openlayers_layer_load($name, $reset = FALSE) {
   ctools_include('export');
   if ($reset) ctools_export_load_object_reset('openlayers_layers');
   $layer = ctools_export_load_object('openlayers_layers', 'names', array($name));
-  if ($layer) {
+
+  if (is_array($layer) && isset($layer[$name])) {
     $layer_object = openlayers_get_layer_object($layer[$name]);
     if (openlayers_layer_sanity_check($layer_object)) {
       return $layer_object;
     }
-  }
-  else {
-    watchdog('openlayers', 'Layer %layer not found.',
-      array('%layer' => $name), WATCHDOG_ERROR);
-    return FALSE;
   }
 }
 
