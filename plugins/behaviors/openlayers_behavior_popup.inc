@@ -50,7 +50,7 @@ class openlayers_behavior_popup extends openlayers_behavior {
         '#type' => 'checkboxes',
         '#options' => $vector_layers,
         '#description' => t('Select layer to apply popups to.'),
-        '#default_value' => isset($defaults['layers']) ? 
+        '#default_value' => isset($defaults['layers']) ?
           $defaults['layers'] : array(),
       ),
     );
@@ -60,7 +60,7 @@ class openlayers_behavior_popup extends openlayers_behavior {
    * Render.
    */
   function render(&$map) {
-    drupal_add_js(drupal_get_path('module', 'openlayers') . 
+    drupal_add_js(drupal_get_path('module', 'openlayers') .
       '/plugins/behaviors/openlayers_behavior_popup.js');
     return $this->options;
   }

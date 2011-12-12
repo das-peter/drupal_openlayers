@@ -129,27 +129,27 @@ class openlayers_layer_type_google extends openlayers_layer_type {
    */
   function render(&$map) {
     static $google_maps_included;
-    
+
     if (!isset($google_maps_included)) {
       // Include files.
-      drupal_add_js(drupal_get_path('module', 'openlayers') . 
+      drupal_add_js(drupal_get_path('module', 'openlayers') .
         '/plugins/layer_types/openlayers_layer_type_google.js');
-        
+
       $version = variable_get('openlayers_google_version', '3.5');
       if ($version == '2') {
         // Create URL for google include
         $url = 'http://maps.google.com/maps?file=api&sensor=false&v=' . $version;
         $key = variable_get('openlayers_layers_google_api', variable_get('googlemap_api_key', ''));
-        $url = !empty($key) ? '&key=' . $key : '';  
+        $url = !empty($key) ? '&key=' . $key : '';
       }
       else {
         // Create URL for google include
         $url = 'http://maps.google.com/maps/api/js?sensor=false&v=' . $version;
       }
-      
+
       $lang = variable_get('openlayers_layers_google_language', '');
       $url .= !empty($lang) ? '&hl=' . $lang : '';
-      
+
       drupal_add_js($url, 'external');
       $google_maps_included = TRUE;
     }

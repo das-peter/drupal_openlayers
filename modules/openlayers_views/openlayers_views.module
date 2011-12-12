@@ -2,7 +2,7 @@
 
 /**
  * @file
- * This file holds the main Drupal hook functions 
+ * This file holds the main Drupal hook functions
  * and private functions for the openlayers_views module.
  *
  * @ingroup openlayers
@@ -107,9 +107,9 @@ function openlayers_views_openlayers_layers() {
         $layer = new stdClass();
         $layer->api_version = 1;
         $layer->name = $view->name . '_' . $display;
-        $layer->title = 
+        $layer->title =
           !empty($view->display['default']->handler->options['title']) ?
-            $view->display['default']->handler->options['title'] : 
+            $view->display['default']->handler->options['title'] :
             $view->name;
         $layer->description = $view->description . ' - ' . $data->display_title;
         $layer->data = array(
@@ -143,11 +143,11 @@ function openlayers_views_form_alter(&$form, $form_state, $form_id) {
         if (module_exists('views_ui')) {
           $form['export'] = array(
             '#value' => t(
-              'This layer is provided by a view, so it must be exported via the 
-              Views interface as a view. <a href="@url">Export this view 
+              'This layer is provided by a view, so it must be exported via the
+              Views interface as a view. <a href="@url">Export this view
               using the views module.</a>',
               array(
-                '@url' => url('admin/structure/views/export/' . 
+                '@url' => url('admin/structure/views/export/' .
                 $form['#parameters'][3]->data['views']['view'])
               )
             )
@@ -157,8 +157,8 @@ function openlayers_views_form_alter(&$form, $form_state, $form_id) {
         else {
           $form['export'] = array(
             '#value' => t(
-              'This layer is provided by a view, so it must be exported via the 
-              Views interface as a view. Enable the Views UI 
+              'This layer is provided by a view, so it must be exported via the
+              Views interface as a view. Enable the Views UI
               module to export it.'));
           unset($form['done']);
         }
@@ -166,12 +166,12 @@ function openlayers_views_form_alter(&$form, $form_state, $form_id) {
       break;
     case 'openlayers_ui_layers_form':
       // prevent cloning in the openlayers interface
-      if (isset($form['#parameters'][2]->data['layer_type']) && 
+      if (isset($form['#parameters'][2]->data['layer_type']) &&
         $form['#parameters'][2]->data['layer_type'] == 'openlayers_views_vector') {
         $form = array(
           'message' => array(
             '#value' => t(
-              'This layer is provided by a view, so it can be cloned by cloning 
+              'This layer is provided by a view, so it can be cloned by cloning
               the view in the <a href="@url">Views interface.</a>',
               array(
                 '@url' => url('admin/structure/views/')

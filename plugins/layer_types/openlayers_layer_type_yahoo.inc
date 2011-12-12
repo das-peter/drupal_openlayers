@@ -55,7 +55,7 @@ class openlayers_layer_type_yahoo extends openlayers_layer_type {
       'street' => 'Street',
       'satellite' => 'Satellite',
     );
-    
+
     return array(
       'type' => array(
         '#title' => t('Yahoo Layer Type'),
@@ -88,7 +88,7 @@ class openlayers_layer_type_yahoo extends openlayers_layer_type {
    */
   function render(&$map) {
     static $yahoo_maps_included;
-    
+
     if (!isset($yahoo_maps_included)) {
       drupal_add_js(drupal_get_path('module', 'openlayers') .
         '/plugins/layer_types/openlayers_layer_type_yahoo.js');

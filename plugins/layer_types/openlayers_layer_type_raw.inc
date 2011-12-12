@@ -9,8 +9,8 @@
  */
 $plugin = array(
   'title' => t('Raw'),
-  'description' => t('Layer type for raw data input - 
-    not meant to be added with the UI.' 
+  'description' => t('Layer type for raw data input -
+    not meant to be added with the UI.'
   ),
   'layer_type' => array(
     'file' => 'openlayers_layer_type_raw.inc',

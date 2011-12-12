@@ -115,7 +115,7 @@ function openlayers_ui_get_layer_form($args, $layer = FALSE) {
   // TODO: this shouldn't be necessary. this is ugly code.
   $type = $args['build_info']['args'][0];
 
-  
+
   $form['basics'] = array(
     '#tree' => TRUE,
     '#type' => 'fieldset',
@@ -141,7 +141,7 @@ function openlayers_ui_get_layer_form($args, $layer = FALSE) {
     '#default_value' => isset($type->description) ? $type->description : '',
     '#description' => t('The description of your layer, which will appear in the administration interface.'),
   );
-  
+
   // @TODO: clarify use of data, and of layer_type in overriding it
   $form['data'] = array(
     '#tree' => TRUE,
@@ -165,7 +165,7 @@ function openlayers_ui_get_layer_type_options($type) {
     '#type' => 'item',
     '#markup' => t('Select a layer type to create a new layer.')
   );
-  
+
   foreach (openlayers_layer_types() as $key => $plugin) {
     $class = ctools_plugin_get_class($plugin, 'layer_type');
     if ($class) {

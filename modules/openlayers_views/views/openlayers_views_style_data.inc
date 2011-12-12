@@ -15,7 +15,7 @@
  * a style plugin for the Open Layers module.
  */
 class openlayers_views_style_data extends views_plugin_style {
- 
+
    /**
    * Render the map features.
    *
@@ -24,7 +24,7 @@ class openlayers_views_style_data extends views_plugin_style {
   function render($result) {
     $grouped_results = $this->render_grouping($result, $this->options['grouping']);
     $data = $this->map_features($grouped_results);
-    
+
     // If we are not in preview, just return the data
     if (empty($this->view->live_preview)) {
       return $data;
@@ -40,14 +40,14 @@ class openlayers_views_style_data extends views_plugin_style {
         }
       }
       $output .= "\n------------\n";
-      
+
       $output .= t('The following is a dump of the data that is rendered from this display. It is used for debugging purposes only.') . '
         ' . var_export($data, TRUE);
-      
+
       return $output;
     }
   }
-   
+
   /**
    * Set default options
    *
@@ -180,25 +180,25 @@ class openlayers_views_style_data extends views_plugin_style {
         '#options' => array_merge(array('' => ''), $fields),
         '#default_value' => $this->options['data_source']['name_field'],
     );
-    
+
     // For node content type, we can render the node as with a specific
     // view mode.
     if ($this->view->base_table == 'node') {
       $form['data_source']['description_field'] = array(
           '#type' => 'select',
           '#title' => t('Description Content'),
-          '#description' => t('Choose the field or rendering method which will 
+          '#description' => t('Choose the field or rendering method which will
             appear as a description on tooltips or popups.'),
           '#required' => FALSE,
           '#options' => array_merge(array(
-            '' => '', 
-            '#row' => '<' . t('entire row') . '>', 
+            '' => '',
+            '#row' => '<' . t('entire row') . '>',
             '#node' => '<' . t('entire node') . '>'
           ), $fields),
           '#default_value' => $this->options['data_source']['description_field'],
       );
-  
-      // Available_view_modes is the array to contain the avaible 
+
+      // Available_view_modes is the array to contain the avaible
       // view modes, for now this is not content type aware, but should be
       $available_view_modes = array();
       $entity_info = entity_get_info();
@@ -216,7 +216,7 @@ class openlayers_views_style_data extends views_plugin_style {
         '#title' => t('View mode'),
         '#description' => t('View modes are ways of displaying nodes.'),
         '#options' => $entities_to_display,
-        '#default_value' => !empty($this->options['data_source']['view_mode']) ? 
+        '#default_value' => !empty($this->options['data_source']['view_mode']) ?
           $this->options['data_source']['view_mode'] : 'full',
         '#states' => array(
           'visible' => array(
@@ -293,7 +293,7 @@ class openlayers_views_style_data extends views_plugin_style {
             $attributes[$hid] = isset($handler->original_value) ? $handler->original_value : NULL;
           }
         }
-        
+
         // Handle rendering the whole record.
         if ($this->options['data_source']['description_field'] === '#row') {
           $attributes['#row_rendered'] = $this->row_plugin->render($record);
@@ -315,7 +315,7 @@ class openlayers_views_style_data extends views_plugin_style {
         $features = $this->reduce_features($this->options['grouping'], $features, $feature, $title);
       }
     }
-    
+
     // For grouping, handle a bit differently.
     if ($this->options['grouping']) {
       $features = $this->coalesce_groups($features, $handlers, $this->options['data_source']);
@@ -335,7 +335,7 @@ class openlayers_views_style_data extends views_plugin_style {
   function datasource_dependent($type) {
     return array('visible' => array('#edit-style-options-data-source-value' => array('value' => $type)));
   }
-  
+
   /**
    * Find the data source of an element and pull it into a wkt field
    *
@@ -360,7 +360,7 @@ class openlayers_views_style_data extends views_plugin_style {
    * openlayers_views_style_data specific
    */
   function coalesce_groups($features, $handlers, $ds) {
-    
+
     // Combine wkt into geometry collections if they are an array
     foreach ($features as &$feature) {
       if (is_array($feature['wkt'])) {
@@ -372,36 +372,36 @@ class openlayers_views_style_data extends views_plugin_style {
         }
       }
     }
-    
+
     // Process title and description for groups
     foreach ($features as $k => &$feature) {
       $feature['attributes']['name'] = $k;
       $feature['attributes'] = array_merge($feature['attributes'], $feature['features'][0]['attributes']);
-      
+
       $formatted_features = array();
       foreach ($feature['features'] as $subfeature) {
-        
-        // Create name and description attributes.  Note that there are a 
+
+        // Create name and description attributes.  Note that there are a
         // couple exceptions to using fields.
         $exceptions = array('#row', '#node');
-      
+
         // Run the output through a theme.
         $formatted_features[] = theme('openlayers_views_group_display_item',
           array(
-            'name' => isset($handlers[$ds['name_field']]) ? 
+            'name' => isset($handlers[$ds['name_field']]) ?
               $subfeature['attributes'][$ds['name_field'] . '_rendered'] : false,
-            'description' => (in_array($ds['description_field'], $exceptions) || 
-              isset($handlers[$ds['description_field']])) ? 
+            'description' => (in_array($ds['description_field'], $exceptions) ||
+              isset($handlers[$ds['description_field']])) ?
               $subfeature['attributes'][$ds['description_field'] . '_rendered'] : false
           )
         );
-        
+
         // Remove rendered rows to keep data size down for JS.
         if (in_array($ds['description_field'], $exceptions)) {
           unset($subfeature['attributes'][$ds['description_field'] . '_rendered']);
         }
       }
-      
+
       // Then run all gathered features through item_ist theme.
       $feature['attributes']['description'] = theme('item_list',
         array('items' => $formatted_features)
@@ -409,10 +409,10 @@ class openlayers_views_style_data extends views_plugin_style {
     }
     return $features;
   }
-  
+
   /**
    * Combine all group wkt into a single geometry collection
-   * 
+   *
    * openlayers_views_style_data specific
    */
   function get_group_wkt($wkt_array) {
@@ -470,7 +470,7 @@ class openlayers_views_style_data extends views_plugin_style {
           break;
         case 'GEOME':
           $output .= trim(substr($wkt,18,-1));
-          break;  
+          break;
       }
       $i++;
     }
@@ -480,7 +480,7 @@ class openlayers_views_style_data extends views_plugin_style {
 
   /**
    * Retrieve name and description for individual features when grouping is not enabled.
-   * 
+   *
    * openlayers_views_style_data specific
    */
   function add_title_desc($features, $handlers, $ds) {
@@ -489,13 +489,13 @@ class openlayers_views_style_data extends views_plugin_style {
       if (isset($handlers[$ds['name_field']])) {
         $f['attributes']['name'] = $f['attributes'][$ds['name_field'] . '_rendered'];
       }
-      
+
       // Create description attribute.  Note that there are a couple
       // exceptions to using fields
       $exceptions = array('#row', '#node');
       if (in_array($ds['description_field'], $exceptions) || isset($handlers[$ds['description_field']])) {
         $f['attributes']['description'] = $f['attributes'][$ds['description_field'] . '_rendered'];
-        
+
         // Remove rendered row to keep data size down for JS.
         if (in_array($ds['description_field'], $exceptions)) {
           unset($f['attributes'][$ds['description_field'] . '_rendered']);
@@ -517,7 +517,7 @@ class openlayers_views_style_data extends views_plugin_style {
   /**
    * Basically an algebraic reduction; given whether to group,
    * a feature, a list of features, etc., return a full $features
-   * array with the element added, either straight non-grouped, 
+   * array with the element added, either straight non-grouped,
    * or within a new or existing group
    *
    * openlayers_views_style_data specific
@@ -545,5 +545,5 @@ class openlayers_views_style_data extends views_plugin_style {
       return $features;
     }
   }
-  
+
 }

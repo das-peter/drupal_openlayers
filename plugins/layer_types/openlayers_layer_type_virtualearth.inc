@@ -59,9 +59,9 @@ class openlayers_layer_type_virtualearth extends openlayers_layer_type {
    */
   function settings_form() {
     return array();
-    
+
     // This is not actually used anywhere.
-    
+
     /*
     return array(
       'openlayers_layers_virtualearth_api' => array(
@@ -80,7 +80,7 @@ class openlayers_layer_type_virtualearth extends openlayers_layer_type {
    */
   function render(&$map) {
     static $virtualearth_maps_included;
-    
+
     if (!isset($virtualearth_maps_included)) {
       drupal_add_js(drupal_get_path('module', 'openlayers') .
       '/plugins/layer_types/openlayers_layer_type_virtualearth.js');

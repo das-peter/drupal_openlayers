@@ -38,7 +38,7 @@ class openlayers_behavior_dragpan extends openlayers_behavior {
 
   function options_form($defaults) {
     $form = array();
-    
+
     // This options seem to be buggy.  Shoudl look into more.
     /*
     $form = array(
@@ -56,7 +56,7 @@ class openlayers_behavior_dragpan extends openlayers_behavior {
       ),
     );
     */
-    
+
     return $form;
   }
 
@@ -64,7 +64,7 @@ class openlayers_behavior_dragpan extends openlayers_behavior {
    * Render.
    */
   function render(&$map) {
-    drupal_add_js(drupal_get_path('module', 'openlayers') . 
+    drupal_add_js(drupal_get_path('module', 'openlayers') .
       '/plugins/behaviors/openlayers_behavior_dragpan.js');
     return $this->options;
   }

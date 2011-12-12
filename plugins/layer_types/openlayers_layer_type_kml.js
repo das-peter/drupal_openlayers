@@ -29,7 +29,7 @@ Drupal.openlayers.layer.kml = function(title, map, options) {
       layer.addFeatures(features);
     }
   });
-  
+
   // Extend options with a Fixed strategy fo getting from URL.
   //
   // This seems a bit more natural but does not

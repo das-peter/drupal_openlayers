@@ -42,13 +42,13 @@ class openlayers_behavior_panzoombar extends openlayers_behavior {
         '#type' => 'checkbox',
         '#title' => t('World Icon'),
         '#description' => t('This puts the world icon in the pan controls.  This button will zoom to the max extent when it is pressed.'),
-        '#default_value' => isset($defaults['zoomWorldIcon']) ? $defaults['zoomWorldIcon'] : FALSE 
+        '#default_value' => isset($defaults['zoomWorldIcon']) ? $defaults['zoomWorldIcon'] : FALSE
       ),
       'panIcons' => array(
         '#type' => 'checkbox',
         '#title' => t('Pan Icons'),
         '#description' => t('Enable the pan controls.  Without it, then the user will only see a zoom bar.'),
-        '#default_value' => isset($defaults['panIcons']) ? $defaults['panIcons'] : TRUE 
+        '#default_value' => isset($defaults['panIcons']) ? $defaults['panIcons'] : TRUE
       ),
     );
   }
@@ -57,7 +57,7 @@ class openlayers_behavior_panzoombar extends openlayers_behavior {
    * Render.
    */
   function render(&$map) {
-    drupal_add_js(drupal_get_path('module', 'openlayers') . 
+    drupal_add_js(drupal_get_path('module', 'openlayers') .
       '/plugins/behaviors/openlayers_behavior_panzoombar.js');
     return $this->options;
   }

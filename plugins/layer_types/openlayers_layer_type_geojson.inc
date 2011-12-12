@@ -9,7 +9,7 @@
  */
 $plugin = array(
   'title' => t('GeoJSON'),
-  'description' => t('Provides a vector layer based on <a href="!url">GeoJSON</a>.', 
+  'description' => t('Provides a vector layer based on <a href="!url">GeoJSON</a>.',
     array('!url' => 'http://geojson.org/')),
   'layer_type' => array(
     'file' => 'openlayers_layer_type_geojson.inc',
@@ -54,7 +54,7 @@ class openlayers_layer_type_geojson extends openlayers_layer_type {
       'url' => array(
         '#type' => 'textfield',
         '#title' => t('URL'),
-        '#description' => t('The URL of the GeoJSON file.  This can be a Drupal path as well, as it will get run through the Drupal <a href="!url">url()</a> function.', 
+        '#description' => t('The URL of the GeoJSON file.  This can be a Drupal path as well, as it will get run through the Drupal <a href="!url">url()</a> function.',
           array('!url' => 'http://api.drupal.org/api/drupal/includes--common.inc/function/url')),
         '#maxlength' => 1024,
         '#default_value' => isset($this->data['url']) ? $this->data['url'] : ''
@@ -78,7 +78,7 @@ class openlayers_layer_type_geojson extends openlayers_layer_type {
   function render(&$map) {
     $this->options['url'] = !empty($this->options['url']) ? url($this->options['url']) : '';
 
-    drupal_add_js(drupal_get_path('module', 'openlayers') 
+    drupal_add_js(drupal_get_path('module', 'openlayers')
       . '/plugins/layer_types/openlayers_layer_type_geojson.js');
     return $this->options;
   }

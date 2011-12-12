@@ -33,13 +33,13 @@ class openlayers_behavior_drawfeatures extends openlayers_behavior {
     );
   }
 
-  function options_form($defaults) {  
+  function options_form($defaults) {
     $features = array(
       'point' => t('Point'),
       'path' => t('Path'),
       'polygon' => t('Polygon'),
     );
-      
+
     return array(
       'feature_types' => array(
         '#title' => t('Available Features'),
@@ -51,9 +51,9 @@ class openlayers_behavior_drawfeatures extends openlayers_behavior {
       'feature_limit' => array(
         '#title' => t('Number of features'),
         '#type' => 'textfield',
-        '#description' => t('The number of features that are allowed to be 
+        '#description' => t('The number of features that are allowed to be
           drawn. Leave blank or at 0 for unlimited.'),
-        '#default_value' => isset($defaults['feature_limit']) ? 
+        '#default_value' => isset($defaults['feature_limit']) ?
           $defaults['feature_limit'] : 0,
       ),
       'element_id' => array(
@@ -70,9 +70,9 @@ class openlayers_behavior_drawfeatures extends openlayers_behavior {
    * Render.
    */
   function render(&$map) {
-    drupal_add_css(drupal_get_path('module', 'openlayers')  . 
+    drupal_add_css(drupal_get_path('module', 'openlayers')  .
       '/plugins/behaviors/openlayers_behavior_drawfeatures.css');
-    drupal_add_js(drupal_get_path('module', 'openlayers') . 
+    drupal_add_js(drupal_get_path('module', 'openlayers') .
       '/plugins/behaviors/openlayers_behavior_drawfeatures.js');
     return $this->options;
   }

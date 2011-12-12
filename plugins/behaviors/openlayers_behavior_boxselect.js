@@ -6,7 +6,7 @@
 (function ($) {
   /**
    * Box Select Behavior.  Allows user to select a bounding box.
-   * 
+   *
    * TODO: This is currently hard coded for the center UI form.
    */
   Drupal.openlayers.addBehavior('openlayers_behavior_boxselect', function (data, options) {
@@ -36,7 +36,7 @@
     control.events.on({'featureAdded': this.setRestrictedExtent});
     data.openlayers.addLayer(selections_layer);
     data.openlayers.addControl(control);
-    
+
     // If there already is a value, then update the map appropriately.
     if ($('#edit-center-restrict-restrictedextent').val()) {
       bounds = $('#edit-center-restrict-restrictedextent').val();
