@@ -47,7 +47,9 @@ class openlayers_views_style_map extends views_plugin_style {
    * Query - override to make sure this doesn't get run
    */
   function query() {
-    $this->view->query->fields = array();
+    if (isset($this->view->query->fields)) {
+      $this->view->query->fields = array();
+    }
     $this->view->executed = TRUE;
   }
 
