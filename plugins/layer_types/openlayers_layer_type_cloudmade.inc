@@ -49,7 +49,7 @@ class openlayers_layer_type_cloudmade extends openlayers_layer_type {
   /**
    * Options form which generates layers
    */
-  function options_form() {
+  function options_form($defaults = array()) {
     $warning = (!variable_get('openlayers_layers_cloudmade_js', FALSE) ||
       !variable_get('openlayers_layers_cloudmade_api', FALSE)) ?
         array(

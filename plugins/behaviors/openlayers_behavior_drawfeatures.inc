@@ -33,7 +33,7 @@ class openlayers_behavior_drawfeatures extends openlayers_behavior {
     );
   }
 
-  function options_form($defaults) {
+  function options_form($defaults = array()) {
     $features = array(
       'point' => t('Point'),
       'path' => t('Path'),

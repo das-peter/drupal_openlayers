@@ -53,7 +53,7 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
   /**
    * Options form which generates layers
    */
-  function options_form() {
+  function options_form($defaults = array()) {
     return array(
       'base_url' => array(
         '#type' => 'textfield',

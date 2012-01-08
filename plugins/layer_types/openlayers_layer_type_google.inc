@@ -48,7 +48,7 @@ class openlayers_layer_type_google extends openlayers_layer_type {
   /**
    * Options form which generates layers
    */
-  function options_form() {
+  function options_form($defaults = array()) {
     $google_layer_types = array(
       'hybrid' => 'Hybrid',
       'normal' => 'Normal',

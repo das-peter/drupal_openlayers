@@ -35,7 +35,7 @@ class openlayers_behavior_scaleline extends openlayers_behavior {
     return array('OpenLayers.Control.ScaleLine');
   }
 
-  function options_form($defaults) {
+  function options_form($defaults = array()) {
     return array();
   }
 

@@ -43,7 +43,7 @@ class openlayers_behavior_cluster extends openlayers_behavior {
   /**
    * Provide form for configurations per map.
    */
-  function options_form($defaults) {
+  function options_form($defaults = array()) {
     // Only prompt for vector layers
     $vector_layers = array();
     foreach ($this->map['layers'] as $id => $name) {

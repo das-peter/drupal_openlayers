@@ -34,7 +34,7 @@ class openlayers_behavior_fullscreen extends openlayers_behavior {
   /**
    * Provide form for configurations per map.
    */
-  function options_form($defaults) {
+  function options_form($defaults = array()) {
     return array(
       'activated' => array(
         '#title' => t('Initially activated'),

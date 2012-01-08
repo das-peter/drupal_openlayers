@@ -38,7 +38,7 @@ class openlayers_behavior_geolocate extends openlayers_behavior {
     );
   }
 
-  function options_form($defaults) {
+  function options_form($defaults = array()) {
     $intials = $this->options_init();
 
     return array(

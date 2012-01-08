@@ -38,7 +38,7 @@ class openlayers_behavior_navigation extends openlayers_behavior {
     return array('OpenLayers.Control.Navigation');
   }
 
-  function options_form($defaults) {
+  function options_form($defaults = array()) {
     return array(
       'zoomWheelEnabled' => array(
         '#type' => 'checkbox',

@@ -33,7 +33,7 @@ class openlayers_layer_type_openlayers_views_vector
   /**
    * Options form which generates layers
    */
-  function options_form() {
+  function options_form($defaults = array()) {
     return array(
     );
   }

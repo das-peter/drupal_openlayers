@@ -21,8 +21,8 @@ class openlayers_views_style_data extends views_plugin_style {
    *
    * Overrides views_plugin_style->render
    */
-  function render($result) {
-    $grouped_results = $this->render_grouping($result, $this->options['grouping']);
+  function render() {
+    $grouped_results = $this->render_grouping($this->view->result, $this->options['grouping']);
     $data = $this->map_features($grouped_results);
 
     // If we are not in preview, just return the data

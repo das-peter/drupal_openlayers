@@ -35,7 +35,7 @@ class openlayers_behavior_zoombox extends openlayers_behavior {
     return array('OpenLayers.Control.ZoomBox');
   }
 
-  function options_form($defaults) {
+  function options_form($defaults = array()) {
     return array();
   }
 

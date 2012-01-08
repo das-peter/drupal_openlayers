@@ -36,7 +36,7 @@ class openlayers_behavior_panzoombar extends openlayers_behavior {
     return array('OpenLayers.Control.PanZoomBar');
   }
 
-  function options_form($defaults) {
+  function options_form($defaults = array()) {
     return array(
       'zoomWorldIcon' => array(
         '#type' => 'checkbox',

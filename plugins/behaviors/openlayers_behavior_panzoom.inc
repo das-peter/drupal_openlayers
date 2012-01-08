@@ -31,7 +31,7 @@ class openlayers_behavior_panzoom extends openlayers_behavior {
     );
   }
 
-  function options_form($defaults) {
+  function options_form($defaults = array()) {
     return array(
     );
   }

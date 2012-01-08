@@ -35,7 +35,7 @@ class openlayers_behavior_attribution extends openlayers_behavior {
     return array('OpenLayers.Control.Attribution');
   }
 
-  function options_form($defaults) {
+  function options_form($defaults = array()) {
     return array(
       'seperator' => array(
         '#type' => 'textfield',

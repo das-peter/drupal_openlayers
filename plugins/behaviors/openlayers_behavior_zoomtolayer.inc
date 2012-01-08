@@ -31,7 +31,7 @@ class openlayers_behavior_zoomtolayer extends openlayers_behavior {
     );
   }
 
-  function options_form($defaults) {
+  function options_form($defaults = array()) {
     return array(
       'zoomtolayer' => array(
         '#type' => 'select',

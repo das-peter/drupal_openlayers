@@ -44,7 +44,7 @@ class openlayers_layer_type_yahoo extends openlayers_layer_type {
   /**
    * Options form which generates layers
    */
-  function options_form() {
+  function options_form($defaults = array()) {
     $warning = (!variable_get('openlayers_layers_yahoo_api', FALSE)) ?
       array('#value' => t('WARNING: Your Yahoo API key is not set.
         Map including Yahoo layers will break until it is set correctly.')

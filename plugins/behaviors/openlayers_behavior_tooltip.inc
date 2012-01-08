@@ -35,7 +35,7 @@ class openlayers_behavior_tooltip extends openlayers_behavior {
   /**
    * Form defintion for per map customizations.
    */
-  function options_form($defaults) {
+  function options_form($defaults = array()) {
     // Only prompt for vector layers
     $vector_layers = array();
     foreach ($this->map['layers'] as $id => $name) {

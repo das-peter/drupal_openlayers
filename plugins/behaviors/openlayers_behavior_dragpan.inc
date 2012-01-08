@@ -36,7 +36,7 @@ class openlayers_behavior_dragpan extends openlayers_behavior {
     return array('OpenLayers.Control.DragPan');
   }
 
-  function options_form($defaults) {
+  function options_form($defaults = array()) {
     $form = array();
 
     // This options seem to be buggy.  Shoudl look into more.

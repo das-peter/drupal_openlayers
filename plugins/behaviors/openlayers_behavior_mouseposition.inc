@@ -39,7 +39,7 @@ class openlayers_behavior_mouseposition extends openlayers_behavior {
     return array('OpenLayers.Control.MousePosition');
   }
 
-  function options_form($defaults) {
+  function options_form($defaults = array()) {
     return array(
       'prefix' => array(
         '#title' => t('Prefix'),

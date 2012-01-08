@@ -45,7 +45,7 @@ class openlayers_layer_type_virtualearth extends openlayers_layer_type {
   /**
    * Options form which generates layers
    */
-  function options_form() {
+  function options_form($defaults = array()) {
     return array(
       'layer_type' => array(
         '#type' => 'hidden',
