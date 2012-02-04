@@ -206,7 +206,7 @@ class openlayers_views_style_data extends views_plugin_style {
       $view_modes_machine_names[] = array_keys($entity_info['node']['view modes']);
       // Get the labels (human readable) of the view modes
       foreach ($entity_info['node']['view modes'] as $key => $view_mode) {
-        $view_modes_labels[] = $view_mode[label];
+        $view_modes_labels[] = $view_mode['label'];
       }
       // Combine the machine view mode name with the label, this could sure be done much better?
       $entities_to_display = array_combine($view_modes_machine_names[0], $view_modes_labels);
