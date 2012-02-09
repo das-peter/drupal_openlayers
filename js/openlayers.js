@@ -160,7 +160,7 @@ Drupal.openlayers = {
       sorted.push({'name': name, 'weight': map.layers[name].weight });
     }
     sorted.sort(function(a, b) {
-      var x = a.weight, y = b.weight;
+      var x = parseInt(a.weight, 10), y = parseInt(b.weight, 10);
       return ((x < y) ? -1 : ((x > y) ? 1 : 0));
     });
 
