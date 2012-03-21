@@ -13,12 +13,13 @@ Drupal.openlayers.addBehavior('openlayers_behavior_zoomtolayer', function (data,
   // Go through selected layers to get full extent.
   for (var i in layers) {
     if (layers[i].features !== undefined) {
+      var zoomtolayer_scale = data.map.behaviors['openlayers_behavior_zoomtolayer'].zoomtolayer_scale;
       // For KML layers, we need to wait until layer is loaded.  Ideally
       // we could check for any layer that is loading from an external
       // source, but for now, just check KML
       if (layers[i].layer_handler == 'kml') {
         layers[i].events.register('loadend', layers[i], function() {
-          layerextent = layers[i].getDataExtent();
+          layerextent = layers[i].getDataExtent().scale(zoomtolayer_scale);
           map.zoomToExtent(layerextent);
         });
       }
@@ -26,7 +27,7 @@ Drupal.openlayers.addBehavior('openlayers_behavior_zoomtolayer', function (data,
         layerextent = layers[i].getDataExtent();
         // Check for valid layer extent
         if (layerextent != null) {
-          map.zoomToExtent(layerextent);
+          map.zoomToExtent(layerextent.scale(zoomtolayer_scale));
 
           // If unable to find width due to single point,
           // zoom in with point_zoom_level option.
