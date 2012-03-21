@@ -290,7 +290,15 @@ class openlayers_views_style_data extends views_plugin_style {
           }
           else {
             $attributes[$hid . '_rendered'] = $handler->allow_advanced_render() ? $handler->advanced_render($record) : $handler->render($record);
-            $attributes[$hid] = isset($handler->original_value) ? $handler->original_value : NULL;
+            if (isset($record->{'field_' . $hid}) && empty($record->{'field_' . $hid})) {
+              // This is an empty field value so we cannot use
+              // $handler->original_value as that will be set to the value held
+              // by the last record that had this value set.
+              $attributes[$hid] = NULL;
+            }
+            else {
+              $attributes[$hid] = isset($handler->original_value) ? $handler->original_value : NULL;
+            }
           }
         }
 
