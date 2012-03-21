@@ -449,7 +449,7 @@ function openlayers_ui_object_list($type) {
 
     switch ($object->export_type) {
       case (EXPORT_IN_DATABASE | EXPORT_IN_CODE):
-        $row[] = $object->title .' <em><small>(' . t('Overridden') . ')</small></em>';
+        $row[] = filter_xss_admin($object->title) .' <em><small>(' . t('Overridden') . ')</small></em>';
         $links[] = l(t('Edit'), "admin/structure/openlayers/{$type}/{$object->name}/edit");
         $links[] = l(t('Revert'), "admin/structure/openlayers/{$type}/{$object->name}/delete");
         break;
@@ -457,25 +457,25 @@ function openlayers_ui_object_list($type) {
       case EXPORT_IN_DATABASE:
         $links[] = l(t('Edit'), "admin/structure/openlayers/{$type}/{$object->name}/edit");
         $links[] = l(t('Delete'), "admin/structure/openlayers/{$type}/{$object->name}/delete");
-      	$row[] = $object->title .' <em><small>(' . t('Normal') . ')</small></em>';
+      	$row[] = filter_xss_admin($object->title) .' <em><small>(' . t('Normal') . ')</small></em>';
         break;
 
       case EXPORT_IN_CODE:
-        $row[] = $object->title .' <em><small>(' . t('Default') . ')</small></em>';
+        $row[] = filter_xss_admin($object->title) .' <em><small>(' . t('Default') . ')</small></em>';
         break;
     }
 
     // Post title rows.
     switch ($type) {
       case 'layers':
-        $row[] = $layer_types[$object->data['layer_type']]['title'];
+        $row[] = filter_xss_admin($layer_types[$object->data['layer_type']]['title']);
       	break;
 
       case 'maps':
         if (!empty($object->data['layers'])) {
           $layer_names = array();
           foreach ($object->data['layers'] as $layer) {
-            $layer_names[] = empty($layers[$layer]->title) ? $layer : $layers[$layer]->title;
+            $layer_names[] = empty($layers[$layer]->title) ? $layer : filter_xss_admin($layers[$layer]->title);
           }
           $row[] = '<small>' . implode(', ', $layer_names) . '</small>';
         }
@@ -486,7 +486,7 @@ function openlayers_ui_object_list($type) {
     }
 
     // Add description and links.
-    $row[] = $object->description;
+    $row[] = filter_xss_admin($object->description);
     $row[] = implode(' | ', $links);
     $rows[] = $row;
   }
