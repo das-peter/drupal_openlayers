@@ -101,11 +101,12 @@ Drupal.behaviors.openlayers = {
             }
           }
           catch (e) {
+            var errorMessage = e.name + ': ' + e.message;
             if (typeof console != 'undefined') {
-              console.log(e);
+              console.log(errorMessage);
             }
             else {
-              $(this).text('Error during map rendering: ' + e);
+              $(this).text('Error during map rendering: ' + errorMessage);
             }
           }
         }
