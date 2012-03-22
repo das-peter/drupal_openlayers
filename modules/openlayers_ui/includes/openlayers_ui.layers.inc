@@ -167,6 +167,11 @@ function openlayers_ui_get_layer_type_options($type) {
   );
 
   foreach (openlayers_layer_types() as $key => $plugin) {
+    // Hack to keep Views layers out
+    if (in_array($key, array('openlayers_views_vector', 'openlayers_layer_type_raw'))) {
+      continue;
+    }
+  
     $class = ctools_plugin_get_class($plugin, 'layer_type');
     if ($class) {
       // Build form.
