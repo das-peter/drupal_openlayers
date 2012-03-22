@@ -14,6 +14,11 @@ Drupal.openlayers.layer.xyz = function(title, map, options) {
   }
   options.projection = 'EPSG:' + options.projection;
 
+  // Legacy goodnes
+  if (typeof options.base_url == 'string' && typeof options.url == 'undefined') {
+    options.url = options.base_url;
+  }
+
   // Server resolutions are very particular in OL 2.11
   var r = options.serverResolutions;
   if (r == null || typeof r == 'undefined' || r.length == 0) {
