@@ -49,6 +49,12 @@ Drupal.openlayers.addBehavior('openlayers_behavior_popup', function (data, optio
       }
     }
   }
+  
+  // if only 1 layer exists, do not add as an array.  Kind of a
+  // hack, see https://drupal.org/node/1393460
+  if (layers.length == 1) {
+    layers = layers[0];
+  }
 
   var popupSelect = new OpenLayers.Control.SelectFeature(layers,
     {
