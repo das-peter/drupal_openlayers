@@ -31,6 +31,7 @@ class openlayers_behavior_layerswitcher extends openlayers_behavior {
       'ascending' => TRUE,
       'roundedCorner' => TRUE,
       'roundedCornerColor' => '#222222',
+      'maximizeDefault' => FALSE,
     );
   }
 
@@ -57,6 +58,12 @@ class openlayers_behavior_layerswitcher extends openlayers_behavior {
         '#title' => t('Rounded corners color'),
         '#description' => t('For rounded corners, this is the CSS color to use for the corners.'),
         '#default_value' => isset($defaults['roundedCornerColor']) ? $defaults['roundedCornerColor'] : '#222222',
+      ),
+      'maximizeDefault' => array(
+        '#type' => 'checkbox',
+        '#title' => t('Maximize by Default'),
+        '#description' => t('Turn on to have the Layer Switcher open by default.'),
+        '#default_value' => isset($defaults['maximizeDefault']) ? $defaults['maximizeDefault'] : FALSE,
       ),
     );
   }
