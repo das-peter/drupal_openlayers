@@ -445,7 +445,12 @@ function openlayers_ui_object_list($type) {
 
     // Check map type and create links accordingly.
     $links[] = l(t('Export'), "admin/structure/openlayers/{$type}/{$object->name}/export");
-    $links[] = l(t('Clone'), "admin/structure/openlayers/{$type}/clone/{$object->name}");
+    
+    // Do not allow for cloning of Views based layers or specifically unclonable
+    if (!($type == 'layers' && isset($object->data['views'])) || 
+      (isset($object->data['clonable']) && $object->data['clonable'] === FALSE)) {
+      $links[] = l(t('Clone'), "admin/structure/openlayers/{$type}/clone/{$object->name}");
+    }
 
     switch ($object->export_type) {
       case (EXPORT_IN_DATABASE | EXPORT_IN_CODE):
