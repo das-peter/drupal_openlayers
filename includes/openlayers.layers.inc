@@ -77,10 +77,10 @@ function _openlayers_openlayers_layers() {
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_xyz',
     'url' => array(
-      'http://otile1.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png',
-      'http://otile2.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png',
-      'http://otile3.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png',
-      'http://otile4.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png',
+      '//otile1.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png',
+      '//otile2.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png',
+      '//otile3.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png',
+      '//otile4.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png',
     ),
     'wrapDateLine' => TRUE,
   );
@@ -98,10 +98,10 @@ function _openlayers_openlayers_layers() {
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_xyz',
     'url' => array(
-      'http://oatile1.mqcdn.com/naip/${z}/${x}/${y}.png',
-      'http://oatile2.mqcdn.com/naip/${z}/${x}/${y}.png',
-      'http://oatile3.mqcdn.com/naip/${z}/${x}/${y}.png',
-      'http://oatile4.mqcdn.com/naip/${z}/${x}/${y}.png',
+      '//oatile1.mqcdn.com/naip/${z}/${x}/${y}.png',
+      '//oatile2.mqcdn.com/naip/${z}/${x}/${y}.png',
+      '//oatile3.mqcdn.com/naip/${z}/${x}/${y}.png',
+      '//oatile4.mqcdn.com/naip/${z}/${x}/${y}.png',
     ),
     'wrapDateLine' => TRUE,
   );
@@ -202,7 +202,7 @@ function _openlayers_openlayers_layers() {
     ),
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_xyz',
-    'url' => 'http://tile.openstreetmap.org/${z}/${x}/${y}.png',
+    'url' => '//tile.openstreetmap.org/${z}/${x}/${y}.png',
     'wrapDateLine' => TRUE,
   );
   $layers[$layer->name] = $layer;
@@ -224,7 +224,7 @@ function _openlayers_openlayers_layers() {
     ),
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_xyz',
-    'url' => 'http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png',
+    'url' => '//tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png',
     'wrapDateLine' => TRUE,
   );
   $layers[$layer->name] = $layer;
@@ -246,7 +246,7 @@ function _openlayers_openlayers_layers() {
     ),
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_xyz',
-    'url' => 'http://andy.sandbox.cloudmade.com/tiles/cycle/${z}/${x}/${y}.png',
+    'url' => '//andy.sandbox.cloudmade.com/tiles/cycle/${z}/${x}/${y}.png',
     'wrapDateLine' => TRUE,
   );
   $layers[$layer->name] = $layer;
@@ -290,7 +290,7 @@ function _openlayers_openlayers_layers() {
     'projection' => array('4326'),
     'baselayer' => TRUE,
     'layer_type' => 'openlayers_layer_type_wms',
-    'base_url' => 'http://labs.metacarta.com/wms-c/Basic.py',
+    'base_url' => '//labs.metacarta.com/wms-c/Basic.py',
     'params' => array(
       'isBaseLayer' => TRUE,
     ),

@@ -92,7 +92,7 @@ class openlayers_layer_type_yahoo extends openlayers_layer_type {
     if (!isset($yahoo_maps_included)) {
       drupal_add_js(drupal_get_path('module', 'openlayers') .
         '/plugins/layer_types/openlayers_layer_type_yahoo.js');
-      drupal_add_js("http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=" .
+      drupal_add_js("//api.maps.yahoo.com/ajaxymap?v=3.0&appid=" .
         variable_get('openlayers_layers_yahoo_api', ''),
         'external');
       $yahoo_maps_included = TRUE;

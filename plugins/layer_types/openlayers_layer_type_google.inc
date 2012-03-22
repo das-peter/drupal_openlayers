@@ -138,13 +138,13 @@ class openlayers_layer_type_google extends openlayers_layer_type {
       $version = variable_get('openlayers_google_version', '3.5');
       if ($version == '2') {
         // Create URL for google include
-        $url = 'http://maps.google.com/maps?file=api&sensor=false&v=' . $version;
+        $url = '//maps.google.com/maps?file=api&sensor=false&v=' . $version;
         $key = variable_get('openlayers_layers_google_api', variable_get('googlemap_api_key', ''));
         $url = !empty($key) ? '&key=' . $key : '';
       }
       else {
         // Create URL for google include
-        $url = 'http://maps.google.com/maps/api/js?sensor=false&v=' . $version;
+        $url = '//maps.google.com/maps/api/js?sensor=false&v=' . $version;
       }
 
       $lang = variable_get('openlayers_layers_google_language', '');
