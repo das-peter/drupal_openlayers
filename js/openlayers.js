@@ -194,20 +194,20 @@ Drupal.openlayers = {
 
     openlayers.setBaseLayer(openlayers.getLayersBy('drupalID', map.default_layer)[0]);
 
-    // Zoom & center
-    if (map.center.initial) {
-      var center = OpenLayers.LonLat.fromString(map.center.initial.centerpoint).transform(
-            new OpenLayers.Projection('EPSG:4326'),
-            new OpenLayers.Projection('EPSG:' + map.projection));
-      var zoom = parseInt(map.center.initial.zoom, 10);
-      openlayers.setCenter(center, zoom, false, false);
-    }
-
     // Set the restricted extent if wanted.
     // Prevents the map from being panned outside of a specfic bounding box.
     if (typeof map.center.restrict !== 'undefined' && map.center.restrict.restrictextent) {
       openlayers.restrictedExtent = OpenLayers.Bounds.fromString(
           map.center.restrict.restrictedExtent);
+    }
+
+    // Zoom & center
+    if (map.center.initial) {
+      var center = OpenLayers.LonLat.fromString(map.center.initial.centerpoint).transform(
+        new OpenLayers.Projection('EPSG:4326'),
+        new OpenLayers.Projection('EPSG:' + map.projection));
+      var zoom = parseInt(map.center.initial.zoom, 10);
+      openlayers.setCenter(center, zoom, false, false);
     }
   },
   /**
