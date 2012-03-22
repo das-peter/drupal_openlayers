@@ -60,8 +60,10 @@ class openlayers_behavior_popup extends openlayers_behavior {
    * Render.
    */
   function render(&$map) {
+    // Put weight on JS so that we know navigation is included already as this
+    // will affect touch devices.
     drupal_add_js(drupal_get_path('module', 'openlayers') .
-      '/plugins/behaviors/openlayers_behavior_popup.js');
+      '/plugins/behaviors/openlayers_behavior_popup.js', array('weight' => 10));
     return $this->options;
   }
 }
