@@ -43,6 +43,7 @@ class openlayers_layer_type_geojson extends openlayers_layer_type {
       'baselayer' => FALSE,
       'vector' => TRUE,
       'geojson_data' => '',
+      'useBBOX' => FALSE,
     );
   }
 
@@ -57,7 +58,13 @@ class openlayers_layer_type_geojson extends openlayers_layer_type {
         '#description' => t('The URL of the GeoJSON file.  This can be a Drupal path as well, as it will get run through the Drupal <a href="!url">url()</a> function.',
           array('!url' => 'http://api.drupal.org/api/drupal/includes--common.inc/function/url')),
         '#maxlength' => 1024,
-        '#default_value' => isset($this->data['url']) ? $this->data['url'] : ''
+        '#default_value' => isset($this->data['url']) ? $this->data['url'] : '',
+      ),
+      'useBBOX' => array(
+        '#type' => 'checkbox',
+        '#title' => t('Use Bounding Box Strategy'),
+        '#description' => t('Bounding Box strategy will add a query string onto the GeoJSON URL, which means that only data in the viewport of the map will be loaded.  This can be helpful if you have lots of data coming from the feed.'),
+        '#default_value' => isset($this->data['useBBOX']) ? $this->data['useBBOX'] : FALSE,
       ),
       'geojson_data' => array(
         '#type' => 'textarea',

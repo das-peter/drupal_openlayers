@@ -132,7 +132,6 @@ function openlayers_views_openlayers_layers() {
         $view->display_handler->display->display_plugin == 'page' &&
         $view->display_handler->get_option('path') != ''
       ) {
-        //Build Layer
         $layer = new stdClass();
         $layer->api_version = 1;
         $layer->name = $view->name . '_' . $display;
@@ -141,11 +140,21 @@ function openlayers_views_openlayers_layers() {
             $view->display['default']->handler->options['title'] :
             $view->name;
         $layer->description = $view->description . ' - ' . $layer->title;
+        
+        // Determine if we should use a BBOX strategy.
+        $useBBOX = FALSE;
+        if (isset($view->display['default']->display_options['arguments']) &&
+          isset($view->display['default']->display_options['arguments']['bbox_argument']) &&
+          $view->display['default']->display_options['arguments']['bbox_argument']['arg_id'] == 'bbox') {
+          $useBBOX = TRUE;  
+        }
+        
         $layer->data = array(
           'layer_type' => 'openlayers_layer_type_geojson',
           'url' => url($view->display_handler->get_option('path'), array('absolute' => TRUE)),
           'geojson_data' => '',
           'views' => array('view' => $view->name, 'display' => $display),
+          'useBBOX' => $useBBOX,
         );
         $layers[$layer->name] = $layer;
       }
