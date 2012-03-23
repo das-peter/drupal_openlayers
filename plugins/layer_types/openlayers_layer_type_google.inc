@@ -148,7 +148,9 @@ class openlayers_layer_type_google extends openlayers_layer_type {
       }
 
       $lang = variable_get('openlayers_layers_google_language', '');
+      // Google v2 uses hl and v3 uses language
       $url .= !empty($lang) ? '&hl=' . $lang : '';
+      $url .= !empty($lang) ? '&language=' . $lang : '';
 
       drupal_add_js($url, 'external');
       $google_maps_included = TRUE;
