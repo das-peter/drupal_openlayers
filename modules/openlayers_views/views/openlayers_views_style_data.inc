@@ -73,7 +73,7 @@ class openlayers_views_style_data extends views_plugin_style {
     // Check for any fields, as the view needs them
     if (empty($handlers)) {
       $form['error_markup'] = array(
-          '#value' => t('You need to enable at least one field before you can '
+        '#value' => t('You need to enable at least one field before you can '
           . 'configure your field settings'),
         '#prefix' => '<div class="error form-item description">',
         '#suffix' => '</div>',
