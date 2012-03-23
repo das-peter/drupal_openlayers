@@ -26,6 +26,10 @@
 .openlayers-popup {
   color: #EEEEEE;
 }
+.olImageLoadError,
+.openlayers-map .olImageLoadError {
+  background-color: transparent;
+}
 
 
 /**

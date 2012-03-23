@@ -46,6 +46,6 @@ body .olControlAttribution {
  * This is a 'sensible default' for a weird decision
  * by OpenLayers to make 404 tiles pink.
  */
-.olImageLoadError {
+body .olImageLoadError {
   background: transparent;
 }
