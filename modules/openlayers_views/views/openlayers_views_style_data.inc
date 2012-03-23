@@ -184,20 +184,32 @@ class openlayers_views_style_data extends views_plugin_style {
     // For node content type, we can render the node as with a specific
     // view mode.
     if ($this->view->base_table == 'node') {
-      $form['data_source']['description_field'] = array(
-        '#type' => 'select',
-        '#title' => t('Description Content'),
-        '#description' => t('Choose the field or rendering method which will
-          appear as a description on tooltips or popups.'),
-        '#required' => FALSE,
-        '#options' => array_merge(array(
-          '' => '',
-          '#row' => '<' . t('entire row') . '>',
-          '#node' => '<' . t('entire node') . '>'
-        ), $fields),
-        '#default_value' => $this->options['data_source']['description_field'],
-      );
+      $desc_options = array_merge(array(
+        '' => '',
+        '#row' => '<' . t('entire row') . '>',
+        '#node' => '<' . t('entire node') . '>'
+      ), $fields);
+    }
+    else {
+      $desc_options = array_merge(array(
+        '' => '',
+        '#row' => '<' . t('entire row') . '>',
+      ), $fields);
+    }
+    
+    // Description field
+    $form['data_source']['description_field'] = array(
+      '#type' => 'select',
+      '#title' => t('Description Content'),
+      '#description' => t('Choose the field or rendering method which will
+        appear as a description on tooltips or popups.'),
+      '#required' => FALSE,
+      '#options' => $desc_options,
+      '#default_value' => $this->options['data_source']['description_field'],
+    );
 
+    // Create view mode options
+    if ($this->view->base_table == 'node') {
       // Available_view_modes is the array to contain the avaible
       // view modes, for now this is not content type aware, but should be
       $available_view_modes = array();
