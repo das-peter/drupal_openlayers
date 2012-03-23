@@ -67,7 +67,7 @@ Drupal.behaviors.openlayers = {
               options.maxExtent = new OpenLayers.Bounds(-180, -90, 180, 90);
             }
 
-            options.maxResolution = 1.40625;
+            options.maxResolution = 'auto'; // 1.40625;
             options.controls = [];
 
             // Change image, CSS, and proxy paths if specified
