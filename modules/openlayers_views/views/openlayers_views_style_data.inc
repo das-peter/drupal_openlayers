@@ -165,37 +165,37 @@ class openlayers_views_style_data extends views_plugin_style {
       $form['data_source']['other_left'] = array(
         '#type' => 'select',
         '#title' => t('Left Field'),
-        '#description' => t('Choose a field for Left.  This should be a field '
-        . 'that is a decimal or float value.'),
+        '#description' => t('Choose a field for Left.  This should be a field ' .
+          'that is a decimal or float value.'),
         '#options' => $fields,
         '#default_value' => $this->options['data_source']['other_left'],
         '#states' => $this->datasource_dependent('other_boundingbox')
       );
     }
     $form['data_source']['name_field'] = array(
-        '#type' => 'select',
-        '#title' => t('Title Field'),
-        '#description' => t('Choose the field which will appear as a title on '
-        . 'tooltips.'),
-        '#options' => array_merge(array('' => ''), $fields),
-        '#default_value' => $this->options['data_source']['name_field'],
+      '#type' => 'select',
+      '#title' => t('Title Field'),
+      '#description' => t('Choose the field which will appear as a title on ' .
+        'tooltips.'),
+      '#options' => array_merge(array('' => ''), $fields),
+      '#default_value' => $this->options['data_source']['name_field'],
     );
 
     // For node content type, we can render the node as with a specific
     // view mode.
     if ($this->view->base_table == 'node') {
       $form['data_source']['description_field'] = array(
-          '#type' => 'select',
-          '#title' => t('Description Content'),
-          '#description' => t('Choose the field or rendering method which will
-            appear as a description on tooltips or popups.'),
-          '#required' => FALSE,
-          '#options' => array_merge(array(
-            '' => '',
-            '#row' => '<' . t('entire row') . '>',
-            '#node' => '<' . t('entire node') . '>'
-          ), $fields),
-          '#default_value' => $this->options['data_source']['description_field'],
+        '#type' => 'select',
+        '#title' => t('Description Content'),
+        '#description' => t('Choose the field or rendering method which will
+          appear as a description on tooltips or popups.'),
+        '#required' => FALSE,
+        '#options' => array_merge(array(
+          '' => '',
+          '#row' => '<' . t('entire row') . '>',
+          '#node' => '<' . t('entire node') . '>'
+        ), $fields),
+        '#default_value' => $this->options['data_source']['description_field'],
       );
 
       // Available_view_modes is the array to contain the avaible
