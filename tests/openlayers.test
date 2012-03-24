@@ -344,6 +344,13 @@ class OpenLayersMapAlters extends DrupalWebTestCase {
 
 /**
  * OpenLayers Unit Tests
+ *
+ * Do not use t() in Unit tests.
+ * https://drupal.org/node/811254
+ *
+ * Unit tests do not bootstrap Drupal very
+ * far which makes them a bit useless if
+ * we are utilizing Drupal API functions.
  */
 class OpenLayersUnitTests extends DrupalUnitTestCase {
   public static function getInfo() {
@@ -356,8 +363,21 @@ class OpenLayersUnitTests extends DrupalUnitTestCase {
 
   function testOpenLayersStylePath() {
     module_load_include('inc', 'openlayers', 'includes/openlayers.render');
-    $path = 'http://example.org/site/all/modules/openlayers/example/${path}.jpg';
+    global $base_url;
+    
+    // Full URL
+    $path = 'http://example.org/sites/all/modules/openlayers/example/${path}.jpg';
     $styled_path = openlayers_style_path($path);
-    $this->assertTrue($styled_path, $path);
+    $this->assertTrue($styled_path === $path, 'OpenLayers Style Path function with full URL.');
+    
+    // Just replacement value
+    $path = '${path}';
+    $styled_path = openlayers_style_path($path);
+    $this->assertTrue($styled_path === $path, 'OpenLayers Style Path function with just replacement value.');
+
+    // Relative URL
+    $path = 'sites/all/modules/openlayers/example/${path}.jpg';
+    $styled_path = openlayers_style_path($path);
+    $this->assertTrue($styled_path === $base_url . '/' . $path, 'OpenLayers Style Path function with relative URL.');
   }
 }

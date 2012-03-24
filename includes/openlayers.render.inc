@@ -209,14 +209,19 @@ function _openlayers_create_map_id() {
  * it will decode values that maybe not specifically part of the
  * attribute replacement.
  *
+ * A value that is just a replacement value, ${value} should
+ * not be run through the file_create_url() function.
+ *
  * @param $path
  *   Path to process.
  * @return
  *   Processed path.
  */
 function openlayers_style_path($path) {
-  $path = file_create_url($path);
-  $path = str_replace('%24%7B', '${', $path);
-  $path = str_replace('%7D', '}', $path);
+  if (strpos($path, '${') !== 0) { 
+    $path = file_create_url($path);
+    $path = str_replace('%24%7B', '${', $path);
+    $path = str_replace('%7D', '}', $path);
+  }
   return $path;
 }
