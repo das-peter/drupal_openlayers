@@ -907,7 +907,10 @@ function openlayers_ui_maps_form_center_map($defaults = array()) {
   drupal_add_js($pass_values, 'setting');
 
   // centerpoint & zoom of this map are overridden
-  // by the mapformvalues behavior on page load
+  // by the mapformvalues behavior on page load.
+  //
+  // Note that navigation screws up the boxselect
+  // behavior for getting extent.
   $centermap_def = array(
     'id' => 'openlayers-center-helpmap',
     'projection' => '900913',
@@ -926,9 +929,9 @@ function openlayers_ui_maps_form_center_map($defaults = array()) {
       'mapquest_osm',
     ),
     'behaviors' => array(
-      'openlayers_behavior_navigation' => array(),
+      //'openlayers_behavior_navigation' => array(),
+      //'openlayers_behavior_dragpan' => array(),
       'openlayers_behavior_panzoombar' => array(),
-      'openlayers_behavior_dragpan' => array(),
       'openlayers_behavior_mapformvalues' => array(),
       'openlayers_behavior_boxselect' => array(),
       'openlayers_behavior_attribution' => array(),
