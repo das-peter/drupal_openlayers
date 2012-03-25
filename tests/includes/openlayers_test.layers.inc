@@ -12,7 +12,7 @@ function _openlayers_test_openlayers_layers() {
   $layer->api_version = 1;
   $layer->name = 'test_kml_url';
   $layer->title = t('KML Test URL');
-  $layer->description = t('Testing GeoJSON layer via an URL.');
+  $layer->description = t('Testing KML layer via an URL.');
   $layer->data = array(
     'layer_type' => 'openlayers_layer_type_kml',
     'layer_handler' => 'kml',
