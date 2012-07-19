@@ -36,6 +36,7 @@ Drupal.openlayers.layer.geojson = function(title, map, options) {
     // Add features, if needed
     if (features) {
       layer.addFeatures(features);
+      layer.events.triggerEvent('loadend');
     }
   }
   else if (options.useBBOX) {
@@ -56,6 +57,7 @@ Drupal.openlayers.layer.geojson = function(title, map, options) {
       // Add features, if needed
       if (features) {
         layer.addFeatures(features);
+        layer.events.triggerEvent('loadend');
       }
     });
   }

@@ -27,6 +27,7 @@ Drupal.openlayers.layer.kml = function(title, map, options) {
     // Add features, if needed
     if (features) {
       layer.addFeatures(features);
+      layer.events.triggerEvent('loadend');
     }
   });
 
