@@ -72,7 +72,7 @@ class openlayers_layer_type_google extends openlayers_layer_type {
         '#description' => t('Satellite and hybrid maps are occasionally
           unavailable at higher zoom levels.'),
         '#default_value' => isset($this->data['numZoomLevels']) ?
-          $this->data['numZoomLevels'] : '15'
+          $this->data['numZoomLevels'] : '21'
       ),
       'animationEnabled' => array(
         '#type' => 'checkbox',
