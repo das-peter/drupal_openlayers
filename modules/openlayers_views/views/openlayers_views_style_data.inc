@@ -299,6 +299,11 @@ class openlayers_views_style_data extends views_plugin_style {
         foreach ($handlers as $hid => $handler) {
           if (!empty($handler->options['exclude']) && !in_array($hid, $this->options['data_source'])) {
             $excluded_fields[] = $hid;
+            // Ensure that $handler->last_render is correctly populated with the
+            // value corresponding to the record being processed, otherwise
+            // fields whose output is rewritten based on excluded fields might
+            // get the wrong values.
+            $handler->last_render = $this->rendered_fields[$id][$hid];
           }
           else {
             $attributes[$hid . '_rendered'] = $handler->allow_advanced_render() ? $handler->advanced_render($record) : $handler->render($record);
