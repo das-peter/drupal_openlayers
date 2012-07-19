@@ -11,6 +11,9 @@
  * Theme function for form description of layers
  */
 function theme_openlayers_ui_form_layer_description($args) {
+  if (!empty($args['layer_link'])) {
+    $args['layer_title'] = l($args['layer_title'], $args['layer_link']);
+  }
   return $args['layer_title'] . ($args['layer_description'] ?
     ': <span class="openlayers-form-layer-description">' .
     $args['layer_description'] . '</span>' :
