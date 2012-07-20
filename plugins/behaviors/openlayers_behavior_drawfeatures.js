@@ -15,7 +15,7 @@
       // Update function to write to element.
       function openlayers_behavior_drawfeatures_update(features) {
         WktWriter = new OpenLayers.Format.WKT();
-        while (features.type == 'featureadded' && this.feature_limit &&
+        while (features.type == 'featureadded' && (this.feature_limit > 0) &&
           (this.feature_limit < features.object.features.length)) {
           features.feature.layer.removeFeatures(features.object.features.shift());
         }
@@ -27,7 +27,9 @@
             new OpenLayers.Projection('EPSG:4326')
           );
         }
-        this.element.val(WktWriter.write(features_copy.features));
+        if (this.element != undefined) {
+          this.element.val(WktWriter.write(features_copy.features));
+        }
       }
 
       // Start behavior process
@@ -36,8 +38,9 @@
       if (!$(context).hasClass('openlayers-drawfeatures-processed') && behavior) {
         // Create element
         var feature_types = data.map.behaviors['openlayers_behavior_drawfeatures'].feature_types;
-        this.element = $('#' + data.map.behaviors['openlayers_behavior_drawfeatures'].element_id);
-
+        if (data.map.behaviors['openlayers_behavior_drawfeatures'].element_id != "") {
+          this.element = $('#' + data.map.behaviors['openlayers_behavior_drawfeatures'].element_id);
+        }
         // Handle vector layer for drawing on
         this.feature_limit = data.map.behaviors['openlayers_behavior_drawfeatures'].feature_limit;
         var dataLayer = new OpenLayers.Layer.Vector(Drupal.t('Feature Layer'), {
@@ -47,8 +50,12 @@
         dataLayer.styleMap = Drupal.openlayers.getStyleMap(data.map, 'openlayers_drawfeatures_layer');
         data.openlayers.addLayer(dataLayer);
 
+        if (this.feature_limit == "") {
+           this.feature_limit = 0;
+        }
+
         // If there is data in there now, use to populate the layer.
-        if (this.element.text() != '') {
+        if ((this.element != undefined) && (this.element.text() != '')) {
           var wktFormat = new OpenLayers.Format.WKT();
           var features = wktFormat.read(this.element.text());
           if (features.constructor == Array) {
@@ -76,7 +83,7 @@
         dataLayer.events.register('featureremoved', this,
           openlayers_behavior_drawfeatures_update);
         dataLayer.events.register('featuremodified', this,
-          openlayers_behavior_drawfeatures_update);
+         openlayers_behavior_drawfeatures_update);
 
         // Use the Editing Toolbar for creating features.
         var control = new OpenLayers.Control.EditingToolbar(dataLayer);
@@ -111,15 +118,17 @@
         control.activateControl(control.getControlsByClass('OpenLayers.Control.Navigation')[0]);
         control.redraw();
 
-        this.element.parents('form').bind('submit',
-          {
-            control: control,
-            dataLayer: dataLayer
-          }, function(evt) {
-            $.map(evt.data.control.controls, function(c) { c.deactivate(); });
-            dataLayer.events.triggerEvent('featuremodified');
-          }
-        );
+        if (this.element != undefined) {
+          this.element.parents('form').bind('submit',
+            {
+              control: control,
+              dataLayer: dataLayer
+            }, function(evt) {
+              $.map(evt.data.control.controls, function(c) { c.deactivate(); });
+              dataLayer.events.triggerEvent('featuremodified');
+            }
+          );
+        }
 
         // Add modify feature tool
         control.addControls(new OpenLayers.Control.ModifyFeature(

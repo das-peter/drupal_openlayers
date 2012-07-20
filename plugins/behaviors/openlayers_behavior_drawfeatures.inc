@@ -53,15 +53,14 @@ class openlayers_behavior_drawfeatures extends openlayers_behavior {
         '#type' => 'textfield',
         '#description' => t('The number of features that are allowed to be
           drawn. Leave blank or at 0 for unlimited.'),
-        '#default_value' => isset($defaults['feature_limit']) ?
-          $defaults['feature_limit'] : 0,
+        '#default_value' => isset($defaults['feature_limit']) ? $defaults['feature_limit'] : 0,
       ),
       'element_id' => array(
         '#type' => 'textfield',
         '#default_value' => (isset($defaults['element_id'])) ?
           $defaults['element_id'] : '',
         '#title' => t('Element ID'),
-        '#description' => t('The DOM element ID that will be passed the value of the features.  This will probably be a textfield or textarea.'),
+        '#description' => t('The DOM element ID that will be passed the value of the features. This will probably be a textfield or textarea.'),
       )
     );
   }
