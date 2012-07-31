@@ -43,7 +43,7 @@ Drupal.openlayers.layer.geojson = function(title, map, options) {
     options.strategies = [ new OpenLayers.Strategy.BBOX() ];
     options.protocol = new OpenLayers.Protocol.HTTP({
       url: options.url,
-      format: new OpenLayers.Format.GeoJSON(),
+      format: new OpenLayers.Format.GeoJSON()
     });
     var layer = new OpenLayers.Layer.Vector(title, options);
   }
