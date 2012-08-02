@@ -39,6 +39,7 @@ Drupal.openlayers.addBehavior('openlayers_behavior_zoomtolayer', function (data,
         // Check for valid layer extent
         if (layerextent != null) {
           map.fullExtent.extend(layerextent);
+          map.zoomToExtent(map.fullExtent);
         }
       }
     }
