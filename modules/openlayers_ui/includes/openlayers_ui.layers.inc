@@ -117,11 +117,10 @@ function openlayers_ui_get_layer_form($args, $layer = FALSE) {
 
 
   $form['basics'] = array(
-    '#tree' => TRUE,
+    '#tree' => FALSE,
     '#type' => 'fieldset',
     '#title' => t('Layer Basics'),
     '#description' => t('The following settings are for all layers.'),
-    '#tree' => FALSE,
   );
   $form['basics']['name'] = array(
     '#type' => 'textfield',
@@ -171,7 +170,7 @@ function openlayers_ui_get_layer_type_options($type) {
     if (in_array($key, array('openlayers_views_vector', 'openlayers_layer_type_raw'))) {
       continue;
     }
-  
+
     $class = ctools_plugin_get_class($plugin, 'layer_type');
     if ($class) {
       // Build form.
@@ -221,7 +220,8 @@ function openlayers_ui_layers_import_validate($form, &$form_state) {
   ob_end_clean();
 
   if (!is_array($items)) {
-    return form_error($form['layer'], t('Unable to interpret layer code.'));
+    form_error($form['layer'], t('Unable to interpret layer code.'));
+    return;
   }
 
   // View name must be alphanumeric or underscores, no other punctuation.

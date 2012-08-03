@@ -785,9 +785,9 @@ function openlayers_ui_maps_form_process($values = array()) {
         if (isset($values['layer_weight'])) {
           $overlays = array();
           asort($values['layer_weight']);
-          foreach (array_keys($values['layer_weight']) as $key) {
-            if ($values['layers']['overlays'][$key]) {
-               $overlays[$key] = $key;
+          foreach (array_keys($values['layer_weight']) as $layer_key) {
+            if ($values['layers']['overlays'][$layer_key]) {
+               $overlays[$layer_key] = $layer_key;
             }
           }
           // TODO: Above code is terrrrrrrrible. rewrite when I have the time

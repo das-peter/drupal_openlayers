@@ -14,7 +14,7 @@ Drupal.openlayers.layer.openlayers_views_vector = function(title, map, options) 
   // Create layer object
   var layer = new OpenLayers.Layer.Vector(title, options.options);
 
-  // Add fetures if there are any
+  // Add features if there are any
   if (options.features) {
     Drupal.openlayers.addFeatures(map, layer, options.features);
   }

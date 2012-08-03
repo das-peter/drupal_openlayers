@@ -9,7 +9,7 @@
 /**
  * Implements hook_init
  */
-function openlayers_init() {
+function openlayers_ui_init() {
   // For backwards compability for the change from maps to presets
   // in the 7.x-2.x version, we want to make it really obvious that
   // administrators and developers should be updating their maps
@@ -394,6 +394,13 @@ function openlayers_ui_theme($existing, $type, $theme, $path) {
       'render element' => 'elements',
       'file' => 'includes/openlayers_ui.theme.inc',
     ),
+    'openlayers_ui_styles_preview' => array(
+      'arguments' => array(
+        'style' => NULL,
+      ),
+      'template' => 'openlayers-ui-styles-preview',
+      'path' => drupal_get_path('module', 'openlayers_ui') .  '/themes',
+    ),
   );
 }
 
@@ -445,9 +452,9 @@ function openlayers_ui_object_list($type) {
 
     // Check map type and create links accordingly.
     $links[] = l(t('Export'), "admin/structure/openlayers/{$type}/{$object->name}/export");
-    
+
     // Do not allow for cloning of Views based layers or specifically unclonable
-    if (!($type == 'layers' && isset($object->data['views'])) || 
+    if (!($type == 'layers' && isset($object->data['views'])) ||
       (isset($object->data['clonable']) && $object->data['clonable'] === FALSE)) {
       $links[] = l(t('Clone'), "admin/structure/openlayers/{$type}/clone/{$object->name}");
     }
@@ -634,6 +641,7 @@ function openlayers_ui_import_page(&$form_state) {
  */
 function openlayers_ui_import_validate($form, &$form_state) {
   $view = '';
+  $map = '';
   ob_start();
   eval($form_state['values']['map']);
   ob_end_clean();
@@ -788,6 +796,5 @@ function openlayers_ui_style_preview($style, $crosshairs = FALSE) {
     ),
   ), 'setting');
 
-  // TODO: This should probably be in a theme function.
-  return '<div id="' . $style->name . '"class="openlayers-ui-style-preview"></div>';
+  return theme('openlayers_ui_styles_preview', array('style' => $style));
 }

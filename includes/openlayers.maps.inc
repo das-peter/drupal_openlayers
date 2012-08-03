@@ -18,7 +18,7 @@
 function _openlayers_openlayers_maps() {
   $items = array();
 
-  // Defualt map with MapQuest
+  // Default map with MapQuest
   $default = new stdClass();
   $default->api_version = 1;
   $default->name = 'default';

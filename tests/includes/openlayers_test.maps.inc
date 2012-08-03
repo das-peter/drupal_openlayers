@@ -18,7 +18,6 @@ function _openlayers_test_openlayers_maps() {
   $behaviors_test->title = t('Test: Behaviors');
   $behaviors_test->description = t('This is a test map.');
   $behaviors_test->data = array(
-    'projection' => '4326',
     'projection' => '900913',
     'width' => 'auto',
     'default_layer' => 'osm_mapnik',
