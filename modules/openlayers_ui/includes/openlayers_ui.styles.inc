@@ -31,6 +31,7 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
         an icon. Note that, when using icons, this value should be half the
         width of the icon image.'),
       'type' => 'integer',
+      'element_validate' => array('element_validate_integer')
     ),
     'fillColor' => array(
       'default' => '#EE9900',
@@ -54,6 +55,7 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
         the feature. On lines, this is the representation of the
         feature.  This is a value in pixels.'),
       'type' => 'integer',
+      'element_validate' => array('element_validate_integer')
     ),
     'fillOpacity' => array(
       'default' => 1,
@@ -63,6 +65,7 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
         externalGraphic is applied to a point.  This should be a value
         between 0 and 1.'),
       'type' => 'float',
+      'element_validate' => array('_element_validate_between_zero_and_one', 'element_validate_number')
     ),
     'strokeOpacity' => array(
       'default' => 1,
@@ -71,6 +74,7 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
         feature. On lines, this is the representation of the feature.
         This should be a value between 0 and 1.'),
       'type' => 'float',
+      'element_validate' => array('_element_validate_between_zero_and_one', 'element_validate_number')
     ),
     'strokeLinecap' => array(
       'default' => 'round',
@@ -111,6 +115,7 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
         to be used when your graphic has different sizes in the X and
         Y direction.  This should be in pixels.'),
       'type' => 'integer',
+      'element_validate' => array('element_validate_integer')
     ),
     'graphicHeight' => array(
       'default' => '',
@@ -119,6 +124,7 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
         to be used when your graphic has different sizes in the X and
         Y direction.  This should be in pixels.'),
       'type' => 'integer',
+      'element_validate' => array('element_validate_integer')
     ),
     'graphicOpacity' => array(
       'default' => '1',
@@ -127,18 +133,21 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
         like alpha PNGs, should have this set to 1, or rendering problems in
         Internet Explorer will ensue.'),
       'type' => 'float',
+      'element_validate' => array('_element_validate_between_zero_and_one', 'element_validate_number')
     ),
     'graphicXOffset' => array(
       'default' => '',
       'desc' => t('Where the X value of the "center" of an
       externalGraphic should be.  This should be in pixels.'),
       'type' => 'integer',
+      'element_validate' => array('element_validate_integer')
     ),
     'graphicYOffset' => array(
       'default' => '',
       'desc' => t('Where the Y value of the "center" of an
       externalGraphic should be.  This should be in pixels.'),
       'type' => 'integer',
+      'element_validate' => array('element_validate_integer')
     ),
     'graphicName' => array(
       'default' => '',
@@ -182,10 +191,12 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
     'labelXOffset' => array(
       'default' => '',
       'desc' => t('Label X offset. Positive numbers move label right.'),
+      'element_validate' => array('element_validate_number')
     ),
     'labelYOffset' => array(
       'default' => '',
       'desc' => t('Label Y offset. Positive numbers move label up.'),
+      'element_validate' => array('element_validate_number')
     ),
     'fontColor' => array(
       'default' => '',
@@ -267,6 +278,8 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
       '#description' => filter_xss($prop['desc']),
       '#default_value' => isset($style->data[$key]) ?
         $style->data[$key] : $prop['default'],
+      '#element_validate' => isset($prop['element_validate']) ?
+        $prop['element_validate'] : array()
     );
 
     // Add options if needed
@@ -287,7 +300,15 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
 }
 
 /**
- * Submit handler for layers.
+ * Validation handler for styles.
+ */
+function openlayers_ui_styles_form_validate($form, &$form_state) {
+
+}
+
+
+/**
+ * Submit handler for styles.
  */
 function openlayers_ui_styles_form_submit(&$form, &$form_state) {
   $style_data = $form_state['values']['style_data'];
@@ -335,5 +356,17 @@ function openlayers_ui_styles_form_submit(&$form, &$form_state) {
   }
   else {
     form_set_error('openlayers', t('Error trying to save style.'));
+  }
+}
+
+/**
+ *
+ * Custom validation function.
+ * See #element_validate in Form API.
+ *
+ */
+function _element_validate_between_zero_and_one($element, &$form_state, $form) {
+  if ($element['#value'] < 0 || $element['#value'] > 1) {
+    form_error($element, t('The @property property must be between 0 and 1.', array('@property' => $element['#title'])));
   }
 }
