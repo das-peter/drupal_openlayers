@@ -10,13 +10,12 @@
 
 /**
  * Styles add/edit form.
+ * Defaults and descriptions are taken from OpenLayers.
+ * @see http://docs.openlayers.org/library/feature_styling.html
  */
 function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = FALSE) {
   $form = array();
 
-  // Available styling properies.  Defaults and descriptions are taken
-  // from OpenLayers.
-  // @see http://docs.openlayers.org/library/feature_styling.html
   $properties = array(
     'externalGraphic' => array(
       'default' => '',
@@ -360,10 +359,8 @@ function openlayers_ui_styles_form_submit(&$form, &$form_state) {
 }
 
 /**
- *
  * Custom validation function.
  * See #element_validate in Form API.
- *
  */
 function _element_validate_between_zero_and_one($element, &$form_state, $form) {
   if ($element['#value'] < 0 || $element['#value'] > 1) {
