@@ -19,7 +19,9 @@ function openlayers_ui_admin_settings() {
       OpenLayers library at %ol_api_url.</p>
       <p>For better performance and reliability, you should <a href="!ol_url">download the
       OpenLayers library</a>, and add it to your Drupal installation. For instance,
-      you could use a Drupal relative path like: %suggested_path.</p>
+      you could use a Drupal relative path like: %suggested_path. You can also use a double backslash
+      before the domain name (eg. //www.example.com/OpenLayers.js) which
+      then respects the use of both HTTPS and HTTP protocols.</p>
       <ul>
         <li>The default suggested, compatible version: <strong>%suggested_api</strong></li>
         <li>The default suggested, compatible hosted URL:  <strong>%ol_api_url</strong></li>
