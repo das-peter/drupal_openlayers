@@ -586,3 +586,12 @@ function openlayers_ui_style_preview($style, $crosshairs = FALSE) {
 
   return theme('openlayers_ui_styles_preview', array('style' => $style));
 }
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function openlayers_ui_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'ctools' && $plugin == 'export_ui') {
+    return 'plugins/' . $plugin;
+  }
+}

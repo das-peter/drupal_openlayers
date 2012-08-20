@@ -21,3 +21,14 @@ function openlayers_ui_uninstall() {
     }
   }
 }
+
+/**
+ * This is needed to rebuild menu items and set parent correctly on
+ * Openlayers tabs when using CTools Export UI and have a good breadcrumb.
+ * Thanks @Dave Reid for the help !
+ */
+function openlayers_ui_update_7201() {
+  db_delete('menu_links')
+    ->condition('link_path', 'admin/structure/openlayers%', 'LIKE')
+    ->execute();
+}
