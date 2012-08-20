@@ -8,16 +8,6 @@
  * @ingroup openlayers
  */
 
-function openlayers_ui_maps_clone($map) {
-  $form_state = array();
-  drupal_set_title(
-    t('Clone map %map',
-      array('%map' => $map->name)
-    ), PASS_THROUGH
-  );
-  return drupal_get_form('openlayers_ui_maps_form', $map);
-}
-
 /**
  * Menu Callback for Add Map
  */
@@ -53,9 +43,12 @@ function openlayers_ui_maps_form($form, &$form_state, $map = FALSE, $edit = FALS
   // to turn it on or off.  Show on preview, otherwise look at setting.
   // Might want to look at disableing the mousewheel zoom since
   // the map could be very in the way.
-  $map_preview = (isset($form_state['values']) && $form_state['values']['preview_map']) ?
-    $form_state['values']['preview_map'] : $map;
-  if (variable_get('openlayers_ui_preview_map', FALSE) || !empty($form_state['values']['preview_map'])) {
+  if ( (isset($form_state['clicked_button']['#id'])
+      && ($form_state['clicked_button']['#id'] == 'edit-buttons-preview'))
+      || (variable_get('openlayers_ui_preview_map', TRUE)))  {
+
+    $map_preview = isset($form_state['values']) ? openlayers_ui_maps_form_process($form_state['values']) : $map;
+
     $form['preview'] = array(
       '#tree' => FALSE,
       '#type' => 'fieldset',
@@ -64,19 +57,18 @@ function openlayers_ui_maps_form($form, &$form_state, $map = FALSE, $edit = FALS
         to refresh the map with the new values.  ' .
         (!variable_get('openlayers_ui_preview_map', FALSE) ?
           t('Turn map previews on by default on the !link.',
-          array('!link' => l(t('Settings page'), 'admin/structure/openlayers'))) : ''
+          array('!link' => l(t('Settings page'), 'admin/structure/openlayers/settings'))) : ''
         )
       ),
     );
     $form['preview']['map'] = array(
       '#markup' => openlayers_render_map($map_preview),
     );
-  }
-  else {
+  } else {
     $form['preview'] = array();
     $form['preview']['map'] = array(
       '#markup' => '<p>' . t('Turn map previews on by default on the !link.',
-        array('!link' => l(t('Settings page'), 'admin/structure/openlayers'))) . '</p>',
+        array('!link' => l(t('Settings page'), 'admin/structure/openlayers/settings'))) . '</p>',
     );
   }
 
@@ -93,20 +85,6 @@ function openlayers_ui_maps_form($form, &$form_state, $map = FALSE, $edit = FALS
     '#group' => 'ui',
     '#type' => 'fieldset'
   );
-
-  $form['info']['name'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Map Machine Name'),
-    '#description' => t('This is the machine readable identifier.
-      This should be all lowercase characters, numbers, or underscores (_).'),
-    '#maxlength' => 255,
-    '#default_value' => !empty($map->name) ? $map->name : '',
-    '#disabled' => $edit,
-    '#required' => TRUE,
-  );
-  if ($edit) {
-    $form['info']['name']['#value'] = $map->name;
-  }
   $form['info']['title'] = array(
     '#type' => 'textfield',
     '#title' => t('Map Title'),
@@ -115,12 +93,23 @@ function openlayers_ui_maps_form($form, &$form_state, $map = FALSE, $edit = FALS
     '#default_value' => !empty($map->title) ? $map->title : '',
     '#required' => TRUE,
   );
+  $form['info']['name'] = array(
+    '#type' => 'machine_name',
+    '#default_value' => isset($map->name) ? $map->name : '',
+    '#maxlength' => 32,
+    '#machine_name' => array(
+      'exists' => 'openlayers_map_load',
+      'source' => array('info', 'title'),
+    ),
+    '#description' => t('A unique machine-readable name for this block type. It must only contain lowercase letters, numbers, and underscores.'),
+    '#disabled' => !!$map,
+  );
   $form['info']['description'] = array(
     '#type' => 'textfield',
     '#title' => t('Map Description'),
     '#description' => t('This is full description of the map and is mostly used on the map overview list page.'),
     '#default_value' => !empty($map->description) ? $map->description : '',
-    '#required' => TRUE,
+    '#required' => FALSE,
   );
   $form['info']['width'] = array(
     '#type' => 'textfield',
@@ -570,80 +559,13 @@ function openlayers_ui_maps_form($form, &$form_state, $map = FALSE, $edit = FALS
     );
   }
 
-  // Buttons
-  $form['buttons'] = array('#tree' => FALSE);
-  $form['buttons']['openlayers_save'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save')
-  );
-  $form['buttons']['openlayers_preview'] = array(
-    '#type' => 'submit',
-    '#value' => t('Preview')
-  );
-  $form['buttons']['openlayers_cancel'] = array(
-    '#type' => 'submit',
-    '#value' => t('Cancel')
+  // Add preview button.
+  $form['buttons']['preview'] = array(
+    '#type' => 'button',
+    '#value' => t('Preview'),
   );
 
   return $form;
-}
-
-/**
- * OpenLayers Map Form Validate
- *
- * Validates a map form submission.
- *
- * @param $map_form
- *   Array of values to validate
- * @return
- *   Does not return anything. Uses form_set_error() to communicate errors.
- */
-function openlayers_ui_maps_form_validate($form, &$form_state) {
-  $values = $form_state['values'];
-  $found_error = FALSE;
-
-  // Check if ahah submitting
-  if ($form_state['clicked_button']['#id'] == 'edit-openlayers-projection-ahah' ||
-      $form_state['clicked_button']['#id'] == 'edit-openlayers-cancel') {
-    return TRUE;
-  }
-
-  // Check map name first
-  if (!preg_match('!^[a-z0-9_]+$!', $values['name'])) {
-    form_set_error('name', t('Map Name must contain only lowercase letters, numbers, and underscores.'));
-    $found_error = TRUE;
-  }
-
-  // Check if adding and name already exists
-  $existing = openlayers_map_load($values['name'], TRUE);
-  if (!empty($existing) && (!$form_state['values']['map_edit']) &&
-      ($existing->export_type & EXPORT_IN_DATABASE)) {
-    form_set_error('name', t('The Map Name already exists.'));
-    $found_error = TRUE;
-  }
-
-  // Attempt to render map to find any errors
-  $map = openlayers_ui_maps_form_process($form_state['values']);
-  $map = openlayers_build_map($map);
-  // Check if any errors found
-  if (is_array($map['errors']) && count($map['errors']) > 0) {
-    foreach ($map['errors'] as $error) {
-      form_set_error('openlayers',
-        t('OpenLayers Map Rendering Error: !error', array('!error' => $error)));
-      $found_error = TRUE;
-    }
-  }
-
-  // If found error, rebuild form
-  if ($found_error) {
-    // Add OpenLayers CSS & Javascript, because the form function will not be run on rebuild
-    openlayers_include();
-    drupal_add_js(drupal_get_path('module', 'openlayers_ui') .
-      '/js/openlayers_ui.maps.js', 'module');
-    drupal_add_css(drupal_get_path('module', 'openlayers_ui') .
-      '/openlayers_ui.css');
-    $form_state['rebuild'] = TRUE;
-  }
 }
 
 /**
@@ -655,44 +577,6 @@ function openlayers_ui_maps_add_projection_submit($form, &$form_state) {
   $form_state['rebuild'] = TRUE;
 }
 
-/**
- * Form submit for map add form
- */
-function openlayers_ui_maps_form_submit($form, &$form_state) {
-  // Check for cancel
-  if ($form_state['clicked_button']['#id'] == 'edit-openlayers-cancel') {
-    $form_state['redirect'] = 'admin/structure/openlayers/maps/list';
-  }
-
-  // On preview, process, but don't save, rebuild.
-  if ($form_state['clicked_button']['#id'] == 'edit-openlayers-preview') {
-    $map_data = openlayers_ui_maps_form_process($form_state['values']);
-    $form_state['values']['preview_map'] = $map_data;
-    $form_state['rebuild'] = TRUE;
-  }
-
-  // Only save if save button is pressed
-  if ($form_state['clicked_button']['#id'] == 'edit-openlayers-save') {
-    $map_data = openlayers_ui_maps_form_process($form_state['values']);
-
-    // Save map
-    $map_object = new stdClass();
-    $map_object->name = $form_state['values']['name'];
-    $map_object->title = $form_state['values']['title'];
-    $map_object->description = $form_state['values']['description'];
-    $map_object->data = $map_data;
-    $success = openlayers_map_save($map_object);
-
-    // Redirect to edit page
-    if ($success) {
-      drupal_set_message(t('Map saved.'));
-      $form_state['redirect'] = "admin/structure/openlayers/maps/{$map_object->name}/edit";
-    }
-    else {
-      form_set_error('openlayers', t('Error trying to save map'));
-    }
-  }
-}
 
 /**
  * OpenLayers AHAH

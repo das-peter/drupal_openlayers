@@ -30,7 +30,7 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
         an icon. Note that, when using icons, this value should be half the
         width of the icon image.'),
       'type' => 'integer',
-      'element_validate' => array('element_validate_integer')
+      'element_validate' => array('element_validate_integer_positive'),
     ),
     'fillColor' => array(
       'default' => '#EE9900',
@@ -54,7 +54,7 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
         the feature. On lines, this is the representation of the
         feature.  This is a value in pixels.'),
       'type' => 'integer',
-      'element_validate' => array('element_validate_integer')
+      'element_validate' => array('element_validate_integer_positive'),
     ),
     'fillOpacity' => array(
       'default' => 1,
@@ -64,7 +64,7 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
         externalGraphic is applied to a point.  This should be a value
         between 0 and 1.'),
       'type' => 'float',
-      'element_validate' => array('_element_validate_between_zero_and_one', 'element_validate_number')
+      'element_validate' => array('_element_validate_between_zero_and_one', 'element_validate_number'),
     ),
     'strokeOpacity' => array(
       'default' => 1,
@@ -73,7 +73,7 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
         feature. On lines, this is the representation of the feature.
         This should be a value between 0 and 1.'),
       'type' => 'float',
-      'element_validate' => array('_element_validate_between_zero_and_one', 'element_validate_number')
+      'element_validate' => array('_element_validate_between_zero_and_one', 'element_validate_number'),
     ),
     'strokeLinecap' => array(
       'default' => 'round',
@@ -114,7 +114,7 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
         to be used when your graphic has different sizes in the X and
         Y direction.  This should be in pixels.'),
       'type' => 'integer',
-      'element_validate' => array('element_validate_integer')
+      'element_validate' => array('element_validate_integer_positive'),
     ),
     'graphicHeight' => array(
       'default' => '',
@@ -123,30 +123,30 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
         to be used when your graphic has different sizes in the X and
         Y direction.  This should be in pixels.'),
       'type' => 'integer',
-      'element_validate' => array('element_validate_integer')
+      'element_validate' => array('element_validate_integer_positive'),
     ),
     'graphicOpacity' => array(
       'default' => '1',
       'desc' => t('Opacity of an external graphic.  This should be a
-        value between 0 and 1. Grahics that are already semitransparent,
+        value between 0 and 1. Graphics that are already semitransparent,
         like alpha PNGs, should have this set to 1, or rendering problems in
         Internet Explorer will ensue.'),
       'type' => 'float',
-      'element_validate' => array('_element_validate_between_zero_and_one', 'element_validate_number')
+      'element_validate' => array('_element_validate_between_zero_and_one', 'element_validate_number'),
     ),
     'graphicXOffset' => array(
       'default' => '',
       'desc' => t('Where the X value of the "center" of an
       externalGraphic should be.  This should be in pixels.'),
       'type' => 'integer',
-      'element_validate' => array('element_validate_integer')
+      'element_validate' => array('element_validate_integer'),
     ),
     'graphicYOffset' => array(
       'default' => '',
       'desc' => t('Where the Y value of the "center" of an
       externalGraphic should be.  This should be in pixels.'),
       'type' => 'integer',
-      'element_validate' => array('element_validate_integer')
+      'element_validate' => array('element_validate_integer'),
     ),
     'graphicName' => array(
       'default' => '',
@@ -170,7 +170,7 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
     'label' => array(
       'default' => '',
       'desc' => t('A label to show for features. '
-        . 'Tipically used with ${attribute} syntax.')
+        . 'Typically used with ${attribute} syntax.')
     ),
     'labelAlign' => array(
       'default' => 'cm',
@@ -190,12 +190,14 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
     'labelXOffset' => array(
       'default' => '',
       'desc' => t('Label X offset. Positive numbers move label right.'),
-      'element_validate' => array('element_validate_number')
+      'type' => 'integer',
+      'element_validate' => array('element_validate_integer'),
     ),
     'labelYOffset' => array(
       'default' => '',
       'desc' => t('Label Y offset. Positive numbers move label up.'),
-      'element_validate' => array('element_validate_number')
+      'type' => 'integer',
+      'element_validate' => array('element_validate_integer'),
     ),
     'fontColor' => array(
       'default' => '',
@@ -230,9 +232,16 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
   );
 
   // Provide a preview of the style
-  $preview_style = (isset($form_state['values']) && $form_state['values']['preview_style']) ?
-    $form_state['values']['preview_style'] : $style;
-  if ($preview_style) {
+  if (isset($form_state['clicked_button']['#id']) && ($form_state['clicked_button']['#id'] == 'edit-preview')) {
+    $preview_style = new stdClass();
+    $preview_style->name = preg_replace('/_+/', '_',
+      preg_replace('/[^a-z0-9]/', '_',
+        drupal_strtolower($form_state['input']['title'])
+      ));
+    $preview_style->title = $form_state['input']['title'];
+    $preview_style->description = $form_state['input']['description'];
+    $preview_style->data = $form_state['input']['data'];
+
     $form['info']['preview_style_container'] = array(
       '#type' => 'item',
       '#title' => t('Preview'),
@@ -241,19 +250,23 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
     );
   }
 
-  $form['info']['name'] = array(
-    '#title' => t('Style Machine Name'),
-    '#type' => 'textfield',
-    '#required' => TRUE,
-    '#default_value' => !empty($style->name) ? $style->name : '',
-    '#description' => t('This is the unique name of the style. It must contain only alphanumeric characters and underscores.'),
-  );
   $form['info']['title'] = array(
     '#title' => t('Style Title'),
     '#type' => 'textfield',
     '#required' => TRUE,
     '#default_value' => !empty($style->title) ? $style->title : '',
     '#description' => t('The title of your style, which will appear in the administration interface.'),
+  );
+  $form['info']['name'] = array(
+    '#type' => 'machine_name',
+    '#default_value' => isset($style->name) ? $style->name : '',
+    '#maxlength' => 32,
+    '#machine_name' => array(
+      'exists' => 'openlayers_style_load',
+      'source' => array('info', 'title'),
+    ),
+    '#description' => t('A unique machine-readable name for this block type. It must only contain lowercase letters, numbers, and underscores.'),
+    '#disabled' => !!$style,
   );
   $form['info']['description'] = array(
     '#title' => t(' Style Description'),
@@ -278,8 +291,9 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
       '#default_value' => isset($style->data[$key]) ?
         $style->data[$key] : $prop['default'],
       '#element_validate' => isset($prop['element_validate']) ?
-        $prop['element_validate'] : array()
-    );
+        $prop['element_validate'] : array(),
+      '#element_validate' => isset($prop['element_validate']) ?
+        $prop['element_validate'] : array()    );
 
     // Add options if needed
     if (isset($prop['options']) && is_array($prop['options'])) {
@@ -287,83 +301,11 @@ function openlayers_ui_styles_form($form, &$form_state, $style = NULL, $edit = F
     }
   }
 
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save'),
-  );
-  $form['preview'] = array(
-    '#type' => 'submit',
+  // Add preview button.
+  $form['buttons']['preview'] = array(
+    '#type' => 'button',
     '#value' => t('Preview'),
   );
+
   return $form;
-}
-
-/**
- * Validation handler for styles.
- */
-function openlayers_ui_styles_form_validate($form, &$form_state) {
-
-}
-
-
-/**
- * Submit handler for styles.
- */
-function openlayers_ui_styles_form_submit(&$form, &$form_state) {
-  $style_data = $form_state['values']['style_data'];
-
-  // Cast and unset values so JS can handle them better,
-  // Unless values are in the form ${attribute}
-  foreach ($form_state['values']['data'] as $key => $value) {
-    if ($form_state['values']['data'][$key] === '') {
-      unset($form_state['values']['data'][$key]);
-    }
-    elseif (isset($style_data[$key]['type']) &&
-      strpos($form_state['values']['data'][$key], '${') !== 0) {
-      if ($style_data[$key]['type'] == 'integer') {
-        $form_state['values']['data'][$key] =
-          (int) $form_state['values']['data'][$key];
-      }
-      elseif ($style_data[$key]['type'] == 'float') {
-        $form_state['values']['data'][$key] =
-          (float) $form_state['values']['data'][$key];
-      }
-    }
-  }
-
-  // Create style object
-  $style = new stdClass();
-  $style->name = $form_state['values']['name'];
-  $style->title = $form_state['values']['title'];
-  $style->description = $form_state['values']['description'];
-  $style->data = $form_state['values']['data'];
-
-  // On preview, process, but don't save, rebuild.
-  if ($form_state['clicked_button']['#id'] == 'edit-preview') {
-    $form_state['values']['preview_style'] = $style;
-    $form_state['rebuild'] = TRUE;
-    return;
-  }
-
-  // Save
-  $success = openlayers_style_save($style);
-
-  // Redirect to edit page
-  if ($success) {
-    drupal_set_message(t('Style saved.'));
-    $form_state['redirect'] = 'admin/structure/openlayers/styles/' . $style->name . '/edit';
-  }
-  else {
-    form_set_error('openlayers', t('Error trying to save style.'));
-  }
-}
-
-/**
- * Custom validation function.
- * See #element_validate in Form API.
- */
-function _element_validate_between_zero_and_one($element, &$form_state, $form) {
-  if ($element['#value'] < 0 || $element['#value'] > 1) {
-    form_error($element, t('The @property property must be between 0 and 1.', array('@property' => $element['#title'])));
-  }
 }
