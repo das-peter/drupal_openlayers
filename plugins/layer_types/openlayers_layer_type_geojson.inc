@@ -66,6 +66,25 @@ class openlayers_layer_type_geojson extends openlayers_layer_type {
         '#description' => t('Bounding Box strategy will add a query string onto the GeoJSON URL, which means that only data in the viewport of the map will be loaded.  This can be helpful if you have lots of data coming from the feed.'),
         '#default_value' => isset($this->data['useBBOX']) ? $this->data['useBBOX'] : FALSE,
       ),
+      //see http://dev.openlayers.org/docs/files/OpenLayers/Strategy/BBOX-js.html#OpenLayers.Strategy.BBOX.resFactor
+      'resFactor' => array(
+        '#type' => 'select',
+        '#title' => t('Used to determine when previously requested features are invalid (set to 1 if unsure)'),
+        '#description' => t('The resFactor will be compared to the resolution of the previous request to the current map resolution.  <br />
+          If resFactor > (old / new) and 1/resFactor < (old / new).
+          <ul>
+          <li>If you set a resFactor of 1, data will be requested every time the resolution changes.  </li>
+          <li>If you set a resFactor of 3, data will be requested if the old resolution is 3 times the new, or if the new is 3 times the old.  </li>
+          <li>If the old bounds do not contain the new bounds new data will always be requested (with or without considering resFactor).</li>
+          </ul>
+          '),
+        '#options' => array(
+            1 => t('1'),
+            2 => t('2'),
+            3 => t('3')
+        ),
+        '#default_value' => isset($this->data['resFactor']) ? $this->data['resFactor'] : 1
+      ),
       'geojson_data' => array(
         '#type' => 'textarea',
         '#title' => t('GeoJSON Data'),

@@ -23,7 +23,7 @@ Drupal.openlayers.layer.geojson = function(title, map, options) {
   // check if BBOX, then finally use AJAX method.
   if (options.geojson_data) {
     var layer = new OpenLayers.Layer.Vector(title, options);
-  
+
     // Read data in.
     features = new OpenLayers.Format.GeoJSON(geojson_options).read(options.geojson_data);
     if (features) {
@@ -40,7 +40,7 @@ Drupal.openlayers.layer.geojson = function(title, map, options) {
     }
   }
   else if (options.useBBOX) {
-    options.strategies = [ new OpenLayers.Strategy.BBOX() ];
+    options.strategies = [ new OpenLayers.Strategy.BBOX(options.resFactor) ];
     options.protocol = new OpenLayers.Protocol.HTTP({
       url: options.url,
       format: new OpenLayers.Format.GeoJSON()
@@ -49,7 +49,7 @@ Drupal.openlayers.layer.geojson = function(title, map, options) {
   }
   else {
     var layer = new OpenLayers.Layer.Vector(title, options);
-  
+
     // Use an AJAX like call to get data from URL
     OpenLayers.loadURL(options.url, {}, null, function (response) {
       var format = new OpenLayers.Format.GeoJSON(geojson_options);
