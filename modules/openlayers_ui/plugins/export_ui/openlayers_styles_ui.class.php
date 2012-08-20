@@ -65,11 +65,6 @@ class openlayers_styles_ui extends ctools_export_ui {
     $this->rows[$name]['data'] = array();
     $this->rows[$name]['class'] = !empty($item->disabled) ? array('ctools-export-ui-disabled') : array('ctools-export-ui-enabled');
 
-    // If we have an admin title, make it the first row.
-    if (!empty($this->plugin['export']['admin_title'])) {
-      $this->rows[$name]['data'][] = array('data' => check_plain($item->{$this->plugin['export']['admin_title']}), 'class' => array('ctools-export-ui-title'));
-    }
-
     // Add the icon as an image in the row if it exists.
     if (isset($item->data['externalGraphic'])) {
       $style = theme('image', array('path' => $item->data['externalGraphic']));
@@ -79,6 +74,12 @@ class openlayers_styles_ui extends ctools_export_ui {
     }
 
     $this->rows[$name]['data'][] = array('data' => $style, 'class' => array('ctools-export-ui-preview'));
+
+    // If we have an admin title, make it the first row.
+    if (!empty($this->plugin['export']['admin_title'])) {
+      $this->rows[$name]['data'][] = array('data' => check_plain($item->{$this->plugin['export']['admin_title']}), 'class' => array('ctools-export-ui-title'));
+    }
+
     $this->rows[$name]['data'][] = array('data' => $item->title, 'class' => array('ctools-export-ui-title'));
     $this->rows[$name]['data'][] = array('data' => $item->description, 'class' => array('ctools-export-ui-description'));
     $this->rows[$name]['data'][] = array('data' => check_plain($item->{$schema['export']['export type string']}), 'class' => array('ctools-export-ui-storage'));
@@ -102,11 +103,11 @@ class openlayers_styles_ui extends ctools_export_ui {
    */
   function list_table_header() {
     $header = array();
-    if (!empty($this->plugin['export']['admin_title'])) {
-      $header[] = array('data' => t('Title'), 'class' => array('ctools-export-ui-title'));
-    }
 
     $header[] = array('data' => t('Preview'), 'class' => array('ctools-export-ui-preview'));
+    if (!empty($this->plugin['export']['admin_title'])) {
+      $header[] = array('data' => t('Name'), 'class' => array('ctools-export-ui-name'));
+    }
     $header[] = array('data' => t('Title'), 'class' => array('ctools-export-ui-title'));
     $header[] = array('data' => t('Description'), 'class' => array('ctools-export-ui-description'));
     $header[] = array('data' => t('Storage'), 'class' => array('ctools-export-ui-storage'));
@@ -124,6 +125,32 @@ class openlayers_styles_ui extends ctools_export_ui {
   function hook_menu(&$items) {
     parent::hook_menu($items);
     $items['admin/structure/openlayers/styles']['type'] = MENU_LOCAL_TASK;
+  }
+
+  /**
+   * Provide a list of sort options.
+   *
+   * Override this if you wish to provide more or change how these work.
+   * The actual handling of the sorting will happen in build_row().
+   */
+  function list_sort_options() {
+    if (!empty($this->plugin['export']['admin_title'])) {
+      $options = array(
+        'disabled' => t('Enabled, title'),
+        $this->plugin['export']['admin_title'] => t('Title'),
+      );
+    }
+    else {
+      $options = array(
+        'disabled' => t('Enabled, title'),
+      );
+    }
+
+    $options += array(
+      'storage' => t('Storage'),
+    );
+
+    return $options;
   }
 }
 

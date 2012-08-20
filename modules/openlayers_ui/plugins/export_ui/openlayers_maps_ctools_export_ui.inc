@@ -16,6 +16,11 @@ $plugin = array(
     'class' => 'openlayers_maps_ui'
   ),
 
+  'export' => array(
+    'admin_title' => 'name',
+    'admin_description' => 'description',
+  ),
+
   'title singular' => t('map'),
   'title plural' => t('maps'),
   'title singular proper' => t('Openlayers Map preset'),

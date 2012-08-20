@@ -82,7 +82,7 @@ class openlayers_maps_ui extends ctools_export_ui {
   function list_table_header() {
     $header = array();
     if (!empty($this->plugin['export']['admin_title'])) {
-      $header[] = array('data' => t('Title'), 'class' => array('ctools-export-ui-title'));
+      $header[] = array('data' => t('Name'), 'class' => array('ctools-export-ui-name'));
     }
 
     $header[] = array('data' => t('Title'), 'class' => array('ctools-export-ui-title'));
@@ -104,5 +104,32 @@ class openlayers_maps_ui extends ctools_export_ui {
     parent::hook_menu($items);
     $items['admin/structure/openlayers/maps']['type'] = MENU_LOCAL_TASK;
   }
+
+  /**
+   * Provide a list of sort options.
+   *
+   * Override this if you wish to provide more or change how these work.
+   * The actual handling of the sorting will happen in build_row().
+   */
+  function list_sort_options() {
+    if (!empty($this->plugin['export']['admin_title'])) {
+      $options = array(
+        'disabled' => t('Enabled, title'),
+        $this->plugin['export']['admin_title'] => t('Title'),
+      );
+    }
+    else {
+      $options = array(
+        'disabled' => t('Enabled, title'),
+      );
+    }
+
+    $options += array(
+      'storage' => t('Storage'),
+    );
+
+    return $options;
+  }
+
 
 }

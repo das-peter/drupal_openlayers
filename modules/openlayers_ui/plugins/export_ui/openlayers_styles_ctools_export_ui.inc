@@ -16,6 +16,11 @@ $plugin = array(
     'class' => 'openlayers_styles_ui',
   ),
 
+  'export' => array(
+    'admin_title' => 'name',
+    'admin_description' => 'description',
+  ),
+
   'title singular' => t('style'),
   'title plural' => t('styles'),
   'title singular proper' => t('OpenLayers Style preset'),
