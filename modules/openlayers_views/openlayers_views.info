@@ -4,6 +4,7 @@ core = 7.x
 package = OpenLayers
 dependencies[] = openlayers
 dependencies[] = views
+dependencies[] = geophp
 ; Core files
 files[] = openlayers_views.module
 files[] = views/openlayers_views.views.inc
