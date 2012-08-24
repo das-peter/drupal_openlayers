@@ -196,7 +196,7 @@ class openlayers_views_style_data extends views_plugin_style {
         '#row' => '<' . t('entire row') . '>',
       ), $fields);
     }
-    
+
     // Description field
     $form['data_source']['description_field'] = array(
       '#type' => 'select',
@@ -319,16 +319,18 @@ class openlayers_views_style_data extends views_plugin_style {
           }
         }
 
-        // Handle rendering the whole record.
-        if ($this->options['data_source']['description_field'] === '#row') {
-          $attributes['#row_rendered'] = $this->row_plugin->render($record);
-        }
+        if (isset($this->options['data_source']['description_field'])) {
+          // Handle rendering the whole record.
+          if ($this->options['data_source']['description_field'] === '#row') {
+            $attributes['#row_rendered'] = $this->row_plugin->render($record);
+          }
 
-        // Handle rendering of a node view.
-        if ($this->options['data_source']['description_field'] === '#node' &&
-          is_object($record) && isset($record->nid)) {
-          $view_mode = $this->options['data_source']['view_mode'] ? $this->options['data_source']['view_mode'] : 'full';
-          $attributes['#node_rendered'] = drupal_render(node_view(node_load($record->nid), $view_mode));
+          // Handle rendering of a node view.
+          if ($this->options['data_source']['description_field'] === '#node' &&
+            is_object($record) && isset($record->nid)) {
+            $view_mode = $this->options['data_source']['view_mode'] ? $this->options['data_source']['view_mode'] : 'full';
+            $attributes['#node_rendered'] = drupal_render(node_view(node_load($record->nid), $view_mode));
+          }
         }
 
         // Create features array.
@@ -518,12 +520,14 @@ class openlayers_views_style_data extends views_plugin_style {
       // Create description attribute.  Note that there are a couple
       // exceptions to using fields
       $exceptions = array('#row', '#node');
-      if (in_array($ds['description_field'], $exceptions) || isset($handlers[$ds['description_field']])) {
-        $f['attributes']['description'] = $f['attributes'][$ds['description_field'] . '_rendered'];
+      if (isset($ds['description_field'])) {
+        if (in_array($ds['description_field'], $exceptions) || isset($handlers[$ds['description_field']])) {
+          $f['attributes']['description'] = $f['attributes'][$ds['description_field'] . '_rendered'];
 
-        // Remove rendered row to keep data size down for JS.
-        if (in_array($ds['description_field'], $exceptions)) {
-          unset($f['attributes'][$ds['description_field'] . '_rendered']);
+          // Remove rendered row to keep data size down for JS.
+          if (in_array($ds['description_field'], $exceptions)) {
+            unset($f['attributes'][$ds['description_field'] . '_rendered']);
+          }
         }
       }
     }
