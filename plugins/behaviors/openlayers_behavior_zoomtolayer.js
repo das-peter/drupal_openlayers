@@ -32,6 +32,12 @@ Drupal.openlayers.addBehavior('openlayers_behavior_zoomtolayer', function (data,
           layerextent = layers[i].getDataExtent().scale(zoomtolayer_scale);
           map.fullExtent.extend(layerextent);
           map.zoomToExtent(map.fullExtent);
+
+          // If unable to find width due to single point,
+          // zoom in with point_zoom_level option.
+          if (layerextent.getWidth() == 0.0) {
+            map.zoomTo(options.point_zoom_level);
+          }
         });
       }
       else {
