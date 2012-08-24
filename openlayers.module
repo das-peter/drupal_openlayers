@@ -18,18 +18,18 @@
 /**
  * OpenLayers hosted default library.
  */
-define('OPENLAYERS_DEFAULT_LIBRARY', 'http://openlayers.org/api/2.11/OpenLayers.js');
+define('OPENLAYERS_DEFAULT_LIBRARY', 'http://openlayers.org/api/2.12/OpenLayers.js');
 
 /**
  * OpenLayers library compatible suggestion.
  */
-define('OPENLAYERS_SUGGESTED_LIBRARY', 2.11);
+define('OPENLAYERS_SUGGESTED_LIBRARY', 2.12);
 
 /**
  * OpenLayers hosted API version.  What version is used when going to
  * http://openlayers.org/api/OpenLayers.js
  */
-define('OPENLAYERS_HOSTED_API_LIBRARY', 2.11);
+define('OPENLAYERS_HOSTED_API_LIBRARY', 2.12);
 
 /**
  * Implements hook_help().

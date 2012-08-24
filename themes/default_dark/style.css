@@ -31,6 +31,12 @@
   background-color: transparent;
 }
 
+/**
+ * CSS fix, see #1646646
+ */
+label.olButton {
+  display: inline;
+}
 
 /**
  * The following are images that are not in
