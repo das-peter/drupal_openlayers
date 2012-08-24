@@ -58,6 +58,7 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
       'base_url' => array(
         '#type' => 'textfield',
         '#title' => t('Base URL'),
+        '#maxlength' => 2083,
         '#default_value' => isset($this->data['base_url']) ?
           $this->data['base_url'] : ''
       ),
