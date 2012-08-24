@@ -120,9 +120,6 @@ function openlayers_schema() {
       ),
     ),
     'primary key' => array('name'),
-    'indexes' => array(
-      'name' => array('name'),
-    ),
   );
   // Styles table (ctools extras)
   $schema['openlayers_styles'] = array(
@@ -168,9 +165,6 @@ function openlayers_schema() {
       ),
     ),
     'primary key' => array('name'),
-    'indexes' => array(
-      'name' => array('name'),
-    ),
   );
   return $schema;
 }
@@ -296,4 +290,12 @@ function openlayers_update_7201() {
   // Set default map variable
   variable_set('openlayers_default_map', variable_get('openlayers_default_preset', 'default'));
   variable_del('openlayers_default_preset');
+}
+
+/**
+ * Drop name indexes duplicates of primary key.
+ */
+function openlayers_update_7202() {
+  db_drop_index('openlayers_layers', 'name');
+  db_drop_index('openlayers_styles', 'name');
 }
