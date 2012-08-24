@@ -1,5 +1,5 @@
-
-Current for 6.x-2.0-alpha2
+Current for 7.x-2.0-beta1
+updated on 2012-08-24
 
 # Description
 
@@ -11,11 +11,12 @@ OpenLayers Javascript library within Drupal.
 OpenLayers Requires
 
 * CTools: http://drupal.org/project/ctools
+* Libraries: https://drupal.org/project/libraries - Use the 2.x version, and make sure to create your sites/all/libraries subdirectory.
+* GeoPhP https://drupal.org/project/geophp
 
 Sub-modules require
 
 * OpenLayers Views requires Views: http://drupal.org/project/views
-* OpenLayers CCK requires CCK: http://drupal.org/project/cck
 
 OpenLayers can use Features to package maps into modules
 
@@ -27,8 +28,6 @@ You'll most likely want to enable OpenLayers UI and OpenLayers Views modules for
 
 * OpenLayers UI - Creates a user interface to make map
   arrays which can be used in various places
-* CCK - Allows integration with CCK so that geo data
-  can be inputted via a map
 * Views - Allows data to be displayed on a map
   via Views
 * Filters - Creates a filter to replace
@@ -110,7 +109,7 @@ More documentation is available in the docs/ directory of this module:
   in the OpenLayers module (not the code in the actual OpenLayers library)
   operates
 
-A [tutorial is available on Drupal.org](http://drupal.org/node/627816)
+A [tutorial is available on Drupal.org] (https://drupal.org/node/1481374)
 
 # Authors/Credits
 
@@ -121,3 +120,4 @@ A [tutorial is available on Drupal.org](http://drupal.org/node/627816)
 * [bdragon](http://drupal.org/user/53081)
 * [OpenLayers monster by Saman Bemel Benrud](http://www.flickr.com/photos/samanpwbb/)
 * [strk](http://drupal.org/user/781486)
+* [pol](https://drupal.org/user/47194)
