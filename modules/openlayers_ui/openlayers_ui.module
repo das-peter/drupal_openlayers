@@ -515,7 +515,7 @@ function openlayers_ui_get_layer_options($type = 'baselayer',
             'layer_title' => $layer->title,
             'layer_description' => $layer->description,
             'layer_link' => $layer->export_type & EXPORT_IN_DATABASE ?
-              "admin/structure/openlayers/layers/{$layer->name}/edit" : NULL
+              "admin/structure/openlayers/layers/list/{$layer->name}/edit" : NULL
             ));
       }
     }
