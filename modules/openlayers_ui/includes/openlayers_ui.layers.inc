@@ -45,33 +45,41 @@ function openlayers_ui_layers_form($form_state, $layer = NULL) {
   );
 
   $layers_options = array();
-  $layers = openlayers_layer_types();
+  $layer_types = openlayers_layer_types();
   $options = array('' => t('Select the layer type'));
 
-  foreach ($layers as $id => $data) {
-    if (!($obj = openlayers_layer_type_load($data['name']))) {
-      continue;
-    };
-    if (in_array($data['name'], array('openlayers_views_vector', 'openlayers_layer_type_raw'))) {
-      continue;
+  // Go trough all layer types and get each options form.
+  foreach ($layer_types as $layer_type) {
+
+    if (is_object($layer) && get_class($layer) == $layer_type['name']) {
+      // Layer is of current layer type.
+      $layer_type_object = $layer;
+    }
+    else {
+      // Otherwise load layer object for current layer type.
+      $layer_type_object = openlayers_layer_type_load($layer_type['name']);
     }
 
+    if ($layer_type_object == FALSE ||
+      in_array($layer_type['name'], array('openlayers_views_vector', 'openlayers_layer_type_raw'))) {
+      continue;
+    }
 
     $layers_option = array(
       '#type' => 'fieldset',
       '#tree' => TRUE,
-      '#title' => t('Layer specific options for @layer_title', array('@layer_title' => $data['title'])),
+      '#title' => t('Layer specific options for @layer_title', array('@layer_title' => $layer_type['title'])),
     );
-    if (method_exists($obj, 'options_form')) {
-      $layers_option += $obj->options_form();
+    if (method_exists($layer_type_object, 'options_form')) {
+      $layers_option += $layer_type_object->options_form();
       $layers_option['#states'] = array(
         'visible' => array(
-          ':input[name="layer_type"]' => array('value' => $id),
+          ':input[name="layer_type"]' => array('value' => $layer_type['name']),
         ),
       );
-      $layers_options[$id] = $layers_option;
+      $layers_options[$layer_type['name']] = $layers_option;
     }
-    $options[$id] = $data['title'];
+    $options[$layer_type['name']] = $layer_type['title'];
   }
 
   $form['layer_type'] = array(

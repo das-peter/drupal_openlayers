@@ -48,6 +48,9 @@ function openlayers_layers_ctools_export_ui_form_settings(&$form, &$form_state) 
   if (empty($layer->name)) {
     $layer = NULL;
   }
+  else {
+    $layer = openlayers_get_layer_object($layer);
+  }
   module_load_include('inc', 'openlayers_ui', 'includes/openlayers_ui.layers');
   $form = openlayers_ui_layers_form($form_state, $layer);
 }
