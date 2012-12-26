@@ -39,8 +39,20 @@ Drupal.openlayers.layer.geojson = function(title, map, options) {
       layer.events.triggerEvent('loadend');
     }
   }
-  else if (options.useBBOX) {
-    options.strategies = [ new OpenLayers.Strategy.BBOX(options.resFactor) ];
+  else {
+    // @todo Add more strategies. Paging strategy would be really interesting
+    //   to use with views_geojson.
+    // @see http://dev.openlayers.org/releases/OpenLayers-2.12/doc/apidocs/files/OpenLayers/Strategy/Paging-js.html
+    if (options.useBBOX) {
+      // BBOX strategy.
+      // @see http://dev.openlayers.org/releases/OpenLayers-2.12/doc/apidocs/files/OpenLayers/Strategy/BBOX-js.html
+      options.strategies = [ new OpenLayers.Strategy.BBOX(options.resFactor) ];
+    }
+    else {
+      // Fixed strategy.
+      // @see http://dev.openlayers.org/releases/OpenLayers-2.12/doc/apidocs/files/OpenLayers/Strategy/Fixed-js.html
+      options.strategies = [new OpenLayers.Strategy.Fixed()];
+    }
     options.protocol = new OpenLayers.Protocol.HTTP({
       url: options.url,
       format: new OpenLayers.Format.GeoJSON()
