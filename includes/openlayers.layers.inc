@@ -6,6 +6,9 @@
  * OpenLayers default packaged layers
  */
 function _openlayers_openlayers_layers() {
+  global $is_https;
+  $mapquest_host = $is_https ? '-s.mqcdn.com' : '.mqcdn.com';
+
   $layers = array();
 
   $layer = new stdClass();
@@ -77,10 +80,10 @@ function _openlayers_openlayers_layers() {
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_xyz',
     'url' => array(
-      '//otile1.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png',
-      '//otile2.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png',
-      '//otile3.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png',
-      '//otile4.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png',
+      '//otile1' . $mapquest_host . '/tiles/1.0.0/osm/${z}/${x}/${y}.png',
+      '//otile2' . $mapquest_host . '/tiles/1.0.0/osm/${z}/${x}/${y}.png',
+      '//otile3' . $mapquest_host . '/tiles/1.0.0/osm/${z}/${x}/${y}.png',
+      '//otile4' . $mapquest_host . '/tiles/1.0.0/osm/${z}/${x}/${y}.png',
     ),
     'wrapDateLine' => TRUE,
   );
@@ -98,10 +101,10 @@ function _openlayers_openlayers_layers() {
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_xyz',
     'url' => array(
-      '//oatile1.mqcdn.com/naip/${z}/${x}/${y}.png',
-      '//oatile2.mqcdn.com/naip/${z}/${x}/${y}.png',
-      '//oatile3.mqcdn.com/naip/${z}/${x}/${y}.png',
-      '//oatile4.mqcdn.com/naip/${z}/${x}/${y}.png',
+      '//oatile1' . $mapquest_host . '/naip/${z}/${x}/${y}.png',
+      '//oatile2' . $mapquest_host . '/naip/${z}/${x}/${y}.png',
+      '//oatile3' . $mapquest_host . '/naip/${z}/${x}/${y}.png',
+      '//oatile4' . $mapquest_host . '/naip/${z}/${x}/${y}.png',
     ),
     'wrapDateLine' => TRUE,
   );
