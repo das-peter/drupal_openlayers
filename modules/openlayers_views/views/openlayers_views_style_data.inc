@@ -329,7 +329,9 @@ class openlayers_views_style_data extends views_plugin_style {
           if ($this->options['data_source']['description_field'] === '#node' &&
             is_object($record) && isset($record->nid)) {
             $view_mode = $this->options['data_source']['view_mode'] ? $this->options['data_source']['view_mode'] : 'full';
-            $attributes['#node_rendered'] = drupal_render(node_view(node_load($record->nid), $view_mode));
+            // This has to be done to avoid warning on some version of PHP.
+            $node_view = node_view(node_load($record->nid), $view_mode);
+            $attributes['#node_rendered'] = drupal_render($node_view);
           }
         }
 
