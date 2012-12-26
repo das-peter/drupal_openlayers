@@ -8,15 +8,17 @@
 /**
  * Define the Ctools plugin options.
  */
-$plugin = array(
-  'title' => t('Virtual Earth'),
-  'description' => t('Microsoft Virtual Earth'),
-  'layer_type' => array(
-    'file' => 'openlayers_layer_type_virtualearth.inc',
-    'class' => 'openlayers_layer_type_virtualearth',
-    'parent' => 'openlayers_layer_type',
-  ),
-);
+function openlayers_openlayers_layer_type_virtualearth_openlayers_layer_types() {
+  return array(
+    'title' => t('Virtual Earth'),
+    'description' => t('Microsoft Virtual Earth'),
+    'layer_type' => array(
+      'file' => 'openlayers_layer_type_virtualearth.inc',
+      'class' => 'openlayers_layer_type_virtualearth',
+      'parent' => 'openlayers_layer_type',
+    ),
+  );
+}
 
 /**
  * OpenLayers VirtualEarth Layer Type class
