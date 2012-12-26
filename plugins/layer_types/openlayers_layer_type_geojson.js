@@ -51,13 +51,16 @@ Drupal.openlayers.layer.geojson = function(title, map, options) {
     var layer = new OpenLayers.Layer.Vector(title, options);
 
     // Use an AJAX like call to get data from URL
-    OpenLayers.loadURL(options.url, {}, null, function (response) {
-      var format = new OpenLayers.Format.GeoJSON(geojson_options);
-      var features = format.read(response.responseText);
-      // Add features, if needed
-      if (features) {
-        layer.addFeatures(features);
-        layer.events.triggerEvent('loadend');
+    OpenLayers.Request.GET({
+      url: options.url,
+      callback: function (response) {
+        var format = new OpenLayers.Format.GeoJSON(geojson_options);
+        var features = format.read(response.responseText);
+        // Add features, if needed
+        if (features) {
+          layer.addFeatures(features);
+          layer.events.triggerEvent('loadend');
+        }
       }
     });
   }
