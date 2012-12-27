@@ -311,38 +311,6 @@ function openlayers_get_layer_object($layer, $map = array()) {
 }
 
 /**
- * Menu loader for layers. %openlayers_layer_export
- * @ingroup openlayers_api
- *
- * @param $name
- *   Layer name
- * @return object
- *   Layer export
- */
-function openlayers_layer_export_load($name, $reset = TRUE) {
-  ctools_include('export');
-  if ($reset) ctools_export_load_object_reset('openlayers_layers');
-  $layers = ctools_export_load_object('openlayers_layers', 'all', array($name));
-  return !empty($layers[$name]) ? $layers[$name] : FALSE;
-}
-
-/**
- * Get all openlayers layers.
- * @ingroup openlayers_api
- *
- * @param $reset
- *   Boolean whether to reset cache or not
- * @return array
- *   layer exports
- */
-function openlayers_layers_export_load($reset = TRUE) {
-  ctools_include('export');
-  if ($reset) ctools_export_load_object_reset('openlayers_layers');
-  $layers = ctools_export_load_object('openlayers_layers', 'all', array());
-  return $layers;
-}
-
-/**
  * Menu loader for layers. (%openlayers_layer)
  * @ingroup openlayers_api
  *
