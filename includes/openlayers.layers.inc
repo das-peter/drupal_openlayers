@@ -149,42 +149,45 @@ function _openlayers_openlayers_layers() {
   );
   $layers[$layer->name] = $layer;
 
+  // Bing Road
   $layer = new stdClass();
   $layer->api_version = 1;
-  $layer->name = 'virtualearth_street';
-  $layer->title = 'Virtual Earth Street';
-  $layer->description = 'Virtual Earth (Bing) street tiles.';
+  $layer->name = 'Bing_Road';
+  $layer->title = 'Bing Road';
+  $layer->description = 'Bing Road tiles.';
   $layer->data = array(
     'baselayer' => TRUE,
-    'type' => 'street',
+    'type' => 'Road',
     'projection' => array('900913'),
-    'layer_type' => 'openlayers_layer_type_virtualearth',
+    'layer_type' => 'openlayers_layer_type_bing',
   );
   $layers[$layer->name] = $layer;
 
+  // Bing Aerial
   $layer = new stdClass();
   $layer->api_version = 1;
-  $layer->name = 'virtualearth_satellite';
-  $layer->title = 'Virtual Earth Satellite';
-  $layer->description = 'Virtual Earth (Bing) satellite tiles.';
+  $layer->name = 'Bing_Aerial';
+  $layer->title = 'Bing Aerial';
+  $layer->description = 'Bing Aerial tiles.';
   $layer->data = array(
     'baselayer' => TRUE,
-    'type' => 'satellite',
+    'type' => 'Aerial',
     'projection' => array('900913'),
-    'layer_type' => 'openlayers_layer_type_virtualearth',
+    'layer_type' => 'openlayers_layer_type_bing',
   );
   $layers[$layer->name] = $layer;
 
+  // Bing Hybrid
   $layer = new stdClass();
   $layer->api_version = 1;
-  $layer->name = 'virtualearth_hybrid';
-  $layer->title = 'Virtual Earth Hybrid';
-  $layer->description = 'Virtual Earth (Bing) hybrid of streets and satellite tiles.';
+  $layer->name = 'Bing Hybrid';
+  $layer->title = 'Bing Hybrid';
+  $layer->description = 'Bing Hybrid tiles.';
   $layer->data = array(
     'baselayer' => TRUE,
-    'type' => 'hybrid',
+    'type' => 'AerialWithLabels',
     'projection' => array('900913'),
-    'layer_type' => 'openlayers_layer_type_virtualearth',
+    'layer_type' => 'openlayers_layer_type_bing',
   );
   $layers[$layer->name] = $layer;
 
@@ -334,12 +337,12 @@ function _openlayers_openlayers_layers_i18n() {
     t('Google Maps Hybrid'),
     t('Google Maps Normal'),
     t('Google Maps Physical'),
+    t('Bing Road'),
+    t('Bing Aerial'),
+    t('Bing Hybrid'),
     t('Yahoo Maps Street'),
     t('Yahoo Maps Hybrid'),
     t('Yahoo Maps Satellite'),
-    t('Virtual Earth Street'),
-    t('Virtual Earth Satellite'),
-    t('Virtual Earth Hybrid'),
     t('OSM Mapnik'),
     t('OSM Cycling Map'),
     t('OSM Overlay'),
@@ -355,9 +358,9 @@ function _openlayers_openlayers_layers_i18n() {
       WSG84 for use on non spherical-mercator maps.'),
     t('Standard Google Maps Roads'),
     t('The main OpenStreetMap map'),
-    t('Virtual Earth (Bing) hybrid of streets and satellite tiles.'),
-    t('Virtual Earth (Bing) satellite tiles.'),
-    t('Virtual Earth (Bing) street tiles.'),
+    t('Bing Road tiles.'),
+    t('Bing Aerial tiles.'),
+    t('Bing Hybrid tiles.'),
     t('Yahoo hybrid of streets and satellite tiles.'),
     t('Yahoo satellite imagery tiles.'),
     t('Yahoo streets tiles.'),
