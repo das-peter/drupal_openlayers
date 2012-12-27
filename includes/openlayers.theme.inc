@@ -12,7 +12,7 @@
  */
 function theme_openlayers_map($args) {
   $map = $args['map'];
-  $map_name = $args['map_name'];
+  $map_name = isset($map['map_name']) ? $map['map_name'] : '';
   // To ensure that any controls are on the map correctly, we need to
   // wrap the map in a container, and take into account percentage dimensions
   $container_width = $map['width'];
@@ -20,12 +20,25 @@ function theme_openlayers_map($args) {
   $map['width'] = (strpos($map['width'], '%') > 0) ? '100%' : $map['width'];
   $map['height'] = (strpos($map['height'], '%') > 0) ? '100%' : $map['height'];
 
+  $links = array();
+  if (isset($map['map_name'])) {
+    $links = array(
+      '#type' => 'contextual_links',
+      '#contextual_links' => array(
+        'openlayers' => array(
+          'admin/structure/openlayers/maps/list', array($map['map_name'])
+        )
+      )
+    );
+  }
+
   // Create output
   $output = '
     <div style="width: ' . $container_width . '; height: ' . $container_height .
       ';" id="openlayers-container-' . $map['id'] .
-      '" class="openlayers-container openlayers-container-map-' . $map_name . '">
-      <div style="width: ' . $map['width'] . '; height: ' . $map['height'] . ';" id="' .
+      '" class="contextual-links-region openlayers-container openlayers-container-map-' . $map_name . '">';
+  $output .= drupal_render($links);
+  $output .= '<div style="width: ' . $map['width'] . '; height: ' . $map['height'] . ';" id="' .
       $map['id'] . '" class="openlayers-map openlayers-map-' . $map_name . '"></div>
     </div>';
   return $output;

@@ -142,7 +142,7 @@ class openlayers_layer_type_google extends openlayers_layer_type {
         // Create URL for google include
         $url = '//maps.google.com/maps?file=api&sensor=false&v=' . $version;
         $key = variable_get('openlayers_layers_google_api', variable_get('googlemap_api_key', ''));
-        $url = !empty($key) ? '&key=' . $key : '';
+        $url .= !empty($key) ? '&key=' . $key : '';
       }
       else {
         // Create URL for google include
