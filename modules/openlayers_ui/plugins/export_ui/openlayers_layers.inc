@@ -64,5 +64,3 @@ function openlayers_layers_ctools_export_ui_form_validate(&$form, &$form_state) 
     form_set_error('layer_type', t('Layer type must be set.'));
   }
 }
-
-?>

@@ -62,4 +62,3 @@ function openlayers_styles_ctools_export_ui_form_settings(&$form, &$form_state) 
   }
 }
 
-?>

@@ -66,5 +66,3 @@ function openlayers_maps_ctools_export_ui_form_settings(&$form, &$form_state) {
 function openlayers_maps_ctools_export_ui_form_validate($form, $form_state) {
 
 }
-
-?>
