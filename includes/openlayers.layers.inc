@@ -210,28 +210,6 @@ function _openlayers_openlayers_layers() {
   );
   $layers[$layer->name] = $layer;
 
-  // OpenStreetMap Tiles @ Home
-  $layer = new stdClass();
-  $layer->api_version = 1;
-  $layer->name = 'osm_tah';
-  $layer->title = 'OSM Tiles@Home';
-  $layer->description = 'Alternative, community-rendered OpenStreetMap';
-  $layer->data = array(
-    'baselayer' => TRUE,
-    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> '.
-        '<a href="@openstreetmap">&copy; OpenStreetMap contributors</a>',
-      array(
-        '@openstreetmap' => 'http://www.openstreetmap.org/copyright',
-        '@ccbysa' => 'http://creativecommons.org/licenses/by-sa/2.0/',
-      )
-    ),
-    'projection' => array('900913'),
-    'layer_type' => 'openlayers_layer_type_xyz',
-    'url' => '//tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png',
-    'wrapDateLine' => TRUE,
-  );
-  $layers[$layer->name] = $layer;
-
   // OpenStreetMap Cycling Map
   $layer = new stdClass();
   $layer->api_version = 1;
@@ -363,7 +341,6 @@ function _openlayers_openlayers_layers_i18n() {
     t('Virtual Earth Satellite'),
     t('Virtual Earth Hybrid'),
     t('OSM Mapnik'),
-    t('OSM Tiles@Home'),
     t('OSM Cycling Map'),
     t('OSM Overlay'),
     t('Default OpenLayers WMS'),
