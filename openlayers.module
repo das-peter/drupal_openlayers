@@ -136,7 +136,7 @@ function openlayers_include() {
     }
 
     drupal_add_css(drupal_get_path('module', 'openlayers') .
-      '/openlayers.css', 'file');
+      '/css/openlayers.css', 'file');
     drupal_add_js(drupal_get_path('module', 'openlayers') .
       '/js/openlayers.js', 'file');
   }
