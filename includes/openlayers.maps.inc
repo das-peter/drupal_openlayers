@@ -283,12 +283,13 @@ function _openlayers_openlayers_maps() {
         'zoomBoxEnabled' => 1,
         'documentDrag' => 0,
       ),
+      'openlayers_behavior_zoompanel' => array(),
+
       'openlayers_behavior_scaleline' => array(),
     ),
     'default_layer' => 'osm_mapnik',
     'layers' => array(
       'osm_mapnik' => 'osm_mapnik',
-      'osm_tah' => 'osm_tah',
       'osm_cycle' => 'osm_cycle',
     ),
     'projection' => '900913',

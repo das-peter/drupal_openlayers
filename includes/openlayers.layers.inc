@@ -230,7 +230,7 @@ function _openlayers_openlayers_layers() {
     ),
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_xyz',
-    'url' => '//andy.sandbox.cloudmade.com/tiles/cycle/${z}/${x}/${y}.png',
+    'url' => '//a.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png',
     'wrapDateLine' => TRUE,
   );
   $layers[$layer->name] = $layer;
