@@ -152,7 +152,7 @@ function _openlayers_openlayers_layers() {
   // Bing Road
   $layer = new stdClass();
   $layer->api_version = 1;
-  $layer->name = 'Bing_Road';
+  $layer->name = 'bing_road';
   $layer->title = 'Bing Road';
   $layer->description = 'Bing Road tiles.';
   $layer->data = array(
@@ -166,7 +166,7 @@ function _openlayers_openlayers_layers() {
   // Bing Aerial
   $layer = new stdClass();
   $layer->api_version = 1;
-  $layer->name = 'Bing_Aerial';
+  $layer->name = 'bing_aerial';
   $layer->title = 'Bing Aerial';
   $layer->description = 'Bing Aerial tiles.';
   $layer->data = array(
@@ -180,7 +180,7 @@ function _openlayers_openlayers_layers() {
   // Bing Hybrid
   $layer = new stdClass();
   $layer->api_version = 1;
-  $layer->name = 'Bing Hybrid';
+  $layer->name = 'bing_hybrid';
   $layer->title = 'Bing Hybrid';
   $layer->description = 'Bing Hybrid tiles.';
   $layer->data = array(
