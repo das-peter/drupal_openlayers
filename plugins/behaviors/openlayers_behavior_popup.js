@@ -82,12 +82,13 @@ Drupal.openlayers.addBehavior('openlayers_behavior_popup', function (data, optio
         Drupal.attachBehaviors();
         Drupal.openlayers.popup.selectedFeature = feature;
       },
-      onUnselect: function(feature) {
-        // Remove popup if feature is unselected.
-        feature.layer.map.removePopup(feature.popup);
-        feature.popup.destroy();
-        feature.popup = null;
-      }
+      unselect: function(feature) {
+        if (feature.popup != null && feature.popup) {
+          map.removePopup(feature.popup);
+          feature.popup.destroy();
+          feature.popup = null;
+        }
+      },
     }
   );
 
