@@ -21,8 +21,8 @@ function openlayers_preprocess_openlayers_map(&$variables, $hook) {
       '#type' => 'contextual_links',
       '#contextual_links' => array(
         'openlayers' => array(
-          'admin/structure/openlayers/maps/list', array($map['map_name'])
-        )
+          'admin/structure/openlayers/maps/list', array($map['map_name']),
+        ),
       )
     );
   }

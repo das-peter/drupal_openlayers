@@ -98,17 +98,6 @@ function openlayers_ctools_plugin_type() {
 }
 
 /**
- * Implements hook_menu_alter().
- */
-function openlayers_menu_alter(&$items) {
-  // This is needed for the contextual links.
-  //$items['admin/structure/openlayers/maps/list/%ctools_export_ui/edit']['_tab'] = TRUE;
-  //$items['admin/structure/openlayers/maps/list/%ctools_export_ui/edit']['tab_parent'] = 'admin/structure/openlayers/maps/list/%';
-  //$items['admin/structure/openlayers/maps/list/%ctools_export_ui/edit']['tab_root'] = 'admin/structure/openlayers/maps/list/%';
-  $items['admin/structure/openlayers/maps/list/%ctools_export_ui/edit']['context'] = MENU_CONTEXT_INLINE;
-}
-
-/**
  * Include necessary CSS and JS for rendering maps
  *
  * @ingroup openlayers_api
