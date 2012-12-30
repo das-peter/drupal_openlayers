@@ -14,6 +14,7 @@ function openlayers_preprocess_openlayers_map(&$variables, $hook) {
   $map = $variables['map'];
 
   $map['map_name'] = isset($map['map_name']) ? $map['map_name'] : '';
+  $css_map_name = drupal_clean_css_identifier($map['map_name']);
 
   $links = array();
   if (!empty($map['map_name'])) {
@@ -28,17 +29,15 @@ function openlayers_preprocess_openlayers_map(&$variables, $hook) {
   }
 
   $variables['links'] = render($links);
-  $variables['container']['width'] = $map['width'];
-  $variables['container']['height'] = $map['height'];
-  $variables['container']['id'] = 'openlayers-container-' . $map['id'];
   $variables['container']['classes'] = implode(" ", array(
     'contextual-links-region',
     'openlayers-container',
-    'openlayers-container-map-' . $map['map_name']
+    'openlayers-container-map-' . $css_map_name
   ));
-  $variables['map']['width'] = (strpos($map['width'], '%') > 0) ? '100%' : $map['width'];
-  $variables['map']['height'] = (strpos($map['height'], '%') > 0) ? '100%' : $map['height'];
-  $variables['classes_array'][] = 'openlayers-map-' . $map['map_name'];
+  $variables['container']['width'] = $map['width'];
+  $variables['container']['height'] = $map['height'];
+  $variables['container']['id'] = 'openlayers-container-' . $map['id'];
+  $variables['classes_array'][] = 'openlayers-map-' . $css_map_name;
 }
 
 
