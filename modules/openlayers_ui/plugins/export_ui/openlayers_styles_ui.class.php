@@ -77,7 +77,7 @@ class openlayers_styles_ui extends ctools_export_ui {
 
     // If we have an admin title, make it the first row.
     if (!empty($this->plugin['export']['admin_title'])) {
-      $this->rows[$name]['data'][] = array('data' => check_plain($item->{$this->plugin['export']['admin_title']}), 'class' => array('ctools-export-ui-title'));
+      $this->rows[$name]['data'][] = array('data' => check_plain($item->{$this->plugin['export']['admin_title']}), 'class' => array('ctools-export-ui-admin-title'));
     }
 
     $this->rows[$name]['data'][] = array('data' => $item->title, 'class' => array('ctools-export-ui-title'));
