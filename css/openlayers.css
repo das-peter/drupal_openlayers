@@ -11,8 +11,8 @@
 .openlayers-cck-feature-selected { border: 2px solid blue; }
 
 .openlayers-map {
-  z-index:0;
-  position:relative;
+    z-index:0;
+    position:relative;
 }
 
 /**
@@ -20,26 +20,26 @@
  * vector layers
  */
 .openlayers-map .olLayerDiv {
-  direction: ltr;
+    direction: ltr;
 }
 
 /**
  * Controls
  */
 .openlayers-controls {
-	z-index: 1000;
+    z-index: 1000;
 }
 
 body .olControlLayerSwitcher .layersDiv {
-  background-color: #222222;
+    background-color: #222222;
 }
 body .olControlLayerSwitcher.legacy .layersDiv {
-  background-color: darkblue;
+    background-color: darkblue;
 }
 
 body .olControlAttribution {
-  right: 5px;
-  bottom: 5px;
+    right: 5px;
+    bottom: 5px;
 }
 
 /**
@@ -47,7 +47,7 @@ body .olControlAttribution {
  * by OpenLayers to make 404 tiles pink.
  */
 body .olImageLoadError {
-  background: transparent;
+    background: transparent;
 }
 
 /*
@@ -56,4 +56,12 @@ body .olImageLoadError {
  */
 .openlayers-container #tooltip #tooltip_close {
     display: none;
+}
+
+/*
+ * Make OpenLayers img tag behave correctly with responsive stuff.
+ * See #1816826
+ */
+.openlayers-container img {
+    max-width: none;
 }
