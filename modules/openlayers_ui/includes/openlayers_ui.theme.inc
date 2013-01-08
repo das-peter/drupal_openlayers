@@ -15,7 +15,7 @@ function theme_openlayers_ui_form_layer_description($args) {
     $args['layer_title'] = l($args['layer_title'], $args['layer_link']);
   }
   return $args['layer_title'] . ($args['layer_description'] ?
-    ': <span class="openlayers-form-layer-description">' .
+    ' <span class="openlayers-form-layer-description">' .
     $args['layer_description'] . '</span>' :
     '');
 }
