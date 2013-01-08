@@ -50,8 +50,8 @@ class openlayers_layer_type_openlayers_views_vector
    * @return
    *   array of features
    */
-  function get_features($view_name, $display_name) {
-    if ($view = views_get_view($view_name)) {
+  function get_features() {
+    if ($view = views_get_view($this->data['views']['view'])) {
       $args = array();
       // Retrieve args/filters from current view
       // to pass on to our vector layer.
@@ -62,14 +62,16 @@ class openlayers_layer_type_openlayers_views_vector
           $view->set_exposed_input($current_view->exposed_input);
         }
       }
-      $features = $view->execute_display($display_name, $args);
+      $features = $view->execute_display($this->data['views']['display'], $args);
 
       // Get dynamic title from view
       $this->title = $view->get_title();
 
       $view->destroy();
     }
-    return isset($features) ? $features : array();
+
+    $this->data['features'] = isset($features) ? $features : array();
+    return $this->data['features'];
   }
 
   /**
@@ -78,9 +80,7 @@ class openlayers_layer_type_openlayers_views_vector
   function render(&$map) {
     drupal_add_js(drupal_get_path('module', 'openlayers_views') .
       '/plugins/layer_types/openlayers_views_vector.js');
-    $features = $this->get_features($this->data['views']['view'],
-      $this->data['views']['display']);
-    $this->data['features'] = $features;
+    $this->get_features();
     return $this->options;
   }
 }
