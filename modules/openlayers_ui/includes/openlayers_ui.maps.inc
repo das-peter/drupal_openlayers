@@ -801,7 +801,7 @@ function openlayers_ui_maps_form_center_map($defaults = array()) {
     'projection' => '900913',
     'displayProjection' => '900913',
     'default_layer' => 'mapquest_osm',
-    'width' => '500px',
+    'width' => '600px',
     'height' => '400px',
     'center' => array(
       'initial' => array(
@@ -814,8 +814,8 @@ function openlayers_ui_maps_form_center_map($defaults = array()) {
       'mapquest_osm',
     ),
     'behaviors' => array(
-      //'openlayers_behavior_navigation' => array(),
-      //'openlayers_behavior_dragpan' => array(),
+      'openlayers_behavior_navigation' => array(),
+      'openlayers_behavior_dragpan' => array(),
       'openlayers_behavior_panzoombar' => array(),
       'openlayers_behavior_mapformvalues' => array(),
       'openlayers_behavior_boxselect' => array(),
