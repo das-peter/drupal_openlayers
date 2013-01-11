@@ -53,7 +53,9 @@ class openlayers_maps_ui extends ctools_export_ui {
 
     $layers = openlayers_layers_load();
     foreach ($item->data['layers'] as $layer) {
-      $layers_names[] = empty($layers[$layer]->title) ? $layer : filter_xss_admin($layers[$layer]->title);
+      if (isset($layers[$layer])) {
+        $layers_names[] = empty($layers[$layer]->title) ? $layer : filter_xss_admin($layers[$layer]->title);
+      }
     }
     sort($layers_names);
     $layers_names = implode(',', $layers_names);

@@ -28,6 +28,7 @@ function _openlayers_layers_process($layers = array(), &$map = array()) {
       }
       else $layers[$key]->weight = 0;
     }
+    else unset($layers[$key]);
   }
 
   // Sort layers
