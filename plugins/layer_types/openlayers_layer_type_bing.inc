@@ -2,7 +2,7 @@
 /**
  * @file
  *
- * OpenLayers VirtualEarth layer type
+ * OpenLayers Bing layer type
  */
 
 /**
@@ -19,7 +19,7 @@ $plugin = array(
 );
 
 /**
- * OpenLayers VirtualEarth Layer Type class
+ * OpenLayers Bing Layer Type class
  */
 class openlayers_layer_type_bing extends openlayers_layer_type {
   function __construct($layer = array(), $map = array()) {

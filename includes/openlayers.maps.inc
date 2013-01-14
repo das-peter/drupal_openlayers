@@ -228,7 +228,7 @@ function _openlayers_openlayers_maps() {
       ),
       'openlayers_behavior_panzoom' => array(),
     ),
-    'default_layer' => 'virtualearth_street',
+    'default_layer' => 'bing_road',
     'layers' => array(
       'bing_road' => 'bing_road',
       'bing_hybrid' => 'bing_hybrid',
