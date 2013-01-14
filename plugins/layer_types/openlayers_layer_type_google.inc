@@ -103,6 +103,16 @@ class openlayers_layer_type_google extends openlayers_layer_type {
         ),
         '#default_value' => variable_get('openlayers_google_version', '3.5'),
       ),
+      'openlayers_layers_google_mapdomain' => array(
+        '#type' => 'select',
+        '#options' => array(
+          'maps.google.com' => 'maps.google.com',
+          'maps.googleapis.com' => 'maps.googleapis.com',
+        ),
+        '#title' => t('Google map default domain'),
+        '#default_value' => variable_get('openlayers_layers_google_mapdomain', 'maps.google.com'),
+        '#description' => t('Select the Google Map default domain. maps.googleapis.com is cookie-free.')
+      ),
       'openlayers_layers_google_api' => array(
         '#type' => 'textfield',
         '#title' => t('Google API Key'),
@@ -137,16 +147,18 @@ class openlayers_layer_type_google extends openlayers_layer_type {
       drupal_add_js(drupal_get_path('module', 'openlayers') .
         '/plugins/layer_types/openlayers_layer_type_google.js');
 
+      $mapdomain = variable_get('openlayers_layers_google_mapdomain', 'maps.google.com');
       $version = variable_get('openlayers_google_version', '3.5');
+
       if ($version == '2') {
         // Create URL for google include
-        $url = '//maps.google.com/maps?file=api&sensor=false&v=' . $version;
+        $url = '//' . $mapdomain . '/maps?file=api&sensor=false&v=' . $version;
         $key = variable_get('openlayers_layers_google_api', variable_get('googlemap_api_key', ''));
         $url .= !empty($key) ? '&key=' . $key : '';
       }
       else {
         // Create URL for google include
-        $url = '//maps.google.com/maps/api/js?sensor=false&v=' . $version;
+        $url = '//' . $mapdomain . '/maps/api/js?sensor=false&v=' . $version;
       }
 
       $lang = variable_get('openlayers_layers_google_language', '');
