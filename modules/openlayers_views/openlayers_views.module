@@ -133,12 +133,9 @@ function openlayers_views_openlayers_layers() {
         $layer = new stdClass();
         $layer->api_version = 1;
         $layer->name = $view->name . '_' . $display;
-        $layer->title =
-          !empty($view->display['default']->handler->options['title']) ?
-            $view->display['default']->handler->options['title'] :
-            $view->name;
+        $layer->title = empty($data->display_options['title']) ? $view->name : $data->display_options['title'];
         $layer->title .= ' - ' . $data->display_title;
-        $layer->description = $view->description . ' - ' . $data->display_title;
+        $layer->description = $view->description;
 
         // Determine if we should use a BBOX strategy.
         $useBBOX = FALSE;
