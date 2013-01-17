@@ -5,12 +5,120 @@
 
 class openlayers_layers_ui extends ctools_export_ui {
 
+  function edit_form(&$form, &$form_state) {
+    parent::edit_form($form, $form_state);
+
+    $layer_types = openlayers_layer_types();
+    $options = array('' => t('Select the layer type'));
+
+    if ($form_state['op'] == 'edit') {
+      $layer = openlayers_layer_load($form_state['item']->name);
+    } else {
+      $layer = NULL;
+    }
+
+    $form['info']['title'] = array(
+      '#id' => 'layertitle',
+      '#type' => 'textfield',
+      '#weight' => -1,
+      '#title' => t('Layer Title'),
+      '#default_value' => isset($layer->title) ? $layer->title : '',
+      '#description' => t('The friendly name of your layer, which will appear in the administration interface as well on the map interface if it is exposed.'),
+    );
+    $form['info']['name']['#machine_name']['source'] = array('info', 'title');
+
+    // Go trough all layer types and get each options form.
+    foreach ($layer_types as $layer_type) {
+
+      if (is_object($layer) && get_class($layer) == $layer_type['name']) {
+        // Layer is of current layer type.
+        $layer_type_object = $layer;
+      } else {
+        // Otherwise load layer object for current layer type.
+        $layer_type_object = openlayers_layer_type_load($layer_type['name']);
+      }
+
+      if ($layer_type_object == FALSE ||
+        in_array($layer_type['name'], array('openlayers_views_vector', 'openlayers_layer_type_raw'))) {
+        continue;
+      }
+
+      $layers_option = array(
+        '#type' => 'fieldset',
+        '#tree' => TRUE,
+        '#title' => t('Layer specific options for @layer_title', array('@layer_title' => $layer_type['title'])),
+      );
+
+      if (method_exists($layer_type_object, 'options_form')) {
+        $layers_option += $layer_type_object->options_form();
+        $layers_option['#states'] = array(
+          'visible' => array(
+            ':input[name="layer_type"]' => array('value' => $layer_type['name']),
+          ),
+        );
+        $layers_options[$layer_type['name']] = $layers_option;
+      }
+      $options[$layer_type['name']] = $layer_type['title'];
+    }
+
+    $form['layer_type'] = array(
+      '#type' => 'select',
+      '#title' => t('Layer Type'),
+      '#default_value' => isset($layer->data['layer_type']) ? $layer->data['layer_type']: '',
+      '#description' => t('Select the type of layer.'),
+      '#options' => $options,
+    );
+
+    $form += $layers_options;
+  }
+
+  function edit_form_validate(&$form, &$form_state) {
+    if (empty($form_state['values']['layer_type'])) {
+      form_set_error('layer_type', 'Layer type cannot be empty.');
+    }
+
+    $layer_types = openlayers_layer_types();
+
+    $form_state['values']['data'] = $form_state['values'][$form_state['values']['layer_type']];
+
+    foreach($layer_types as $layer_type) {
+      unset($form_state['values'][$layer_type['name']]);
+    }
+
+    $layer = openlayers_layer_type_load($form_state['values']['layer_type']);
+    unset($form_state['values']['layer_type']);
+
+    if (method_exists($layer, 'options_form_validate')) {
+      $layer->options_form_validate($form, $form_state['values']);
+    }
+    parent::edit_form_validate($form, $form_state);
+  }
+
   /**
    * Prepare the tag values before they are added to the database.
    */
   function edit_form_submit(&$form, &$form_state) {
-    $form_state['values']['data'] = $form_state['values'][$form_state['values']['layer_type']];
+    $layer = openlayers_layer_type_load($form_state['values']['data']['layer_type']);
+    if (method_exists($layer, 'options_form_submit')) {
+      $layer->options_form_submit($form, $form_state);
+    }
+
     parent::edit_form_submit($form, $form_state);
+  }
+
+  /**
+   * Deletes exportable items from the database.
+   */
+  function delete_form_submit(&$form_state) {
+
+    $item = $form_state['item'];
+
+    $layer = openlayers_layer_type_load($item->data['layer_type']);
+    if (method_exists($layer, 'delete')) {
+      $layer->delete($item);
+    }
+
+    parent::delete_form_submit($form_state);
   }
 
   /**

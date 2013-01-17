@@ -814,9 +814,9 @@ function openlayers_ui_maps_form_center_map($defaults = array()) {
       'mapquest_osm',
     ),
     'behaviors' => array(
-      'openlayers_behavior_navigation' => array(),
-      'openlayers_behavior_dragpan' => array(),
+      //'openlayers_behavior_navigation' => array(),
       'openlayers_behavior_panzoombar' => array(),
+      //'openlayers_behavior_dragpan' => array(),
       'openlayers_behavior_mapformvalues' => array(),
       'openlayers_behavior_boxselect' => array(),
       'openlayers_behavior_attribution' => array(),
