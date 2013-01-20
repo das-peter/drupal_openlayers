@@ -219,7 +219,7 @@ function _openlayers_create_map_id() {
  *   Processed path.
  */
 function openlayers_style_path($path) {
-  if (strpos($path, '${') !== 0) { 
+  if (strpos($path, '${') !== 0) {
     $path = file_create_url($path);
     $path = str_replace('%24%7B', '${', $path);
     $path = str_replace('%7D', '}', $path);
