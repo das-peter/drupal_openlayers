@@ -243,12 +243,6 @@ class openlayers_styles_ui extends ctools_export_ui {
     );
     $form['info']['name']['#machine_name']['source'] = array('info', 'title');
 
-    $form['info']['map'] = array(
-      '#type' => 'openlayers',
-      '#map' => 'clone_of_default',
-      '#title' => 'Carte OL',
-    );
-
     // OpenLayers style properties
     $form['data'] = array(
       '#type' => 'fieldset',
