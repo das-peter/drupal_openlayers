@@ -52,7 +52,7 @@ function openlayers_views_views_plugins() {
         'uses row plugin' => TRUE,
         'uses options' => TRUE,
         'uses grouping' => TRUE,
-        'type' => 'normal',
+        'type' => 'openlayers',
         'even empty' => TRUE,
       ),
     ),
