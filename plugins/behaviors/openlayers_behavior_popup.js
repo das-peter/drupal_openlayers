@@ -73,10 +73,12 @@ Drupal.openlayers.addBehavior('openlayers_behavior_popup', function (data, optio
           }
         );
 
+        // Assign popup to feature and map.
         popup.panMapIfOutOfView = options.panMapIfOutOfView;
         popup.keepInMap = options.keepInMap;
         selectedFeature = feature;
         feature.popup = popup;
+        Drupal.attachBehaviors();
         map.addPopup(popup);
       },
       onUnselect: function(feature) {
