@@ -11,10 +11,13 @@ class openlayers_layers_ui extends ctools_export_ui {
     $layer_types = openlayers_layer_types();
     $options = array('' => t('Select the layer type'));
 
-    if ($form_state['op'] == 'edit') {
+    $layer = NULL;
+    if ($form_state['op'] == 'edit' && $form_state['form type'] == 'edit') {
       $layer = openlayers_layer_load($form_state['item']->name);
-    } else {
-      $layer = NULL;
+    }
+    if ($form_state['op'] == 'add' && $form_state['form type'] == 'clone') {
+      $layer = openlayers_layer_load($form_state['function args'][2]->name);
+      $layer->title = t('Clone of ') . $layer->title;
     }
 
     $form['info']['title'] = array(

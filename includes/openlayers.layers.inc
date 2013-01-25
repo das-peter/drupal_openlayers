@@ -322,6 +322,34 @@ function _openlayers_openlayers_layers() {
   );
   $layers[$layer->name] = $layer;
 
+  $info = _mapbox_layers_info();
+  $resolutions = array_combine(range(0, 18), openlayers_get_resolutions('900913'));
+
+  foreach ($info as $key => $item) {
+    $openlayers_layers = new stdClass;
+    $openlayers_layers->disabled = FALSE; /* Edit this to true to make a default openlayers_layers disabled initially */
+    $openlayers_layers->api_version = 1;
+    $openlayers_layers->name = $key;
+    $openlayers_layers->title = $item['name'];
+    $openlayers_layers->description = $item['description'];
+    $openlayers_layers->data = array(
+      'urls' => implode("\n", array(
+        0 => 'http://a.tiles.mapbox.com/',
+        1 => 'http://b.tiles.mapbox.com/',
+        2 => 'http://c.tiles.mapbox.com/',
+        3 => 'http://d.tiles.mapbox.com/',
+      )),
+      'layername' => $item['layername'],
+      'layer_type' => 'openlayers_layer_type_mapbox',
+      'osm' => FALSE,
+      'baselayer' => TRUE,
+      'type' => 'png',
+      'resolutions' => array_intersect_key($resolutions, array_flip(range($item['minzoom'], $item['maxzoom']))),
+      'projection' => array('900913'),
+    );
+    $layers[$key] = $openlayers_layers;
+  }
+
   return $layers;
 }
 
@@ -367,4 +395,52 @@ function _openlayers_openlayers_layers_i18n() {
     t('MapQuest’s rendering of OpenStreetMap.'),
     t('MapQuest’s aerial photo map.'),
   );
+}
+
+function _mapbox_layers_info() {
+  $info = array();
+  $info['mapbox_streets'] = array(
+    'name'=> t('MapBox Streets'),
+    'description' => t('MapBox Streets'),
+    'layername' => 'mapbox-streets',
+    'minzoom' => 0,
+    'maxzoom' => 16
+  );
+  $info['mapbox_world_bright'] = array(
+    'name' => t('MapBox World Bright'),
+    'description' => t('MapBox World Bright'),
+    'layername' => 'world-bright',
+    'minzoom' => 0,
+    'maxzoom' => 11,
+  );
+  $info['mapbox_world_dark'] = array(
+    'name' => t('MapBox World Dark'),
+    'description' => t('MapBox World Dark'),
+    'layername' => 'world-dark',
+    'minzoom' => 0,
+    'maxzoom' => 11,
+  );
+  $info['mapbox_world_light'] = array(
+    'name' => t('MapBox World Light'),
+    'description' => t('MapBox World Light'),
+    'layername' => 'world-light',
+    'minzoom' => 0,
+    'maxzoom' => 11,
+  );
+  $info['mapbox_world_print'] = array(
+    'name' => t('MapBox World Print'),
+    'description' => t('MapBox World Print'),
+    'layername' => 'world-print',
+    'minzoom' => 0,
+    'maxzoom' => 9,
+  );
+  $info['mapbox_world_black'] = array(
+    'name' => t('MapBox World Black'),
+    'description' => t('MapBox World Black'),
+    'layername' => 'world-black',
+    'minzoom' => 0,
+    'maxzoom' => 11,
+  );
+
+  return $info;
 }
