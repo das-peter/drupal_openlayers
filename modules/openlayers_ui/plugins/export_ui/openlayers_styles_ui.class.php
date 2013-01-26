@@ -24,6 +24,13 @@ class openlayers_styles_ui extends ctools_export_ui {
         <li>Absolute path, such as /icon.png (though this is not suggested for maintainability reasons)</li></ul>'),
         'maxlength' => 2083
       ),
+      'imageStyle' => array(
+        'type'    => 'select',
+        'title'    => 'Image style',
+        'options' => array(''=> 'None (original image)') + image_style_options(FALSE),
+        'default' => '',
+        'desc'    => t('The Drupal Image Style to apply to the marker.'),
+      ),
       'pointRadius' => array(
         'default' => 6,
         'desc' => t('The radius of a vector point or the size of
@@ -253,7 +260,7 @@ class openlayers_styles_ui extends ctools_export_ui {
     foreach ($properties as $key => $prop) {
       $form['data'][$key] = array(
         '#type' => !isset($prop['options']) ? 'textfield' : 'select',
-        '#title' => check_plain($key),
+        '#title' => !isset($prop['title']) ? check_plain($key) : check_plain($prop['title']),
         '#description' => filter_xss($prop['desc']),
         '#default_value' => isset($style->data[$key]) ?
           $style->data[$key] : $prop['default'],

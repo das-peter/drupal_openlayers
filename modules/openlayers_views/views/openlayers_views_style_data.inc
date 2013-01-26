@@ -105,7 +105,6 @@ class openlayers_views_style_data extends views_plugin_style {
       ),
       '#default_value' => $this->options['data_source']['value'],
     );
-
     if (count($fields > 0)) {
       $form['data_source']['other_lat'] = array(
         '#type' => 'select',
@@ -237,6 +236,15 @@ class openlayers_views_style_data extends views_plugin_style {
         ),
       );
     }
+    $form['data_source']['style_field'] = array(
+      '#type'          => 'select',
+      '#title'         => t('Style Field'),
+      '#description'   => t('Choose the field which will appear as a style on '
+        . 'the layer.'),
+      '#required'      => FALSE,
+      '#options'       => array('' => '',) + $fields,
+      '#default_value' => $this->options['data_source']['style_field'],
+    );
 
     // A simple way to display attributes and styling
     $form['attributes'] = array(
@@ -339,6 +347,7 @@ class openlayers_views_style_data extends views_plugin_style {
         $feature = array(
           'projection' => '4326',
           'attributes' => $attributes,
+          'style' => $this->get_style($attributes, $handlers, $this->options['data_source']),
           'wkt' => $this->get_wkt($attributes, $handlers, $this->options['data_source']),
         );
         $features = $this->reduce_features($this->options['grouping'], $features, $feature, $title);
@@ -363,6 +372,40 @@ class openlayers_views_style_data extends views_plugin_style {
    */
   function datasource_dependent($type) {
     return array('visible' => array('#edit-style-options-data-source-value' => array('value' => $type)));
+  }
+
+  /**
+   * Find and compute styling attributes.
+   */
+  function get_style($feature, $handlers, $datasource) {
+    $style = array();
+    if (isset($datasource['style_field']) && !empty($datasource['style_field'])) {
+      $style_field = $handlers[$datasource['style_field']];
+      $style = $style_field->options['settings'];
+      // Compute the size of the picture.
+      // If no size found, Openlayers will use 12x12 by default.
+      // This is a newer way to get the raw value of a field, only in view-dev, let's not use it now.
+      // But keep it for later.
+      // $raw_value = $this->view->style_plugin->get_field_value($this->view->row_index, $datasource['style_field']);
+      $raw_value = $this->view->field[$datasource['style_field']]->get_value($this->view->result[$this->view->row_index]);
+      if (isset($raw_value[0]['uri'])) {
+        $preview_file = image_style_path($style['imageStyle'], $raw_value[0]['uri']);
+        $image_info = image_get_info($preview_file);
+        $style['graphicWidth'] = $image_info['width'];
+        $style['graphicHeight'] = $image_info['height'];
+      }
+
+      unset($style['imageStyle']);
+      $style['externalGraphic'] = $style_field->original_value;
+
+      foreach ($style as $prop => $value) {
+        if (empty($value)) {
+          unset($style[$prop]);
+        }
+      }
+    }
+
+    return $style;
   }
 
   /**
