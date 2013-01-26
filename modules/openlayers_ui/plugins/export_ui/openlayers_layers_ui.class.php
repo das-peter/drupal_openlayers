@@ -30,19 +30,24 @@ class openlayers_layers_ui extends ctools_export_ui {
     );
     $form['info']['name']['#machine_name']['source'] = array('info', 'title');
 
+    $layers_options = array();
+
     // Go trough all layer types and get each options form.
     foreach ($layer_types as $layer_type) {
 
-      if (is_object($layer) && get_class($layer) == $layer_type['name']) {
-        // Layer is of current layer type.
+      if (is_object($layer) && get_class($layer) == $layer_type['layer_type']['class']) {
+          // Layer is of current layer type.
         $layer_type_object = $layer;
       } else {
         // Otherwise load layer object for current layer type.
         $layer_type_object = openlayers_layer_type_load($layer_type['name']);
       }
 
-      if ($layer_type_object == FALSE ||
-        in_array($layer_type['name'], array('openlayers_views_vector', 'openlayers_layer_type_raw'))) {
+      $layer_options_form = array();
+      if (method_exists($layer_type_object, 'options_form')) {
+        $layer_options_form = $layer_type_object->options_form();
+      }
+      if ($layer_type_object == FALSE || empty($layer_options_form)) {
         continue;
       }
 
@@ -52,15 +57,14 @@ class openlayers_layers_ui extends ctools_export_ui {
         '#title' => t('Layer specific options for @layer_title', array('@layer_title' => $layer_type['title'])),
       );
 
-      if (method_exists($layer_type_object, 'options_form')) {
-        $layers_option += $layer_type_object->options_form();
-        $layers_option['#states'] = array(
-          'visible' => array(
-            ':input[name="layer_type"]' => array('value' => $layer_type['name']),
-          ),
-        );
-        $layers_options[$layer_type['name']] = $layers_option;
-      }
+      $layers_option += $layer_options_form;
+      $layers_option['#states'] = array(
+        'visible' => array(
+          ':input[name="layer_type"]' => array('value' => $layer_type['name']),
+        ),
+      );
+      $layers_options[$layer_type['name']] = $layers_option;
+
       $options[$layer_type['name']] = $layer_type['title'];
     }
 
@@ -147,6 +151,11 @@ class openlayers_layers_ui extends ctools_export_ui {
     $name = $item->{$this->plugin['export']['key']};
     $schema = ctools_export_get_schema($this->plugin['schema']);
 
+    $layers_types = openlayers_layer_types();
+    if (!isset($layers_types[$item->data['layer_type']])) {
+      return;
+    }
+
     // Note: $item->{$schema['export']['export type string']} should have already been set up by export.inc so
     // we can use it safely.
     switch ($form_state['values']['order']) {
@@ -172,7 +181,6 @@ class openlayers_layers_ui extends ctools_export_ui {
       $this->rows[$name]['data'][] = array('data' => check_plain($item->{$this->plugin['export']['admin_title']}), 'class' => array('ctools-export-ui-title'));
     }
 
-    $layers_types = openlayers_layer_types();
     $this->rows[$name]['data'][] = array('data' => $item->title, 'class' => array('ctools-export-ui-title'));
     $this->rows[$name]['data'][] = array('data' => $layers_types[$item->data['layer_type']]['title'], 'class' => array('ctools-export-ui-layer-type'));
     $this->rows[$name]['data'][] = array('data' => $item->description, 'class' => array('ctools-export-ui-description'));

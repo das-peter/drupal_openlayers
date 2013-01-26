@@ -26,9 +26,14 @@ class openlayers_layer_type_openlayers_views_vector
    */
   function options_init() {
     return array(
-      'layer_type' => 'openlayers_layer_type_openlayers_views_vector',
-      'layer_handler' => 'openlayers_views_vector',
-      'vector' => TRUE,
+      'layer_type' => 'openlayers_views_vector',
+      'projection' => array('4326'),
+      'baselayer' => FALSE,
+      'type' => 'Vector',
+      'url' => array(),
+      'options' => array(),
+      'events' => array(),
+      'views' => array()
     );
   }
 
@@ -36,8 +41,28 @@ class openlayers_layer_type_openlayers_views_vector
    * Options form which generates layers
    */
   function options_form($defaults = array()) {
-    return array(
+    $form = array();
+    /*
+    $form['views']['view'] = array(
+      '#type' => 'textfield',
+      '#title' => 'View name',
+      '#disabled' => TRUE,
+      '#default_value' => isset($this->data['views']['view']) ?
+        $this->data['views']['view'] : '',
     );
+    $form['views']['display'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Display name',
+      '#disabled' => TRUE,
+      '#default_value' => isset($this->data['views']['display']) ?
+        $this->data['views']['display'] : '',
+    );
+    $form['layer_type'] = array(
+      '#type' => 'hidden',
+      '#value' => 'openlayers_views_vector'
+    );
+    */
+    return $form;
   }
 
   /**

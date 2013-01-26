@@ -349,6 +349,46 @@ function openlayers_layers_load($reset = FALSE) {
 }
 
 /**
+ *
+ * Check the plugin definition of a layer.
+ * Some field *MUST* be there to work correctly with OL.
+ *
+ * @ingroup openlayers_api
+ * @param $definition
+ * @return bool
+ */
+function openlayers_layer_definition_check($definition) {
+  $mandatory_fields = array(
+    array('title'),
+    array('description'),
+    array('module'),
+    array('name'),
+    array('path'),
+    array('layer_type', 'file'),
+    array('layer_type', 'class'),
+    array('layer_type', 'parent'),
+  );
+
+  reset($mandatory_fields);
+  $incomplete = FALSE;
+  while  ($incomplete == FALSE && $field = current($mandatory_fields)) {
+    $missing = drupal_array_nested_key_exists($definition, $field);
+    if (!$missing) {
+      $incomplete = TRUE;
+      drupal_set_message(t("There's a problem in the plugin definition of the layer type <em>!type</em>. The layer will be disabled.", array('!type' => $definition['name'])), 'warning');
+      watchdog('openlayers', 'Layer !layer is unavailable because its
+                                plugin definition is incomplete.',
+        array('!layer' => $definition['name']),
+        WATCHDOG_ERROR);
+      return FALSE;
+    }
+    next($mandatory_fields);
+  }
+
+  return TRUE;
+}
+
+/**
  * Check layer to determine whether it has all the
  * necessary attributes to be rendered. This is necessary
  * because of API changes, and is a consolidation from other
@@ -366,6 +406,10 @@ function openlayers_layers_load($reset = FALSE) {
 function openlayers_layer_sanity_check($layer, $projection = FALSE, $strict = FALSE) {
   // Handle layers after they've been rendered for a map
   $layer = (is_array($layer)) ? (object) $layer : $layer;
+
+  if (!isset($layer->name)) {
+    return !$strict;
+  }
 
   if (!isset($layer->data['projection']) || !is_array($layer->data['projection'])) {
     watchdog('openlayers', 'Layer %name does not have a projection set.',
@@ -431,7 +475,9 @@ function openlayers_layer_delete($layer) {
  */
 function openlayers_layer_types($reset = FALSE) {
   ctools_include('plugins');
-  return ctools_get_plugins('openlayers', 'layer_types');
+  $layers = ctools_get_plugins('openlayers', 'layer_types');
+
+  return array_filter($layers, 'openlayers_layer_definition_check');
 }
 
 /**
