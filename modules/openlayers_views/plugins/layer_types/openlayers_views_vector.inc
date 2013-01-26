@@ -27,8 +27,10 @@ class openlayers_layer_type_openlayers_views_vector
   function options_init() {
     return array(
       'layer_type' => 'openlayers_views_vector',
+      'layer_handler' => 'openlayers_views_vector',
       'projection' => array('4326'),
       'baselayer' => FALSE,
+      'vector' => TRUE,
       'type' => 'Vector',
       'url' => array(),
       'options' => array(),
