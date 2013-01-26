@@ -178,7 +178,7 @@ function openlayers_views_openlayers_layers() {
 function openlayers_views_field_formatter_info() {
   return array(
     'openlayers' => array(
-      'label'       => t('Openlayers'),
+      'label'       => t('OpenLayers Style'),
       'field types' => array('image'),
       'settings'    => array('image_style' => ''),
     ),

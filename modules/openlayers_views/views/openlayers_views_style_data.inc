@@ -347,7 +347,7 @@ class openlayers_views_style_data extends views_plugin_style {
         $feature = array(
           'projection' => '4326',
           'attributes' => $attributes,
-          'style' => $this->get_style($attributes, $handlers, $this->options['data_source']),
+          'style' => $this->get_style($attributes, $handlers, $this->options['data_source'], $record),
           'wkt' => $this->get_wkt($attributes, $handlers, $this->options['data_source']),
         );
         $features = $this->reduce_features($this->options['grouping'], $features, $feature, $title);
@@ -377,26 +377,21 @@ class openlayers_views_style_data extends views_plugin_style {
   /**
    * Find and compute styling attributes.
    */
-  function get_style($feature, $handlers, $datasource) {
+  function get_style($feature, $handlers, $datasource, $record) {
     $style = array();
+
     if (isset($datasource['style_field']) && !empty($datasource['style_field'])) {
       $style_field = $handlers[$datasource['style_field']];
       $style = $style_field->options['settings'];
-      // Compute the size of the picture.
-      // If no size found, Openlayers will use 12x12 by default.
-      // This is a newer way to get the raw value of a field, only in view-dev, let's not use it now.
-      // But keep it for later.
-      // $raw_value = $this->view->style_plugin->get_field_value($this->view->row_index, $datasource['style_field']);
-      $raw_value = $this->view->field[$datasource['style_field']]->get_value($this->view->result[$this->view->row_index]);
-      if (isset($raw_value[0]['uri'])) {
-        $preview_file = image_style_path($style['imageStyle'], $raw_value[0]['uri']);
-        $image_info = image_get_info($preview_file);
+
+      if ($style_field->original_value) {
+        $image_info = image_get_info($style_field->original_value);
         $style['graphicWidth'] = $image_info['width'];
         $style['graphicHeight'] = $image_info['height'];
-      }
 
-      unset($style['imageStyle']);
-      $style['externalGraphic'] = $style_field->original_value;
+        unset($style['imageStyle']);
+        $style['externalGraphic'] = file_create_url($style_field->original_value);
+      }
 
       foreach ($style as $prop => $value) {
         if (empty($value)) {

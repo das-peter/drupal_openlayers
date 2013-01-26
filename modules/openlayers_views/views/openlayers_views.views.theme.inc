@@ -33,14 +33,12 @@ function theme_openlayers_image_formatter($variables) {
     $image['height'] = $item['height'];
   }
 
+  $output = $image['path'];
   if ($variables['display_settings']['imageStyle']) {
     $image_style = image_style_load($variables['display_settings']['imageStyle']);
-    $preview_file = image_style_url($image_style['name'], $image['path']);
-    image_style_create_derivative($image_style, $image['path'], $preview_file);
-    $output = $preview_file;
-  }
-  else {
-    $output = file_create_url($image['path']);
+    $output = image_style_path($image_style['name'], $image['path']);
+    $preview_file_url = image_style_url($image_style['name'], $image['path']);
+    image_style_create_derivative($image_style, $image['path'], $preview_file_url);
   }
 
   return $output;
