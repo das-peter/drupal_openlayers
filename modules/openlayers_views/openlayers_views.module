@@ -114,6 +114,7 @@ function openlayers_views_openlayers_layers() {
         $layer->description = $view->description;
         $layer->data = array(
           'layer_type' => 'openlayers_views_vector',
+          'layer_handler' => 'openlayers_views_vector',
           'projection' => array('4326'),
           'baselayer' => FALSE,
           'type' => 'Vector',
