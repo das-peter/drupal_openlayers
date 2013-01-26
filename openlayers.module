@@ -369,12 +369,9 @@ function openlayers_layer_definition_check($definition) {
     array('layer_type', 'parent'),
   );
 
-  reset($mandatory_fields);
-  $incomplete = FALSE;
-  while  ($incomplete == FALSE && $field = current($mandatory_fields)) {
+  foreach ($mandatory_fields as $field) {
     $missing = drupal_array_nested_key_exists($definition, $field);
     if (!$missing) {
-      $incomplete = TRUE;
       drupal_set_message(t("There's a problem in the plugin definition of the layer type <em>!type</em>. The layer will be disabled.", array('!type' => $definition['name'])), 'warning');
       watchdog('openlayers', 'Layer !layer is unavailable because its
                                 plugin definition is incomplete.',
@@ -382,7 +379,6 @@ function openlayers_layer_definition_check($definition) {
         WATCHDOG_ERROR);
       return FALSE;
     }
-    next($mandatory_fields);
   }
 
   return TRUE;
