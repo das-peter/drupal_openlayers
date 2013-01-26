@@ -124,8 +124,6 @@ function openlayers_views_openlayers_layers() {
           'events' => array(),
           'views' => array('view' => $view->name, 'display' => $display),
         );
-        dpm($layer);
-
         $layers[$layer->name] = $layer;
       }
 
