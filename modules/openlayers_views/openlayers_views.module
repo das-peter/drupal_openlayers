@@ -117,12 +117,15 @@ function openlayers_views_openlayers_layers() {
           'layer_handler' => 'openlayers_views_vector',
           'projection' => array('4326'),
           'baselayer' => FALSE,
+          'vector' => TRUE,
           'type' => 'Vector',
           'url' => array(),
           'options' => array(),
           'events' => array(),
           'views' => array('view' => $view->name, 'display' => $display),
         );
+        dpm($layer);
+
         $layers[$layer->name] = $layer;
       }
 
