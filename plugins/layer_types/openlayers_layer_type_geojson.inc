@@ -100,6 +100,12 @@ class openlayers_layer_type_geojson extends openlayers_layer_type {
    * Render.
    */
   function render(&$map) {
+    if (isset($map['views_arguments'])) {
+      foreach ((array) $map['views_arguments'] as $name => $value) {
+        $this->data['url'] = str_replace("[{$name}]", $value, $this->data['url']);
+      }
+    }
+
     $this->options['url'] = !empty($this->options['url']) ? url($this->options['url']) : '';
 
     drupal_add_js(drupal_get_path('module', 'openlayers')
