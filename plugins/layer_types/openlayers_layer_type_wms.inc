@@ -24,29 +24,13 @@ function openlayers_openlayers_layer_type_wms_openlayers_layer_types() {
  * OpenLayers WMS Layer Type class
  */
 class openlayers_layer_type_wms extends openlayers_layer_type {
-  function __construct($layer = array(), $map = array()) {
-    parent::__construct($layer, $map);
-    if (isset($this->data)) {
-      if (isset($this->data['options']['srs'])) {
-        $pts = explode(':', $this->data['options']['srs']);
-        $this->data['projection'] = array($pts[1]);
-        $this->data['params']['resolutions'] = openlayers_get_resolutions($pts[1]);
-        $this->data['params']['projection'] = $this->data['options']['srs'];
-        $this->data['params']['maxextent'] =  openlayers_get_extent($pts[1]);
-      }
-      $this->data['baselayer'] = $this->data['params']['isBaseLayer'];
-      $this->data += $this->options_init();
-    }
-    else {
-      $this->data = $this->options_init();
-    }
-  }
 
   /**
    * Provide initial values for options.
    */
   function options_init() {
-    return array(
+    return parent::options_init() +
+    array(
       'layer_handler' => 'wms',
       'baselayer' => FALSE
     );

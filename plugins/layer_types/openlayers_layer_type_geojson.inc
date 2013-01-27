@@ -24,22 +24,13 @@ function openlayers_openlayers_layer_type_geojson_openlayers_layer_types() {
  * OpenLayers GeoJSON Layer Type class
  */
 class openlayers_layer_type_geojson extends openlayers_layer_type {
-  function __construct($layer = array(), $map = array()) {
-    parent::__construct($layer, $map);
-    if (isset($this->data)) {
-      $this->data += $this->options_init();
-    }
-    else {
-      $this->data = $this->options_init();
-    }
-  }
 
   /**
    * Provide initial values for options.
    */
   function options_init() {
-    return array(
-      'layer_type' => 'openlayers_layer_type_geojson',
+    return parent::options_init() +
+    array(
       'layer_handler' => 'geojson',
       'projection' => array('4326'),
       'baselayer' => FALSE,

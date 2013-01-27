@@ -25,26 +25,12 @@ function openlayers_openlayers_layer_type_maptiler_openlayers_layer_types() {
  */
 class openlayers_layer_type_maptiler extends openlayers_layer_type {
 
-  function __construct($layer = array(), $map = array()) {
-    parent::__construct($layer, $map);
-    if (isset($this->data)) {
-      $this->data += $this->options_init();
-      $this->data['baselayer'] = $this->data['isBaseLayer'];
-    }
-    else {
-      $this->data = $this->options_init();
-    }
-  }
-
   /**
    * Provide initial values for options.
    */
   function options_init() {
-    return array(
-      'serverResolutions' => openlayers_get_resolutions('900913'),
-      'maxExtent' => openlayers_get_extent('900913'),
-      'projection' => array('900913'),
-      'baselayer' => TRUE,
+    return parent::options_init() +
+    array(
       'type' => 'png',
       'layer_handler' => 'maptiler',
     );

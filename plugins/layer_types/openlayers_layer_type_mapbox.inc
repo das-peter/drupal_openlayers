@@ -21,33 +21,20 @@ function openlayers_openlayers_layer_type_mapbox_openlayers_layer_types() {
  */
 class openlayers_layer_type_mapbox extends openlayers_layer_type {
 
-  function __construct($layer = array(), $map = array()) {
-    parent::__construct($layer, $map);
-    if (isset($this->data)) {
-      $this->data += $this->options_init();
-    }
-    else {
-      $this->data = $this->options_init();
-    }
-  }
-
   /**
    * Provide initial values for options.
    */
   function options_init() {
-    return array(
+    return parent::options_init() +
+    array(
       'urls' => implode("\n", array(
         'http://a.tiles.mapbox.com/mapbox/',
         'http://b.tiles.mapbox.com/mapbox/',
         'http://c.tiles.mapbox.com/mapbox/',
         'http://d.tiles.mapbox.com/mapbox/',
       )),
-      'serverResolutions' => openlayers_get_resolutions('900913'),
-      'maxExtent' => openlayers_get_extent('900913'),
-      'projection' => array('900913'),
       'osm' => FALSE,
       'layername' => '',
-      'baselayer' => TRUE,
       'layer_handler' => 'MapBox',
       'type' => 'png',
     );
@@ -57,9 +44,6 @@ class openlayers_layer_type_mapbox extends openlayers_layer_type {
    * Options form which generates layers
    */
   function options_form() {
-    if (!isset($this->data)) {
-      $this->data = $this->options_init();
-    }
     return array(
       'urls' => array(
         '#type' => 'textarea',
@@ -107,12 +91,6 @@ class openlayers_layer_type_mapbox extends openlayers_layer_type {
         '#title' => t('Zoom Level Range'),
         '#default_value' => isset($this->data['resolutions']) ? array_map('strval', $this->data['resolutions']) : array(),
       ),
-      'projection' => array(
-        '0' => array(
-          '#type' => 'hidden',
-          '#value' => '900913',
-        ),
-      ),
     );
   }
 
@@ -122,7 +100,7 @@ class openlayers_layer_type_mapbox extends openlayers_layer_type {
   function render(&$map) {
     drupal_add_js(drupal_get_path('module', 'openlayers') . '/plugins/layer_types/openlayers_layer_type_mapbox.js');
     $this->data['urls'] = explode("\n", $this->data['urls']);
-    $this->data['resolutions'] = array_map('floatval', array_values($this->data['resolutions']));
+    $this->data['resolutions'] = array_map('floatval', array_values($this->data['serverResolutions']));
     return $this->options;
   }
 }

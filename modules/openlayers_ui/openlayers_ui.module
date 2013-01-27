@@ -225,6 +225,9 @@ function openlayers_ui_get_layer_options($type = 'baselayer',
 
   // Go through layers to theme output.
   foreach ($layers as $key => $layer) {
+
+    if (!is_object($layer)) continue;
+
     // not filtering by projection
     // this layer has an appropriate projection
     // this layer can be reprojected because it is vector

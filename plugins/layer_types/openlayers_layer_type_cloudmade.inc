@@ -26,25 +26,15 @@ function openlayers_openlayers_layer_type_cloudmade_openlayers_layer_types() {
  * OpenLayers CloudMade Layer Type class
  */
 class openlayers_layer_type_cloudmade extends openlayers_layer_type {
-  function __construct($layer = array(), $map = array()) {
-    parent::__construct($layer, $map);
-    if (isset($this->data)) {
-      $this->data += $this->options_init();
-    }
-    else {
-      $this->data = $this->options_init();
-    }
-  }
+
   /**
    * Provide initial values for options.
    */
   function options_init() {
-    return array(
-      'layer_type' => 'cloudmade',
+    return parent::options_init() +
+    array(
       'layer_handler' => 'cloudmade',
       'key' => variable_get('openlayers_layers_cloudmade_api', ''),
-      'projection' => array('900913'),
-      'baselayer' => TRUE,
     );
   }
 
