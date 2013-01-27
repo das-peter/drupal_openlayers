@@ -135,10 +135,6 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
             $this->data['options']['styles'] : ''
         ),
       ),
-      'layer_type' => array(
-        '#type' => 'hidden',
-        '#value' => 'openlayers_layer_type_wms'
-      )
     );
   }
 
@@ -148,6 +144,5 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
   function render(&$map) {
     drupal_add_js(drupal_get_path('module', 'openlayers') .
       '/plugins/layer_types/openlayers_layer_type_wms.js');
-    return $this->options;
   }
 }

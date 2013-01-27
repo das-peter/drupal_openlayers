@@ -58,10 +58,6 @@ class openlayers_layer_type_cloudmade extends openlayers_layer_type {
         '#default_value' => isset($this->data['styleId']) ?
           $this->data['styleId'] : ''
       ),
-      'layer_type' => array(
-        '#type' => 'hidden',
-        '#value' => 'openlayers_layer_type_cloudmade'
-      ),
       $warning
     );
   }
@@ -108,6 +104,5 @@ class openlayers_layer_type_cloudmade extends openlayers_layer_type {
       }
       $cloudmade_maps_included = TRUE;
     }
-    return $this->options;
   }
 }

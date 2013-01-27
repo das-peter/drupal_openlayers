@@ -51,10 +51,6 @@ class openlayers_layer_type_google extends openlayers_layer_type {
         '#default_value' => isset($this->data['type']) ? $this->data['type'] : 'normal',
         '#options' => $google_layer_types
       ),
-      'layer_type' => array(
-        '#type' => 'hidden',
-        '#value' => 'openlayers_layer_type_google'
-      ),
       'numZoomLevels' => array(
         '#type' => 'textfield',
         '#title' => t('Number of Zoom Levels'),
@@ -156,6 +152,5 @@ class openlayers_layer_type_google extends openlayers_layer_type {
       drupal_add_js($url, 'external');
       $google_maps_included = TRUE;
     }
-    return $this->options;
   }
 }

@@ -50,10 +50,6 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
         '#maxlength' => 2083,
         '#description' => t('This is the base URL template for the XYZ layer.  It should be something similar to <em>http://example.com/tiles/1.0.0/layer_name/${z}/${x}/${y}.png</em>.'),
       ),
-      'layer_type' => array(
-        '#type' => 'hidden',
-        '#value' => 'openlayers_layer_type_xyz'
-      ),
       'serverResolutions' => array(
         '#type' => 'select',
         '#multiple' => TRUE,
@@ -71,13 +67,6 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
         '#default_value' => isset($this->data['wrapDateLine']) ? $this->data['wrapDateLine'] : FALSE,
         '#description' => t('This allows the user to continually pan left and right as the tiles will repeat themselves.  Note that this option is known to not work well with the 2.10 OL library.'),
       ),
-      'projection' =>
-        array(
-         '0' => array(
-          '#type' => 'hidden',
-          '#value' => '900913',
-        ),
-      )
     );
   }
 
@@ -87,6 +76,5 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
   function render(&$map) {
     drupal_add_js(drupal_get_path('module', 'openlayers') .
       '/plugins/layer_types/openlayers_layer_type_xyz.js');
-    return $this->options;
   }
 }

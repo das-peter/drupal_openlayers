@@ -57,10 +57,6 @@ class openlayers_layer_type_yahoo extends openlayers_layer_type {
           $this->data['type'] : 'normal',
         '#options' => $yahoo_layer_types
       ),
-      'layer_type' => array(
-        '#type' => 'hidden',
-        '#value' => 'openlayers_layer_type_yahoo'
-      ),
       $warning
     );
   }
@@ -90,6 +86,5 @@ class openlayers_layer_type_yahoo extends openlayers_layer_type {
         '/plugins/layer_types/openlayers_layer_type_yahoo.js');
       $yahoo_maps_included = TRUE;
     }
-    return $this->options;
   }
 }

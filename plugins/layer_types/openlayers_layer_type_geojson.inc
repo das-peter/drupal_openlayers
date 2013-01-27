@@ -33,6 +33,8 @@ class openlayers_layer_type_geojson extends openlayers_layer_type {
     array(
       'layer_handler' => 'geojson',
       'projection' => array('4326'),
+      'serverResolutions' => openlayers_get_resolutions('4326'),
+      'maxExtent' => openlayers_get_extent('4326'),
       'baselayer' => FALSE,
       'vector' => TRUE,
       'geojson_data' => '',
@@ -80,10 +82,6 @@ class openlayers_layer_type_geojson extends openlayers_layer_type {
         '#description' => t('Paste raw GeoJSON data here.  It is better to use a URL.  This is provided for very simple use cases like one or two features.  If there is data here, it will override the URL above.'),
         '#default_value' => isset($this->data['geojson_data']) ? $this->data['geojson_data'] : '',
       ),
-      'layer_type' => array(
-        '#type' => 'hidden',
-        '#value' => 'openlayers_layer_type_geojson'
-      ),
     );
   }
 
@@ -97,10 +95,9 @@ class openlayers_layer_type_geojson extends openlayers_layer_type {
       }
     }
 
-    $this->options['url'] = !empty($this->options['url']) ? url($this->options['url']) : '';
+    $this->data['url'] = !empty($this->data['url']) ? url($this->data['url']) : '';
 
     drupal_add_js(drupal_get_path('module', 'openlayers')
       . '/plugins/layer_types/openlayers_layer_type_geojson.js');
-    return $this->options;
   }
 }

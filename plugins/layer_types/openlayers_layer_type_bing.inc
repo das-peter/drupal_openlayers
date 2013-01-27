@@ -58,10 +58,6 @@ class openlayers_layer_type_bing extends openlayers_layer_type {
           $this->data['type'] : 'Road',
         '#options' => $bing_layer_types
       ),
-      'layer_type' => array(
-        '#type' => 'hidden',
-        '#value' => 'openlayers_layer_type_bing'
-      ),
       $warning
     );
   }
@@ -93,6 +89,5 @@ class openlayers_layer_type_bing extends openlayers_layer_type {
       '/plugins/layer_types/openlayers_layer_type_bing.js');
       $bing_maps_included = TRUE;
     }
-    return $this->options;
   }
 }

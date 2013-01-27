@@ -26,7 +26,6 @@ class openlayers_layer_type_openlayers_views_vector
    */
   function options_init() {
     return array(
-      'layer_type' => 'openlayers_views_vector',
       'layer_handler' => 'openlayers_views_vector',
       'projection' => array('4326'),
       'baselayer' => FALSE,
@@ -108,6 +107,5 @@ class openlayers_layer_type_openlayers_views_vector
     drupal_add_js(drupal_get_path('module', 'openlayers_views') .
       '/plugins/layer_types/openlayers_views_vector.js');
     $this->get_features();
-    return $this->options;
   }
 }

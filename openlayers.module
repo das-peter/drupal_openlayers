@@ -946,32 +946,63 @@ class openlayers_behavior {
  * All other parent classes can be autoloaded through ctools.
  */
 class openlayers_layer_type {
-  var $options, $map, $data;
 
+  /**
+   * Stores the options for this layer.
+   * @var array
+   */
+  public $data = array();
+
+  /**
+   * Stores the current map.
+   * @var array
+   */
+  public $map;
+
+  /**
+   * Set configuration and store map.
+   *
+   * @param $layer
+   *   Configuration object with the options for the layer.
+   * @param $map
+   *   Array with the current map.
+   */
   function __construct($layer = array(), $map = array()) {
     foreach (array('name', 'title', 'description', 'data', 'export_type') as $k) {
       if (isset($layer->{$k})) {
         $this->{$k} = $layer->{$k};
       }
     }
-    $this->data = $this->options_init();
+    // Extend options with the defaults.
+    $this->data += $this->options_init();
 
     $this->map = $map;
   }
 
+  /**
+   * Provides the default options for the layer.
+   *
+   * @return
+   *   An associative array with the default options.
+   */
   function options_init() {
     return array(
       'layer_type' => get_class($this),
       'baselayer' => TRUE,
       'projection' => array('900913'),
-      'resolutions' => openlayers_get_resolutions('900913'),
       'serverResolutions' => openlayers_get_resolutions('900913'),
       'maxExtent' => openlayers_get_extent('900913'),
       'base_url' => NULL,
     );
   }
 
-  function options_form() {
+  /**
+   * Options form to configure layer instance options.
+   *
+   * @return
+   *   Array with form elements.
+   */
+  function options_form($default = array()) {
     return array(
       'projection' => array(
         '#type' => 'select',
@@ -981,23 +1012,41 @@ class openlayers_layer_type {
           '900913' => '900913',
           '4326' => '4326'
         ),
-        '#default_value' => $this->data['projection'],
+        '#default_value' => isset($default->data['projection']) ?
+          $default->data['projection'] :
+          '900913'
       ),
       'baselayer' => array(
         '#type' => 'checkbox',
-        '#default_value' => $this->data['baselayer'],
         '#return_value' => 'true',
         '#title' => t('Base Layer'),
         '#description' => t('Uncheck to make this map an overlay'),
-      ),
-      'layer_type' => array(
-        '#type' => 'value',
-        '#value' => get_class($this),
+        '#default_value' => isset($default->data['baselayer']) ?
+          $default->data['baselayer'] :
+          true
       ),
     );
   }
 
+  /**
+   * Options form to configure layer-type-wide options.
+   *
+   * @return
+   *   Array with form elements.
+   */
+  function settings_form() {
+    return array();
+  }
+
+  /**
+   * Render the layer and return the layer options.
+   *
+   * Has no return value.
+   *
+   * @param $map
+   */
   function render(&$map) {}
+
 }
 
 /**

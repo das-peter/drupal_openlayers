@@ -53,7 +53,6 @@ class openlayers_layer_type_raw extends openlayers_layer_type {
       '/plugins/layer_types/openlayers_layer_type_raw.js');
     // $features = ;
     // $this->data['features'] = $features;
-    return $this->options;
   }
 }
 

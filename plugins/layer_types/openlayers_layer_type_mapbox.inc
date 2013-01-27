@@ -62,21 +62,11 @@ class openlayers_layer_type_mapbox extends openlayers_layer_type {
         )),
         '#default_value' => $this->data['layername']
       ),
-      'layer_type' => array(
-        '#type' => 'hidden',
-        '#value' => 'openlayers_layer_type_mapbox',
-      ),
       'osm' => array(
         '#type' => 'checkbox',
         '#default_value' => $this->data['osm'],
         '#title' => t('OSM Attribution'),
         '#description' => t('Required if OpenStreetMap data is used.'),
-      ),
-      'baselayer' => array(
-        '#type' => 'checkbox',
-        '#default_value' => $this->data['baselayer'],
-        '#title' => t('BaseLayer'),
-        '#description' => t('Uncheck to make this map an overlay.'),
       ),
       'type' => array(
         '#title' => t('File extension'),
@@ -101,6 +91,5 @@ class openlayers_layer_type_mapbox extends openlayers_layer_type {
     drupal_add_js(drupal_get_path('module', 'openlayers') . '/plugins/layer_types/openlayers_layer_type_mapbox.js');
     $this->data['urls'] = explode("\n", $this->data['urls']);
     $this->data['resolutions'] = array_map('floatval', array_values($this->data['serverResolutions']));
-    return $this->options;
   }
 }

@@ -41,8 +41,6 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
    * Options form which generates layers
    */
   function options_form($defaults = array()) {
-    dpm($this);
-
     return array(
       'base_url' => array(
         '#type' => 'textfield',
@@ -57,12 +55,6 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
         '#default_value' => isset($this->data['layername']) ?
           $this->data['layername'] : '',
         '#description' => t('This is the base URL of the TMS service.  For example, if this was your tile scheme URL: http://example.com/tms/1.0.0/layer_name/{z}/{y}/{x}.png, then <em>layer_name</em> would be the Layer Name.'),
-      ),
-      'baselayer' => array(
-        '#type' => 'checkbox',
-        '#default_value' => $this->data['baselayer'],
-        '#title' => t('BaseLayer'),
-        '#description' => t('Whether or not this layer is a base layer.'),
       ),
       'type' => array(
         '#type' => 'select',
@@ -93,10 +85,6 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
           $this->data['type'] : False,
         '#description' => t('Wrapping the dateline will cause the map to appear to repeat itself when going east or west.  This may not be supported by all tilesets.'),
       ),
-      'layer_type' => array(
-        '#type' => 'hidden',
-        '#value' => 'openlayers_layer_type_tms'
-      ),
     );
   }
 
@@ -106,6 +94,5 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
   function render(&$map) {
     drupal_add_js(drupal_get_path('module', 'openlayers') .
       '/plugins/layer_types/openlayers_layer_type_tms.js');
-    return $this->options;
   }
 }

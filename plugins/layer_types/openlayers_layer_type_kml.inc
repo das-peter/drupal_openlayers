@@ -81,10 +81,6 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
             $this->data['formatOptions']['extractAttributes'] : TRUE,
         ),
       ),
-      'layer_type' => array(
-        '#type' => 'hidden',
-        '#value' => 'openlayers_layer_type_kml'
-      ),
     );
   }
 
@@ -94,6 +90,5 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
   function render(&$map) {
     drupal_add_js(drupal_get_path('module', 'openlayers')
       . '/plugins/layer_types/openlayers_layer_type_kml.js');
-    return $this->options;
   }
 }

@@ -45,7 +45,12 @@ class openlayers_layers_ui extends ctools_export_ui {
 
       $layer_options_form = array();
       if (method_exists($layer_type_object, 'options_form')) {
-        $layer_options_form = $layer_type_object->options_form();
+        // This is because the class openlayers_layer_type
+        // is not abstract.
+        // Maybe there's a better way to do ?
+        $parent = get_parent_class($layer_type_object);
+        $parent_object = new $parent;
+        $layer_options_form = $layer_type_object->options_form() + $parent_object->options_form();
       }
       if ($layer_type_object == FALSE || empty($layer_options_form)) {
         continue;
@@ -63,6 +68,12 @@ class openlayers_layers_ui extends ctools_export_ui {
           ':input[name="layer_type"]' => array('value' => $layer_type['name']),
         ),
       );
+
+      $layers_option['layer_type'] = array(
+        '#type' => 'textfield',
+        '#value' => get_class($layer_type_object),
+      );
+
       $layers_options[$layer_type['name']] = $layers_option;
 
       $options[$layer_type['name']] = $layer_type['title'];

@@ -66,10 +66,6 @@ class openlayers_layer_type_maptiler extends openlayers_layer_type {
           $this->data['resolutions'] :
           array_map('strval', openlayers_get_resolutions('900913'))
       ),
-      'layer_type' => array(
-        '#type' => 'hidden',
-        '#value' => 'openlayers_layer_type_maptiler'
-      ),
     );
   }
 
@@ -79,6 +75,5 @@ class openlayers_layer_type_maptiler extends openlayers_layer_type {
   function render(&$map) {
     drupal_add_js(drupal_get_path('module', 'openlayers') .
       '/plugins/layer_types/openlayers_layer_type_maptiler.js');
-    return $this->options;
   }
 }
