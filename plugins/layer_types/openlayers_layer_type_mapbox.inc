@@ -43,7 +43,7 @@ class openlayers_layer_type_mapbox extends openlayers_layer_type {
   /**
    * Options form which generates layers
    */
-  function options_form() {
+  function options_form($defaults = array()) {
     return array(
       'url' => array(
         '#type' => 'textarea',
