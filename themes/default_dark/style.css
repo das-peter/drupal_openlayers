@@ -95,3 +95,6 @@ div.olControlSaveFeaturesItemInactive {
 .openlayers-map .olPopupCloseBox {
   background: url("img/close.gif") no-repeat scroll 0 0 transparent;
 }
+.openlayers-map .olControlZoomPanel div {
+  background-image: url("img/zoom-panel.png");
+}

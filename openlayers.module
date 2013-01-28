@@ -1023,9 +1023,27 @@ class openlayers_layer_type {
         '#description' => t('Uncheck to make this map an overlay'),
         '#default_value' => isset($default->data['baselayer']) ?
           $default->data['baselayer'] :
-          true
+          TRUE
       ),
     );
+  }
+
+  /**
+   * Validate the options_form().
+   *
+   * @param array $default
+   */
+  function options_form_validate($form, &$form_state) {
+
+  }
+
+  /**
+   * Submit the options_form().
+   *
+   * @param array $default
+   */
+  function options_form_submit($form, &$form_state) {
+
   }
 
   /**
