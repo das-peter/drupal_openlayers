@@ -31,7 +31,6 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
   function options_init() {
     return parent::options_init() +
     array(
-      'serverResolutions' => array(),
       'layer_handler' => 'xyz',
       'sphericalMercator' => TRUE,
       'wrapDateLine' => FALSE,
@@ -44,9 +43,9 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
   function options_form($defaults = array()) {
     return array(
       'url' => array(
-        '#type' => 'textfield',
+        '#type' => 'textarea',
         '#title' => t('Base URL (template)'),
-        '#default_value' => isset($this->data['url']) ? $this->data['url'] : '',
+        '#default_value' => !empty($this->data['url']) ? implode("\n", (array) $this->data['url']) : '',
         '#maxlength' => 2083,
         '#description' => t('This is the base URL template for the XYZ layer.  It should be something similar to <em>http://example.com/tiles/1.0.0/layer_name/${z}/${x}/${y}.png</em>.'),
       ),
@@ -68,6 +67,12 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
         '#description' => t('This allows the user to continually pan left and right as the tiles will repeat themselves.  Note that this option is known to not work well with the 2.10 OL library.'),
       ),
     );
+  }
+
+  function options_form_validate($form, &$form_state) {
+    $form_state['data']['url'] = explode("\n", $form_state['data']['url']);
+    $form_state['data']['serverResolutions'] = array_map('floatval', array_values($form_state['data']['serverResolutions']));
+    $form_state['data']['projection'] = array_values($form_state['data']['projection']);
   }
 
   /**

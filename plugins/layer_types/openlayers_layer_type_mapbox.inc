@@ -27,12 +27,12 @@ class openlayers_layer_type_mapbox extends openlayers_layer_type {
   function options_init() {
     return parent::options_init() +
     array(
-      'urls' => implode("\n", array(
+      'url' => array(
         'http://a.tiles.mapbox.com/mapbox/',
         'http://b.tiles.mapbox.com/mapbox/',
         'http://c.tiles.mapbox.com/mapbox/',
         'http://d.tiles.mapbox.com/mapbox/',
-      )),
+      ),
       'osm' => FALSE,
       'layername' => '',
       'layer_handler' => 'MapBox',
@@ -45,14 +45,14 @@ class openlayers_layer_type_mapbox extends openlayers_layer_type {
    */
   function options_form() {
     return array(
-      'urls' => array(
+      'url' => array(
         '#type' => 'textarea',
         '#title' => t('Base URLs'),
         '#description' => t('The list of base URLs specified on !tiles (with trailing "/"). For details, visit the !support site.', array(
           '!tiles' => l(t('TileStream'), 'http://tiles.mapbox.com/'),
           '!support' => l(t('MapBox Support'), 'http://support.mapbox.com/kb/tilestream/using-tilestream-with-drupal'),
         )),
-        '#default_value' => !empty($this->data['urls']) ? $this->data['urls'] : '',
+        '#default_value' => !empty($this->data['url']) ? implode("\n", $this->data['url']) : '',
       ),
       'layername' => array(
         '#type' => 'textfield',
@@ -84,12 +84,16 @@ class openlayers_layer_type_mapbox extends openlayers_layer_type {
     );
   }
 
+  function options_form_validate($form, &$form_state) {
+    $form_state['data']['url'] = explode("\n", $form_state['data']['url']);
+    $form_state['data']['resolutions'] = array_map('floatval', array_values($form_state['data']['resolutions']));
+    $form_state['data']['projection'] = array_values($form_state['data']['projection']);
+  }
+
   /**
    * Render.
    */
   function render(&$map) {
     drupal_add_js(drupal_get_path('module', 'openlayers') . '/plugins/layer_types/openlayers_layer_type_mapbox.js');
-    $this->data['urls'] = explode("\n", $this->data['urls']);
-    $this->data['resolutions'] = array_map('floatval', array_values($this->data['serverResolutions']));
   }
 }

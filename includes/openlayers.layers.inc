@@ -333,12 +333,12 @@ function _openlayers_openlayers_layers() {
     $openlayers_layers->title = $item['name'];
     $openlayers_layers->description = $item['description'];
     $openlayers_layers->data = array(
-      'urls' => implode("\n", array(
+      'url' => array(
         0 => 'http://a.tiles.mapbox.com/',
         1 => 'http://b.tiles.mapbox.com/',
         2 => 'http://c.tiles.mapbox.com/',
         3 => 'http://d.tiles.mapbox.com/',
-      )),
+      ),
       'layername' => $item['layername'],
       'layer_type' => 'openlayers_layer_type_mapbox',
       'osm' => FALSE,
