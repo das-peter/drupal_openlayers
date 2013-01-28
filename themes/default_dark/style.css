@@ -76,3 +76,22 @@ label.olButton {
     background-image: url("img/navigation_history.png");
 }
 */
+
+.openlayers-map .olControlOverviewMapRectReplacement {
+  background-image: url("img/overview_replacement.gif");
+}
+.openlayers-map .olControlNavigationHistory {
+  background-image: url("img/navigation_history.png");
+}
+.openlayers-map div.olControlSaveFeaturesItemActive {
+  background-image: url("img/save_features_on.png");
+}
+div.olControlSaveFeaturesItemInactive {
+  background-image: url("img/save_features_off.png");
+}
+.openlayers-map .olControlPanPanel div {
+  background-image: url("img/pan-panel.png");
+}
+.openlayers-map .olPopupCloseBox {
+  background: url("img/close.gif") no-repeat scroll 0 0 transparent;
+}
