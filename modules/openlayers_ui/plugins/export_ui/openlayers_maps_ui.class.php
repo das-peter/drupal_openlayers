@@ -631,11 +631,13 @@ class openlayers_maps_ui extends ctools_export_ui {
     }
 
     $layers = openlayers_layers_load();
+    $layers_names = array();
     foreach ($item->data['layers'] as $layer) {
       if (isset($layers[$layer])) {
         $layers_names[] = empty($layers[$layer]->title) ? $layer : filter_xss_admin($layers[$layer]->title);
       }
     }
+
     sort($layers_names);
     $layers_names = implode(',', $layers_names);
 
