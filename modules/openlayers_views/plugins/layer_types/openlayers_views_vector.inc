@@ -88,6 +88,11 @@ class openlayers_layer_type_openlayers_views_vector
           $view->set_exposed_input($current_view->exposed_input);
         }
       }
+
+      if (isset($this->data['views']['arguments'])) {
+        $args = $this->data['views']['arguments'];
+      }
+
       $features = $view->execute_display($this->data['views']['display'], $args);
 
       // Get dynamic title from view
