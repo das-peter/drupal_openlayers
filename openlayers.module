@@ -993,6 +993,7 @@ class openlayers_layer_type {
       'serverResolutions' => openlayers_get_resolutions('900913'),
       'maxExtent' => openlayers_get_extent('900913'),
       'base_url' => NULL,
+      'transitionEffect' => 'resize'
     );
   }
 
