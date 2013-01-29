@@ -32,6 +32,7 @@ class openlayers_layer_type_google extends openlayers_layer_type {
       'layer_handler' => 'google',
       'animationEnabled' => TRUE,
       'sphericalMercator' => TRUE,
+      'numZoomLevels' => 21
     );
   }
 
