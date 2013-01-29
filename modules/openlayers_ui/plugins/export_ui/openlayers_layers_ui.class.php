@@ -71,7 +71,7 @@ class openlayers_layers_ui extends ctools_export_ui {
 
       $layers_option['layer_type'] = array(
         '#type' => 'hidden',
-        '#value' => get_class($layer_type_object),
+        '#value' => $layer_type['name'],
       );
 
       $layers_options[$layer_type['name']] = $layers_option;
@@ -199,13 +199,15 @@ class openlayers_layers_ui extends ctools_export_ui {
 
     // This should be in the module openlayers_views, but I'm still looking
     // for a solution to do it properly.
+    // Temporarily removed.
+    /*
     if ($item->data['layer_type'] == 'openlayers_views_vector') {
       $operations['edit']['href'] = 'admin/structure/views/view/' . $item->data['views']['view'] . '/edit/' . $item->data['views']['display'];
       $operations['disable']['href'] = 'admin/structure/views/view/' . $item->data['views']['view'] . '/disable/' . $item->data['views']['display'];
       $operations['clone']['href'] = 'admin/structure/views/view/' . $item->data['views']['view'] . '/clone/' . $item->data['views']['display'];
       $operations['export']['href'] = 'admin/structure/views/view/' . $item->data['views']['view'] . '/export/' . $item->data['views']['display'];
     }
-
+    */
     $ops = theme('links__ctools_dropbutton', array('links' => $operations, 'attributes' => array('class' => array('links', 'inline'))));
 
     $this->rows[$name]['data'][] = array('data' => $ops, 'class' => array('ctools-export-ui-operations'));

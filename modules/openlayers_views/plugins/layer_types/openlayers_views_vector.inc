@@ -9,7 +9,7 @@
  */
 function openlayers_views_openlayers_views_vector_openlayers_layer_types() {
   return array(
-    'title' => t('OpenLayers_Views'),
+    'title' => t('OpenLayers Views'),
     'description' => t('OpenLayers Views Vector'),
     'layer_type' => array(
       'file' => 'openlayers_views_vector.inc',
@@ -43,28 +43,45 @@ class openlayers_layer_type_openlayers_views_vector
    */
   function options_form($defaults = array()) {
     $form = array();
-    /*
-    $form['views']['view'] = array(
-      '#type' => 'textfield',
+
+    $views = views_get_all_views();
+
+    $options = array('' => '<none>');
+    foreach($views as $view) {
+      foreach ($view->display as $display => $data) {
+        if ($data->display_plugin == 'openlayers') {
+          $options[$view->name . '::' . $display] = $view->human_name . ': '.$display;
+        }
+      }
+    }
+
+    $default = NULL;
+    if (isset($this->data['views']['view']) && isset($this->data['views']['display'])) {
+      $default = $this->data['views']['view'] . '::' . $this->data['views']['display'];
+    }
+
+    $form['views']['composite'] = array(
+      '#type' => 'select',
+      '#options' => $options,
       '#title' => 'View name',
-      '#disabled' => TRUE,
-      '#default_value' => isset($this->data['views']['view']) ?
-        $this->data['views']['view'] : '',
+      '#default_value' => isset($default) ?
+        $default : '',
     );
-    $form['views']['display'] = array(
-      '#type' => 'textfield',
-      '#title' => 'Display name',
-      '#disabled' => TRUE,
-      '#default_value' => isset($this->data['views']['display']) ?
-        $this->data['views']['display'] : '',
-    );
-    $form['layer_type'] = array(
-      '#type' => 'hidden',
-      '#value' => 'openlayers_views_vector'
-    );
-    */
     return $form;
   }
+
+  function options_form_validate($form, &$form_state) {
+    if (!empty($form_state['data']['views']['composite'])) {
+      list($view, $display) = explode('::', $form_state['data']['views']['composite']);
+      $form_state['data']['views']['view'] = $view;
+      $form_state['data']['views']['display'] = $display;
+      unset($form_state['data']['views']['composite']);
+    } else {
+      $field = $form_state['data']['layer_type'].'][views][composite';
+      form_set_error($field, t('A View must be set.'));
+    }
+  }
+
 
   /**
    * Get features for this view
