@@ -31,11 +31,10 @@ class openlayers_layer_type_cloudmade extends openlayers_layer_type {
    * Provide initial values for options.
    */
   function options_init() {
-    return parent::options_init() +
-    array(
+    return array(
       'layer_handler' => 'cloudmade',
       'key' => variable_get('openlayers_layers_cloudmade_api', ''),
-    );
+    ) + parent::options_init();
   }
 
   /**

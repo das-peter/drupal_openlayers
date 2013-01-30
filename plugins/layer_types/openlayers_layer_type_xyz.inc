@@ -29,14 +29,13 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
    * Provide initial values for options.
    */
   function options_init() {
-    return parent::options_init() +
-    array(
+    return array(
       'layer_handler' => 'xyz',
       'sphericalMercator' => TRUE,
       'wrapDateLine' => FALSE,
       'zoomOffset' => 0,
       'resolutions' => array_slice(openlayers_get_resolutions('900913'), 0, 18)
-    );
+    ) + parent::options_init();
   }
 
   /**

@@ -29,8 +29,7 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
    * Provide initial values for options.
    */
   function options_init() {
-    return parent::options_init() +
-    array(
+    return array(
       'layer_handler' => 'kml',
       'projection' => array('4326'),
       'isBaseLayer' => FALSE,
@@ -39,7 +38,7 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
         'extractStyles' => TRUE,
         'extractAttributes' => TRUE,
       ),
-    );
+    ) + parent::options_init();
   }
 
   /**

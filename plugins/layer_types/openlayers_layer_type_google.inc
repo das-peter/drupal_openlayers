@@ -27,13 +27,12 @@ class openlayers_layer_type_google extends openlayers_layer_type {
    * Provide initial values for options.
    */
   function options_init() {
-    return parent::options_init() +
-    array(
+    return array(
       'layer_handler' => 'google',
       'animationEnabled' => TRUE,
       'sphericalMercator' => TRUE,
       'numZoomLevels' => 21
-    );
+    ) + parent::options_init();
   }
 
   /**

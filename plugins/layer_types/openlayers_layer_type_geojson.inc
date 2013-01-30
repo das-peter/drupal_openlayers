@@ -29,17 +29,15 @@ class openlayers_layer_type_geojson extends openlayers_layer_type {
    * Provide initial values for options.
    */
   function options_init() {
-    return parent::options_init() +
-    array(
+    return array(
       'layer_handler' => 'geojson',
       'projection' => array('4326'),
       'serverResolutions' => openlayers_get_resolutions('4326'),
-      'maxExtent' => openlayers_get_extent('4326'),
       'isBaseLayer' => FALSE,
       'vector' => TRUE,
       'geojson_data' => '',
       'useBBOX' => FALSE,
-    );
+    ) + parent::options_init();
   }
 
   /**

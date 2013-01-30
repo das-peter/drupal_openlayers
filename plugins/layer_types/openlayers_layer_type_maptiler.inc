@@ -29,11 +29,10 @@ class openlayers_layer_type_maptiler extends openlayers_layer_type {
    * Provide initial values for options.
    */
   function options_init() {
-    return parent::options_init() +
-    array(
+    return array(
       'type' => 'png',
       'layer_handler' => 'maptiler',
-    );
+    ) + parent::options_init();
   }
 
   /**

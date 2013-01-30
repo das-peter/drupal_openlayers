@@ -30,12 +30,11 @@ class openlayers_layer_type_raw extends openlayers_layer_type {
    * Provide initial values for options.
    */
   function options_init() {
-    return parent::options_init() +
-    array(
+    return array(
       'layer_handler' => 'openlayers_raw',
       'vector' => TRUE,
       'isBaseLayer' => FALSE,
-    );
+    ) + parent::options_init();
   }
 
   /**

@@ -29,10 +29,9 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
    * Provide initial values for options.
    */
   function options_init() {
-    return parent::options_init() +
-    array(
+    return array(
       'layer_handler' => 'wms',
-    );
+    ) + parent::options_init();
   }
 
   /**

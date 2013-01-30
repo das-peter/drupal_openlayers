@@ -27,12 +27,11 @@ class openlayers_layer_type_bing extends openlayers_layer_type {
    * Provide initial values for options.
    */
   function options_init() {
-    return parent::options_init() +
-    array(
+    return array(
       'layer_handler' => 'bing',
       'key' => variable_get('openlayers_layers_bing_api', ''),
       'type' => 'Road',
-    );
+    ) + parent::options_init();
   }
 
   /**

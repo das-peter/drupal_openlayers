@@ -29,12 +29,11 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
    * Provide initial values for options.
    */
   function options_init() {
-    return parent::options_init() +
-    array(
+    return array(
       'layer_handler' => 'tms',
       'type' => 'png',
       'wrapDateLine' => false,
-    );
+    ) + parent::options_init();
   }
 
   /**

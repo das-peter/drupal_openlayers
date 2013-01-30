@@ -29,11 +29,10 @@ class openlayers_layer_type_osm extends openlayers_layer_type {
    * Provide initial values for options.
    */
   function options_init() {
-    return parent::options_init() +
-    array(
+    return array(
       'layer_handler' => 'xyz',
       'type' => 'png',
-    );
+    ) + parent::options_init();
   }
 
   /**

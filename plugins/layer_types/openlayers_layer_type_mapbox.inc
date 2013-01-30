@@ -25,8 +25,7 @@ class openlayers_layer_type_mapbox extends openlayers_layer_type {
    * Provide initial values for options.
    */
   function options_init() {
-    return parent::options_init() +
-    array(
+    return array(
       'url' => array(
         'http://a.tiles.mapbox.com/mapbox/',
         'http://b.tiles.mapbox.com/mapbox/',
@@ -37,7 +36,7 @@ class openlayers_layer_type_mapbox extends openlayers_layer_type {
       'layername' => '',
       'layer_handler' => 'MapBox',
       'type' => 'png',
-    );
+    ) + parent::options_init();
   }
 
   /**

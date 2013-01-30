@@ -293,6 +293,8 @@ function _openlayers_openlayers_layers() {
   $layer->title = t('Example GeoJSON, "Picture This"');
   $layer->description = t('Example that puts GeoJSON directly in layer without Views.');
   $layer->data = array(
+    'resolutions' => openlayers_get_resolutions('900913'),
+    'serverResolutions' => openlayers_get_resolutions('4326'),
     'layer_type' => 'openlayers_layer_type_geojson',
     'layer_handler' => 'geojson',
     'projection' => array('4326'),
