@@ -125,7 +125,7 @@ function openlayers_views_openlayers_layers() {
           'layer_type' => 'openlayers_views_vector',
           'layer_handler' => 'openlayers_views_vector',
           'projection' => array('4326'),
-          'baselayer' => FALSE,
+          'isBaseLayer' => FALSE,
           'vector' => TRUE,
           'type' => 'Vector',
           'url' => array(),

@@ -94,16 +94,15 @@ class openlayers_layers_ui extends ctools_export_ui {
     $layer = openlayers_layer_type_load($form_state['values']['layer_type']);
     $form_state['values']['data'] = $form_state['values'][$form_state['values']['layer_type']];
 
-    $parent = get_parent_class($layer);
-    $parent_object = new $parent;
-    $form_state['values']['data'] += $parent_object->options_init();
-
     if (empty($form_state['values']['layer_type'])) {
       form_set_error('layer_type', 'Layer type cannot be empty.');
     }
 
-    $layer_types = openlayers_layer_types();
+    $parent = get_parent_class($layer);
+    $parent_object = new $parent;
+    $form_state['values']['data'] += $parent_object->options_init();
 
+    $layer_types = openlayers_layer_types();
 
     foreach($layer_types as $layer_type) {
       unset($form_state['values'][$layer_type['name']]);

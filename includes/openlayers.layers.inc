@@ -17,7 +17,7 @@ function _openlayers_openlayers_layers() {
   $layer->title = 'Google Maps Satellite';
   $layer->description = 'Google Maps Satellite Imagery.';
   $layer->data = array(
-    'baselayer' => TRUE,
+    'isBaseLayer' => TRUE,
     'type' => 'satellite',
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_google',
@@ -30,7 +30,7 @@ function _openlayers_openlayers_layers() {
   $layer->title = 'Google Maps Hybrid';
   $layer->description = 'Google Maps with roads and terrain.';
   $layer->data = array(
-    'baselayer' => TRUE,
+    'isBaseLayer' => TRUE,
     'type' => 'hybrid',
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_google',
@@ -43,7 +43,7 @@ function _openlayers_openlayers_layers() {
   $layer->title = 'Google Maps Normal';
   $layer->description = 'Standard Google Maps Roads';
   $layer->data = array(
-    'baselayer' => TRUE,
+    'isBaseLayer' => TRUE,
     'type' => 'normal',
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_google',
@@ -56,7 +56,7 @@ function _openlayers_openlayers_layers() {
   $layer->title = 'Google Maps Physical';
   $layer->description = 'Google Maps Hillshades';
   $layer->data = array(
-    'baselayer' => TRUE,
+    'isBaseLayer' => TRUE,
     'type' => 'physical',
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_google',
@@ -69,7 +69,7 @@ function _openlayers_openlayers_layers() {
   $layer->title = 'MapQuest OSM';
   $layer->description = 'MapQuest’s rendering of OpenStreetMap.';
   $layer->data = array(
-    'baselayer' => TRUE,
+    'isBaseLayer' => TRUE,
     'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> '.
       '<a href="@openstreetmap">&copy; OpenStreetMap contributors</a>',
       array(
@@ -95,7 +95,7 @@ function _openlayers_openlayers_layers() {
   $layer->title = 'MapQuest Open Aerial';
   $layer->description = 'MapQuest’s aerial photo map.';
   $layer->data = array(
-    'baselayer' => TRUE,
+    'isBaseLayer' => TRUE,
     'attribution' => t('Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency.')
       . ' '. t('Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a>.'),
     'projection' => array('900913'),
@@ -116,7 +116,7 @@ function _openlayers_openlayers_layers() {
   $layer->title = 'Yahoo Maps Satellite';
   $layer->description = 'Yahoo satellite imagery tiles.';
   $layer->data = array(
-    'baselayer' => TRUE,
+    'isBaseLayer' => TRUE,
     'type' => 'satellite',
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_yahoo',
@@ -129,7 +129,7 @@ function _openlayers_openlayers_layers() {
   $layer->title = 'Yahoo Maps Street';
   $layer->description = 'Yahoo streets tiles.';
   $layer->data = array(
-    'baselayer' => TRUE,
+    'isBaseLayer' => TRUE,
     'type' => 'street',
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_yahoo',
@@ -142,7 +142,7 @@ function _openlayers_openlayers_layers() {
   $layer->title = 'Yahoo Maps Hybrid';
   $layer->description = 'Yahoo hybrid of streets and satellite tiles.';
   $layer->data = array(
-    'baselayer' => TRUE,
+    'isBaseLayer' => TRUE,
     'type' => 'hybrid',
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_yahoo',
@@ -156,7 +156,7 @@ function _openlayers_openlayers_layers() {
   $layer->title = 'Bing Road';
   $layer->description = 'Bing Road tiles.';
   $layer->data = array(
-    'baselayer' => TRUE,
+    'isBaseLayer' => TRUE,
     'type' => 'Road',
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_bing',
@@ -170,7 +170,7 @@ function _openlayers_openlayers_layers() {
   $layer->title = 'Bing Aerial';
   $layer->description = 'Bing Aerial tiles.';
   $layer->data = array(
-    'baselayer' => TRUE,
+    'isBaseLayer' => TRUE,
     'type' => 'Aerial',
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_bing',
@@ -184,7 +184,7 @@ function _openlayers_openlayers_layers() {
   $layer->title = 'Bing Hybrid';
   $layer->description = 'Bing Hybrid tiles.';
   $layer->data = array(
-    'baselayer' => TRUE,
+    'isBaseLayer' => TRUE,
     'type' => 'AerialWithLabels',
     'projection' => array('900913'),
     'layer_type' => 'openlayers_layer_type_bing',
@@ -198,7 +198,7 @@ function _openlayers_openlayers_layers() {
   $layer->title = 'OSM Mapnik';
   $layer->description = 'The main OpenStreetMap map';
   $layer->data = array(
-    'baselayer' => TRUE,
+    'isBaseLayer' => TRUE,
     'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> '.
         '<a href="@openstreetmap">&copy; OpenStreetMap contributors</a>',
       array(
@@ -220,7 +220,7 @@ function _openlayers_openlayers_layers() {
   $layer->title = 'OSM Cycling Map';
   $layer->description = 'OpenStreetMap with highlighted bike lanes';
   $layer->data = array(
-    'baselayer' => TRUE,
+    'isBaseLayer' => TRUE,
     'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> '.
         '<a href="@openstreetmap">&copy; OpenStreetMap contributors</a>',
       array(
@@ -243,7 +243,7 @@ function _openlayers_openlayers_layers() {
   $layer->description = 'Semi-transparent hybrid overlay. Projected into
     WSG84 for use on non spherical-mercator maps.';
   $layer->data = array(
-    'baselayer' => FALSE,
+    'isBaseLayer' => FALSE,
     'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> '.
         '<a href="@openstreetmap">&copy; OpenStreetMap contributors</a>',
       array(
@@ -272,7 +272,7 @@ function _openlayers_openlayers_layers() {
   $layer->description = 'MetaCarta basemap of province and water boundaries';
   $layer->data = array(
     'projection' => array('4326'),
-    'baselayer' => TRUE,
+    'isBaseLayer' => TRUE,
     'layer_type' => 'openlayers_layer_type_wms',
     'base_url' => '//labs.metacarta.com/wms-c/Basic.py',
     'params' => array(
@@ -295,7 +295,7 @@ function _openlayers_openlayers_layers() {
     'layer_type' => 'openlayers_layer_type_geojson',
     'layer_handler' => 'geojson',
     'projection' => array('4326'),
-    'baselayer' => FALSE,
+    'isBaseLayer' => FALSE,
     'vector' => TRUE,
     'geojson_data' => '
       {
@@ -342,7 +342,7 @@ function _openlayers_openlayers_layers() {
       'layername' => $item['layername'],
       'layer_type' => 'openlayers_layer_type_mapbox',
       'osm' => FALSE,
-      'baselayer' => TRUE,
+      'isBaseLayer' => TRUE,
       'type' => 'png',
       'resolutions' => array_intersect_key($resolutions, array_flip(range($item['minzoom'], $item['maxzoom']))),
       'projection' => array('900913'),
