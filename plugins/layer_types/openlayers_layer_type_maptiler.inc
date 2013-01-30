@@ -47,13 +47,6 @@ class openlayers_layer_type_maptiler extends openlayers_layer_type {
         '#default_value' => isset($this->data['base_url']) ?
           $this->data['base_url'] : ''
       ),
-      'isBaseLayer' => array(
-        '#type' => 'checkbox',
-        '#default_value' => isset($this->data['isBaseLayer']) ?
-          $this->data['isBaseLayer'] : TRUE,
-        '#title' => t('BaseLayer'),
-        '#description' => t('Uncheck to make this map an overlay')
-      ),
       'resolutions' => array(
         '#type' => 'select',
         '#multiple' => TRUE,

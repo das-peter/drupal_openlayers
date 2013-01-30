@@ -33,7 +33,7 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
     array(
       'layer_handler' => 'kml',
       'projection' => array('4326'),
-      'baselayer' => FALSE,
+      'isBaseLayer' => FALSE,
       'vector' => TRUE,
       'formatOptions' => array(
         'extractStyles' => TRUE,

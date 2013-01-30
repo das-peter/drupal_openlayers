@@ -28,7 +28,7 @@ class openlayers_layer_type_openlayers_views_vector
     return array(
       'layer_handler' => 'openlayers_views_vector',
       'projection' => array('4326'),
-      'baselayer' => FALSE,
+      'isBaseLayer' => FALSE,
       'vector' => TRUE,
       'type' => 'Vector',
       'url' => array(),

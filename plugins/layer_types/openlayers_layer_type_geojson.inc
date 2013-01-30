@@ -35,7 +35,7 @@ class openlayers_layer_type_geojson extends openlayers_layer_type {
       'projection' => array('4326'),
       'serverResolutions' => openlayers_get_resolutions('4326'),
       'maxExtent' => openlayers_get_extent('4326'),
-      'baselayer' => FALSE,
+      'isBaseLayer' => FALSE,
       'vector' => TRUE,
       'geojson_data' => '',
       'useBBOX' => FALSE,

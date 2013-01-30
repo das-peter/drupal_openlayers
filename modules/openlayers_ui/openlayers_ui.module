@@ -238,7 +238,7 @@ function openlayers_ui_get_layer_options($type = 'baselayer',
       !empty($layer->data['vector'])
     ) {
 
-      if ($layer->data['baselayer'] == TRUE && $type == 'baselayer') {
+      if ($layer->data['isBaseLayer'] == TRUE && $type == 'baselayer') {
         $variables = array(
           'layer_title' => $layer->title,
           'layer_description' => $layer->description,
@@ -247,7 +247,7 @@ function openlayers_ui_get_layer_options($type = 'baselayer',
         );
       }
 
-      if ($layer->data['baselayer'] == FALSE && $type == 'overlay') {
+      if ($layer->data['isBaseLayer'] == FALSE && $type == 'overlay') {
         $variables = array(
           'layer_title' => $layer->title,
           'layer_description' => $layer->description,

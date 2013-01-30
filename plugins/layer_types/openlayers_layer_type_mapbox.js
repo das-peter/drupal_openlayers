@@ -14,7 +14,6 @@ OpenLayers.Layer.MapBox = OpenLayers.Class(OpenLayers.Layer.TMS, {
             urls; // Multiple server URLs with the same contents
                   // but distributed for performance
         mapbox_logo = "<a class='mapbox-branding' href='http://mapbox.com'></a> | <a href='http://mapbox.com/tos'>Terms of Service</a>";
-        options.isBaseLayer = options.baselayer;
         options = OpenLayers.Util.extend({
             attribution: mapbox_logo,
             maxExtent: new OpenLayers.Bounds(

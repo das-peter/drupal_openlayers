@@ -32,7 +32,6 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
     return parent::options_init() +
     array(
       'layer_handler' => 'wms',
-      'baselayer' => FALSE
     );
   }
 
@@ -51,14 +50,6 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
 
       // TODO: swap terms
       'params' => array(
-        'isBaseLayer' => array(
-          '#type' => 'checkbox',
-          '#default_value' => isset($this->data['params']['isBaseLayer']) ?
-            $this->data['params']['isBaseLayer'] : TRUE,
-          '#return_value' => 'true',
-          '#title' => t('BaseLayer'),
-          '#description' => t('Uncheck to make this map an overlay')
-        ),
         // TODO: validate the field, only positive integers shall be allowed
         'buffer' => array(
           '#type' => 'textfield',

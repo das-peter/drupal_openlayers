@@ -51,7 +51,7 @@ class openlayers_layers_ui extends ctools_export_ui {
         $parent = get_parent_class($layer_type_object);
         $parent_object = new $parent;
         $layer_options_form = $layer_type_object->options_form() + $parent_object->options_form($layer);
-      }
+        }
       if ($layer_type_object == FALSE || empty($layer_options_form)) {
         continue;
       }
@@ -91,19 +91,24 @@ class openlayers_layers_ui extends ctools_export_ui {
   }
 
   function edit_form_validate(&$form, &$form_state) {
+    $layer = openlayers_layer_type_load($form_state['values']['layer_type']);
+    $form_state['values']['data'] = $form_state['values'][$form_state['values']['layer_type']];
+
+    $parent = get_parent_class($layer);
+    $parent_object = new $parent;
+    $form_state['values']['data'] += $parent_object->options_init();
+
     if (empty($form_state['values']['layer_type'])) {
       form_set_error('layer_type', 'Layer type cannot be empty.');
     }
 
     $layer_types = openlayers_layer_types();
 
-    $form_state['values']['data'] = $form_state['values'][$form_state['values']['layer_type']];
 
     foreach($layer_types as $layer_type) {
       unset($form_state['values'][$layer_type['name']]);
     }
 
-    $layer = openlayers_layer_type_load($form_state['values']['layer_type']);
     unset($form_state['values']['layer_type']);
 
     if (method_exists($layer, 'options_form_validate')) {

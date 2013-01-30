@@ -285,13 +285,12 @@ function openlayers_get_layer_object($layer, $map = array()) {
   $layer->description = t($layer->description);
 
   // Attempt to get ctool class
-  // class is renamed klass because of PHP keywords
   if (isset($layer_types[$layer->data['layer_type']]) &&
-    $klass = ctools_plugin_get_class(
+    $class = ctools_plugin_get_class(
       $layer_types[$layer->data['layer_type']],
       'layer_type')
   ) {
-    $layer_object = new $klass($layer, $map);
+    $layer_object = new $class($layer, $map);
     return $layer_object;
   }
   else {
@@ -345,6 +344,7 @@ function openlayers_layers_load($reset = FALSE) {
   foreach ($layers as $layer) {
     $layer_objects[$layer->name] = openlayers_get_layer_object($layer);
   }
+
   return array_filter($layer_objects, 'openlayers_layer_sanity_check');
 }
 
@@ -988,7 +988,7 @@ class openlayers_layer_type {
   function options_init() {
     return array(
       'layer_type' => get_class($this),
-      'baselayer' => TRUE,
+      'isBaseLayer' => TRUE,
       'projection' => array('900913'),
       'serverResolutions' => openlayers_get_resolutions('900913'),
       'maxExtent' => openlayers_get_extent('900913'),
@@ -1018,14 +1018,12 @@ class openlayers_layer_type {
           $default->data['projection'] :
           '900913'
       ),
-      'baselayer' => array(
+      'isBaseLayer' => array(
         '#type' => 'checkbox',
-        '#return_value' => 'true',
         '#title' => t('Base Layer'),
         '#description' => t('Uncheck to make this map an overlay'),
-        '#default_value' => isset($default->data['baselayer']) ?
-          $default->data['baselayer'] :
-          TRUE
+        '#default_value' => !empty($default->data['isBaseLayer']) ?
+          $default->data['isBaseLayer'] : FALSE
       ),
     );
   }

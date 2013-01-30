@@ -299,3 +299,17 @@ function openlayers_update_7202() {
   db_drop_index('openlayers_layers', 'name');
   db_drop_index('openlayers_styles', 'name');
 }
+
+/**
+ * Renamme the 'baselayer' in 'isBaseLayer' in layers.
+ */
+function openlayers_update_7204() {
+  foreach (openlayers_layers_load() as $key => $layer) {
+    if ($layer->export_type != 1) continue;
+    if (isset($layer->data['baselayer'])) {
+      $layer->data['isBaseLayer'] = $layer->data['baselayer'];
+      unset($layer->data['baselayer']);
+      ctools_export_crud_save('openlayers_layers', $layer);
+    }
+  }
+}
