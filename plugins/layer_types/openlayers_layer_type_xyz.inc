@@ -34,9 +34,6 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
       'layer_handler' => 'xyz',
       'sphericalMercator' => TRUE,
       'wrapDateLine' => FALSE,
-      'resolutions' => array(),
-      'maxExtend' => array(),
-      'serverResolutions' => array(),
     );
   }
 
