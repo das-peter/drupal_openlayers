@@ -10,8 +10,8 @@
 
 function openlayers_openlayers_behavior_layerzoom_openlayers_behaviors() {
   return array(
-   'title' => t('Zoom restrictions for non-base-layers.'),
-   'description' => t('Enables restriction of features display based on zoom level.'),
+   'title' => t('Zoom restrictions for non-base layers.'),
+   'description' => t('Enables restriction of layer display based on zoom level.'),
    'type' => 'layer',
    'behavior' => array(
      'file' => 'openlayers_behavior_layerzoom.inc',
