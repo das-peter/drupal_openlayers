@@ -118,17 +118,19 @@ function _openlayers_openlayers_maps() {
   $items['default_google'] = $openlayers_maps;
 
   // Example map with MapQuest and GeoJSON
-  $openlayers_maps = new stdClass;
-  $openlayers_maps->disabled = FALSE;
+  $openlayers_maps = new stdClass();
+  $openlayers_maps->disabled = FALSE; /* Edit this to true to make a default openlayers_maps disabled initially */
   $openlayers_maps->api_version = 1;
   $openlayers_maps->name = 'example_geojson';
-  $openlayers_maps->title = t('Example GeoJSON Map');
-  $openlayers_maps->description = t('A simple map with a custom GeoJSON layer with direct data.  Also an example of zooming into a layer.');
+  $openlayers_maps->title = 'Example GeoJSON Map';
+  $openlayers_maps->description = 'A simple map with a custom GeoJSON layer with direct data.  Also an example of zooming into a layer.';
   $openlayers_maps->data = array(
     'width' => 'auto',
     'height' => '400px',
     'image_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/img/',
     'css_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/style.css',
+    'proxy_host' => '',
+    'hide_empty_map' => 0,
     'center' => array(
       'initial' => array(
         'centerpoint' => '0,0',
@@ -140,14 +142,13 @@ function _openlayers_openlayers_maps() {
       ),
     ),
     'behaviors' => array(
-      'openlayers_behavior_attribution' => array(
-        'seperator' => '',
-      ),
       'openlayers_behavior_keyboarddefaults' => array(),
       'openlayers_behavior_layerswitcher' => array(
         'ascending' => 1,
+        'sortBaseLayer' => '0',
         'roundedCorner' => 1,
         'roundedCornerColor' => '#222222',
+        'maximizeDefault' => 0,
       ),
       'openlayers_behavior_navigation' => array(
         'zoomWheelEnabled' => 1,
@@ -162,10 +163,8 @@ function _openlayers_openlayers_maps() {
         'layers' => array(
           'openlayers_geojson_picture_this' => 'openlayers_geojson_picture_this',
         ),
-      ),
-      'openlayers_behavior_zoomtolayer' => array(
-        'zoomtolayer' => 'openlayers_geojson_picture_this',
-        'point_zoom_level' => '18',
+        'panMapIfOutOfView' => 0,
+        'keepInMap' => 1,
       ),
     ),
     'default_layer' => 'mapquest_openaerial',

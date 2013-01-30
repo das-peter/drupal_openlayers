@@ -873,7 +873,11 @@ function openlayers_get_resolutions($projection, $zoom_start = 0, $zoom_end = FA
         4.777314266967774,
         2.388657133483887,
         1.1943285667419434,
-        0.5971642833709717);
+        0.5971642833709717,
+        0.29858214169740677,
+        0.14929107084870338,
+        0.07464553542435169
+      );
       break;
     case '4326':
       // 16 zoom levels, taken from
@@ -894,7 +898,9 @@ function openlayers_get_resolutions($projection, $zoom_start = 0, $zoom_end = FA
         0.000171661376953125,
         0.0000858306884765625,
         0.00004291534423828125,
-        0.000021457672119140625);
+        0.000021457672119140625,
+        0.000010728836059570312,
+      );
       break;
     default:
       $res = array();
@@ -991,10 +997,11 @@ class openlayers_layer_type {
       'isBaseLayer' => TRUE,
       'projection' => array('900913'),
 //      'serverResolutions' => openlayers_get_resolutions('900913'),
-      'maxExtent' => openlayers_get_extent('900913'),
+//      'maxExtent' => openlayers_get_extent('900913'),
       'resolutions' => openlayers_get_resolutions('900913'),
       'base_url' => NULL,
-      'transitionEffect' => 'resize'
+      'transitionEffect' => 'resize',
+      'weight' => 0
     );
   }
 

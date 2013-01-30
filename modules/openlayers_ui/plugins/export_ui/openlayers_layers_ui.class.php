@@ -100,6 +100,7 @@ class openlayers_layers_ui extends ctools_export_ui {
 
     $parent = get_parent_class($layer);
     $parent_object = new $parent;
+    $form_state['values']['data'] += $layer->options_init();
     $form_state['values']['data'] += $parent_object->options_init();
 
     $layer_types = openlayers_layer_types();

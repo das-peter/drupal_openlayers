@@ -42,7 +42,7 @@ class openlayers_behavior_layerzoom extends openlayers_behavior {
             '#multiple' => TRUE,
             '#options' => array_combine(
               array_map('strval', openlayers_get_resolutions('900913')),
-              range(0, 18)
+              range(0, 21)
             ),
             '#title' => t('Zoom Level Range for @layer', array('@layer' => $layer)),
             '#default_value' => isset($this->options[$layer]['resolutions']) ?

@@ -85,7 +85,8 @@ function _openlayers_openlayers_layers() {
       '//otile3' . $mapquest_host . '/tiles/1.0.0/osm/${z}/${x}/${y}.png',
       '//otile4' . $mapquest_host . '/tiles/1.0.0/osm/${z}/${x}/${y}.png',
     ),
-    'wrapDateLine' => TRUE,
+    'wrapDateLine' => FALSE,
+    'resolutions' => openlayers_get_resolutions('900913', 0, 19)
   );
   $layers[$layer->name] = $layer;
 
@@ -323,7 +324,7 @@ function _openlayers_openlayers_layers() {
   $layers[$layer->name] = $layer;
 
   $info = _mapbox_layers_info();
-  $resolutions = array_combine(range(0, 18), openlayers_get_resolutions('900913'));
+  $resolutions = array_combine(range(0, 21), openlayers_get_resolutions('900913'));
 
   foreach ($info as $key => $item) {
     $openlayers_layers = new stdClass;

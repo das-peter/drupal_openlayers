@@ -34,6 +34,8 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
       'layer_handler' => 'xyz',
       'sphericalMercator' => TRUE,
       'wrapDateLine' => FALSE,
+      'zoomOffset' => 0,
+      'resolutions' => array_slice(openlayers_get_resolutions('900913'), 0, 18)
     );
   }
 
@@ -55,10 +57,31 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
         '#description' => t('Only set this if you need a very specific resolution.'),
         '#options' => array_combine(
           array_map('strval', openlayers_get_resolutions('900913')),
-          range(0, 18)),
+          range(0, 21)),
         '#title' => t('Zoom Level Range'),
         '#default_value' => isset($this->data['serverResolutions']) ?
-          $this->data['serverResolutions'] : array(),
+          array_map('strval', $this->data['serverResolutions']) : array(),
+      ),
+      'resolutions' => array(
+        '#type' => 'select',
+        '#multiple' => TRUE,
+        '#description' => t('Only set this if you need a very specific resolution.'),
+        '#options' => array_combine(
+          array_map('strval', openlayers_get_resolutions('900913')),
+          range(0, 21)),
+        '#title' => t('Zoom Level Range'),
+        '#default_value' => isset($this->data['resolutions']) ?
+          array_map('strval', $this->data['resolutions']) : array(),
+      ),
+      'zoomOffset' => array(
+        '#type' => 'select',
+        '#description' => t('Zoom offset.'),
+        '#options' => array_combine(
+          range(0, 21),
+          range(0, 21)),
+        '#title' => t('Zoom offset'),
+        '#default_value' => isset($this->data['zoomOffset']) ?
+          $this->data['zoomOffset'] : array(),
       ),
       'wrapDateLine' => array(
         '#type' => 'checkbox',
@@ -73,6 +96,8 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
     $form_state['data']['url'] = explode("\n", $form_state['data']['url']);
     $form_state['data']['serverResolutions'] = array_map('floatval', array_values($form_state['data']['serverResolutions']));
     $form_state['data']['projection'] = array_values($form_state['data']['projection']);
+    $form_state['data']['resolutions'] = array_map('floatval', array_values($form_state['data']['resolutions']));
+    $form_state['data']['zoomOffset'] = (int) $form_state['data']['zoomOffset'];
   }
 
   /**
