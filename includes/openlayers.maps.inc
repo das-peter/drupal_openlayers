@@ -173,6 +173,9 @@ function _openlayers_openlayers_maps() {
       'mapquest_openaerial' => 'mapquest_openaerial',
       'openlayers_geojson_picture_this' => 'openlayers_geojson_picture_this',
     ),
+    'layer_activated' => array(
+      'openlayers_geojson_picture_this' => 'openlayers_geojson_picture_this',
+    ),
     'projection' => '900913',
     'displayProjection' => '4326',
     'styles' => array(
