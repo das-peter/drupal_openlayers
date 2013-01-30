@@ -220,8 +220,6 @@ function openlayers_render_map_data($map = array()) {
     }
   }
 
-  dpm($map);
-
   // Return themed map if no errors found
   if (empty($map['errors'])) {
     $js = array('openlayers' => array('maps' => array($map['id'] => $map)));
