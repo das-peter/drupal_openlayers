@@ -26,7 +26,7 @@ function openlayers_openlayers_behavior_layerzoom_openlayers_behaviors() {
  */
 class openlayers_behavior_layerzoom extends openlayers_behavior {
 
-  function options_form($defaults) {
+  function options_form($defaults = array()) {
     $options = array();
 
     foreach ($this->map['layers'] as $layer) {

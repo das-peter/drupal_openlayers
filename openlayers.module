@@ -220,6 +220,8 @@ function openlayers_render_map_data($map = array()) {
     }
   }
 
+  dpm($map);
+
   // Return themed map if no errors found
   if (empty($map['errors'])) {
     $js = array('openlayers' => array('maps' => array($map['id'] => $map)));
@@ -990,7 +992,7 @@ class openlayers_layer_type {
       'layer_type' => get_class($this),
       'isBaseLayer' => TRUE,
       'projection' => array('900913'),
-      'serverResolutions' => openlayers_get_resolutions('900913'),
+//      'serverResolutions' => openlayers_get_resolutions('900913'),
       'maxExtent' => openlayers_get_extent('900913'),
       'resolutions' => openlayers_get_resolutions('900913'),
       'base_url' => NULL,
