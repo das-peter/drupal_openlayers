@@ -32,12 +32,17 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
     return array(
       'layer_handler' => 'kml',
       'projection' => array('4326'),
+      'resolutions' => openlayers_get_resolutions('4326'),
+      'serverResolutions' => openlayers_get_resolutions('4326'),
+      'maxExtent' => openlayers_get_extent('4326'),
       'isBaseLayer' => FALSE,
       'vector' => TRUE,
       'formatOptions' => array(
         'extractStyles' => TRUE,
         'extractAttributes' => TRUE,
+        'extractTracks' => FALSE,
       ),
+      'file' =>'',
     ) + parent::options_init();
   }
 
@@ -46,13 +51,56 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
    */
   function options_form($defaults = array()) {
     return array(
+      'method' => array(
+        '#type' => 'select',
+        '#options' => array(
+          '' => 'Choose the method',
+          'url' => 'Provides an URL',
+          'file' => 'Upload a file',
+          'raw' => 'Write KML'
+        ),
+        '#default_value' => isset($this->data['method']) ?
+          $this->data['method'] : '',
+      ),
       'url' => array(
         '#type' => 'textfield',
         '#title' => t('URL'),
         '#description' => t('The URL of the KML file.'),
-        '#maxlength' => 1024,
+        '#maxlength' => 2083,
         '#default_value' => isset($this->data['url']) ?
-          $this->data['url'] : ''
+          $this->data['url'] : '',
+        '#states' => array(
+          'visible' => array(
+            ':input[name="openlayers_layer_type_kml[method]"]' => array('value' => 'url'),
+          )
+        )
+      ),
+      'file' => array(
+        '#name' => 'files[imagelayer]',
+        '#type' => 'managed_file',
+        '#title' => t('KML file'),
+        '#default_value' => isset($this->data['file']) ? $this->data['file'] : '',
+        '#upload_location' =>  'public://',
+        '#upload_validators' => array(
+          'file_validate_extensions' => array('kml')
+        ),
+        '#states' => array(
+          'visible' => array(
+            ':input[name="openlayers_layer_type_kml[method]"]' => array('value' => 'file'),
+          )
+        )
+      ),
+      'raw' => array(
+        '#type' => 'textarea',
+        '#title' => t('Raw KML'),
+        '#description' => t('Copy your KML in this textarea. Don\'t forget that this is not intented to have a big length.'),
+        '#default_value' => isset($this->data['raw']) ?
+          $this->data['raw'] : '',
+        '#states' => array(
+          'visible' => array(
+            ':input[name="openlayers_layer_type_kml[method]"]' => array('value' => 'raw'),
+          )
+        )
       ),
       'formatOptions' => array(
         'extractStyles' => array(
@@ -81,6 +129,38 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
         ),
       ),
     );
+  }
+
+  /*
+ * The file is mandatory.
+ */
+  function options_form_validate($form, &$form_state) {
+    $method = $form_state['data']['method'];
+
+    if (empty($form_state['data'][$method])) {
+      form_set_error($form_state['data']['layer_type'].']['.$method, 'The field cannot be empty');
+    }
+
+    if ($method == 'file') {
+      if ($file = file_load($form_state['data']['file'])) {
+        $form_state['data']['kml'] = file_create_url($file->uri);
+      } else {
+        form_set_error($form_state['data']['layer_type'].']['.$method, 'Cannot access the file.');
+      }
+    }
+
+    $form_state['data']['projection'] = array_values($form_state['data']['projection']);
+    $form_state['data']['formatOptions']['extractStyles'] = $form_state['data']['formatOptions']['extractStyles']!=0?TRUE:FALSE;
+    $form_state['data']['formatOptions']['extractAttributes'] = $form_state['data']['formatOptions']['extractAttributes']!=0?TRUE:FALSE;
+    $form_state['data']['formatOptions']['extractTracks'] = $form_state['data']['formatOptions']['extractTracks']!=0?TRUE:FALSE;
+  }
+
+  /*
+   * What to do when we delete the layer: delete the file.
+   */
+  function delete($item) {
+    $file = file_load($item->data['file']);
+    file_delete($file);
   }
 
   /**

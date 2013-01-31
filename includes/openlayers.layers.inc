@@ -265,6 +265,31 @@ function _openlayers_openlayers_layers() {
   );
   $layers[$layer->name] = $layer;
 
+  /* Example with KML layer */
+  $layer = new stdClass();
+  $layer->disabled = FALSE; /* Edit this to true to make a default openlayers_layers disabled initially */
+  $layer->api_version = 1;
+  $layer->name = 'example_kml';
+  $layer->title = 'KML Example Layer';
+  $layer->description = 'A simple example of KML Layer Type.';
+  $layer->data = array(
+    'method' => 'raw',
+    'raw' => '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Placemark><name>Simple placemark</name><description>Attached to the ground. Intelligently places itself at the height of the underlying terrain.</description><Point><coordinates>-122.0822035425683,37.42228990140251,0</coordinates></Point></Placemark></kml>',
+    'formatOptions' => array(
+      'extractStyles' => TRUE,
+      'extractTracks' => FALSE,
+      'extractAttributes' => TRUE,
+    ),
+    'projection' => array(
+      0 => '4326',
+    ),
+    'isBaseLayer' => 0,
+    'layer_type' => 'openlayers_layer_type_kml',
+    'layer_handler' => 'kml',
+    'vector' => TRUE,
+  );
+  $layers[$layer->name] = $layer;
+
   // MetaCarts base map
   $layer = new stdClass();
   $layer->api_version = 1;
