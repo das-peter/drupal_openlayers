@@ -46,6 +46,15 @@ class openlayers_layer_type_maptiler extends openlayers_layer_type {
         '#default_value' => isset($this->data['base_url']) ?
           $this->data['base_url'] : ''
       ),
+      'type' => array(
+        '#type' => 'select',
+        '#options' => array(
+          'jpg' => 'JPG',
+          'png' => 'PNG'
+        ),
+        '#default_value' => isset($this->data['type']) ?
+          $this->data['type'] : 'png'
+      ),
       'resolutions' => array(
         '#type' => 'select',
         '#multiple' => TRUE,
