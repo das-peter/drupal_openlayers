@@ -269,7 +269,7 @@ function _openlayers_openlayers_layers() {
   $layer = new stdClass();
   $layer->disabled = FALSE; /* Edit this to true to make a default openlayers_layers disabled initially */
   $layer->api_version = 1;
-  $layer->name = 'example_kml';
+  $layer->name = 'openlayers_kml_example';
   $layer->title = 'KML Example Layer';
   $layer->description = 'A simple example of KML Layer Type.';
   $layer->data = array(

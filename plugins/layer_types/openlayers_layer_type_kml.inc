@@ -159,8 +159,10 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
    * What to do when we delete the layer: delete the file.
    */
   function delete($item) {
-    $file = file_load($item->data['file']);
-    file_delete($file);
+    if (is_numeric($item->data['file']) && $item->data['file'] > 0) {
+      $file = file_load($item->data['file']);
+      file_delete($file);
+    }
   }
 
   /**

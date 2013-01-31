@@ -32,7 +32,7 @@ function _openlayers_openlayers_maps() {
     'center' => array(
       'initial' => array(
         'centerpoint' => '0,0',
-        'zoom' => '2'
+        'zoom' => '0'
       )
     ),
     'image_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/img/',
@@ -123,7 +123,7 @@ function _openlayers_openlayers_maps() {
   $openlayers_maps->api_version = 1;
   $openlayers_maps->name = 'example_geojson';
   $openlayers_maps->title = 'Example GeoJSON Map';
-  $openlayers_maps->description = 'A simple map with a custom GeoJSON layer with direct data.  Also an example of zooming into a layer.';
+  $openlayers_maps->description = 'A simple map with a custom GeoJSON layer with direct data. Also an example of zooming into a layer.';
   $openlayers_maps->data = array(
     'width' => 'auto',
     'height' => '400px',
@@ -191,7 +191,85 @@ function _openlayers_openlayers_maps() {
       'temporary' => 'default',
     ),
   );
-  $items["example_geojson"] = $openlayers_maps;
+  $items['example_geojson'] = $openlayers_maps;
+
+  // Example map with MapQuest and GeoJSON
+  $openlayers_maps = new stdClass();
+  $openlayers_maps->disabled = FALSE; /* Edit this to true to make a default openlayers_maps disabled initially */
+  $openlayers_maps->api_version = 1;
+  $openlayers_maps->name = 'example_kml';
+  $openlayers_maps->title = 'Example KML Map';
+  $openlayers_maps->description = 'A simple map with a KML layer.';
+  $openlayers_maps->data = array(
+    'width' => 'auto',
+    'height' => '400px',
+    'image_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/img/',
+    'css_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/style.css',
+    'proxy_host' => '',
+    'hide_empty_map' => 0,
+    'center' => array(
+      'initial' => array(
+        'centerpoint' => '-122.0822035425683, 37.42228990140251',
+        'zoom' => '6',
+      ),
+      'restrict' => array(
+        'restrictextent' => 0,
+        'restrictedExtent' => '',
+      ),
+    ),
+    'behaviors' => array(
+      'openlayers_behavior_mouseposition' => array(),
+      'openlayers_behavior_keyboarddefaults' => array(),
+      'openlayers_behavior_layerswitcher' => array(
+        'ascending' => 1,
+        'sortBaseLayer' => '0',
+        'roundedCorner' => 1,
+        'roundedCornerColor' => '#222222',
+        'maximizeDefault' => 0,
+      ),
+      'openlayers_behavior_navigation' => array(
+        'zoomWheelEnabled' => 1,
+        'zoomBoxEnabled' => 1,
+        'documentDrag' => 0,
+      ),
+      'openlayers_behavior_panzoombar' => array(
+        'zoomWorldIcon' => 0,
+        'panIcons' => 1,
+      ),
+      'openlayers_behavior_popup' => array(
+        'layers' => array(
+          'openlayers_kml_example' => 'openlayers_kml_example',
+        ),
+        'panMapIfOutOfView' => 0,
+        'keepInMap' => 1,
+      ),
+      /*
+      'openlayers_behavior_zoomtolayer' => array(
+        'zoomtolayer' => array(
+          'openlayers_kml_example' => 'openlayers_kml_example',
+        ),
+        'point_zoom_level' => '5',
+        'zoomtolayer_scale' => '1',
+      ),
+      */
+    ),
+    'default_layer' => 'mapquest_osm',
+    'layers' => array(
+      'mapquest_osm' => 'mapquest_osm',
+      'openlayers_kml_example' => 'openlayers_kml_example',
+    ),
+    'layer_activated' => array(
+      'openlayers_kml_example' => 'openlayers_kml_example',
+    ),
+    'projection' => '900913',
+    'displayProjection' => '4326',
+    'styles' => array(
+      'default' => 'default',
+      'select' => 'default_select',
+      'temporary' => 'default',
+    ),
+  );
+  $items['example_kml'] = $openlayers_maps;
 
   // Example Virtual Earth map
   $openlayers_maps = new stdClass;
