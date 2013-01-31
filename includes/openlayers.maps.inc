@@ -166,6 +166,13 @@ function _openlayers_openlayers_maps() {
         'panMapIfOutOfView' => 0,
         'keepInMap' => 1,
       ),
+      'openlayers_behavior_zoomtolayer' => array(
+        'zoomtolayer' => array(
+          'openlayers_geojson_picture_this' => 'openlayers_geojson_picture_this',
+        ),
+        'point_zoom_level' => '5',
+        'zoomtolayer_scale' => '1',
+      ),
     ),
     'default_layer' => 'mapquest_openaerial',
     'layers' => array(
