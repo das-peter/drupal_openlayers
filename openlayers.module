@@ -679,7 +679,7 @@ function openlayers_map_load($name = '', $reset = FALSE) {
   } else {
     $map = $maps[$name];
     $map->data['map_name'] = $name;
-    return $map;
+    return clone $map;
   }
 }
 
