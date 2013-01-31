@@ -313,3 +313,13 @@ function openlayers_update_7204() {
     }
   }
 }
+
+/**
+ * Change the case of machine_name for layers, maps and styles.
+ * Warning, it can break things.
+ */
+function openlayers_update_7205() {
+  db_query('UPDATE {openlayers_layers} SET name = LOWER(name);');
+  db_query('UPDATE {openlayers_styles} SET name = LOWER(name);');
+  db_query('UPDATE {openlayers_maps} SET name = LOWER(name);');
+}
