@@ -143,7 +143,7 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
 
     if ($method == 'file') {
       if ($file = file_load($form_state['data']['file'])) {
-        $form_state['data']['kml'] = file_create_url($file->uri);
+        $form_state['data']['url'] = file_create_url($file->uri);
       } else {
         form_set_error($form_state['data']['layer_type'].']['.$method, 'Cannot access the file.');
       }

@@ -21,7 +21,7 @@ Drupal.openlayers.layer.kml = function(title, map, options) {
   kml_options.externalProjection = new OpenLayers.Projection('EPSG:' + options.projection);
 
   if (options.method == 'file' || options.method == 'url') {
-    var uri = options[options.method];
+    var uri = options.url;
     // Use an AJAX like call to get data from URL
     OpenLayers.Request.GET({
       url: uri,
