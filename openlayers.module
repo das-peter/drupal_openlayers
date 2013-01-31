@@ -672,12 +672,11 @@ function openlayers_map_load($name = '', $reset = FALSE) {
     ctools_export_load_object_reset('openlayers_maps');
   }
 
-  $maps = ctools_export_load_object(
-    'openlayers_maps', 'names', array($name));
+  $maps = ctools_export_load_object('openlayers_maps', 'names', array($name));
+
   if (empty($maps[$name])) {
     return FALSE;
-  }
-  else {
+  } else {
     $map = $maps[$name];
     $map->data['map_name'] = $name;
     return $map;

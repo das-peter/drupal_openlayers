@@ -65,3 +65,10 @@ body .olImageLoadError {
 .openlayers-container img {
   max-width: none;
 }
+
+/*
+ * Fix #1904424 and #1646646.
+ */
+label.olButton {
+  display: inline;
+}
