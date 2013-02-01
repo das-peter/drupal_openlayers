@@ -72,8 +72,8 @@ function _openlayers_openlayers_maps() {
     'css_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/style.css',
     'center' => array(
       'initial' => array(
-        'centerpoint' => '93.339846804269, 17.644019117279',
-        'zoom' => '3',
+        'centerpoint' => '0, 0',
+        'zoom' => '2',
       ),
       'restrict' => array(
         'restrictextent' => 0,
