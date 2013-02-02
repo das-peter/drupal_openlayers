@@ -35,9 +35,20 @@ function _openlayers_layers_process($layers = array(), &$map = array()) {
   usort($layers, '_openlayers_layers_process_sort');
 
   // Process into array-based layer data for the map
-  foreach ($layers as $layer_object) {
+  foreach ($layers as $type => $layer_object) {
     if (is_object($layer_object)) {
       $layer_object->render($map);
+
+      // Automatic JS and CSS loading.
+      /*
+      $type = get_class($layer_object);
+      $base = basename($definitions[$type]['file'], '.inc');
+      $js = $definitions[$type]['path'] . '/' . $base .'.js';
+      $css = $definitions[$type]['path'] . '/' . $base .'.css';
+      drupal_add_js($js);
+      drupal_add_css($css);
+      */
+
       $layer_object->data['title'] = $layer_object->title;
       $layer_object->data['weight'] = $layer_object->weight;
       $layer_data[$layer_object->name] = $layer_object->data;
