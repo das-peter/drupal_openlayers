@@ -29,16 +29,16 @@ Drupal.openlayers.addBehavior('openlayers_behavior_cluster', function (data, opt
       cluster.features = layer.features.slice();
       cluster.activate();
       cluster.cluster();
-            
+
       var showLabel = "";
       if (options.display_cluster_numbers) {
         showLabel = "${count}";
       }
-      
+
       // Define styleMap rules, which set pointRadius size, color and labeling
       //based on the number of points in each cluster
       var style = new OpenLayers.Style();
-        
+
       // Style for an individual feature (which is not clustered)
       var ruleIndividual = new OpenLayers.Rule({
         filter: new OpenLayers.Filter.Comparison({
@@ -95,7 +95,7 @@ Drupal.openlayers.addBehavior('openlayers_behavior_cluster', function (data, opt
           value: options.middle_upper_bound
         }),
         symbolizer: {
-          fillColor: options.high_color, 
+          fillColor: options.high_color,
           strokeColor: options.high_color,
           fillOpacity: 0.8,
           pointRadius: 22,
@@ -106,12 +106,12 @@ Drupal.openlayers.addBehavior('openlayers_behavior_cluster', function (data, opt
           fontSize: "12px"
         }
       });
-        
+
       style.addRules([ruleIndividual, ruleSmall, ruleMedium, ruleBig]);
       var styleMap =  new OpenLayers.StyleMap(style);
 
       layer.styleMap =  styleMap;
-      layer.redraw();      
+      layer.redraw();
     }
   }
 });

@@ -108,7 +108,7 @@ class openlayers_behavior_cluster extends openlayers_behavior {
         '#size' => 5,
         '#title' => t('Middle upper bound'),
         '#description' => t(''),
-      ),     
+      ),
       'low_color' => array(
         '#type' => 'textfield',
         '#default_value' => (isset($defaults['low_color'])) ?
