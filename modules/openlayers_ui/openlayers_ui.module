@@ -164,7 +164,7 @@ function openlayers_ui_theme($existing, $type, $theme, $path) {
     ),
     'openlayers_ui_form_projection_description' => array(
       'variables' => array(
-        'projection_title' => '',
+        'projection' => '',
         'available_layers' => array(),
         'layers' => array(),
       ),
@@ -201,10 +201,9 @@ function openlayers_ui_theme($existing, $type, $theme, $path) {
 function openlayers_ui_get_projection_options() {
   $options = array();
   foreach (openlayers_layers_load() as $key => $layer) {
-    if ($layer->data['projection']) {
-      foreach ($layer->data['projection'] as $projection) {
-        $options[$projection] = $projection;
-      }
+    foreach ($layer->projection as $projection) {
+      // TODO Possibly rewrite strings to projection to stay backward compatible
+      $options[$projection->identifier] = $projection;
     }
   }
   return $options;
@@ -212,6 +211,8 @@ function openlayers_ui_get_projection_options() {
 
 /**
  * Get layer options.
+ * @param String $type
+ * @param openlayers_projection $projection
  */
 function openlayers_ui_get_layer_options($type = 'baselayer',
   $projection = NULL) {
@@ -225,8 +226,10 @@ function openlayers_ui_get_layer_options($type = 'baselayer',
 
   // Go through layers to theme output.
   foreach ($layers as $key => $layer) {
-
-    if (!is_object($layer)) continue;
+    if (!is_object($layer)){
+      // Failure was already logged in openlayers_get_layer_object
+      continue;
+    }
 
     // not filtering by projection
     // this layer has an appropriate projection
@@ -234,9 +237,12 @@ function openlayers_ui_get_layer_options($type = 'baselayer',
     $variables = array();
     if (
       !isset($projection) ||
-      in_array($projection, $layer->data['projection']) ||
+      in_array($projection, $layer->projection) ||
       !empty($layer->data['vector'])
     ) {
+      if(!array_key_exists('isBaseLayer', $layer->data)){
+        throw new Exception("Layer definition $key lacks isBaseLayer attribute");
+      }
 
       if ($layer->data['isBaseLayer'] == TRUE && $type == 'baselayer') {
         $variables = array(

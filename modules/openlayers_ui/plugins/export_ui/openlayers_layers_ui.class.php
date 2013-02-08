@@ -51,7 +51,8 @@ class openlayers_layers_ui extends ctools_export_ui {
         $parent = get_parent_class($layer_type_object);
         $parent_object = new $parent;
         $layer_options_form = $layer_type_object->options_form() + $parent_object->options_form($layer);
-        }
+      }
+      // TODO First case can never be true without crashing earlier
       if ($layer_type_object == FALSE || empty($layer_options_form)) {
         continue;
       }

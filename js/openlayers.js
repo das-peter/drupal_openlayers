@@ -51,15 +51,8 @@ Drupal.behaviors.openlayers = {
             options.projection = new OpenLayers.Projection(map.projection);
             options.displayProjection = new OpenLayers.Projection(map.displayProjection);
 
-            // TODO: work around this scary code
-            if (map.projection === 'EPSG:900913') {
-              options.maxExtent = new OpenLayers.Bounds(
-                -20037508.34, -20037508.34, 20037508.34, 20037508.34);
-                options.units = "m";
-            }
-            if (map.projection === 'EPSG:4326') {
-              options.maxExtent = new OpenLayers.Bounds(-180, -90, 180, 90);
-            }
+            // Restrict map to its projection extent (data outwith cannot be represented)
+            options.maxExtent = new OpenLayers.Bounds(map.maxExtent[0], map.maxExtent[1], map.maxExtent[2], map.maxExtent[3]);
 
             options.maxResolution = 'auto'; // 1.40625;
             options.controls = [];
@@ -83,6 +76,11 @@ Drupal.behaviors.openlayers = {
 
             // Run the layer addition first
             Drupal.openlayers.addLayers(map, openlayers);
+            
+            // Ensure redraw as maps stays blank until first zoom otherwise (observed with EPSG:2056)
+            openlayers.moveTo(openlayers.getCenter(), openlayers.getZoom(), {
+              forceZoomChange: true
+            });
 
             // Attach data to map DOM object
             $(this).data('openlayers', {'map': map, 'openlayers': openlayers});
@@ -175,7 +173,7 @@ Drupal.openlayers = {
       // Ensure that the layer handler is available
       if (options.layer_handler !== undefined &&
         Drupal.openlayers.layer[options.layer_handler] !== undefined) {
-        var layer = Drupal.openlayers.layer[options.layer_handler](map.layers[name].title, map, options);
+        layer = Drupal.openlayers.layer[options.layer_handler](map.layers[name].title, map, options);
 
         layer.visibility = !!(!map.layer_activated || map.layer_activated[name]);
 

@@ -19,7 +19,7 @@ function _openlayers_openlayers_layers() {
   $layer->data = array(
     'isBaseLayer' => TRUE,
     'type' => 'satellite',
-    'projection' => array('EPSG:900913'),
+    'projection' => array(openlayers_get_projection('EPSG', '3857')),
     'layer_type' => 'openlayers_layer_type_google',
   );
   $layers[$layer->name] = $layer;
@@ -32,7 +32,7 @@ function _openlayers_openlayers_layers() {
   $layer->data = array(
     'isBaseLayer' => TRUE,
     'type' => 'hybrid',
-    'projection' => array('EPSG:900913'),
+    'projection' => array(openlayers_get_projection('EPSG', '3857')),
     'layer_type' => 'openlayers_layer_type_google',
   );
   $layers[$layer->name] = $layer;
@@ -45,7 +45,7 @@ function _openlayers_openlayers_layers() {
   $layer->data = array(
     'isBaseLayer' => TRUE,
     'type' => 'normal',
-    'projection' => array('EPSG:900913'),
+    'projection' => array(openlayers_get_projection('EPSG', '3857')),
     'layer_type' => 'openlayers_layer_type_google',
   );
   $layers[$layer->name] = $layer;
@@ -58,7 +58,7 @@ function _openlayers_openlayers_layers() {
   $layer->data = array(
     'isBaseLayer' => TRUE,
     'type' => 'physical',
-    'projection' => array('EPSG:900913'),
+    'projection' => array(openlayers_get_projection('EPSG', '3857')),
     'layer_type' => 'openlayers_layer_type_google',
   );
   $layers[$layer->name] = $layer;
@@ -77,7 +77,7 @@ function _openlayers_openlayers_layers() {
         '@ccbysa' => 'http://creativecommons.org/licenses/by-sa/2.0/',
       )
     ) . '. '. t('Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a>.'),
-    'projection' => array('EPSG:900913'),
+    'projection' => array(openlayers_get_projection('EPSG', '3857')),
     'layer_type' => 'openlayers_layer_type_xyz',
     'url' => array(
       '//otile1' . $mapquest_host . '/tiles/1.0.0/osm/${z}/${x}/${y}.png',
@@ -99,7 +99,7 @@ function _openlayers_openlayers_layers() {
     'isBaseLayer' => TRUE,
     'attribution' => t('Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency.')
       . ' '. t('Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a>.'),
-    'projection' => array('EPSG:900913'),
+    'projection' => array(openlayers_get_projection('EPSG', '3857')),
     'layer_type' => 'openlayers_layer_type_xyz',
     'url' => array(
       '//oatile1' . $mapquest_host . '/tiles/1.0.0/sat/${z}/${x}/${y}.png',
@@ -121,7 +121,7 @@ function _openlayers_openlayers_layers() {
     'name' => 'Bing Road',
     'isBaseLayer' => TRUE,
     'type' => 'Road',
-    'projection' => array('EPSG:900913'),
+    'projection' => array(openlayers_get_projection('EPSG', '3857')),
     'layer_type' => 'openlayers_layer_type_bing',
   );
   $layers[$layer->name] = $layer;
@@ -136,7 +136,7 @@ function _openlayers_openlayers_layers() {
     'name' => 'Bing Aerial',
     'isBaseLayer' => TRUE,
     'type' => 'Aerial',
-    'projection' => array('EPSG:900913'),
+    'projection' => array(openlayers_get_projection('EPSG', '3857')),
     'layer_type' => 'openlayers_layer_type_bing',
   );
   $layers[$layer->name] = $layer;
@@ -151,7 +151,7 @@ function _openlayers_openlayers_layers() {
     'name' => 'Bing Hybrid',
     'isBaseLayer' => TRUE,
     'type' => 'AerialWithLabels',
-    'projection' => array('EPSG:900913'),
+    'projection' => array(openlayers_get_projection('EPSG', '3857')),
     'layer_type' => 'openlayers_layer_type_bing',
   );
   $layers[$layer->name] = $layer;
@@ -171,7 +171,7 @@ function _openlayers_openlayers_layers() {
         '@ccbysa' => 'http://creativecommons.org/licenses/by-sa/2.0/',
       )
     ),
-    'projection' => array('EPSG:900913'),
+    'projection' => array(openlayers_get_projection('EPSG', '3857')),
     'layer_type' => 'openlayers_layer_type_xyz',
     'url' => '//tile.openstreetmap.org/${z}/${x}/${y}.png',
     'wrapDateLine' => TRUE,
@@ -193,7 +193,7 @@ function _openlayers_openlayers_layers() {
         '@ccbysa' => 'http://creativecommons.org/licenses/by-sa/2.0/',
       )
     ),
-    'projection' => array('EPSG:900913'),
+    'projection' => array(openlayers_get_projection('EPSG', '3857')),
     'layer_type' => 'openlayers_layer_type_xyz',
     'url' => '//a.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png',
     'wrapDateLine' => TRUE,
@@ -216,7 +216,7 @@ function _openlayers_openlayers_layers() {
         '@ccbysa' => 'http://creativecommons.org/licenses/by-sa/2.0/',
       )
     ),
-    'projection' => array('EPSG:4326'),
+    'projection' => array(openlayers_get_projection('EPSG', '4326')),
     'layer_type' => 'openlayers_layer_type_wms',
     'url' => 'http://oam.hypercube.telascience.org/tiles',
     'params' => array(
@@ -246,7 +246,9 @@ function _openlayers_openlayers_layers() {
       'extractTracks' => FALSE,
       'extractAttributes' => TRUE,
     ),
-    'projection' => array('EPSG:4326'),
+    'projection' => array(
+      openlayers_get_projection('EPSG', '4326'),
+    ),
     'isBaseLayer' => 0,
     'layer_type' => 'openlayers_layer_type_kml',
     'layer_handler' => 'kml',
@@ -261,7 +263,7 @@ function _openlayers_openlayers_layers() {
   $layer->title = 'Default OpenLayers WMS';
   $layer->description = 'MetaCarta basemap of province and water boundaries';
   $layer->data = array(
-    'projection' => array('EPSG:4326'),
+    'projection' => array(openlayers_get_projection('EPSG', '4326')),
     'isBaseLayer' => TRUE,
     'layer_type' => 'openlayers_layer_type_wms',
     'base_url' => '//labs.metacarta.com/wms-c/Basic.py',
@@ -286,7 +288,7 @@ function _openlayers_openlayers_layers() {
     'serverResolutions' => openlayers_get_resolutions('EPSG:4326'),
     'layer_type' => 'openlayers_layer_type_geojson',
     'layer_handler' => 'geojson',
-    'projection' => array('EPSG:4326'),
+    'projection' => array(openlayers_get_projection('EPSG', '4326')),
     'isBaseLayer' => FALSE,
     'vector' => TRUE,
     'geojson_data' => '
@@ -339,7 +341,7 @@ function _openlayers_openlayers_layers() {
       'isBaseLayer' => TRUE,
       'type' => 'png',
       'resolutions' => array_intersect_key($resolutions, array_flip(range($item['minzoom'], $item['maxzoom']))),
-      'projection' => array('EPSG:900913'),
+      'projection' => array(openlayers_get_projection('EPSG', '3857')),
     );
     $layers[$key] = $openlayers_layers;
   }

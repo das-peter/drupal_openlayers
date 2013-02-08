@@ -19,6 +19,10 @@ Drupal.openlayers.layer.wms = function(title, map, options) {
   }
 
   options.params.drupalID = options.drupalID;
+  
+  // Set isBaseLayer explicitly so that OpenLayers does not guess from transparency
+  options.params.isBaseLayer = Boolean(options.isBaseLayer);
+  
   var layer = new OpenLayers.Layer.WMS(title,
     options.base_url, options.options, options.params);
   layer.styleMap = styleMap;

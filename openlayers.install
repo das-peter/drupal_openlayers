@@ -121,6 +121,74 @@ function openlayers_schema() {
     ),
     'primary key' => array('name'),
   );
+  // Projection table (ctools extras)
+  // TODO: Translations missing?
+  $schema['openlayers_projections'] = array(
+    'description' => 'Storage for user defined OpenLayers projections.',
+    'export' => array(
+      'key' => 'identifier',
+      'key name' => 'Identifier',
+      'primary key' => 'identifier',
+      'identifier' => 'openlayers_projections',
+      'default hook' => 'openlayers_projections',
+      'api' => array(
+        'owner' => 'openlayers',
+        'api' => 'openlayers_projections',
+        'minimum_version' => 1,
+        'current_version' => 1,
+      ),
+    ),
+    'fields' => array(
+      'identifier' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'description' => 'Opaque identifier. Guaranteed to be unique but does not have any other meaning.'
+      ),
+      'authority' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'description' => 'Projection authority.',
+      ),
+      'code' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'description' => 'Projection code.',
+      ),
+      'definition' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'description' => 'Projection definition (proj4 format).',
+      ),
+      'projectedextentleft' => array(
+        'type' => 'numeric',
+        'not null' => TRUE,
+        'description' => "Leftmost value in this projection's coordinates",
+      ),
+      'projectedextentbottom' => array(
+        'type' => 'numeric',
+        'not null' => TRUE,
+        'description' => "Bottommost value in this projection's coordinates",
+      ),
+      'projectedextentright' => array(
+        'type' => 'numeric',
+        'not null' => TRUE,
+        'description' => "Rightmost value in this projection's coordinates",
+      ),
+      'projectedextenttop' => array(
+        'type' => 'numeric',
+        'not null' => TRUE,
+        'description' => "Topmost value in this projection's coordinates",
+      ),
+      // TODO Hopefully never used
+      'data' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+        'description' => 'Projection data serialized.',
+        'serialize' => TRUE,
+      ),
+    ),
+    'primary key' => array('identifier'),
+  );
   // Styles table (ctools extras)
   $schema['openlayers_styles'] = array(
     'description' => 'Storage for user defined OpenLayers styles.',
