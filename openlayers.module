@@ -275,6 +275,9 @@ function openlayers_render_map($map = '') {
       $map_name = variable_get('openlayers_default_map', 'default');
     }
     $map = openlayers_map_load($map_name);
+    if(!is_object($map)){
+      throw new Exception("Failed to load map called ".$map_name);
+    }
   }
 
   return openlayers_render_map_data($map->data);

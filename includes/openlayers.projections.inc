@@ -57,10 +57,10 @@ function _openlayers_openlayers_projections(){
   $openlayers_projections->authority = 'EPSG';
   $openlayers_projections->code = '900913';
   $openlayers_projections->definition = '+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs';
-  $openlayers_projections->projectedextentleft = '345';
-  $openlayers_projections->projectedextentbottom = '3245';
-  $openlayers_projections->projectedextentright = '3245';
-  $openlayers_projections->projectedextenttop = '345';
+  $openlayers_projections->projectedextentleft = '-20037508.34';
+  $openlayers_projections->projectedextentbottom = '-20037508.34';
+  $openlayers_projections->projectedextentright = '20037508.34';
+  $openlayers_projections->projectedextenttop = '20037508.34';
   $openlayers_projections->data = '';
   $projections[$openlayers_projections->identifier] = $openlayers_projections;
   
