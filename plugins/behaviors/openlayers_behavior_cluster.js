@@ -48,7 +48,7 @@ Drupal.openlayers.addBehavior('openlayers_behavior_cluster', function (data, opt
         }),
           // Apply the style you've selected for this layer for the individual points
           symbolizer: layer.styleMap.styles["default"].defaultStyle
-      });
+        });
       // Define three rules to style the cluster features.
       var ruleSmall = new OpenLayers.Rule({
         filter: new OpenLayers.Filter.Comparison({
@@ -106,8 +106,17 @@ Drupal.openlayers.addBehavior('openlayers_behavior_cluster', function (data, opt
           fontSize: "12px"
         }
       });
+      var ruleElse = new OpenLayers.Rule({
+        filter: new OpenLayers.Filter.Comparison({
+          type: OpenLayers.Filter.Comparison.EQUAL_TO,
+          property: "count",
+          value: undefined
+        }),
+        symbolizer: layer.styleMap.styles["default"].defaultStyle,
+        elseFilter: true
+      });
 
-      style.addRules([ruleIndividual, ruleSmall, ruleMedium, ruleBig]);
+      style.addRules([ruleIndividual, ruleSmall, ruleMedium, ruleBig, ruleElse]);
       var styleMap =  new OpenLayers.StyleMap(style);
 
       layer.styleMap =  styleMap;
