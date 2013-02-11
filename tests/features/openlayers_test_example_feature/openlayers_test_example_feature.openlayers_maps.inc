@@ -117,8 +117,8 @@ function openlayers_test_example_feature_openlayers_maps() {
       'geo_nodes_data_overlay_openlayers_1' => 0,
       'views_geojson_example_page_1' => 0,
     ),
-    'projection' => '900913',
-    'displayProjection' => '4326',
+    'projection' => 'EPSG:900913',
+    'displayProjection' => 'EPSG:4326',
     'styles' => array(
       'default' => 'default',
       'select' => 'default_select',

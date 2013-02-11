@@ -34,7 +34,7 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
       'sphericalMercator' => TRUE,
       'wrapDateLine' => FALSE,
       'zoomOffset' => 0,
-      'resolutions' => array_slice(openlayers_get_resolutions('900913'), 0, 18)
+      'resolutions' => array_slice(openlayers_get_resolutions('EPSG:900913'), 0, 18)
     ) + parent::options_init();
   }
 
@@ -55,7 +55,7 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
         '#multiple' => TRUE,
         '#description' => t('Only set this if you need a very specific resolution.'),
         '#options' => array_combine(
-          array_map('strval', openlayers_get_resolutions('900913')),
+          array_map('strval', openlayers_get_resolutions('EPSG:900913')),
           range(0, 21)),
         '#title' => t('Zoom Level Range'),
         '#default_value' => isset($this->data['serverResolutions']) ?
@@ -66,7 +66,7 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
         '#multiple' => TRUE,
         '#description' => t('Only set this if you need a very specific resolution.'),
         '#options' => array_combine(
-          array_map('strval', openlayers_get_resolutions('900913')),
+          array_map('strval', openlayers_get_resolutions('EPSG:900913')),
           range(0, 21)),
         '#title' => t('Zoom Level Range'),
         '#default_value' => isset($this->data['resolutions']) ?

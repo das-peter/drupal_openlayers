@@ -831,9 +831,9 @@ function openlayers_error_check_map($map, $log_errors = TRUE) {
  */
 function openlayers_get_extent($projection) {
   switch ($projection) {
-    case '900913':
+    case 'EPSG:900913':
       return array(-20037508, -20037508, 20037508, 20037508);
-    case '4326':
+    case 'EPSG:4326':
       return array(-180, -90, 180, 90);
   }
 }
@@ -859,7 +859,7 @@ function openlayers_get_extent($projection) {
  */
 function openlayers_get_resolutions($projection, $zoom_start = 0, $zoom_end = FALSE) {
   switch ($projection) {
-    case '900913':
+    case 'EPSG:900913':
       // 16 zoom levels, taken from
       // openlayers.org TMS map
       $res = array(
@@ -887,7 +887,7 @@ function openlayers_get_resolutions($projection, $zoom_start = 0, $zoom_end = FA
         0.07464553542435169
       );
       break;
-    case '4326':
+    case 'EPSG:4326':
       // 16 zoom levels, taken from
       // openlayers.org default WMS map
       $res = array(
@@ -1003,10 +1003,10 @@ class openlayers_layer_type {
     return array(
       'layer_type' => get_class($this),
       'isBaseLayer' => TRUE,
-      'projection' => array('900913'),
-      'serverResolutions' => openlayers_get_resolutions('900913'),
-      'maxExtent' => openlayers_get_extent('900913'),
-      'resolutions' => openlayers_get_resolutions('900913'),
+      'projection' => array('EPSG:900913'),
+      'serverResolutions' => openlayers_get_resolutions('EPSG:900913'),
+      'maxExtent' => openlayers_get_extent('EPSG:900913'),
+      'resolutions' => openlayers_get_resolutions('EPSG:900913'),
       'base_url' => NULL,
       'transitionEffect' => 'resize',
       'weight' => 0
@@ -1026,12 +1026,12 @@ class openlayers_layer_type {
         '#title' => t('Projection'),
         '#multiple' => TRUE,
         '#options' => array(
-          '900913' => '900913',
-          '4326' => '4326'
+          'EPSG:900913' => 'EPSG:900913',
+          'EPSG:4326' => 'EPSG:4326'
         ),
         '#default_value' => isset($default->data['projection']) ?
           $default->data['projection'] :
-          '900913'
+          'EPSG:900913'
       ),
       'isBaseLayer' => array(
         '#type' => 'checkbox',

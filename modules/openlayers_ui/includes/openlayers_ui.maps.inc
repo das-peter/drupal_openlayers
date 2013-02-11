@@ -237,8 +237,8 @@ function openlayers_ui_maps_form_center_map($defaults = array()) {
   // behavior for getting extent.
   $centermap_def = array(
     'id' => 'openlayers-center-helpmap',
-    'projection' => '900913',
-    'displayProjection' => '900913',
+    'projection' => 'EPSG:900913',
+    'displayProjection' => 'EPSG:900913',
     'default_layer' => 'mapquest_osm',
     'width' => '600px',
     'height' => '400px',

@@ -55,7 +55,7 @@ Drupal.openlayers.layer.MapBox = function (name, map, options) {
   if (options.type === undefined){
     options.type = "png";
   }
-  options.projection = new OpenLayers.Projection('EPSG:'+options.projection);
+  options.projection = new OpenLayers.Projection(options.projection);
   var layer = new OpenLayers.Layer.MapBox(name, options);
   layer.styleMap = styleMap;
   return layer;

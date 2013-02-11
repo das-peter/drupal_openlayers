@@ -31,10 +31,10 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
   function options_init() {
     return array(
       'layer_handler' => 'kml',
-      'projection' => array('4326'),
-      'resolutions' => openlayers_get_resolutions('4326'),
-      'serverResolutions' => openlayers_get_resolutions('4326'),
-      'maxExtent' => openlayers_get_extent('4326'),
+      'projection' => array('EPSG:4326'),
+      'resolutions' => openlayers_get_resolutions('EPSG:4326'),
+      'serverResolutions' => openlayers_get_resolutions('EPSG:4326'),
+      'maxExtent' => openlayers_get_extent('EPSG:4326'),
       'isBaseLayer' => FALSE,
       'vector' => TRUE,
       'formatOptions' => array(

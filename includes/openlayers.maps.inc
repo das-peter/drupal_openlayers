@@ -25,7 +25,7 @@ function _openlayers_openlayers_maps() {
   $default->title = t('Default Map');
   $default->description = t('This is the default map that will be the basis for all maps, unless you have changed the !settings.  This is also a good example of a basic map.', array('!settings' => l(t('OpenLayers main settings'), 'admin/structure/openlayers')));
   $default->data = array(
-    'projection' => '900913',
+    'projection' => 'EPSG:900913',
     'width' => 'auto',
     'height' => '400px',
     'default_layer' => 'mapquest_osm',
@@ -37,8 +37,8 @@ function _openlayers_openlayers_maps() {
     ),
     'image_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/img/',
     'css_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/style.css',
-    'displayProjection' => '4326',
-    'maxExtent' => openlayers_get_extent('4326'),
+    'displayProjection' => 'EPSG:4326',
+    'maxExtent' => openlayers_get_extent('EPSG:4326'),
     'behaviors' => array(
       'openlayers_behavior_panzoombar' => array(),
       'openlayers_behavior_layerswitcher' => array(),
@@ -107,8 +107,8 @@ function _openlayers_openlayers_maps() {
       'google_normal' => 'google_normal',
       'google_physical' => 'google_physical',
     ),
-    'projection' => '900913',
-    'displayProjection' => '4326',
+    'projection' => 'EPSG:900913',
+    'displayProjection' => 'EPSG:4326',
     'styles' => array(
       'default' => 'default',
       'select' => 'default_select',
@@ -183,8 +183,8 @@ function _openlayers_openlayers_maps() {
     'layer_activated' => array(
       'openlayers_geojson_picture_this' => 'openlayers_geojson_picture_this',
     ),
-    'projection' => '900913',
-    'displayProjection' => '4326',
+    'projection' => 'EPSG:900913',
+    'displayProjection' => 'EPSG:4326',
     'styles' => array(
       'default' => 'default',
       'select' => 'default_select',
@@ -261,8 +261,8 @@ function _openlayers_openlayers_maps() {
     'layer_activated' => array(
       'openlayers_kml_example' => 'openlayers_kml_example',
     ),
-    'projection' => '900913',
-    'displayProjection' => '4326',
+    'projection' => 'EPSG:900913',
+    'displayProjection' => 'EPSG:4326',
     'styles' => array(
       'default' => 'default',
       'select' => 'default_select',
@@ -321,8 +321,8 @@ function _openlayers_openlayers_maps() {
       'bing_hybrid' => 'bing_hybrid',
       'bing_aerial' => 'bing_aerial',
     ),
-    'projection' => '900913',
-    'displayProjection' => '4326',
+    'projection' => 'EPSG:900913',
+    'displayProjection' => 'EPSG:4326',
     'styles' => array(
       'default' => 'default',
       'select' => 'default_select',
@@ -379,8 +379,8 @@ function _openlayers_openlayers_maps() {
       'osm_mapnik' => 'osm_mapnik',
       'osm_cycle' => 'osm_cycle',
     ),
-    'projection' => '900913',
-    'displayProjection' => '4326',
+    'projection' => 'EPSG:900913',
+    'displayProjection' => 'EPSG:4326',
     'styles' => array(
       'default' => 'default',
       'select' => 'default_select',

@@ -18,7 +18,7 @@ Drupal.openlayers.layer.maptiler = function(title, map, options) {
     var z = this.map.getZoom();
     return this.url + z + '/' + x + '/' + y + '.' + this.type;
   }
-  options.projection = 'EPSG:' + options.projection;
+  options.projection = new OpenLayers.Projection(options.projection);
   var layer = new OpenLayers.Layer.TMS(title, options.base_url, options);
   return layer;
 };

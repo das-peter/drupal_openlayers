@@ -473,7 +473,7 @@ class openlayers_maps_ui extends ctools_export_ui {
           t('geographical projection'),
           'http://en.wikipedia.org/wiki/Map_projection'),
       )),
-      '#default_value' => isset($defaults['projection']) ? $defaults['projection'] : '900913',
+      '#default_value' => isset($defaults['projection']) ? $defaults['projection'] : 'EPSG:900913',
       '#options' => $projections,
       '#attributes' => array('class' => array('openlayers-form-easy-projection')),
     );
@@ -484,8 +484,7 @@ class openlayers_maps_ui extends ctools_export_ui {
       centering, and more - occurs in the display projection. The vast majority
       of maps use 4326 (latitude/longitude) for this value.'),
       '#default_value' => !empty($defaults['displayProjection']) ?
-        $defaults['displayProjection'] : '4326',
-      '#maxlength' => 6
+        $defaults['displayProjection'] : 'EPSG:4326'
     );
 
     // Behaviors

@@ -17,8 +17,8 @@ Drupal.openlayers.layer.kml = function(title, map, options) {
 
   // KML Projection handling and formating options
   var kml_options = options.formatOptions;
-  kml_options.internalProjection = new OpenLayers.Projection('EPSG:' + map.projection);
-  kml_options.externalProjection = new OpenLayers.Projection('EPSG:' + options.projection);
+  kml_options.internalProjection = new OpenLayers.Projection(map.projection);
+  kml_options.externalProjection = new OpenLayers.Projection(options.projection);
 
   if (options.method == 'file' || options.method == 'url') {
     var uri = options.url;

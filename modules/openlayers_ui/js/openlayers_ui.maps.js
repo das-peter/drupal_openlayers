@@ -116,7 +116,7 @@ Drupal.openlayers_ui = {
             parseFloat(lonlat[1]));
         // Transform for projection
         center.transform(
-            new OpenLayers.Projection('EPSG:' + projection),
+            new OpenLayers.Projection(projection),
             new OpenLayers.Projection('EPSG:4326'));
         // Set center of map.
         data.openlayers.setCenter(center, zoom);
@@ -139,7 +139,7 @@ Drupal.openlayers_ui = {
       // Transform center
       center.transform(
           new OpenLayers.Projection('EPSG:4326'),
-          new OpenLayers.Projection('EPSG:' + projection));
+          new OpenLayers.Projection(projection));
 
       // Get new lat and lon
       var lat = center.lat;

@@ -124,7 +124,7 @@ function openlayers_views_openlayers_layers() {
         $layer->data = array(
           'layer_type' => 'openlayers_views_vector',
           'layer_handler' => 'openlayers_views_vector',
-          'projection' => array('4326'),
+          'projection' => array('EPSG:4326'),
           'isBaseLayer' => FALSE,
           'vector' => TRUE,
           'type' => 'Vector',

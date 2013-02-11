@@ -345,7 +345,7 @@ class openlayers_views_style_data extends views_plugin_style {
 
         // Create features array.
         $feature = array(
-          'projection' => '4326',
+          'projection' => 'EPSG:4326',
           'attributes' => $attributes,
           'style' => $this->get_style($attributes, $handlers, $this->options['data_source'], $record),
           'wkt' => $this->get_wkt($attributes, $handlers, $this->options['data_source']),

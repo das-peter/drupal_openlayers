@@ -10,13 +10,13 @@
 
 Drupal.openlayers.layer.geojson = function(title, map, options) {
   var features = null;
-  options.projection = 'EPSG:' + options.projection;
+  options.projection = new OpenLayers.Projection(options.projection);
   options.styleMap = Drupal.openlayers.getStyleMap(map, options.drupalID);
 
   // GeoJSON Projection handling
   var geojson_options = {
-    'internalProjection': new OpenLayers.Projection('EPSG:' + map.projection),
-    'externalProjection': new OpenLayers.Projection(options.projection)
+    'internalProjection': new OpenLayers.Projection(map.projection),
+    'externalProjection': options.projection
   };
 
   // If GeoJSON data is provided with the layer, use that.  Otherwise

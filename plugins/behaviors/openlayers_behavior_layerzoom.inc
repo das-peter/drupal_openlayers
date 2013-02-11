@@ -41,13 +41,13 @@ class openlayers_behavior_layerzoom extends openlayers_behavior {
             '#type' => 'select',
             '#multiple' => TRUE,
             '#options' => array_combine(
-              array_map('strval', openlayers_get_resolutions('900913')),
+              array_map('strval', openlayers_get_resolutions('EPSG:900913')),
               range(0, 21)
             ),
             '#title' => t('Zoom Level Range for @layer', array('@layer' => $layer)),
             '#default_value' => isset($this->options[$layer]['resolutions']) ?
               $this->options[$layer]['resolutions'] :
-              array_map('strval', openlayers_get_resolutions('900913')),
+              array_map('strval', openlayers_get_resolutions('EPSG:900913')),
             '#description' => t('The zoom levels at which this layer will display.'),
           ),
         );

@@ -79,10 +79,10 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
           '#type' => 'select',
           '#title' => t('Projection'),
           '#options' => array(
-            'EPSG:900913' => '900913',
-            'EPSG:4326' => '4326'),
+            'EPSG:900913' => 'EPSG:900913',
+            'EPSG:4326' => 'EPSG:4326'),
           '#default_value' => isset($this->data['options']['srs']) ?
-            $this->data['options']['srs'] : '900913'
+            $this->data['options']['srs'] : 'EPSG:900913'
         ),
         'TRANSPARENT' => array(
           '#type' => 'checkbox',
