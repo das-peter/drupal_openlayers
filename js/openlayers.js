@@ -47,11 +47,6 @@ Drupal.behaviors.openlayers = {
             // rather than browser language
             OpenLayers.Lang.setCode($('html').attr('lang'));
 
-            $(this)
-              // @TODO: move this into markup in theme function, doing this dynamically is a waste.
-              .css('width', map.width)
-              .css('height', map.height);
-
             var options = {};
             // This is necessary because the input JSON cannot contain objects
             options.projection = new OpenLayers.Projection('EPSG:' + map.projection);
