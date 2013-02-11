@@ -195,8 +195,20 @@ Drupal.openlayers = {
     // Set the restricted extent if wanted.
     // Prevents the map from being panned outside of a specfic bounding box.
     if (typeof map.center.restrict !== 'undefined' && map.center.restrict.restrictextent) {
-      openlayers.restrictedExtent = OpenLayers.Bounds.fromString(
-          map.center.restrict.restrictedExtent);
+      var desiredRestriction = OpenLayers.Bounds.fromString(
+          map.center.restrict.restrictedExtent
+      ).transform(new OpenLayers.Projection('EPSG:3857'), openlayers.projection);
+      
+      if(desiredRestriction.left>=openlayers.maxExtent.left && desiredRestriction.right<=openlayers.maxExtent.right
+        && desiredRestriction.top<=openlayers.maxExtent.top && desiredRestriction.bottom>=openlayers.maxExtent.bottom){
+      
+        openlayers.restrictedExtent = desiredRestriction;
+      } else {
+        // Given the map to set the restricted extent is not dependent on the map projection
+        // it does allow to set an extent outwith the valid bound of the map projection. As a
+        // result no valid data could be requested and thus the wrong extent needs to be ignored.
+        console.error("Restricted bounds ignored as not within projection bounds.");
+      }
     }
 
     // Zoom & center

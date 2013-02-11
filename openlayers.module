@@ -239,6 +239,11 @@ function openlayers_render_map_data($map = array()) {
     
     $js = array('openlayers' => array('maps' => array($map['id'] => $map)));
     drupal_add_js($js, 'setting');
+    
+    // Ensure projections in use are known to the client (loads Proj4js if required)
+    openlayers_add_js_projection_definition($projection);
+    $displayProjection = openlayers_get_projection_by_identifier($map['displayProjection']);
+    openlayers_add_js_projection_definition($displayProjection);
 
     // Push map through theme function and return
     $output = theme('openlayers_map', array(
@@ -246,6 +251,27 @@ function openlayers_render_map_data($map = array()) {
     ));
   }
   return $output;
+}
+
+/**
+ * Load projection transformations in case OpenLayers does not support projections in use natively
+ * @param openlayers_projection $projection 
+ */
+function openlayers_add_js_projection_definition(openlayers_projection $projection){
+  $openLayerNativelySupported = array('EPSG:4326', 'EPSG:900913');
+  // Only load Proj4js if projection not supported by OpenLayers anyway
+  if(!in_array($projection->identifier, $openLayerNativelySupported)){
+    drupal_add_js(drupal_get_path('module', 'openlayers')."/js/proj4js-compressed.js", array(
+      'type' => 'file',
+      'group' => JS_LIBRARY,
+      'weight' => 0
+    ));
+    drupal_add_js('Proj4js.defs['.  json_encode($projection->identifier).']='.json_encode($projection->getDefinition()).';', array(
+      'type' => 'inline',
+      'group' => JS_LIBRARY,
+      'weight' => 1
+    ));
+  }
 }
 
 /**
@@ -885,6 +911,13 @@ class openlayers_projection {
    */
   public function getProjectedExtent(){
     return array($this->projectedextentleft, $this->projectedextentbottom, $this->projectedextentright, $this->projectedextenttop);
+  }
+  
+  /**
+   * @return String Proj4 style definition
+   */
+  public function getDefinition(){
+    return $this->definition;
   }
 }
 

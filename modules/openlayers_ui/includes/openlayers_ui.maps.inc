@@ -239,6 +239,9 @@ function openlayers_ui_maps_form_center_map($defaults = array()) {
     ),
   );
   drupal_add_js($pass_values, 'setting');
+  
+  $projection = openlayers_get_projection('EPSG', '3857');
+  openlayers_add_js_projection_definition($projection);
 
   // centerpoint & zoom of this map are overridden
   // by the mapformvalues behavior on page load.
@@ -247,8 +250,8 @@ function openlayers_ui_maps_form_center_map($defaults = array()) {
   // behavior for getting extent.
   $centermap_def = array(
     'id' => 'openlayers-center-helpmap',
-    'projection' => openlayers_get_projection('EPSG', '3857')->identifier,
-    'displayProjection' => 'EPSG:3857',
+    'projection' => $projection->identifier,
+    'displayProjection' => $projection->identifier,
     'default_layer' => 'mapquest_osm',
     'width' => '600px',
     'height' => '400px',
