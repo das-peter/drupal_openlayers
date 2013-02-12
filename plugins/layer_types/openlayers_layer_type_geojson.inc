@@ -74,6 +74,18 @@ class openlayers_layer_type_geojson extends openlayers_layer_type {
           '),
         '#default_value' => isset($this->data['resFactor']) ? $this->data['resFactor'] : 1
       ),
+     'useScript' => array(
+        '#type' => 'checkbox',
+        '#title' => t('Use Script Method'),
+        '#description' => t('Avoid 405 error and XSS issues load data from another server with ajax'),
+        '#default_value' => isset($this->data['useScript']) ? $this->data['useScript'] : FALSE,
+      ),
+     'callbackKey' => array(
+        '#type' => 'textfield',
+        '#title' => t('Script Callback Key'),
+        '#description' => t('Key returned by callback along with geoJSON'),
+        '#default_value' => isset($this->data['callbackKey']) ? $this->data['callbackKey'] : NULL
+      ),
       'geojson_data' => array(
         '#type' => 'textarea',
         '#title' => t('GeoJSON Data'),

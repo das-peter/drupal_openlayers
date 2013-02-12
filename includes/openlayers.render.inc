@@ -198,7 +198,7 @@ function openlayers_render_style($style = array()) {
  *   New map id
  */
 function _openlayers_create_map_id() {
-  return 'openlayers-map-' . substr(md5(uniqid(mt_rand())), 0, 8);
+  return drupal_html_id('openlayers-map');
 }
 
 /**
