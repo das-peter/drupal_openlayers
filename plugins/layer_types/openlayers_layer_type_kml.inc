@@ -143,9 +143,6 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
 
     if ($method == 'file') {
       if ($file = file_load($form_state['data']['file'])) {
-        $file->status = FILE_STATUS_PERMANENT;
-        file_save($file);
-        $form_state['data']['url'] = file_create_url($file->uri);
       } else {
         form_set_error($form_state['data']['layer_type'].']['.$method, 'Cannot access the file.');
       }
@@ -155,6 +152,23 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
     $form_state['data']['formatOptions']['extractStyles'] = $form_state['data']['formatOptions']['extractStyles']!=0?TRUE:FALSE;
     $form_state['data']['formatOptions']['extractAttributes'] = $form_state['data']['formatOptions']['extractAttributes']!=0?TRUE:FALSE;
     $form_state['data']['formatOptions']['extractTracks'] = $form_state['data']['formatOptions']['extractTracks']!=0?TRUE:FALSE;
+  }
+
+  /**
+   * hook_submit() of the form.
+   */
+  function options_form_submit($form, &$form_state) {
+
+    $item = $form_state['item'];
+    if (isset($item->data['file']) && $file = file_load($item->data['file'])) {
+      file_delete($file);
+    }
+
+    if (isset($form_state['values']['data']['file']) && $file = file_load($form_state['values']['data']['file'])) {
+      $file->status = FILE_STATUS_PERMANENT;
+      file_save($file);
+      $form_state['values']['data']['url'] = file_create_url($file->uri);
+    }
   }
 
   /*
