@@ -38,7 +38,7 @@ function _openlayers_openlayers_maps() {
     'image_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/img/',
     'css_path' => drupal_get_path('module', 'openlayers') . '/themes/default_dark/style.css',
     'displayProjection' => 'EPSG:4326',
-    'maxExtent' => openlayers_get_extent('4326'),
+    'maxExtent' => openlayers_get_extent('EPSG', '4326'),
     'behaviors' => array(
       'openlayers_behavior_panzoombar' => array(),
       'openlayers_behavior_layerswitcher' => array(),

@@ -266,7 +266,7 @@ function hook_openlayers_maps() {
     ),
     'options' => array(
       'displayProjection' => 'EPSG:4326',
-      'maxExtent' => openlayers_get_extent('EPSG:4326'),
+      'maxExtent' => openlayers_get_extent('EPSG', '4326'),
     ),
     'behaviors' => array(
       'openlayers_behavior_panzoombar' => array(),

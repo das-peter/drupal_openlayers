@@ -272,7 +272,7 @@ function _openlayers_openlayers_layers() {
     ),
     'options' => array(
       'layers' => array('basic'),
-      'maxExtent' => openlayers_get_extent('EPSG:4326'),
+      'maxExtent' => openlayers_get_extent('EPSG', '4326'),
     ),
   );
   $layers[$layer->name] = $layer;

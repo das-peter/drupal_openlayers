@@ -998,15 +998,16 @@ function openlayers_map_layerlist(&$form, &$form_state){
  *
  * @ingroup openlayers_api
  *
+ * @param $authority
+ *   String Organization code, such as EPSG.
  * @param $projection
- *   String of the projection value.  Currently
- *   supports 900913, 4326.
+ *   String of the projection value, such as 4326.
  * @return
  *   Array of maxExtent in OpenLayers toArray() format.
  */
-function openlayers_get_extent($projection) {
+function openlayers_get_extent($authority, $projection) {
   // Use projected extend from openlayers_projection instead but keep this function for now as it's marked as API
-  return openlayers_get_projection('EPSG', $projection)->getProjectedExtent();
+  return openlayers_get_projection($authority, $projection)->getProjectedExtent();
 }
 
 /**
@@ -1020,7 +1021,7 @@ function openlayers_get_extent($projection) {
  * @ingroup openlayers_api
  *
  * @param $projection
- *   String specifying which projection this should take, like 900913.
+ *   String specifying which projection this should take, like EPSG:900913.
  * @param $zoom_start
  *   Integer of first zoom level, default 0.
  * @param $zoom_end
@@ -1189,9 +1190,10 @@ class openlayers_layer_type {
     return array(
       'layer_type' => get_class($this),
       'isBaseLayer' => TRUE,
+      // TODO: Remove hard-coded resolutions
       'projection' => array('EPSG:900913'),
       'serverResolutions' => openlayers_get_resolutions('EPSG:900913'),
-      'maxExtent' => openlayers_get_extent('EPSG:900913'),
+      'maxExtent' => openlayers_get_extent('EPSG', '900913'),
       'resolutions' => openlayers_get_resolutions('EPSG:900913'),
       'base_url' => NULL,
       'transitionEffect' => 'resize',
