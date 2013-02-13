@@ -85,6 +85,8 @@ function openlayers_ui_help($path, $arg) {
       return '<p>'. t('Layers are stored versions of javascript OpenLayers layer
         objects. They point at a data source, like OpenStreetMap, Google Maps,
         or Drupal itself, and sometimes define the zoom levels for which they apply.') .'</p>';
+    case 'admin/structure/openlayers/projections':
+      return t('<p><a href="http://en.wikipedia.org/wiki/Map_projection">Projections</a> describe how the earth is flattened to a map image. They define coordinate systems for data retrieval.</p>');
     case 'admin/structure/openlayers/layers/settings':
       return '<p>'. t('Commercial layer providers like Google will require API keys
         to ensure that users are\'t abusing the service and to enforce limits. Not all
