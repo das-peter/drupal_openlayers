@@ -369,7 +369,7 @@ function openlayers_update_7202() {
 }
 
 /**
- * Renamme the 'baselayer' in 'isBaseLayer' in layers.
+ * Rename the 'baselayer' in 'isBaseLayer' in layers.
  */
 function openlayers_update_7204() {
   foreach (openlayers_layers_load() as $key => $layer) {
@@ -405,4 +405,11 @@ function openlayers_update_7206() {
       ctools_export_crud_save('openlayers_layers', $layer);
     }
   }
+}
+
+/**
+ * Migrate configured projections so that other projections as those of EPSG can be used, too.
+ */
+function openlayers_update_7207() {
+  
 }
