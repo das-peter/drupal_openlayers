@@ -1161,23 +1161,25 @@ class openlayers_layer_type {
       }
     }
     
-    $this->projection = array();
-    // TODO Ignore incomplete data until cause is fixed
-    if(isset($this->data['projection'])){
-      foreach($layer->data['projection'] as $projection => $maybeProjectionObject){
-        if($maybeProjectionObject instanceof openlayers_projection){
-          $this->projection[] = $maybeProjectionObject;
-        } else {
-          $projectionData = mb_split(':', $projection);
-          $this->projection[] = openlayers_get_projection($projectionData[0], $projectionData[1]);
-        }
-      }
-    }
-    
     // Extend options with the defaults.
     $this->data += $this->options_init();
 
     $this->map = $map;
+  }
+  
+  /**
+   * @return array<openlayers_projection>
+   *   List of all projections that are supported by the layer.
+   */
+  public function getProjections() {
+    $projections = array();
+    // TODO Ignore incomplete data until cause is fixed (projection for every layer set during migration)
+    if(isset($this->data['projection'])){
+      foreach($this->data['projection'] as $projection){
+        $projections[] = openlayers_get_projection_by_identifier($projection);
+      }
+    }
+    return $projections;
   }
 
   /**

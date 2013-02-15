@@ -411,5 +411,27 @@ function openlayers_update_7206() {
  * Migrate configured projections so that other projections as those of EPSG can be used, too.
  */
 function openlayers_update_7207() {
+  foreach (openlayers_layers_load() as $key => $layer) {
+    $projections = array();
+    if($layer instanceof openlayers_layer_type_wms && array_key_exists('srs', $layer->data['options']) && !in_array($layer->data['options']['srs'], $layer->data['projection'])){
+      $projections[] = $layer->data['options']['srs'];
+    }
+    foreach($layer->data['projection'] as $projection){
+      if(is_string($projection)){
+        $projections[] = $projection;
+      } else {
+        throw new DrupalUpdateException("Unsupported projection type encountered in layer ".$key);
+      }
+    }
+    $layer->data['projection'] = $projections;
+    ctools_export_crud_save('openlayers_layers', $layer);
+  }
   
+  foreach(openlayers_maps() as $key => $map){
+    // The code for the projection changed but its semantics stayed.
+    // Only update the display projection as servers might be in use that don't yet support the new code.
+    if($map->data['displayProjection']==='EPSG:900913'){
+      $map->data['displayProjection'] = 'EPSG:3857';
+    }
+  }
 }

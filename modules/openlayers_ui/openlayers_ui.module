@@ -203,8 +203,7 @@ function openlayers_ui_theme($existing, $type, $theme, $path) {
 function openlayers_ui_get_projection_options() {
   $options = array();
   foreach (openlayers_layers_load() as $key => $layer) {
-    foreach ($layer->projection as $projection) {
-      // TODO Possibly rewrite strings to projection to stay backward compatible
+    foreach ($layer->getProjections() as $projection) {
       $options[$projection->identifier] = $projection;
     }
   }
@@ -239,7 +238,7 @@ function openlayers_ui_get_layer_options($type = 'baselayer',
     $variables = array();
     if (
       !isset($projection) ||
-      in_array($projection, $layer->projection) ||
+      in_array($projection, $layer->getProjections()) ||
       !empty($layer->data['vector'])
     ) {
       if(!array_key_exists('isBaseLayer', $layer->data)){
