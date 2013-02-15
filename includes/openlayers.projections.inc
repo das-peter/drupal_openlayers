@@ -142,6 +142,21 @@ function _openlayers_openlayers_projections(){
   $openlayers_projections->data = '';
   $projections[$openlayers_projections->identifier] = $openlayers_projections;
   
+  // OSGB 1936 / British National Grid
+  $openlayers_projections = new stdClass();
+  $openlayers_projections->disabled = FALSE; /* Edit this to true to make a default openlayers_projections disabled initially */
+  $openlayers_projections->api_version = 1;
+  $openlayers_projections->identifier = 'EPSG:27700';
+  $openlayers_projections->authority = 'EPSG';
+  $openlayers_projections->code = '27700';
+  $openlayers_projections->definition = '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +datum=OSGB36 +units=m +no_defs';
+  $openlayers_projections->projectedextentleft = '1393.0196';
+  $openlayers_projections->projectedextentbottom = '13494.9764';
+  $openlayers_projections->projectedextentright = '671196.3657';
+  $openlayers_projections->projectedextenttop = '1230275.0454';
+  $openlayers_projections->data = '';
+  $projections[$openlayers_projections->identifier] = $openlayers_projections;
+  
   // DHDN / 3-degree Gauß-Krüger zone 2
   $openlayers_projections = new stdClass();
   $openlayers_projections->disabled = FALSE; /* Edit this to true to make a default openlayers_projections disabled initially */
