@@ -113,6 +113,7 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
         'layers' => array(
           '#type' => 'textarea',
           '#title' => t('Layers'),
+          // TODO: Should be required to be non-empty as not having a layer leads to invalid requests
           '#default_value' => !empty($this->data['options']['layers']) ?
             implode("\r\n", $this->data['options']['layers']) : '',
           '#description' => t('Specifies which layers to show. One per line.')
