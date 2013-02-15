@@ -242,8 +242,7 @@ function openlayers_ui_get_layer_options($type = 'baselayer',
         $variables = array(
           'layer_title' => $layer->title,
           'layer_description' => $layer->description,
-          'layer_link' => $layer->export_type & EXPORT_IN_DATABASE ?
-            "admin/structure/openlayers/layers/list/{$layer->name}/edit" : NULL
+          'layer_link' => 'admin/structure/openlayers/layers/list/' . $layer->name . '/edit'
         );
       }
 
@@ -251,16 +250,11 @@ function openlayers_ui_get_layer_options($type = 'baselayer',
         $variables = array(
           'layer_title' => $layer->title,
           'layer_description' => $layer->description,
-          'layer_link' => $layer->export_type & EXPORT_IN_DATABASE ?
-            "admin/structure/openlayers/layers/list/{$layer->name}/edit" : NULL
+          'layer_link' => 'admin/structure/openlayers/layers/list/' . $layer->name . '/edit'
         );
 
         if ($layer->data['layer_type'] == 'openlayers_views_vector') {
-          $variables = array(
-            'layer_title' => $layer->title,
-            'layer_description' => $layer->description,
-            'layer_link' => "admin/structure/views/view/{$layer->data['views']['view']}/edit/{$layer->data['views']['display']}"
-          );
+          $variables['layer_link'] = 'admin/structure/views/view/' . $layer->data['views']['view'] . '/edit/' . $layer->data['views']['display'];
         }
       }
     }
