@@ -32,14 +32,13 @@ Drupal.behaviors.openlayers = {
     if (typeof(Drupal.settings.openlayers) === 'object' &&
         Drupal.settings.openlayers.maps &&
         !$(context).data('openlayers')) {
-      $('.openlayers-map:not(.openlayers-processed)').each(function() {
+      $('.openlayers-map').once('openlayers-map', function() {
         // By setting the stop_render variable to TRUE, this will
         // halt the render process.  If set, one could remove this setting
         // then call Drupal.attachBehaviors again to get it started
         var map_id = $(this).attr('id');
         if (Drupal.settings.openlayers.maps[map_id] && Drupal.settings.openlayers.maps[map_id].stop_render != true) {
           var map = Drupal.settings.openlayers.maps[map_id];
-          $(this).addClass('openlayers-processed');
 
           // Use try..catch for error handling.
           try {
