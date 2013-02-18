@@ -140,7 +140,8 @@ function openlayers_schema() {
     ),
     'fields' => array(
       'identifier' => array(
-        'type' => 'text',
+        'type' => 'varchar',
+        'length' => 255,
         'not null' => TRUE,
         'description' => 'Opaque identifier. Guaranteed to be unique but does not have any other meaning.'
       ),
@@ -414,7 +415,8 @@ function openlayers_update_7206() {
     ),
     'fields' => array(
       'identifier' => array(
-        'type' => 'text',
+        'type' => 'varchar',
+        'length' => 255,
         'not null' => TRUE,
         'description' => 'Opaque identifier. Guaranteed to be unique but does not have any other meaning.'
       ),
@@ -483,14 +485,15 @@ function openlayers_update_7206() {
 function openlayers_update_7207() {
   foreach (openlayers_layers_load() as $key => $layer) {
     $projections = array();
-    if($layer instanceof openlayers_layer_type_wms && array_key_exists('srs', $layer->data['options']) && !in_array($layer->data['options']['srs'], $layer->data['projection'])){
+    if ($layer instanceof openlayers_layer_type_wms && array_key_exists('srs', $layer->data['options']) && !in_array($layer->data['options']['srs'], $layer->data['projection'])) {
       $projections[] = $layer->data['options']['srs'];
     }
-    foreach($layer->data['projection'] as $projection){
-      if(is_string($projection)){
+    foreach ($layer->data['projection'] as $projection) {
+      if (is_string($projection)) {
         $projections[] = $projection;
-      } else {
-        throw new DrupalUpdateException("Unsupported projection type encountered in layer ".$key);
+      }
+      else {
+        throw new DrupalUpdateException("Unsupported projection type encountered in layer " . $key);
       }
     }
     $layer->data['projection'] = $projections;
@@ -499,8 +502,8 @@ function openlayers_update_7207() {
   
   // The code for the projection changed but its semantics stayed.
   // Only update the display projection as servers might be in use that don't yet support the new code.
-  foreach(openlayers_maps() as $key => $map){
-    if($map->data['displayProjection']==='EPSG:900913'){
+  foreach (openlayers_maps() as $key => $map) {
+    if ($map->data['displayProjection']==='EPSG:900913') {
       $map->data['displayProjection'] = 'EPSG:3857';
     }
   }
