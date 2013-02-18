@@ -128,7 +128,7 @@ function _openlayers_openlayers_projections() {
   $openlayers_projections->data = '';
   $projections[$openlayers_projections->identifier] = $openlayers_projections;
   
-  // ETRS89 / UTM zone 33N 
+  // ETRS89 / UTM zone 33N
   $openlayers_projections = new stdClass();
   $openlayers_projections->disabled = FALSE; /* Edit this to true to make a default openlayers_projections disabled initially */
   $openlayers_projections->api_version = 1;
