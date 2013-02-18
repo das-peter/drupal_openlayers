@@ -4,6 +4,7 @@ core = 7.x
 package = "OpenLayers"
 php = 5.2
 dependencies[] = ctools
+dependencies[] = libraries
 
 ; Core files
 files[] = openlayers.module
