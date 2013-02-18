@@ -57,7 +57,7 @@ class openlayers_behavior_graticule extends openlayers_behavior {
       'numPoints' => array(
         '#type' => 'textfield',
         '#title' => t('Number of points'),
-        '#description' => t('The number of points to use in each graticule line. Higher numbers result in a smoother curve for projected maps '),
+        '#description' => t('The number of points to use in each graticule line. Higher numbers result in a smoother curve for projected maps.'),
         '#default_value' => (isset($defaults['numPoints'])) ? $defaults['numPoints'] : 50,
       ),
       'targetSize' => array(

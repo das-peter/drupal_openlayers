@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file Binds openlayers_projections with ctools
+ */
+
+/**
+ * @return array
+ */
 function openlayers_ui_openlayers_projections_ctools_export_ui() {
   return array(
     'schema' => 'openlayers_projections',

@@ -42,7 +42,7 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
         'extractAttributes' => TRUE,
         'extractTracks' => FALSE,
       ),
-      'file' =>'',
+      'file' => '',
     ) + parent::options_init();
   }
 
@@ -138,13 +138,15 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
     $method = $form_state['data']['method'];
 
     if (empty($form_state['data'][$method])) {
-      form_set_error($form_state['data']['layer_type'].']['.$method, 'The field cannot be empty');
+      form_set_error($form_state['data']['layer_type'] . '][' . $method, 'The field cannot be empty');
     }
 
     if ($method == 'file') {
       if ($file = file_load($form_state['data']['file'])) {
-      } else {
-        form_set_error($form_state['data']['layer_type'].']['.$method, 'Cannot access the file.');
+        // TODO Why nothing here?
+      }
+      else {
+        form_set_error($form_state['data']['layer_type'] . '][' . $method, 'Cannot access the file.');
       }
     }
 

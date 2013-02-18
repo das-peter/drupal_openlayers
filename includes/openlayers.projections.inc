@@ -1,10 +1,11 @@
 <?php
 /**
+ * @file
  * Defines default projections so that most users don't need to bother about setting up projections.
  * 
  * @return array<stdClass>
  */
-function _openlayers_openlayers_projections(){
+function _openlayers_openlayers_projections() {
   $projections = array();
   
   // CH1903+ / LV95

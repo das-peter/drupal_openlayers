@@ -36,7 +36,7 @@ function theme_openlayers_ui_maps_form_layers($args) {
   $form = $args['elements'];
   
   $output = drupal_render($form['projections'])
-    .drupal_render($form['help_data_overlays']);
+    . drupal_render($form['help_data_overlays']);
 
   // Base layers
   $rows = array();
@@ -49,7 +49,7 @@ function theme_openlayers_ui_maps_form_layers($args) {
       drupal_render($form['layers']['baselayers'][$key]),
       drupal_render($form['layers']['default_layer'][$key]));
   }
-  $outputLayerList = theme('table', array(
+  $output_layer_list = theme('table', array(
     'header' => array(t('Base layers'), t('Enabled'), t('Default')),
     'rows' => $rows)
   );
@@ -74,7 +74,7 @@ function theme_openlayers_ui_maps_form_layers($args) {
       'class' => array('draggable')
     );
   }
-  $outputLayerList .= theme('table',
+  $output_layer_list .= theme('table',
     array(
       'header' => array(
         t('Overlay layers'), t('Weight'), t('Enabled'),
@@ -84,12 +84,12 @@ function theme_openlayers_ui_maps_form_layers($args) {
       array('id' => 'overlay-layer-table')
     )
   );
-  $form['layers']['layerlist']['#markup'] = $outputLayerList;
+  $form['layers']['layerlist']['#markup'] = $output_layer_list;
   $output .= drupal_render($form['layers']);
 
   drupal_add_tabledrag('overlay-layer-table', 'order', 'sibling',
     'layer-weight');
-  return $form['#prefix'].$output . drupal_render_children($form).$form['#suffix'];
+  return $form['#prefix'] . $output . drupal_render_children($form) . $form['#suffix'];
 }
 
 /**

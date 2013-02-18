@@ -47,10 +47,10 @@ class openlayers_layer_type_openlayers_views_vector
     $views = views_get_all_views();
 
     $options = array('' => '<none>');
-    foreach($views as $view) {
+    foreach ($views as $view) {
       foreach ($view->display as $display => $data) {
         if ($data->display_plugin == 'openlayers') {
-          $options[$view->name . '::' . $display] = $view->human_name . ': '.$display;
+          $options[$view->name . '::' . $display] = $view->human_name . ': ' . $display;
         }
       }
     }
@@ -76,8 +76,9 @@ class openlayers_layer_type_openlayers_views_vector
       $form_state['data']['views']['view'] = $view;
       $form_state['data']['views']['display'] = $display;
       unset($form_state['data']['views']['composite']);
-    } else {
-      $field = $form_state['data']['layer_type'].'][views][composite';
+    }
+    else {
+      $field = $form_state['data']['layer_type'] . '][views][composite';
       form_set_error($field, t('A View must be set.'));
     }
   }

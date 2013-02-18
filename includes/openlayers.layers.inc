@@ -70,13 +70,13 @@ function _openlayers_openlayers_layers() {
   $layer->description = 'MapQuest’s rendering of OpenStreetMap.';
   $layer->data = array(
     'isBaseLayer' => TRUE,
-    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> '.
+    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> ' .
       '<a href="@openstreetmap">&copy; OpenStreetMap contributors</a>',
       array(
         '@openstreetmap' => 'http://www.openstreetmap.org/copyright',
         '@ccbysa' => 'http://creativecommons.org/licenses/by-sa/2.0/',
       )
-    ) . '. '. t('Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a>.'),
+    ) . '. ' . t('Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a>.'),
     'projection' => array('EPSG:3857', 'EPSG:900913'),
     'layer_type' => 'openlayers_layer_type_xyz',
     'url' => array(
@@ -98,7 +98,7 @@ function _openlayers_openlayers_layers() {
   $layer->data = array(
     'isBaseLayer' => TRUE,
     'attribution' => t('Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency.')
-      . ' '. t('Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a>.'),
+      . ' ' . t('Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a>.'),
     'projection' => array('EPSG:3857', 'EPSG:900913'),
     'layer_type' => 'openlayers_layer_type_xyz',
     'url' => array(
@@ -164,7 +164,7 @@ function _openlayers_openlayers_layers() {
   $layer->description = 'The main OpenStreetMap map';
   $layer->data = array(
     'isBaseLayer' => TRUE,
-    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> '.
+    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> ' .
         '<a href="@openstreetmap">&copy; OpenStreetMap contributors</a>',
       array(
         '@openstreetmap' => 'http://www.openstreetmap.org/copyright',
@@ -186,7 +186,7 @@ function _openlayers_openlayers_layers() {
   $layer->description = 'OpenStreetMap with highlighted bike lanes';
   $layer->data = array(
     'isBaseLayer' => TRUE,
-    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> '.
+    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> ' .
         '<a href="@openstreetmap">&copy; OpenStreetMap contributors</a>',
       array(
         '@openstreetmap' => 'http://www.openstreetmap.org/copyright',
@@ -209,7 +209,7 @@ function _openlayers_openlayers_layers() {
     WSG84 for use on non spherical-mercator maps.';
   $layer->data = array(
     'isBaseLayer' => FALSE,
-    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> '.
+    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> ' .
         '<a href="@openstreetmap">&copy; OpenStreetMap contributors</a>',
       array(
         '@openstreetmap' => 'http://www.openstreetmap.org/copyright',
