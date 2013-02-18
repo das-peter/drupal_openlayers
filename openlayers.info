@@ -5,6 +5,7 @@ package = "OpenLayers"
 php = 5.2
 dependencies[] = ctools
 dependencies[] = libraries
+dependencies[] = proj4js
 
 ; Core files
 files[] = openlayers.module
