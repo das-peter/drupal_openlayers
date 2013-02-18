@@ -39,6 +39,10 @@ Drupal.behaviors.openlayers = {
         var map_id = $(this).attr('id');
         if (Drupal.settings.openlayers.maps[map_id] && Drupal.settings.openlayers.maps[map_id].stop_render != true) {
           var map = Drupal.settings.openlayers.maps[map_id];
+          
+          if(map.default_layer===null){
+            console.error("Map configuration is invalid as it lacks a base layer.");
+          }
 
           // Use try..catch for error handling.
           try {
