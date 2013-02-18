@@ -485,9 +485,13 @@ function openlayers_update_7206() {
 function openlayers_update_7207() {
   foreach (openlayers_layers_load() as $key => $layer) {
     $projections = array();
+    
+    // Takeover srs key that no longer exists and migrate it to a projection
     if ($layer instanceof openlayers_layer_type_wms && array_key_exists('srs', $layer->data['options']) && !in_array($layer->data['options']['srs'], $layer->data['projection'])) {
       $projections[] = $layer->data['options']['srs'];
     }
+    unset($layer->data['options']['srs']);
+    
     foreach ($layer->data['projection'] as $projection) {
       if (is_string($projection)) {
         $projections[] = $projection;
