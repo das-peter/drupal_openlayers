@@ -108,7 +108,8 @@ function openlayers_include() {
     $variant = variable_get('openlayers_source_internal_variant', NULL);
     if ($variant == 'original') $variant = NULL;
     libraries_load('openlayers', $variant);
-  } else {
+  }
+  else {
     // Use a static variable to prevent running URL check code repeatedly.
     static $once;
     if (!isset($once)) {
