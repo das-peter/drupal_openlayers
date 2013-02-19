@@ -466,7 +466,7 @@ function openlayers_update_7206() {
     'primary key' => array('identifier'),
   );
   db_create_table('openlayers_projections', $openlayers_projections_schema);
-  
+
   // Migrate stored layers
   foreach (openlayers_layers_load() as $key => $layer) {
     if ($layer->export_type != 1) continue;
@@ -485,13 +485,13 @@ function openlayers_update_7206() {
 function openlayers_update_7207() {
   foreach (openlayers_layers_load() as $key => $layer) {
     $projections = array();
-    
+
     // Takeover srs key that no longer exists and migrate it to a projection
     if ($layer instanceof openlayers_layer_type_wms && array_key_exists('srs', $layer->data['options']) && !in_array($layer->data['options']['srs'], $layer->data['projection'])) {
       $projections[] = $layer->data['options']['srs'];
     }
     unset($layer->data['options']['srs']);
-    
+
     foreach ($layer->data['projection'] as $projection) {
       if (is_string($projection)) {
         $projections[] = $projection;
@@ -503,7 +503,7 @@ function openlayers_update_7207() {
     $layer->data['projection'] = $projections;
     ctools_export_crud_save('openlayers_layers', $layer);
   }
-  
+
   // The code for the projection changed but its semantics stayed.
   // Only update the display projection as servers might be in use that don't yet support the new code.
   foreach (openlayers_maps() as $key => $map) {
