@@ -39,7 +39,7 @@ Drupal.behaviors.openlayers = {
         var map_id = $(this).attr('id');
         if (Drupal.settings.openlayers.maps[map_id] && Drupal.settings.openlayers.maps[map_id].stop_render != true) {
           var map = Drupal.settings.openlayers.maps[map_id];
-          
+
           if(map.default_layer===null){
             console.error("Map configuration is invalid as it lacks a base layer.");
           }
@@ -76,11 +76,11 @@ Drupal.behaviors.openlayers = {
             }
 
             // Initialize openlayers map
-            var openlayers = new OpenLayers.Map(options);
+            var openlayers = new OpenLayers.Map(map_id, options);
 
             // Run the layer addition first
             Drupal.openlayers.addLayers(map, openlayers);
-            
+
             // Ensure redraw as maps stays blank until first zoom otherwise (observed with EPSG:2056)
             openlayers.moveTo(openlayers.getCenter(), openlayers.getZoom(), {
               forceZoomChange: true
@@ -202,10 +202,10 @@ Drupal.openlayers = {
       var desiredRestriction = OpenLayers.Bounds.fromString(
           map.center.restrict.restrictedExtent
       ).transform(new OpenLayers.Projection('EPSG:3857'), openlayers.projection);
-      
+
       if(desiredRestriction.left>=openlayers.maxExtent.left && desiredRestriction.right<=openlayers.maxExtent.right
         && desiredRestriction.top<=openlayers.maxExtent.top && desiredRestriction.bottom>=openlayers.maxExtent.bottom){
-      
+
         openlayers.restrictedExtent = desiredRestriction;
       } else {
         // Given the map to set the restricted extent is not dependent on the map projection
