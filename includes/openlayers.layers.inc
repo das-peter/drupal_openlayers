@@ -85,7 +85,7 @@ function _openlayers_openlayers_layers() {
       '//otile3' . $mapquest_host . '/tiles/1.0.0/osm/${z}/${x}/${y}.png',
       '//otile4' . $mapquest_host . '/tiles/1.0.0/osm/${z}/${x}/${y}.png',
     ),
-    'wrapDateLine' => FALSE,
+    'wrapDateLine' => TRUE,
     'resolutions' => openlayers_get_resolutions('EPSG:900913', 0, 19)
   );
   $layers[$layer->name] = $layer;
