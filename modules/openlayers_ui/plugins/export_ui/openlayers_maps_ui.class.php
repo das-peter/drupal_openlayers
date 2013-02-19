@@ -291,7 +291,7 @@ class openlayers_maps_ui extends ctools_export_ui {
         )
       );
     }
-    
+
     $form['layerstyles']['projections'] = array(
       '#type' => 'fieldset',
       '#title' => t('Projections'),
@@ -337,7 +337,7 @@ class openlayers_maps_ui extends ctools_export_ui {
         $defaults['displayProjection']->identifier : openlayers_get_projection('EPSG', '4326')->identifier,
       '#options' => $displayProjectionOptions,
     );
-    
+
     $form['layerstyles']['layers'] = array(
       '#title' => t('Layers & Styles'),
       '#description' => t('Layer settings.  The Layer options will change based on the projection chosen.'),

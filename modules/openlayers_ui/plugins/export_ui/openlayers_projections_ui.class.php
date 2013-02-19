@@ -2,13 +2,13 @@
 class openlayers_projections_ui extends ctools_export_ui {
   function edit_form(&$form, &$form_state) {
     parent::edit_form($form, $form_state);
-    
+
     // Hide internal identifier from user
     $form['info']['identifier']['#type'] = 'hidden';
     $form['info']['identifier']['#required'] = FALSE;
-    
+
     $projectionData = $form_state['item'];
-    
+
     $form['info']['authority'] = array(
       '#id' => 'projectionauthority',
       '#type' => 'textfield',
@@ -73,14 +73,14 @@ class openlayers_projections_ui extends ctools_export_ui {
       '#required' => TRUE
     );
   }
-  
+
   function edit_form_submit(&$form, &$form_state) {
     // Fill identifier with data from required fields. No empty string must result as ctools can't handle it.
     $form_state['values']['identifier'] = $form_state['values']['authority'].':'.$form_state['values']['code'];
 
     parent::edit_form_submit($form, $form_state);
   }
-  
+
   function hook_menu(&$items) {
     parent::hook_menu($items);
     $items['admin/structure/openlayers/projections']['type'] = MENU_LOCAL_TASK;

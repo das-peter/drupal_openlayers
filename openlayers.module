@@ -237,10 +237,10 @@ function openlayers_render_map_data($map = array()) {
     foreach ($map['layers'] as $layer_name => $layer) {
         $map['layers'][$layer_name]['projection'] = $map['projection'];
     }
-    
+
     $js = array('openlayers' => array('maps' => array($map['id'] => $map)));
     drupal_add_js($js, 'setting');
-    
+
     // Ensure projections in use are known to the client (loads Proj4js if required)
     openlayers_add_js_projection_definition($projection);
     $display_projection = openlayers_get_projection_by_identifier($map['displayProjection']);
@@ -860,12 +860,12 @@ class openlayers_projection {
    * @var String Opaque primary key (should not be exposed but ctools API doesn't allow for a more rigid structure)
    */
   public $identifier;
-  
+
   /**
    * @var String proj4 definition for on-the-fly reprojections of vector data.
    */
   private $definition;
-  
+
   /**
    * @var number Leftmost boundary where coordinate system is valid
    */
@@ -882,7 +882,7 @@ class openlayers_projection {
    * @var number Topmost boundary where coordinate system is valid
    */
   private $projectedextenttop;
-  
+
   public function __construct($identifier, $definition, $projectedextentleft, $projectedextentbottom, $projectedextentright, $projectedextenttop) {
     $this->identifier = $identifier;
     $this->definition = $definition;
@@ -891,21 +891,21 @@ class openlayers_projection {
     $this->projectedextentright = $projectedextentright;
     $this->projectedextenttop = $projectedextenttop;
   }
-  
+
   /**
    * @return string Textual representation for the user.
    */
   public function getLocalizedMessage() {
     return $this->identifier;
   }
-  
+
   /**
    * @return array Boundaries of projection in projected coordinates
    */
   public function getProjectedExtent() {
     return array($this->projectedextentleft, $this->projectedextentbottom, $this->projectedextentright, $this->projectedextenttop);
   }
-  
+
   /**
    * @return String Proj4 style definition
    */
@@ -957,11 +957,11 @@ function openlayers_get_projection_by_identifier($identifier) {
  */
 function openlayers_get_all_projections() {
   $projections = array();
-  
+
   foreach (ctools_export_crud_load_all('openlayers_projections') as $record) {
     $projections[] = openlayers_projection_from_record($record);
   }
-  
+
   return $projections;
 }
 
@@ -1153,13 +1153,13 @@ class openlayers_layer_type {
         $this->{$k} = $layer->{$k};
       }
     }
-    
+
     // Extend options with the defaults.
     $this->data += $this->options_init();
 
     $this->map = $map;
   }
-  
+
   /**
    * @return array<openlayers_projection>
    *   List of all projections that are supported by the layer.
@@ -1277,7 +1277,7 @@ function openlayers_ctools_plugin_api($module, $api) {
 
       case 'openlayers_layers':
         return array('version' => 1);
-      
+
       case 'openlayers_projections':
         return array('version' => 1);
 

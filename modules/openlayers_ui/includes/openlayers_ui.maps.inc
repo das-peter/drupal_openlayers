@@ -120,7 +120,7 @@ function openlayers_ui_maps_form_process($values = array()) {
         // Merge our different layer sections together
         $processed['layers'] = array_merge($baselayers, $overlays);
         break;
-      
+
       case 'layer_weight':
       case 'layer_styles':
       case 'layer_styles_select':
@@ -239,7 +239,7 @@ function openlayers_ui_maps_form_center_map($defaults = array()) {
     ),
   );
   drupal_add_js($pass_values, 'setting');
-  
+
   $projection = openlayers_get_projection('EPSG', '3857');
   openlayers_add_js_projection_definition($projection);
 

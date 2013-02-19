@@ -34,7 +34,7 @@ function theme_openlayers_ui_form_projection_description($args) {
 
 function theme_openlayers_ui_maps_form_layers($args) {
   $form = $args['elements'];
-  
+
   $output = drupal_render($form['projections'])
     . drupal_render($form['help_data_overlays']);
 
@@ -53,7 +53,7 @@ function theme_openlayers_ui_maps_form_layers($args) {
     'header' => array(t('Base layers'), t('Enabled'), t('Default')),
     'rows' => $rows)
   );
-  
+
   // Overlay layers
   $rows = array();
   foreach (element_children($form['layers']['overlaylabels']) as $key) {

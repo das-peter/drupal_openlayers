@@ -7,7 +7,7 @@
  */
 function _openlayers_openlayers_projections() {
   $projections = array();
-  
+
   // CH1903+ / LV95
   $openlayers_projections = new stdClass();
   $openlayers_projections->disabled = FALSE; /* Edit this to true to make a default openlayers_projections disabled initially */
@@ -22,7 +22,7 @@ function _openlayers_openlayers_projections() {
   $openlayers_projections->projectedextenttop = '1299941.7864';
   $openlayers_projections->data = '';
   $projections[$openlayers_projections->identifier] = $openlayers_projections;
-  
+
   // Pulkovo 1942(83) / 3-degree Gauß-Krüger zone 4
   $openlayers_projections = new stdClass();
   $openlayers_projections->disabled = FALSE; /* Edit this to true to make a default openlayers_projections disabled initially */
@@ -37,7 +37,7 @@ function _openlayers_openlayers_projections() {
   $openlayers_projections->projectedextenttop = '6067242.1812';
   $openlayers_projections->data = '';
   $projections[$openlayers_projections->identifier] = $openlayers_projections;
-  
+
   // Pulkovo 1942(83) / 3-degree Gauß-Krüger zone 5
   $openlayers_projections = new stdClass();
   $openlayers_projections->disabled = FALSE; /* Edit this to true to make a default openlayers_projections disabled initially */
@@ -52,7 +52,7 @@ function _openlayers_openlayers_projections() {
   $openlayers_projections->projectedextenttop = '6053880.2778';
   $openlayers_projections->data = '';
   $projections[$openlayers_projections->identifier] = $openlayers_projections;
-  
+
   // Former EPSG:900913
   $openlayers_projections = new stdClass();
   $openlayers_projections->disabled = FALSE; /* Edit this to true to make a default openlayers_projections disabled initially */
@@ -67,7 +67,7 @@ function _openlayers_openlayers_projections() {
   $openlayers_projections->projectedextenttop = '20037508.34';
   $openlayers_projections->data = '';
   $projections[$openlayers_projections->identifier] = $openlayers_projections;
-  
+
   // ETRS89
   $openlayers_projections = new stdClass();
   $openlayers_projections->disabled = FALSE; /* Edit this to true to make a default openlayers_projections disabled initially */
@@ -82,7 +82,7 @@ function _openlayers_openlayers_projections() {
   $openlayers_projections->projectedextenttop = '71.0500';
   $openlayers_projections->data = '';
   $projections[$openlayers_projections->identifier] = $openlayers_projections;
-  
+
   $openlayers_projections = new stdClass();
   $openlayers_projections->disabled = FALSE; /* Edit this to true to make a default openlayers_projections disabled initially */
   $openlayers_projections->api_version = 1;
@@ -96,7 +96,7 @@ function _openlayers_openlayers_projections() {
   $openlayers_projections->projectedextenttop = '90';
   $openlayers_projections->data = '';
   $projections[$openlayers_projections->identifier] = $openlayers_projections;
-  
+
   // CH1903 / LV03
   $openlayers_projections = new stdClass();
   $openlayers_projections->disabled = FALSE; /* Edit this to true to make a default openlayers_projections disabled initially */
@@ -112,7 +112,7 @@ function _openlayers_openlayers_projections() {
   $openlayers_projections->projectedextenttop = '299941.7864';
   $openlayers_projections->data = '';
   $projections[$openlayers_projections->identifier] = $openlayers_projections;
-  
+
   // ETRS89 / UTM zone 32N
   $openlayers_projections = new stdClass();
   $openlayers_projections->disabled = FALSE; /* Edit this to true to make a default openlayers_projections disabled initially */
@@ -127,7 +127,7 @@ function _openlayers_openlayers_projections() {
   $openlayers_projections->projectedextenttop = '7288831.7014';
   $openlayers_projections->data = '';
   $projections[$openlayers_projections->identifier] = $openlayers_projections;
-  
+
   // ETRS89 / UTM zone 33N
   $openlayers_projections = new stdClass();
   $openlayers_projections->disabled = FALSE; /* Edit this to true to make a default openlayers_projections disabled initially */
@@ -142,7 +142,7 @@ function _openlayers_openlayers_projections() {
   $openlayers_projections->projectedextenttop = '8893131.0281';
   $openlayers_projections->data = '';
   $projections[$openlayers_projections->identifier] = $openlayers_projections;
-  
+
   // OSGB 1936 / British National Grid
   $openlayers_projections = new stdClass();
   $openlayers_projections->disabled = FALSE; /* Edit this to true to make a default openlayers_projections disabled initially */
@@ -157,7 +157,7 @@ function _openlayers_openlayers_projections() {
   $openlayers_projections->projectedextenttop = '1230275.0454';
   $openlayers_projections->data = '';
   $projections[$openlayers_projections->identifier] = $openlayers_projections;
-  
+
   // DHDN / 3-degree Gauß-Krüger zone 2
   $openlayers_projections = new stdClass();
   $openlayers_projections->disabled = FALSE; /* Edit this to true to make a default openlayers_projections disabled initially */
@@ -172,7 +172,7 @@ function _openlayers_openlayers_projections() {
   $openlayers_projections->projectedextenttop = '5958700.0208';
   $openlayers_projections->data = '';
   $projections[$openlayers_projections->identifier] = $openlayers_projections;
-  
+
   // DHDN / 3-degree Gauß-Krüger zone 3
   $openlayers_projections = new stdClass();
   $openlayers_projections->disabled = FALSE; /* Edit this to true to make a default openlayers_projections disabled initially */
@@ -187,7 +187,7 @@ function _openlayers_openlayers_projections() {
   $openlayers_projections->projectedextenttop = '6104500.7393';
   $openlayers_projections->data = '';
   $projections[$openlayers_projections->identifier] = $openlayers_projections;
-  
+
   // DHDN / 3-degree Gauß-Krüger zone 4
   $openlayers_projections = new stdClass();
   $openlayers_projections->disabled = FALSE; /* Edit this to true to make a default openlayers_projections disabled initially */
@@ -202,7 +202,7 @@ function _openlayers_openlayers_projections() {
   $openlayers_projections->projectedextenttop = '6104496.9694';
   $openlayers_projections->data = '';
   $projections[$openlayers_projections->identifier] = $openlayers_projections;
-  
+
   // DHDN / 3-degree Gauß-Krüger zone 5
   $openlayers_projections = new stdClass();
   $openlayers_projections->disabled = FALSE; /* Edit this to true to make a default openlayers_projections disabled initially */
@@ -232,6 +232,6 @@ function _openlayers_openlayers_projections() {
   $openlayers_projections->projectedextenttop = '20037508.34';
   $openlayers_projections->data = '';
   $projections[$openlayers_projections->identifier] = $openlayers_projections;
-  
+
   return $projections;
 }
