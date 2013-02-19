@@ -262,7 +262,17 @@ function openlayers_add_js_projection_definition(openlayers_projection $projecti
   $openlayers_natively_supported = array('EPSG:4326', 'EPSG:900913');
   // Only load Proj4js if projection not supported by OpenLayers anyway
   if (!in_array($projection->identifier, $openlayers_natively_supported)) {
-    proj4js_load_definition($projection->identifier, $projection->getDefinition());
+    // TODO Ideally to be handled via proj4js_load_definition but its dependency handling does not work
+    drupal_add_js(drupal_get_path('module', 'proj4js')."/lib/proj4js/lib/proj4js-compressed.js", array(
+      'type' => 'file',
+      'group' => JS_LIBRARY,
+      'weight' => 0
+    ));
+    drupal_add_js('Proj4js.defs['.  json_encode($projection->identifier).']='.json_encode($projection->getDefinition()).';', array(
+      'type' => 'inline',
+      'group' => JS_LIBRARY,
+      'weight' => 1
+    ));
   }
 }
 
