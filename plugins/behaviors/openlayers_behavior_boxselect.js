@@ -2,7 +2,7 @@
  * @file
  * JS Implementation of OpenLayers behavior.
  */
- 
+
 // Not the best, but gets around scoping;
 var selections_layer;
 
@@ -17,14 +17,14 @@ var selections_layer;
     function setRestrictedExtent(box) {
       var bounding_box = box.geometry.getBounds().toBBOX();
       $('#edit-center-restrict-restrictedextent').val(bounding_box);
-      
+
       // Check box
       if (!($('#restrictextent').attr('checked'))) {
         $('#restrictextent')
           .attr('checked', 'checked')
           .trigger('change');
       }
-      
+
       // Remove any other features.
       for (var i = 0; i < selections_layer.features.length; i++) {
         if (selections_layer.features[i] != box) {
