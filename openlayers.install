@@ -510,5 +510,6 @@ function openlayers_update_7207() {
     if ($map->data['displayProjection']==='EPSG:900913') {
       $map->data['displayProjection'] = 'EPSG:3857';
     }
+    ctools_export_crud_save('openlayers_maps', $map);
   }
 }
