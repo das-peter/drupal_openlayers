@@ -287,6 +287,10 @@ class openlayers_styles_ui extends ctools_export_ui {
 
   }
 
+  function edit_form_validate(&$form, &$form_state) {
+    dpm($form_state);
+  }
+
   /**
    * Prepare the tag values before they are added to the database.
    */

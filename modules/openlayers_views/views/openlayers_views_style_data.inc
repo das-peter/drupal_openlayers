@@ -394,6 +394,9 @@ class openlayers_views_style_data extends views_plugin_style {
       }
 
       foreach ($style as $prop => $value) {
+        if (is_numeric($value)) {
+          $style[$prop] = (float) $value;
+        }
         if (empty($value)) {
           unset($style[$prop]);
         }
