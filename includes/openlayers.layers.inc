@@ -102,10 +102,10 @@ function _openlayers_openlayers_layers() {
     'projection' => array('EPSG:900913'),
     'layer_type' => 'openlayers_layer_type_xyz',
     'url' => array(
-      '//oatile1' . $mapquest_host . '/naip/${z}/${x}/${y}.png',
-      '//oatile2' . $mapquest_host . '/naip/${z}/${x}/${y}.png',
-      '//oatile3' . $mapquest_host . '/naip/${z}/${x}/${y}.png',
-      '//oatile4' . $mapquest_host . '/naip/${z}/${x}/${y}.png',
+      '//oatile1' . $mapquest_host . '/tiles/1.0.0/sat/${z}/${x}/${y}.png',
+      '//oatile2' . $mapquest_host . '/tiles/1.0.0/sat/${z}/${x}/${y}.png',
+      '//oatile3' . $mapquest_host . '/tiles/1.0.0/sat/${z}/${x}/${y}.png',
+      '//oatile4' . $mapquest_host . '/tiles/1.0.0/sat/${z}/${x}/${y}.png'
     ),
     'wrapDateLine' => TRUE,
   );
