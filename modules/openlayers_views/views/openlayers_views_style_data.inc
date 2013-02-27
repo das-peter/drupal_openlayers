@@ -382,27 +382,29 @@ class openlayers_views_style_data extends views_plugin_style {
 
     if (isset($datasource['style_field']) && !empty($datasource['style_field'])) {
       $style_field = $handlers[$datasource['style_field']];
-      $style = $style_field->options['settings'];
-
+      // Check if field is not empty
       if ($style_field->original_value) {
-        $image_info = image_get_info($style_field->original_value);
-        $style['graphicWidth'] = $image_info['width'];
-        $style['graphicHeight'] = $image_info['height'];
+        $style = $style_field->options['settings'];
 
-        unset($style['imageStyle']);
-        $style['externalGraphic'] = file_create_url($style_field->original_value);
-      }
+        if ($style_field->original_value) {
+          $image_info = image_get_info($style_field->original_value);
+          $style['graphicWidth'] = $image_info['width'];
+          $style['graphicHeight'] = $image_info['height'];
 
-      foreach ($style as $prop => $value) {
-        if (is_numeric($value)) {
-          $style[$prop] = (float) $value;
+          unset($style['imageStyle']);
+          $style['externalGraphic'] = file_create_url($style_field->original_value);
         }
-        if (empty($value)) {
-          unset($style[$prop]);
+
+        foreach ($style as $prop => $value) {
+          if (is_numeric($value)) {
+            $style[$prop] = (float) $value;
+          }
+          if (empty($value)) {
+            unset($style[$prop]);
+          }
         }
       }
     }
-
     return $style;
   }
 
