@@ -965,16 +965,18 @@ function openlayers_get_projection($authority, $code) {
 }
 
 /**
- * @param String $identifier Opaque identifier
+ * @param String $identifier Identifier, such as “EPSG:4326”
  * @return openlayers_projection
  */
 function openlayers_get_projection_by_identifier($identifier) {
   ctools_include('export');
-  $record = ctools_export_crud_load('openlayers_projections', $identifier);
-  if ($record===NULL) {
+  
+  $records = ctools_export_load_object('openlayers_projections', 'names', array($identifier));
+  
+  if (empty($records)) {
     throw new Exception("Projection $identifier requested but not supported");
   }
-  return openlayers_projection_from_record($record);
+  return openlayers_projection_from_record($records[key($records)]);
 }
 
 /**
