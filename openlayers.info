@@ -6,6 +6,7 @@ php = 5.2
 dependencies[] = ctools
 dependencies[] = libraries
 dependencies[] = proj4js
+dependencies[] = file
 
 ; Core files
 files[] = openlayers.module
