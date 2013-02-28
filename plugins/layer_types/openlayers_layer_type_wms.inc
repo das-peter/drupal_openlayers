@@ -113,10 +113,11 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
             $this->data['options']['format'] : 'image/png'
         ),
         'layers' => array(
-          '#type' => 'textfield',
+          '#type' => 'textarea',
           '#title' => t('Layers'),
-          '#default_value' => isset($this->data['options']['layers']) ?
-            $this->data['options']['layers'] : ''
+          '#default_value' => !empty($this->data['options']['layers']) ?
+            implode("\r\n", $this->data['options']['layers']) : '',
+          '#description' => t('Specifies which layers to show. One per line.')
         ),
         'styles' => array(
           '#type' => 'textfield',
@@ -126,6 +127,13 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
         ),
       ),
     );
+  }
+
+  /**
+   * hook_validate()
+   */
+  function options_form_validate($form, &$form_state) {
+    $form_state['data']['options']['layers'] = explode("\r\n", $form_state['data']['options']['layers']);
   }
 
   /**

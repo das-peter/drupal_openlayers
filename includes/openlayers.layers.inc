@@ -221,7 +221,9 @@ function _openlayers_openlayers_layers() {
     'url' => 'http://oam.hypercube.telascience.org/tiles',
     'params' => array(
       'isBaseLayer' => FALSE,
-      'layers' => 'osm-4326-hybrid',
+      'layers' => array(
+        'osm-4326-hybrid'
+      ),
     ),
     'options' => array(
       'buffer' => 1,
