@@ -327,12 +327,12 @@ function openlayers_render_map($map = '') {
  * Get layer object
  *
  * @ingroup openlayers_api
- * @param $reset
- *   Boolean whether to reset cache or not
  * @return openlayers_layer_type|FALSE
  *   array of layer info
  */
 function openlayers_get_layer_object($layer, $map = array()) {
+  ctools_include('plugins');
+  
   // Static cache because this function will possibly be called in big loops
   static $layer_types;
   if (!isset($layer_types)) {
@@ -366,6 +366,8 @@ function openlayers_get_layer_object($layer, $map = array()) {
  *
  * @param $name
  *   Layer name
+ * @param $reset
+ *   Boolean whether to reset cache or not
  * @return openlayers_layer_type|FALSE
  *   Layer export
  */
@@ -967,6 +969,7 @@ function openlayers_get_projection($authority, $code) {
  * @return openlayers_projection
  */
 function openlayers_get_projection_by_identifier($identifier) {
+  ctools_include('export');
   $record = ctools_export_crud_load('openlayers_projections', $identifier);
   if ($record===NULL) {
     throw new Exception("Projection $identifier requested but not supported");
@@ -978,6 +981,7 @@ function openlayers_get_projection_by_identifier($identifier) {
  * @return array<openlayers_projection>
  */
 function openlayers_get_all_projections() {
+  ctools_include('export');
   $projections = array();
 
   foreach (ctools_export_crud_load_all('openlayers_projections') as $record) {
