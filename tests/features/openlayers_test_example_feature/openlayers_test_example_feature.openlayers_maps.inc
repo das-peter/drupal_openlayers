@@ -36,7 +36,7 @@ function openlayers_test_example_feature_openlayers_maps() {
     'behaviors' => array(
       'openlayers_behavior_keyboarddefaults' => array(),
       'openlayers_behavior_attribution' => array(
-        'seperator' => '',
+        'separator' => '',
       ),
       'openlayers_behavior_layerswitcher' => array(
         'ascending' => 1,

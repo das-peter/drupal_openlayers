@@ -82,7 +82,7 @@ function _openlayers_openlayers_maps() {
     ),
     'behaviors' => array(
       'openlayers_behavior_attribution' => array(
-        'seperator' => '',
+        'separator' => '',
       ),
       'openlayers_behavior_keyboarddefaults' => array(),
       'openlayers_behavior_layerswitcher' => array(
@@ -297,7 +297,7 @@ function _openlayers_openlayers_maps() {
     ),
     'behaviors' => array(
       'openlayers_behavior_attribution' => array(
-        'seperator' => '',
+        'separator' => '',
       ),
       'openlayers_behavior_fullscreen' => array(
         'activated' => 0,
@@ -357,7 +357,7 @@ function _openlayers_openlayers_maps() {
     ),
     'behaviors' => array(
       'openlayers_behavior_attribution' => array(
-        'seperator' => '',
+        'separator' => '',
       ),
       'openlayers_behavior_keyboarddefaults' => array(),
       'openlayers_behavior_layerswitcher' => array(
