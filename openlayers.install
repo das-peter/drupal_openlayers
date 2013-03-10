@@ -323,3 +323,18 @@ function openlayers_update_7205() {
   db_query('UPDATE {openlayers_styles} SET name = LOWER(name);');
   db_query('UPDATE {openlayers_maps} SET name = LOWER(name);');
 }
+
+/**
+ * Renamme the 'base_url' in 'url' in layer type TMS.
+ */
+function openlayers_update_7206() {
+  foreach (openlayers_layers_load() as $key => $layer) {
+    if ($layer->export_type != 1) continue;
+    if ($layer->data['layer_type'] != 'openlayers_layer_type_tms') continue;
+    if (isset($layer->data['base_url'])) {
+      $layer->data['url'] = $layer->data['base_url'];
+      unset($layer->data['base_url']);
+      ctools_export_crud_save('openlayers_layers', $layer);
+    }
+  }
+}

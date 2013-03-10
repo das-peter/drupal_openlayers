@@ -32,7 +32,7 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
     return array(
       'layer_handler' => 'tms',
       'type' => 'png',
-      'wrapDateLine' => false,
+      'wrapDateLine' => FALSE,
     ) + parent::options_init();
   }
 
@@ -41,11 +41,10 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
    */
   function options_form($defaults = array()) {
     return array(
-      'base_url' => array(
-        '#type' => 'textfield',
+      'url' => array(
+        '#type' => 'textarea',
         '#title' => t('Base URL'),
-        '#default_value' => isset($this->data['base_url']) ?
-          $this->data['base_url'] : '',
+        '#default_value' => !empty($this->data['url']) ? implode("\n", $this->data['url']) : '',
         '#description' => t('This is the base URL of the TMS service.  For example, if this was your tile scheme URL: http://example.com/tms/1.0.0/layer_name/{z}/{y}/{x}.png, then <em>http://example.com/tms/</em> would be the Base URL.'),
       ),
       'layername' => array(
@@ -80,11 +79,18 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
       'wrapDateLine' => array(
         '#type' => 'checkbox',
         '#title' => t('Wrap Dateline'),
-        '#default_value' => isset($this->data['type']) ?
-          $this->data['type'] : False,
+        '#default_value' => isset($this->data['wrapDateLine']) ?
+          $this->data['wrapDateLine'] : FALSE,
         '#description' => t('Wrapping the dateline will cause the map to appear to repeat itself when going east or west.  This may not be supported by all tilesets.'),
       ),
     );
+  }
+
+  function options_form_validate($form, &$form_state) {
+    $form_state['data']['url'] = explode("\n", $form_state['data']['url']);
+    $form_state['data']['resolutions'] = array_map('floatval', array_values($form_state['data']['resolutions']));
+    $form_state['data']['projection'] = array_values($form_state['data']['projection']);
+    $form_state['data']['wrapDateLine'] = (bool) $form_state['data']['wrapDateLine'];
   }
 
   /**

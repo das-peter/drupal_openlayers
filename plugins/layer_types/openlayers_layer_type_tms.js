@@ -13,7 +13,7 @@ Drupal.openlayers.layer.tms = function(title, map, options) {
       options.maxExtent = new OpenLayers.Bounds.fromArray(options.maxExtent);
     }
     options.projection = new OpenLayers.Projection(options.projection);
-    var layer = new OpenLayers.Layer.TMS(title, options.base_url, options);
+    var layer = new OpenLayers.Layer.TMS(title, options.url, options);
     layer.styleMap = styleMap;
     return layer;
 };

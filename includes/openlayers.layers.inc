@@ -334,7 +334,7 @@ function _openlayers_openlayers_layers() {
         3 => 'http://d.tiles.mapbox.com/',
       ),
       'layername' => $item['layername'],
-      'layer_type' => 'openlayers_layer_type_mapbox',
+      'layer_type' => 'openlayers_layer_type_tms',
       'osm' => FALSE,
       'isBaseLayer' => TRUE,
       'type' => 'png',
