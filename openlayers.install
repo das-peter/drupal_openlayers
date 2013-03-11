@@ -394,7 +394,7 @@ function openlayers_update_7205() {
 }
 
 /**
- * Renamme the 'base_url' in 'url' in layer type TMS.
+ * Rename the 'base_url' in 'url' in layer type TMS.
  */
 function openlayers_update_7206() {
   foreach (openlayers_layers_load() as $key => $layer) {
@@ -409,7 +409,7 @@ function openlayers_update_7206() {
 }
 
 /**
- * Renamme the 'base_url' in 'url' in layer type TMS.
+ * Migrate configured projections so that other projections as those of EPSG can be used, too.
  */
 function openlayers_update_7207() {
   // Create projection table
