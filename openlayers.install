@@ -397,6 +397,21 @@ function openlayers_update_7205() {
  * Renamme the 'base_url' in 'url' in layer type TMS.
  */
 function openlayers_update_7206() {
+  foreach (openlayers_layers_load() as $key => $layer) {
+    if ($layer->export_type != 1) continue;
+    if ($layer->data['layer_type'] != 'openlayers_layer_type_tms') continue;
+    if (isset($layer->data['base_url'])) {
+      $layer->data['url'] = $layer->data['base_url'];
+      unset($layer->data['base_url']);
+      ctools_export_crud_save('openlayers_layers', $layer);
+    }
+  }
+}
+
+/**
+ * Renamme the 'base_url' in 'url' in layer type TMS.
+ */
+function openlayers_update_7207() {
   // Create projection table
   $openlayers_projections_schema = array(
     'description' => 'Storage for user defined OpenLayers projections.',
@@ -468,21 +483,6 @@ function openlayers_update_7206() {
   db_create_table('openlayers_projections', $openlayers_projections_schema);
 
   // Migrate stored layers
-  foreach (openlayers_layers_load() as $key => $layer) {
-    if ($layer->export_type != 1) continue;
-    if ($layer->data['layer_type'] != 'openlayers_layer_type_tms') continue;
-    if (isset($layer->data['base_url'])) {
-      $layer->data['url'] = $layer->data['base_url'];
-      unset($layer->data['base_url']);
-      ctools_export_crud_save('openlayers_layers', $layer);
-    }
-  }
-}
-
-/**
- * Migrate configured projections so that other projections as those of EPSG can be used, too.
- */
-function openlayers_update_7207() {
   foreach (openlayers_layers_load() as $key => $layer) {
     $projections = array();
 
