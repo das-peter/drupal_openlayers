@@ -29,6 +29,8 @@ Drupal.settings.openlayers.maps = {};
  */
 Drupal.behaviors.openlayers = {
   'attach': function(context, settings) {
+    Drupal.openlayers.loadProjections(context, settings);
+
     if (typeof(Drupal.settings.openlayers) === 'object' &&
         Drupal.settings.openlayers.maps &&
         !$(context).data('openlayers')) {
@@ -398,6 +400,21 @@ Drupal.openlayers = {
     openlayers.addControl(control);
     control.activate();
     return control;
+  },
+
+  /**
+   * Instructs the Proj4js module to make projection definitions available
+   * to Proj4js and thus OpenLayers, too.
+   *
+   * Triggering the initialization of Proj4js this way guarantees projection
+   * definitions are available.
+   */
+  'loadProjections': function(context, settings){
+    // Proj4js is not necessarily present as we only load it when OpenLayers
+    // can't handle the projections is use without its help.
+    if(Drupal.behaviors.proj4js){
+      Drupal.behaviors.proj4js.attach(context, settings);
+    }
   }
 };
 
