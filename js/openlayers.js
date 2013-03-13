@@ -253,7 +253,7 @@ Drupal.openlayers = {
         }
 
         // Go through new features
-        for (var i in newFeatureSet) {
+        for (var i = 0; i < newFeatureSet.length; i++) {
           var newFeature = newFeatureSet[i];
 
           // Transform the geometry if the 'projection' property is different from the map projection
