@@ -397,6 +397,8 @@ function openlayers_update_7205() {
  * Rename the 'base_url' in 'url' in layer type TMS.
  */
 function openlayers_update_7206() {
+  openlayers_update_create_projection_table();
+  
   foreach (openlayers_layers_load() as $key => $layer) {
     if ($layer->export_type != 1) continue;
     if ($layer->data['layer_type'] != 'openlayers_layer_type_tms') continue;
@@ -409,9 +411,17 @@ function openlayers_update_7206() {
 }
 
 /**
- * Migrate configured projections so that other projections as those of EPSG can be used, too.
+ * Makes projections available that are required for update hooks to work properly.
+ * Must by called at least once by any of the update hooks.
  */
-function openlayers_update_7207() {
+function openlayers_update_create_projection_table() {
+  static $hasRun = FALSE;
+  if($hasRun){
+    return;
+  } else {
+    $hasRun = TRUE;
+  }
+  
   // Create projection table
   $openlayers_projections_schema = array(
     'description' => 'Storage for user defined OpenLayers projections.',
@@ -481,9 +491,16 @@ function openlayers_update_7207() {
     'primary key' => array('identifier'),
   );
   db_create_table('openlayers_projections', $openlayers_projections_schema);
+}
 
+/**
+ * Migrate configured projections so that other projections than those of EPSG can be used, too.
+ */
+function openlayers_update_7207() {
+  openlayers_update_create_projection_table();
+  
   // Migrate stored layers
-  foreach (openlayers_layers_load() as $key => $layer) {
+  foreach (openlayers_layers_load(TRUE) as $key => $layer) {
     $projections = array();
 
     // Takeover srs key that no longer exists and migrate it to a projection
@@ -506,9 +523,41 @@ function openlayers_update_7207() {
 
   // The code for the projection changed but its semantics stayed.
   // Only update the display projection as servers might be in use that don't yet support the new code.
-  foreach (openlayers_maps() as $key => $map) {
+  foreach (openlayers_maps(TRUE) as $key => $map) {
     if ($map->data['displayProjection']==='EPSG:900913') {
       $map->data['displayProjection'] = 'EPSG:3857';
+    }
+    ctools_export_crud_save('openlayers_maps', $map);
+  }
+}
+
+/**
+ * Ensure projections carry an authority code.
+ */
+function openlayers_update_7208() {
+  // Commit 95108d3fa82c34fc5dc5e6e159263232a891a27a introduced authority codes
+  // for layers and maps but did not migrate existing data.
+  foreach (openlayers_layers_load(TRUE) as $key => $layer) {
+    $projections = array();
+    foreach ($layer->data['projection'] as $projection) {
+      if(mb_strpos($projection, 'EPSG:')===FALSE){
+        $projections[] = 'EPSG:'.$projection;
+      } else {
+        $projections[] = $projection;
+      }
+    }
+    $layer->data['projection'] = $projections;
+    ctools_export_crud_save('openlayers_layers', $layer);
+  }
+  foreach (openlayers_maps(TRUE) as $key => $map) {
+    foreach(array('projection', 'displayProjection') as $projectionKey){
+      $projection = $map->data[$projectionKey];
+      if(mb_strpos($projection, 'EPSG:')===FALSE){
+        $projection = 'EPSG:'.$projection;
+      } else {
+        $projection = $projection;
+      }
+      $map->data[$projectionKey] = $projection;
     }
     ctools_export_crud_save('openlayers_maps', $map);
   }
