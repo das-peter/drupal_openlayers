@@ -29,9 +29,16 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
    * Provide initial values for options.
    */
   function options_init() {
-    return array(
+    $options = array(
       'layer_handler' => 'wms',
     ) + parent::options_init();
+
+    // Discard hard-codes resolution because the client can calculate them usually
+    unset($options['serverResolutions']);
+    unset($options['maxExtent']);
+    unset($options['resolutions']);
+
+    return $options;
   }
 
   /**
@@ -75,15 +82,6 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
         )
       ),
       'options' => array(
-        'srs' => array(
-          '#type' => 'select',
-          '#title' => t('Projection'),
-          '#options' => array(
-            'EPSG:900913' => 'EPSG:900913',
-            'EPSG:4326' => 'EPSG:4326'),
-          '#default_value' => isset($this->data['options']['srs']) ?
-            $this->data['options']['srs'] : 'EPSG:900913'
-        ),
         'TRANSPARENT' => array(
           '#type' => 'checkbox',
           '#default_value' => isset($this->data['options']['TRANSPARENT']) ?
@@ -115,6 +113,7 @@ class openlayers_layer_type_wms extends openlayers_layer_type {
         'layers' => array(
           '#type' => 'textarea',
           '#title' => t('Layers'),
+          // TODO: Should be required to be non-empty as not having a layer leads to invalid requests
           '#default_value' => !empty($this->data['options']['layers']) ?
             implode("\r\n", $this->data['options']['layers']) : '',
           '#description' => t('Specifies which layers to show. One per line.')

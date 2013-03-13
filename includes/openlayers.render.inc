@@ -20,7 +20,7 @@ function _openlayers_layers_process($layers = array(), &$map = array()) {
   $layer_data = array();
 
   // Load Layers and assign weights
-  foreach ($layers as $key => $layer){
+  foreach ($layers as $key => $layer) {
     if ($layer_object = openlayers_layer_load($layer)) {
       $layers[$key] = $layer_object;
       if (!empty($map['layer_weight'][$key])) {

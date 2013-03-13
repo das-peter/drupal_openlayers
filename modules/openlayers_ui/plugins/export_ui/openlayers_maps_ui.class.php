@@ -33,6 +33,8 @@ class openlayers_maps_ui extends ctools_export_ui {
     else {
       $defaults = $map->data;
     }
+    $defaults['projection'] = openlayers_get_projection_by_identifier($defaults['projection']);
+    $defaults['displayProjection'] = openlayers_get_projection_by_identifier($defaults['displayProjection']);
 
     // Map preview.  It's a little in the way, so we allow the user
     // to turn it on or off.  Show on preview, otherwise look at setting.
@@ -264,12 +266,14 @@ class openlayers_maps_ui extends ctools_export_ui {
 
     // Layers & styles
     $form['layerstyles'] = array(
+      '#type' => 'fieldset',
       '#title' => t('Layers & Styles'),
       '#description' => t('Layer settings.  The Layer options will change based on the projection chosen.'),
       '#theme' => 'openlayers_ui_maps_form_layers',
-      '#tree' => FALSE,
-      '#type' => 'fieldset',
-      '#group' => 'ui'
+      '#tree' => TRUE,
+      '#group' => 'ui',
+      '#prefix' => '',
+      '#suffix' => ''
     );
 
     // Projection options
@@ -279,19 +283,78 @@ class openlayers_maps_ui extends ctools_export_ui {
         openlayers_ui_get_layer_options('baselayer', $projection),
         openlayers_ui_get_layer_options('overlay', $projection));
 
-      $projections[$projection] = theme(
+      $projections[$projection->identifier] = theme(
         'openlayers_ui_form_projection_description',
         array(
-          'projection_title' => $projection,
-          'available_layers' => array_keys($projection_layers)
+          'projection' => $projection,
+          'available_layers' => $projection_layers
         )
       );
     }
 
+    $form['layerstyles']['projections'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Projections'),
+      '#description' => t('<p><strong>WARNING: Projections are not well supported in
+      this module.  If you need to handle non spherical mercator projections
+      you may be better using the API directly.</strong></p>
+      <p>Select the !link_proj for your map.  The list next
+      to each projection is the layers that support this projection.</p>',
+        array('!link_proj' => l(t('geographical projection'),
+          'http://en.wikipedia.org/wiki/Map_projection'))
+      ),
+      '#tree' => TRUE,
+    );
+    $form['layerstyles']['projections']['easy_projection'] = array(
+      '#type' => 'radios',
+      '#title' => t('Map Projection'),
+      '#description' => t('The !link_proj of this map: all layers will either be requested or reprojected to this format.', array(
+        '!link_proj' => l(
+          t('geographical projection'),
+          'http://en.wikipedia.org/wiki/Map_projection'),
+      )),
+      '#default_value' => $defaults['projection']->identifier,
+      '#options' => $projections,
+      '#attributes' => array('class' => array('openlayers-form-easy-projection')),
+      '#ajax' => array(
+        'callback' => 'openlayers_map_layerlist',
+        'wrapper' => 'edit-layerstyles',
+        'method' => 'replace',
+        'event' => 'change'
+      )
+    );
+    $displayProjectionOptions = array();
+    foreach(openlayers_ui_get_projection_options() as $projectionIdentifier => $projection){
+      $displayProjectionOptions[$projectionIdentifier] = $projection->getLocalizedMessage();
+    }
+    $form['layerstyles']['projections']['displayProjection'] = array(
+      '#type' => 'select',
+      '#title' => t('Display Projection'),
+      '#description' => t('All interaction with the map - drawing, panning,
+      centering, and more - occurs in the display projection. The vast majority
+      of maps use 4326 (latitude/longitude) for this value.'),
+      '#default_value' => !empty($defaults['displayProjection']) ?
+        $defaults['displayProjection']->identifier : openlayers_get_projection('EPSG', '4326')->identifier,
+      '#options' => $displayProjectionOptions,
+    );
+
+    $form['layerstyles']['layers'] = array(
+      '#title' => t('Layers & Styles'),
+      '#description' => t('Layer settings.  The Layer options will change based on the projection chosen.'),
+      '#type' => 'fieldset',
+    );
+
     // Construct data for theme_openlayers_ui_maps_form_layers
     $form['layerstyles']['layers']['#tree'] = TRUE;
     $form['layerstyles']['layers']['baselabels'] = array();
-    $base_options = openlayers_ui_get_layer_options('baselayer', $defaults['projection']);
+    if(isset($form_state['values']['layerstyles']['projections']['easy_projection'])){
+      // Projection was choosen by editing the form
+      $easy_projection = openlayers_get_projection_by_identifier($form_state['values']['layerstyles']['projections']['easy_projection']);
+    } else {
+      // Form was not yet edited, use default
+      $easy_projection = $defaults['projection'];
+    }
+    $base_options = openlayers_ui_get_layer_options('baselayer', $easy_projection);
     foreach ($base_options as $id => $description) {
       $form['layerstyles']['layers']['baselabels'][$id] =
         array('#markup' => $description);
@@ -313,7 +376,7 @@ class openlayers_maps_ui extends ctools_export_ui {
     );
 
     // Overlay layers
-    $overlay_options = openlayers_ui_get_layer_options('overlay', $defaults['projection']);
+    $overlay_options = openlayers_ui_get_layer_options('overlay', $easy_projection);
     $form['layerstyles']['layers']['overlaylabels'] = array();
     if (!empty($overlay_options)) {
 
@@ -432,59 +495,6 @@ class openlayers_maps_ui extends ctools_export_ui {
       '#options' => openlayers_ui_get_style_options(),
       '#default_value' => !empty($defaults['styles']['temporary']) ?
         $defaults['styles']['temporary'] : NULL,
-    );
-
-    // TODO: This projection stuff sucks.  See
-    // http://drupal.org/node/1331410
-    //
-    // Grab default from submitted form values on AHAH rebuild.
-    // Start AHAH Wrapper
-    /*
-    $form['layerstyles']['ahah-start'] = array('#value' => '<div id="openlayers-layers-select">');
-    if (isset($form_state['values']['projections'])) {
-      if ($form_state['values']['projections']['easy_projection'] == 'other') {
-        $defaults['projection'] = $form_state['values']['projections']['projection'];
-      }
-      else {
-        $defaults['projection'] = $form_state['values']['projections']['easy_projection'];
-      }
-    }
-    */
-
-    // Just kind of hide the projection stuff for now.
-    $form['layerstyles']['projections'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('Projections'),
-      '#description' => t('<p><strong>WARNING: Projections are not well supported in
-      this module.  If you need to handle non spherical mercator projections
-      you may be better using the API directly.</strong></p>
-      <p>Select the EPSG code of the !link_proj for your map.  The list next
-      to each projection is the layers that support this projection.</p>',
-        array('!link_proj' => l(t('geographical projection'),
-          'http://en.wikipedia.org/wiki/Map_projection'))
-      ),
-      '#tree' => TRUE,
-    );
-    $form['layerstyles']['projections']['easy_projection'] = array(
-      '#type' => 'radios',
-      '#title' => t('Map Projection'),
-      '#description' => t('The !link_proj of this map: all layers will either be requested or reprojected to this format.', array(
-        '!link_proj' => l(
-          t('geographical projection'),
-          'http://en.wikipedia.org/wiki/Map_projection'),
-      )),
-      '#default_value' => isset($defaults['projection']) ? $defaults['projection'] : 'EPSG:900913',
-      '#options' => $projections,
-      '#attributes' => array('class' => array('openlayers-form-easy-projection')),
-    );
-    $form['layerstyles']['projections']['displayProjection'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Display Projection'),
-      '#description' => t('All interaction with the map - drawing, panning,
-      centering, and more - occurs in the display projection. The vast majority
-      of maps use 4326 (latitude/longitude) for this value.'),
-      '#default_value' => !empty($defaults['displayProjection']) ?
-        $defaults['displayProjection'] : 'EPSG:4326'
     );
 
     // Behaviors

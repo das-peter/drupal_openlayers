@@ -19,7 +19,7 @@ function _openlayers_openlayers_layers() {
   $layer->data = array(
     'isBaseLayer' => TRUE,
     'type' => 'satellite',
-    'projection' => array('EPSG:900913'),
+    'projection' => array('EPSG:3857'),
     'layer_type' => 'openlayers_layer_type_google',
   );
   $layers[$layer->name] = $layer;
@@ -32,7 +32,7 @@ function _openlayers_openlayers_layers() {
   $layer->data = array(
     'isBaseLayer' => TRUE,
     'type' => 'hybrid',
-    'projection' => array('EPSG:900913'),
+    'projection' => array('EPSG:3857'),
     'layer_type' => 'openlayers_layer_type_google',
   );
   $layers[$layer->name] = $layer;
@@ -45,7 +45,7 @@ function _openlayers_openlayers_layers() {
   $layer->data = array(
     'isBaseLayer' => TRUE,
     'type' => 'normal',
-    'projection' => array('EPSG:900913'),
+    'projection' => array('EPSG:3857'),
     'layer_type' => 'openlayers_layer_type_google',
   );
   $layers[$layer->name] = $layer;
@@ -58,7 +58,7 @@ function _openlayers_openlayers_layers() {
   $layer->data = array(
     'isBaseLayer' => TRUE,
     'type' => 'physical',
-    'projection' => array('EPSG:900913'),
+    'projection' => array('EPSG:3857'),
     'layer_type' => 'openlayers_layer_type_google',
   );
   $layers[$layer->name] = $layer;
@@ -70,14 +70,14 @@ function _openlayers_openlayers_layers() {
   $layer->description = 'MapQuest’s rendering of OpenStreetMap.';
   $layer->data = array(
     'isBaseLayer' => TRUE,
-    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> '.
+    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> ' .
       '<a href="@openstreetmap">&copy; OpenStreetMap contributors</a>',
       array(
         '@openstreetmap' => 'http://www.openstreetmap.org/copyright',
         '@ccbysa' => 'http://creativecommons.org/licenses/by-sa/2.0/',
       )
-    ) . '. '. t('Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a>.'),
-    'projection' => array('EPSG:900913'),
+    ) . '. ' . t('Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a>.'),
+    'projection' => array('EPSG:3857', 'EPSG:900913'),
     'layer_type' => 'openlayers_layer_type_xyz',
     'url' => array(
       '//otile1' . $mapquest_host . '/tiles/1.0.0/osm/${z}/${x}/${y}.png',
@@ -85,7 +85,7 @@ function _openlayers_openlayers_layers() {
       '//otile3' . $mapquest_host . '/tiles/1.0.0/osm/${z}/${x}/${y}.png',
       '//otile4' . $mapquest_host . '/tiles/1.0.0/osm/${z}/${x}/${y}.png',
     ),
-    'wrapDateLine' => FALSE,
+    'wrapDateLine' => TRUE,
     'resolutions' => openlayers_get_resolutions('EPSG:900913', 0, 19)
   );
   $layers[$layer->name] = $layer;
@@ -98,8 +98,8 @@ function _openlayers_openlayers_layers() {
   $layer->data = array(
     'isBaseLayer' => TRUE,
     'attribution' => t('Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency.')
-      . ' '. t('Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a>.'),
-    'projection' => array('EPSG:900913'),
+      . ' ' . t('Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a>.'),
+    'projection' => array('EPSG:3857', 'EPSG:900913'),
     'layer_type' => 'openlayers_layer_type_xyz',
     'url' => array(
       '//oatile1' . $mapquest_host . '/tiles/1.0.0/sat/${z}/${x}/${y}.png',
@@ -121,7 +121,7 @@ function _openlayers_openlayers_layers() {
     'name' => 'Bing Road',
     'isBaseLayer' => TRUE,
     'type' => 'Road',
-    'projection' => array('EPSG:900913'),
+    'projection' => array('EPSG:3857'),
     'layer_type' => 'openlayers_layer_type_bing',
   );
   $layers[$layer->name] = $layer;
@@ -136,7 +136,7 @@ function _openlayers_openlayers_layers() {
     'name' => 'Bing Aerial',
     'isBaseLayer' => TRUE,
     'type' => 'Aerial',
-    'projection' => array('EPSG:900913'),
+    'projection' => array('EPSG:3857'),
     'layer_type' => 'openlayers_layer_type_bing',
   );
   $layers[$layer->name] = $layer;
@@ -151,7 +151,7 @@ function _openlayers_openlayers_layers() {
     'name' => 'Bing Hybrid',
     'isBaseLayer' => TRUE,
     'type' => 'AerialWithLabels',
-    'projection' => array('EPSG:900913'),
+    'projection' => array('EPSG:3857'),
     'layer_type' => 'openlayers_layer_type_bing',
   );
   $layers[$layer->name] = $layer;
@@ -164,14 +164,14 @@ function _openlayers_openlayers_layers() {
   $layer->description = 'The main OpenStreetMap map';
   $layer->data = array(
     'isBaseLayer' => TRUE,
-    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> '.
+    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> ' .
         '<a href="@openstreetmap">&copy; OpenStreetMap contributors</a>',
       array(
         '@openstreetmap' => 'http://www.openstreetmap.org/copyright',
         '@ccbysa' => 'http://creativecommons.org/licenses/by-sa/2.0/',
       )
     ),
-    'projection' => array('EPSG:900913'),
+    'projection' => array('EPSG:3857'),
     'layer_type' => 'openlayers_layer_type_xyz',
     'url' => '//tile.openstreetmap.org/${z}/${x}/${y}.png',
     'wrapDateLine' => TRUE,
@@ -186,14 +186,14 @@ function _openlayers_openlayers_layers() {
   $layer->description = 'OpenStreetMap with highlighted bike lanes';
   $layer->data = array(
     'isBaseLayer' => TRUE,
-    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> '.
+    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> ' .
         '<a href="@openstreetmap">&copy; OpenStreetMap contributors</a>',
       array(
         '@openstreetmap' => 'http://www.openstreetmap.org/copyright',
         '@ccbysa' => 'http://creativecommons.org/licenses/by-sa/2.0/',
       )
     ),
-    'projection' => array('EPSG:900913'),
+    'projection' => array('EPSG:3857'),
     'layer_type' => 'openlayers_layer_type_xyz',
     'url' => '//a.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png',
     'wrapDateLine' => TRUE,
@@ -209,7 +209,7 @@ function _openlayers_openlayers_layers() {
     WSG84 for use on non spherical-mercator maps.';
   $layer->data = array(
     'isBaseLayer' => FALSE,
-    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> '.
+    'attribution' => t('&copy;<a href="@ccbysa">CCBYSA</a> ' .
         '<a href="@openstreetmap">&copy; OpenStreetMap contributors</a>',
       array(
         '@openstreetmap' => 'http://www.openstreetmap.org/copyright',
@@ -246,7 +246,9 @@ function _openlayers_openlayers_layers() {
       'extractTracks' => FALSE,
       'extractAttributes' => TRUE,
     ),
-    'projection' => array('EPSG:4326'),
+    'projection' => array(
+      'EPSG:4326',
+    ),
     'isBaseLayer' => 0,
     'layer_type' => 'openlayers_layer_type_kml',
     'layer_handler' => 'kml',
@@ -270,7 +272,7 @@ function _openlayers_openlayers_layers() {
     ),
     'options' => array(
       'layers' => array('basic'),
-      'maxExtent' => openlayers_get_extent('EPSG:4326'),
+      'maxExtent' => openlayers_get_extent('EPSG', '4326'),
     ),
   );
   $layers[$layer->name] = $layer;
@@ -339,7 +341,7 @@ function _openlayers_openlayers_layers() {
       'isBaseLayer' => TRUE,
       'type' => 'png',
       'resolutions' => array_intersect_key($resolutions, array_flip(range($item['minzoom'], $item['maxzoom']))),
-      'projection' => array('EPSG:900913'),
+      'projection' => array('EPSG:3857'),
     );
     $layers[$key] = $openlayers_layers;
   }

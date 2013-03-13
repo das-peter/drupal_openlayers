@@ -93,24 +93,24 @@ function openlayers_ui_maps_form_process($values = array()) {
         break;
 
       case 'projections':
-        $processed['projection'] = $values['projections']['easy_projection'];
-        $processed['displayProjection'] = $values['projections']['displayProjection'];
+        $processed['projection'] = $values['layerstyles']['projections']['easy_projection'];
+        $processed['displayProjection'] = $values['layerstyles']['projections']['displayProjection'];
         break;
 
       case 'layers':
         // Put the default layer in the right place.
         // TODO: finish port here
-        $processed['default_layer'] = $values['layers']['default_layer'];
-        $baselayers = array_filter($values['layers']['baselayers']);
-        $overlays = (isset($values['layers']['overlays'])) ?
-          array_filter($values['layers']['overlays']) : array();
+        $processed['default_layer'] = $values['layerstyles']['layers']['default_layer'];
+        $baselayers = array_filter($values['layerstyles']['layers']['baselayers']);
+        $overlays = (isset($values['layerstyles']['layers']['overlays'])) ?
+          array_filter($values['layerstyles']['layers']['overlays']) : array();
         // Sort overlay layers by weight, in case browser didn't
         // send them already sorted
-        if (isset($values['layer_weight'])) {
+        if (isset($values['layerstyles']['layer_weight'])) {
           $overlays = array();
-          asort($values['layer_weight']);
-          foreach (array_keys($values['layer_weight']) as $layer_key) {
-            if ($values['layers']['overlays'][$layer_key]) {
+          asort($values['layerstyles']['layer_weight']);
+          foreach (array_keys($values['layerstyles']['layer_weight']) as $layer_key) {
+            if ($values['layerstyles']['layers']['overlays'][$layer_key]) {
                $overlays[$layer_key] = $layer_key;
             }
           }
@@ -120,6 +120,16 @@ function openlayers_ui_maps_form_process($values = array()) {
         // Merge our different layer sections together
         $processed['layers'] = array_merge($baselayers, $overlays);
         break;
+
+      case 'layer_weight':
+      case 'layer_styles':
+      case 'layer_styles_select':
+      case 'layer_activated':
+      case 'layer_switcher':
+      case 'projections':
+      case 'styles':
+        $processed[$key] = isset($values['layerstyles'][$key]) ? $values['layerstyles'][$key] : array();
+          break;
 
       default:
         // $processed[$key] = is_array($values[$key]) ?
@@ -230,6 +240,9 @@ function openlayers_ui_maps_form_center_map($defaults = array()) {
   );
   drupal_add_js($pass_values, 'setting');
 
+  $projection = openlayers_get_projection('EPSG', '3857');
+  openlayers_add_js_projection_definition($projection);
+
   // centerpoint & zoom of this map are overridden
   // by the mapformvalues behavior on page load.
   //
@@ -237,8 +250,8 @@ function openlayers_ui_maps_form_center_map($defaults = array()) {
   // behavior for getting extent.
   $centermap_def = array(
     'id' => 'openlayers-center-helpmap',
-    'projection' => 'EPSG:900913',
-    'displayProjection' => 'EPSG:900913',
+    'projection' => $projection->identifier,
+    'displayProjection' => $projection->identifier,
     'default_layer' => 'mapquest_osm',
     'width' => '600px',
     'height' => '400px',
