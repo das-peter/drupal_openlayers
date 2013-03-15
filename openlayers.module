@@ -964,7 +964,14 @@ function openlayers_get_projection_by_identifier($identifier) {
   $records = ctools_export_load_object('openlayers_projections', 'names', array($identifier));
   
   if (empty($records)) {
-    throw new Exception("Projection $identifier requested but not supported");
+    if(mb_strpos($identifier, ':')===FALSE){
+      throw new Exception(t("Projection !projection lacks an authority code. Read http://drupal.org/node/1944074 for hints.", array(
+        '!projection' => $identifier
+      )));
+    }
+    throw new Exception(t("Projection !projection requested but not supported.", array(
+      '!projection' => $identifier
+    )));
   }
   return openlayers_projection_from_record($records[key($records)]);
 }
