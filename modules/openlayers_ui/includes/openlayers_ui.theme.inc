@@ -58,6 +58,7 @@ function theme_openlayers_ui_maps_form_layers($args) {
   $rows = array();
   foreach (element_children($form['layers']['overlaylabels']) as $key) {
     unset($form['overlays'][$key]['#title']);
+    unset($form['layers']['overlays'][$key]['#title']);
     unset($form['layer_activated'][$key]['#title']);
     unset($form['layer_switcher'][$key]['#title']);
 
