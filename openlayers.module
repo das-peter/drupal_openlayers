@@ -588,7 +588,7 @@ function openlayers_layer_types($reset = FALSE) {
  *   String identifier of layer type.
  * @param $reset
  *   Boolean whether to reset cache or not.
- * @return
+ * @return openlayers_layer_type
  *   An instantiated layer type object or FALSE if not found.
  */
 function openlayers_layer_type_load($name, $reset = FALSE) {
@@ -1273,7 +1273,8 @@ class openlayers_layer_type {
   /**
    * Submit the options_form().
    *
-   * @param array $default
+   * @param array $form
+   * @param array $form_state
    */
   function options_form_submit($form, &$form_state) {
     $form_state['values']['data']['projection'] = array_keys($form_state['values']['data']['projection']);
