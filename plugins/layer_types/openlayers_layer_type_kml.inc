@@ -160,6 +160,7 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
    * hook_submit() of the form.
    */
   function options_form_submit($form, &$form_state) {
+    parent::options_form_submit($form, $form_state);
 
     $item = $form_state['item'];
     if (isset($item->data['file']) && $file = file_load($item->data['file'])) {
