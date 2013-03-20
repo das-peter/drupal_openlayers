@@ -1276,7 +1276,7 @@ class openlayers_layer_type {
    * @param array $default
    */
   function options_form_submit($form, &$form_state) {
-
+    $form_state['values']['data']['projection'] = array_keys($form_state['values']['data']['projection']);
   }
 
   /**
