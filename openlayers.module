@@ -230,6 +230,15 @@ function openlayers_render_map_data($map = array()) {
       return '';
     }
   }
+  
+  // Currently the restricted extent of maps is always given in EPSG:3857 so
+  // this projection needs to be available in the client for all restricted
+  // maps. Using EPSG:4326 instead would likely be better.
+  if(array_key_exists('restrict', $map['center']) && (boolean)$map['center']['restrict']['restrictextent']){
+    openlayers_add_js_projection_definition(
+      openlayers_get_projection_by_identifier('EPSG:3857')
+    );
+  }
 
   // Return themed map if no errors found
   if (empty($map['errors'])) {
