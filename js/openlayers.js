@@ -209,7 +209,7 @@ Drupal.openlayers = {
         && desiredRestriction.top<=openlayers.maxExtent.top && desiredRestriction.bottom>=openlayers.maxExtent.bottom){
 
         openlayers.restrictedExtent = desiredRestriction;
-      } else {
+      } else if (typeof console !== 'undefined') {
         // Given the map to set the restricted extent is not dependent on the map projection
         // it does allow to set an extent outwith the valid bound of the map projection. As a
         // result no valid data could be requested and thus the wrong extent needs to be ignored.

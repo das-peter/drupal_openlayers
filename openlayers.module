@@ -230,6 +230,15 @@ function openlayers_render_map_data($map = array()) {
       return '';
     }
   }
+  
+  // Currently the restricted extent of maps is always given in EPSG:3857 so
+  // this projection needs to be available in the client for all restricted
+  // maps. Using EPSG:4326 instead would likely be better.
+  if(array_key_exists('restrict', $map['center']) && (boolean)$map['center']['restrict']['restrictextent']){
+    openlayers_add_js_projection_definition(
+      openlayers_get_projection_by_identifier('EPSG:3857')
+    );
+  }
 
   // Return themed map if no errors found
   if (empty($map['errors'])) {
@@ -579,7 +588,7 @@ function openlayers_layer_types($reset = FALSE) {
  *   String identifier of layer type.
  * @param $reset
  *   Boolean whether to reset cache or not.
- * @return
+ * @return openlayers_layer_type
  *   An instantiated layer type object or FALSE if not found.
  */
 function openlayers_layer_type_load($name, $reset = FALSE) {
@@ -1264,10 +1273,11 @@ class openlayers_layer_type {
   /**
    * Submit the options_form().
    *
-   * @param array $default
+   * @param array $form
+   * @param array $form_state
    */
   function options_form_submit($form, &$form_state) {
-
+    $form_state['values']['data']['projection'] = array_keys($form_state['values']['data']['projection']);
   }
 
   /**

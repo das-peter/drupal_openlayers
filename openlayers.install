@@ -373,6 +373,8 @@ function openlayers_update_7202() {
  * Rename the 'baselayer' in 'isBaseLayer' in layers.
  */
 function openlayers_update_7204() {
+  openlayers_update_create_projection_table();
+  
   foreach (openlayers_layers_load() as $key => $layer) {
     if ($layer->export_type != 1) continue;
     if (isset($layer->data['baselayer'])) {
@@ -416,7 +418,7 @@ function openlayers_update_7206() {
  */
 function openlayers_update_create_projection_table() {
   static $hasRun = FALSE;
-  if($hasRun){
+  if($hasRun || db_table_exists('openlayers_projections')){
     return;
   } else {
     $hasRun = TRUE;
