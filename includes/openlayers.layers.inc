@@ -173,7 +173,7 @@ function _openlayers_openlayers_layers() {
     ),
     'projection' => array('EPSG:3857'),
     'layer_type' => 'openlayers_layer_type_xyz',
-    'url' => '//tile.openstreetmap.org/${z}/${x}/${y}.png',
+    'url' => 'http://tile.openstreetmap.org/${z}/${x}/${y}.png',
     'wrapDateLine' => TRUE,
   );
   $layers[$layer->name] = $layer;
