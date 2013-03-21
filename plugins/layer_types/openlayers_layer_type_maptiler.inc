@@ -70,6 +70,10 @@ class openlayers_layer_type_maptiler extends openlayers_layer_type {
     );
   }
 
+  function options_form_submit($form, &$form_state) {
+    parent::options_form_submit($form, &$form_state);
+  }
+
   /**
    * Render.
    */

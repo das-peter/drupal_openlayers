@@ -230,7 +230,7 @@ function openlayers_render_map_data($map = array()) {
       return '';
     }
   }
-  
+
   // Currently the restricted extent of maps is always given in EPSG:3857 so
   // this projection needs to be available in the client for all restricted
   // maps. Using EPSG:4326 instead would likely be better.
@@ -277,7 +277,7 @@ function openlayers_render_map_data($map = array()) {
 
 /**
  * Load projection transformations in case OpenLayers does not support projections in use natively
- * @param openlayers_projection $projection 
+ * @param openlayers_projection $projection
  */
 function openlayers_add_js_projection_definition(openlayers_projection $projection) {
   $openlayers_natively_supported = array('EPSG:4326', 'EPSG:900913');
@@ -331,7 +331,7 @@ function openlayers_render_map($map = '') {
  */
 function openlayers_get_layer_object($layer, $map = array()) {
   ctools_include('plugins');
-  
+
   // Static cache because this function will possibly be called in big loops
   static $layer_types;
   if (!isset($layer_types)) {
@@ -939,7 +939,7 @@ class openlayers_projection {
 
 /**
  * @param stdClass $record Object as returned by ctools_export_crud_load for type openlayers_projections
- * @return openlayers_projection 
+ * @return openlayers_projection
  */
 function openlayers_projection_from_record($record) {
   return new openlayers_projection($record->identifier, $record->definition,
@@ -969,9 +969,9 @@ function openlayers_get_projection($authority, $code) {
  */
 function openlayers_get_projection_by_identifier($identifier) {
   ctools_include('export');
-  
+
   $records = ctools_export_load_object('openlayers_projections', 'names', array($identifier));
-  
+
   if (empty($records)) {
     if(mb_strpos($identifier, ':')===FALSE){
       throw new Exception(t("Projection !projection lacks an authority code. Read http://drupal.org/node/1944074 for hints.", array(
@@ -1012,7 +1012,7 @@ function openlayers_map_layerlist(&$form, &$form_state) {
   unset($form['layerstyles']['#group']);
   // Force a diffent, fixed identifier so that the form part can reliably replaced
   $form['layerstyles']['#id']= 'edit-layerstyles';
-  // Rerender the form part 
+  // Rerender the form part
   return $form['layerstyles'];
 }
 
@@ -1117,6 +1117,7 @@ function openlayers_get_resolutions($projection, $zoom_start = 0, $zoom_end = FA
   $length = ($zoom_end == FALSE) ? NULL : $zoom_end - $zoom_start;
   // By default this will not actually clip the array
   $resolutions = array_slice($res, $zoom_start, $length);
+
   return $resolutions;
 }
 
@@ -1278,6 +1279,8 @@ class openlayers_layer_type {
    */
   function options_form_submit($form, &$form_state) {
     $form_state['values']['data']['projection'] = array_keys($form_state['values']['data']['projection']);
+    $form_state['values']['data']['resolutions'] = array_map('floatval', array_values($form_state['values']['data']['resolutions']));
+    $form_state['values']['data']['maxExtent'] = array_map('floatval', $form_state['values']['data']['maxExtent']);
   }
 
   /**
