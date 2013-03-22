@@ -32,7 +32,11 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
     return array(
       'layer_handler' => 'tms',
       'type' => 'png',
+      'maptiler' => FALSE,
+      'serviceVersion' => '1.0.0',
       'wrapDateLine' => FALSE,
+      'zoomOffset' => 0,
+      'url' => ''
     ) + parent::options_init();
   }
 
@@ -83,14 +87,40 @@ class openlayers_layer_type_tms extends openlayers_layer_type {
           $this->data['wrapDateLine'] : FALSE,
         '#description' => t('Wrapping the dateline will cause the map to appear to repeat itself when going east or west.  This may not be supported by all tilesets.'),
       ),
+      'serviceVersion' => array(
+        '#type' => 'textfield',
+        '#title' => t('Service version for tile requests'),
+        '#default_value' => isset($this->data['serviceVersion']) ?
+          $this->data['serviceVersion'] : '',
+        '#description' => t('Service version for tile requests.  Default is “1.0.0”.'),
+      ),
+      'zoomOffset' => array(
+        '#type' => 'textfield',
+        '#title' => t('Zoom offset'),
+        '#default_value' => isset($this->data['zoomOffset']) ?
+          $this->data['zoomOffset'] : 0,
+        '#description' => t('If your cache has more zoom levels than you want to provide access to with this layer, supply a zoomOffset.  This zoom offset is added to the current map zoom level to determine the level for a requested tile.  For example, if you supply a zoomOffset of 3, when the map is at the zoom 0, tiles will be requested from level 3 of your cache.  Default is 0 (assumes cache level and map zoom are equivalent).  Using zoomOffset is an alternative to setting serverResolutions if you only want to expose a subset of the server resolutions.'),
+      ),
+      'maptiler' => array(
+        '#type' => 'checkbox',
+        '#title' => t('Rewrite the getUrl method for MapTiler ?'),
+        '#default_value' => isset($this->data['maptiler']) ?
+          $this->data['maptiler'] : FALSE,
+        '#description' => t('MapTiler is using a custom getUrl method to get it\'s tiles'),
+      ),
     );
   }
 
   function options_form_validate($form, &$form_state) {
-    $form_state['data']['url'] = explode("\n", $form_state['data']['url']);
-    $form_state['data']['resolutions'] = array_map('floatval', array_values($form_state['data']['resolutions']));
-    $form_state['data']['projection'] = array_values($form_state['data']['projection']);
-    $form_state['data']['wrapDateLine'] = (bool) $form_state['data']['wrapDateLine'];
+  }
+
+  function options_form_submit($form, &$form_state) {
+    parent::options_form_submit($form, $form_state);
+    $form_state['values']['data']['url'] = explode("\n", $form_state['values']['data']['url']);
+    $form_state['values']['data']['resolutions'] = array_map('floatval', array_values($form_state['values']['data']['resolutions']));
+    $form_state['values']['data']['wrapDateLine'] = (bool) $form_state['values']['data']['wrapDateLine'];
+    $form_state['values']['data']['zoomOffset'] = intval($form_state['values']['data']['zoomOffset'], 10);
+    $form_state['values']['data']['maptiler'] = (bool) $form_state['values']['data']['maptiler'];
   }
 
   /**
