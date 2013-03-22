@@ -86,6 +86,7 @@ class openlayers_layer_type_wmts extends openlayers_layer_type {
         '#title' => t('Resolutions'),
         '#default_value' => isset($this->data['resolutions']) ? $this->data['resolutions'] : '',
         '#description' => t('A list of map resolutions (map units per pixel) in descending order.'),
+        '#maxlength' => 400
       ),
       'serverResolutions' => array(
         '#type' => 'textfield',
@@ -93,6 +94,7 @@ class openlayers_layer_type_wmts extends openlayers_layer_type {
         '#maxlength'=>500,
         '#default_value' => isset($this->data['serverResolutions']) ? $this->data['serverResolutions'] : '',
         '#description' => t('A list of all resolutions available on the server.  Only set this property if the map resolutions differ from the server.'),
+        '#maxlength' => 400
       ),
       'requestEncoding' => array(
         '#type' => 'select',
