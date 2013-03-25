@@ -79,7 +79,7 @@ class openlayers_layer_type_maptiler extends openlayers_layer_type {
   }
 
   function options_form_submit($form, &$form_state) {
-    parent::options_form_submit($form, &$form_state);
+    parent::options_form_submit($form, $form_state);
     $form_state['values']['data']['base_url'] = explode("\n", $form_state['values']['data']['base_url']);
     $form_state['values']['data']['resolutions'] = array_map('floatval', array_values($form_state['values']['data']['resolutions']));
     $form_state['values']['data']['zoomOffset'] = intval($form_state['values']['data']['zoomOffset'], 10);
