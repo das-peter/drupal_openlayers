@@ -37,7 +37,6 @@ class openlayers_styles_ui extends ctools_export_ui {
         an icon. Note that, when using icons, this value should be half the
         width of the icon image.'),
         'type' => 'integer',
-        'element_validate' => array('element_validate_integer_positive'),
       ),
       'fillColor' => array(
         'default' => '#EE9900',
@@ -293,24 +292,14 @@ class openlayers_styles_ui extends ctools_export_ui {
    * Prepare the tag values before they are added to the database.
    */
   function edit_form_submit(&$form, &$form_state) {
-    $style_data = $form_state['values']['data'];
-
     // Cast and unset values so JS can handle them better,
     // Unless values are in the form ${attribute}
     foreach ($form_state['values']['data'] as $key => $value) {
-      if ($form_state['values']['data'][$key] === '') {
-        unset($form_state['values']['data'][$key]);
+      if (is_numeric($form_state['values']['data'][$key])) {
+        $form_state['values']['data'][$key] = (float) $form_state['values']['data'][$key];
       }
-      elseif (isset($style_data[$key]['type']) &&
-        strpos($form_state['values']['data'][$key], '${') !== 0) {
-        if ($style_data[$key]['type'] == 'integer') {
-          $form_state['values']['data'][$key] =
-            (int) $form_state['values']['data'][$key];
-        }
-        elseif ($style_data[$key]['type'] == 'float') {
-          $form_state['values']['data'][$key] =
-            (float) $form_state['values']['data'][$key];
-        }
+      if (empty($form_state['values']['data'][$key])) {
+        unset($form_state['values']['data'][$key]);
       }
     }
 
