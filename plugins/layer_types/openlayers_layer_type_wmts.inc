@@ -79,7 +79,7 @@ class openlayers_layer_type_wmts extends openlayers_layer_type {
       'maxExtent' => array(
         '#type' => 'textfield',
         '#title' => t('Max Extent'),
-        '#default_value' => isset($this->data['maxExtent']) ? $this->data['maxExtent'] : '',
+        '#default_value' => isset($this->data['maxExtent']) ? implode(', ', $this->data['maxExtent']) : '',
         '#description' => t('Should consist of four values (left, bottom, right, top). The maximum extent for the layer. Defaults to null.'),
       ),
       'resolutions' => array(
@@ -110,6 +110,7 @@ class openlayers_layer_type_wmts extends openlayers_layer_type {
     $form_state['data']['resolutions'] = array_map('floatval', explode(' ', $form_state['data']['resolutions']));
     $form_state['data']['serverResolutions'] = array_map('floatval', explode(' ', $form_state['data']['serverResolutions']));
     $form_state['data']['url'] = explode("\n", $form_state['data']['url']);
+    $form_state['data']['maxExtent'] = array_map('floatval', explode(",", $form_state['data']['maxExtent']));
   }
 
   function options_form_submit($form, &$form_state) {
