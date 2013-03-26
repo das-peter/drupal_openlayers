@@ -135,7 +135,6 @@ class openlayers_layer_type_image extends openlayers_layer_type {
   function render(&$map) {
     if (isset($this->data['file'])) {
       if ($file = file_load($this->data['file'])) {
-        $infos = image_get_info($file->uri);
         $this->data['file'] = array();
         $this->data['file'] = file_create_url($file->uri);
 
