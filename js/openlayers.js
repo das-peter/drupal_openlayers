@@ -43,7 +43,7 @@ Drupal.behaviors.openlayers = {
           var map = Drupal.settings.openlayers.maps[map_id];
 
           if(map.default_layer===null){
-            console.error("Map configuration is invalid as it lacks a base layer.");
+            Drupal.openlayers.console.error("Map configuration is invalid as it lacks a base layer.");
           }
 
           // Use try..catch for error handling.
@@ -105,7 +105,7 @@ Drupal.behaviors.openlayers = {
           catch (e) {
             var errorMessage = e.name + ': ' + e.message;
             if (typeof console != 'undefined') {
-              console.log(errorMessage);
+              Drupal.openlayers.console.log(errorMessage);
             }
             else {
               $(this).text('Error during map rendering: ' + errorMessage);
@@ -209,11 +209,11 @@ Drupal.openlayers = {
         && desiredRestriction.top<=openlayers.maxExtent.top && desiredRestriction.bottom>=openlayers.maxExtent.bottom){
 
         openlayers.restrictedExtent = desiredRestriction;
-      } else if (typeof console !== 'undefined') {
+      } else {
         // Given the map to set the restricted extent is not dependent on the map projection
         // it does allow to set an extent outwith the valid bound of the map projection. As a
         // result no valid data could be requested and thus the wrong extent needs to be ignored.
-        console.error("Restricted bounds ignored as not within projection bounds.");
+        Drupal.openlayers.console.error("Restricted bounds ignored as not within projection bounds.");
       }
     }
 
@@ -415,7 +415,42 @@ Drupal.openlayers = {
     if(Drupal.behaviors.proj4js){
       Drupal.behaviors.proj4js.attach(context, settings);
     }
-  }
+  },
+  
+  /**
+   * Logging implementation that logs using the browser's logging API.
+   * Falls back to doing nothing in case no such API is available. Simulates
+   * the presece of Firebug's console API in Drupal.openlayers.console.
+   */
+  'console': (function(){
+    var api = {};
+    var logger;
+    if(typeof(console)==="object" && typeof(console.log)==="function"){
+      logger = function(){
+        // Use console.log as fallback for missing parts of API if present.
+        console.log.apply(console, arguments);
+      }
+    } else {
+      logger = function (){
+        // Ignore call as no logging facility is available.
+      };
+    }
+    jQuery(["log", "debug", "info", "warn", "exception", "assert", "dir",
+      "dirxml", "trace", "group", "groupEnd", "groupCollapsed", "profile",
+      "profileEnd", "count", "clear", "time", "timeEnd", "timeStamp", "table",
+      "error"]).each(function(index, functionName){
+      if(typeof(console)!=="object" || typeof(console[functionName])!=="function"){
+        // Use fallback as browser does not provide implementation.
+        api[functionName] = logger;
+      } else {
+        api[functionName] = function(){
+          // Use browsers implementation.
+          console[functionName].apply(console, arguments);
+        };
+      }
+    });
+    return api;
+  })()
 };
 
 Drupal.openlayers.layer = {};
