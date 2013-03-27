@@ -150,7 +150,6 @@ class openlayers_layer_type_kml extends openlayers_layer_type {
       }
     }
 
-    $form_state['data']['projection'] = array_values($form_state['data']['projection']);
     $form_state['data']['formatOptions']['extractStyles'] = $form_state['data']['formatOptions']['extractStyles']!=0?TRUE:FALSE;
     $form_state['data']['formatOptions']['extractAttributes'] = $form_state['data']['formatOptions']['extractAttributes']!=0?TRUE:FALSE;
     $form_state['data']['formatOptions']['extractTracks'] = $form_state['data']['formatOptions']['extractTracks']!=0?TRUE:FALSE;
