@@ -8,6 +8,8 @@
  */
 Drupal.openlayers.addBehavior('openlayers_behavior_zoomtolayer', function (data, options) {
   var map = data.openlayers;
+  var zoomtolayer_scale = options.zoomtolayer_scale;
+
   var layers = map.getLayersBy('drupalID', {
     test: function(id) {
       for (var i in options.zoomtolayer) {
@@ -21,15 +23,26 @@ Drupal.openlayers.addBehavior('openlayers_behavior_zoomtolayer', function (data,
 
   // Go through selected layers to get full extent.
   map.fullExtent = new OpenLayers.Bounds();
-  for (var i in layers) {
-    if (layers[i].features !== undefined) {
-      var zoomtolayer_scale = data.map.behaviors['openlayers_behavior_zoomtolayer'].zoomtolayer_scale;
-      // For KML layers, we need to wait until layer is loaded.  Ideally
-      // we could check for any layer that is loading from an external
-      // source, but for now, just check KML
-      if (layers[i].layer_handler == 'kml') {
-        layers[i].events.register('loadend', layers[i], function() {
-          layerextent = layers[i].getDataExtent().scale(zoomtolayer_scale);
+
+  jQuery(layers).each(function(index, layer) {
+
+    if (layer instanceof OpenLayers.Layer.Vector) {
+
+      if (layer.getDataExtent() !== null) {
+        var layerextent = layer.getDataExtent().scale(zoomtolayer_scale);
+        map.fullExtent.extend(layerextent);
+        map.zoomToExtent(map.fullExtent);
+
+        // If unable to find width due to single point,
+        // zoom in with point_zoom_level option.
+        if (layerextent.getWidth() == 0.0) {
+          map.zoomTo(options.point_zoom_level);
+        }
+
+      } else {
+
+        layer.events.register('loadend', layer, function() {
+          var layerextent = layer.getDataExtent().scale(zoomtolayer_scale);
           map.fullExtent.extend(layerextent);
           map.zoomToExtent(map.fullExtent);
 
@@ -39,17 +52,18 @@ Drupal.openlayers.addBehavior('openlayers_behavior_zoomtolayer', function (data,
             map.zoomTo(options.point_zoom_level);
           }
         });
+
       }
-      else {
-        layerextent = layers[i].getDataExtent();
-        // Check for valid layer extent
-        if (layerextent != null) {
-          map.fullExtent.extend(layerextent);
-          map.zoomToExtent(map.fullExtent);
-        }
+
+    } else {
+      var layerextent = layer.getDataExtent();
+      // Check for valid layer extent
+      if (layerextent != null) {
+        map.fullExtent.extend(layerextent);
+        map.zoomToExtent(map.fullExtent);
       }
     }
-  }
+  });
 
   // If unable to find width due to single point,
   // zoom in with point_zoom_level option.
