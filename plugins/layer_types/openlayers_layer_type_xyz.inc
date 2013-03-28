@@ -94,7 +94,6 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
   function options_form_validate($form, &$form_state) {
     $form_state['data']['url'] = explode("\n", $form_state['data']['url']);
     $form_state['data']['serverResolutions'] = array_map('floatval', array_values($form_state['data']['serverResolutions']));
-    $form_state['data']['projection'] = array_values($form_state['data']['projection']);
     $form_state['data']['resolutions'] = array_map('floatval', array_values($form_state['data']['resolutions']));
     $form_state['data']['zoomOffset'] = (int) $form_state['data']['zoomOffset'];
   }

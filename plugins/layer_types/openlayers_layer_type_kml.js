@@ -25,8 +25,15 @@ Drupal.openlayers.layer.kml = function(title, map, options) {
     // Use an AJAX like call to get data from URL
     OpenLayers.Request.GET({
       url: uri,
-      callback: function (response) {
-        addFeatures(response.responseText, kml_options);
+      success: function (response) {
+        if(response.status===0 && response.responseXML===null){
+          Drupal.openlayers.console.error("Failed to load KML layer (probably due to same origin policy)", uri);
+        } else {
+          addFeatures(response.responseText, kml_options);
+        }
+      },
+      failure: function (response) {
+        Drupal.openlayers.console.error("Failed to load KML layer", uri, reponse);
       }
     });
   }
