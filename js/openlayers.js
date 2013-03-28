@@ -187,11 +187,6 @@ Drupal.openlayers = {
           layer.displayInLayerSwitcher = (!map.layer_switcher || map.layer_switcher[name]);
         }
 
-        if (map.center.wrapdateline === '1') {
-          // TODO: move into layer specific settings
-          layer.wrapDateLine = true;
-        }
-
         openlayers.addLayer(layer);
       }
     }
