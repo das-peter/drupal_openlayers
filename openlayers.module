@@ -1398,7 +1398,7 @@ function openlayers_libraries_info() {
     'version arguments' => array(
       'file' => 'lib/OpenLayers.js',
       'pattern' => '/OpenLayers.VERSION_NUMBER="Release (.*?)"/',
-      'lines' => 417,
+      'lines' => 1000,
     ),
     'files' => array(
       'js' => array('OpenLayers.js'),
