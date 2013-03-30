@@ -92,22 +92,3 @@ function theme_openlayers_ui_maps_form_layers($args) {
     'layer-weight');
   return $form['#prefix'] . $output . drupal_render_children($form) . $form['#suffix'];
 }
-
-/**
- * Drupal theme implementation for Behaviors in the map form
- */
-function theme_openlayers_ui_maps_form_behaviors($args) {
-  $form = $args['elements'];
-
-  $rows = array();
-  foreach (element_children($form) as $key) {
-    $rows[] = array(drupal_render($form[$key]['enabled']) .
-      drupal_render($form[$key]['options_set']) .
-      drupal_render($form[$key]['dependencies']));
-  }
-
-  return theme('table',
-    array(
-      'header' => array(t('Behaviors')),
-      'rows' => $rows));
-}

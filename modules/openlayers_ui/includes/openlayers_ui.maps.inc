@@ -156,8 +156,21 @@ function openlayers_ui_maps_form_process($values = array()) {
 function openlayers_ui_get_behavior_options($type, $defaults) {
   $form = array();
   $behaviors = openlayers_behaviors();
+
+  foreach ($defaults['behaviors'] as $key => $options) {
+    $enabled_behaviors[$key] = $behaviors[$key];
+    unset($behaviors[$key]);
+  }
+
+  // Ordering behaviors
+  // First display the enabled, then the disabled.
+  uasort($enabled_behaviors, '_openlayers_ui_sort_behaviors');
   uasort($behaviors, '_openlayers_ui_sort_behaviors');
+
+  $behaviors = array_merge($enabled_behaviors, $behaviors);
+
   foreach ($behaviors as $key => $plugin) {
+
     // Get behavior class
     $class = ctools_plugin_load_class(
       'openlayers',
@@ -173,42 +186,25 @@ function openlayers_ui_get_behavior_options($type, $defaults) {
       if (!isset($plugin['ui_visibility']) || $plugin['ui_visibility']) {
         // Create basic form structure for behavior
         $form[$key] = array(
+          '#type' => 'fieldset',
+          '#title' => $plugin['title'],
+          '#collapsible' => TRUE,
+          '#collapsed' => isset($defaults['behaviors'][$key]) ? FALSE : TRUE,
           'enabled' => array(
             '#type' => 'checkbox',
             '#title' => $plugin['title'],
             '#description' => $plugin['description'],
             '#default_value' => isset($defaults['behaviors'][$key]),
-            '#id' => $key . '-enabled',
           ),
-          'dependencies' => openlayers_dependency_widget(
-            $behavior->js_dependency()),
           'options' => array(),
         );
 
         // Create options items
         $options = $behavior->options_form($options);
         if (!empty($options)) {
-          // HACK.  In order to use ctools form
-          // dependencies, we have to use a hidden
-          // field as it supports processing and IDs.
-          $form[$key]['options_set'][$key . '-prefix'] = array(
-            '#type' => 'hidden',
-            '#id' => $key . '-options',
-            '#prefix' => '<div><fieldset id="' . $key . '-options' .
-              '" class="collapsible">',
-            '#process' => array('ctools_dependent_process'),
-            '#dependency' => array($key . '-enabled' => array(1)),
-            '#weight' => -1000,
-          );
           $form[$key]['options_set']['options'] = $options;
-          $form[$key]['options_set'][$key . '-suffix'] = array(
-            '#value' => '</fieldset></div>',
-            '#weight' => 1000,
-          );
         }
       }
-    }
-    else {
     }
   }
   return $form;
