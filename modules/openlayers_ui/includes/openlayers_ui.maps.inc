@@ -195,14 +195,24 @@ function openlayers_ui_get_behavior_options($type, $defaults) {
             '#title' => $plugin['title'],
             '#description' => $plugin['description'],
             '#default_value' => isset($defaults['behaviors'][$key]),
-          ),
-          'options' => array(),
+          )
         );
 
         // Create options items
         $options = $behavior->options_form($options);
         if (!empty($options)) {
-          $form[$key]['options_set']['options'] = $options;
+          $form[$key]['options_set'] = array(
+            '#type' => 'fieldset',
+            '#title' => t('Options'),
+            '#collapsible' => FALSE,
+            '#collapsed' => FALSE,
+            '#states' => array(
+              'visible' => array(
+                ':input[name="behaviors['.$key.'][enabled]"]' => array('checked' => TRUE),
+              ),
+            ),
+            'options' => $options
+          );
         }
       }
     }
