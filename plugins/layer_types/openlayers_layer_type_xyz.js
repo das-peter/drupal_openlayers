@@ -9,8 +9,8 @@
  */
 Drupal.openlayers.layer.xyz = function(title, map, options) {
   var styleMap = Drupal.openlayers.getStyleMap(map, options.drupalID);
-  if (options.maxExtent !== undefined) {
-    options.maxExtent = new OpenLayers.Bounds.fromArray(options.maxExtent) || new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
+  if (OpenLayers.Util.isArray(options.maxExtent)) {
+    options.maxExtent = OpenLayers.Bounds.fromArray(options.maxExtent);
   }
 
   // Legacy goodnes

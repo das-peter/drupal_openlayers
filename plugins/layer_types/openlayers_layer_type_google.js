@@ -20,7 +20,6 @@ Drupal.openlayers.layer.google = function(title, map, options) {
     'physical': window['G_PHYSICAL_MAP'] || google.maps.MapTypeId.TERRAIN
   };
 
-  options.maxExtent = new OpenLayers.Bounds(options.maxExtent);
   options.type = google_type_map[options.type];
   options.projection = "EPSG:900913";
 
