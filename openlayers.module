@@ -945,7 +945,7 @@ class openlayers_projection {
    * @return array Boundaries of projection in projected coordinates
    */
   public function getProjectedExtent() {
-    return array($this->projectedextentleft, $this->projectedextentbottom, $this->projectedextentright, $this->projectedextenttop);
+    return array_map('floatval', array($this->projectedextentleft, $this->projectedextentbottom, $this->projectedextentright, $this->projectedextenttop));
   }
 
   /**
