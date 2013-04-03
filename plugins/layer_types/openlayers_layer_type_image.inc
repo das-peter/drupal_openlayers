@@ -71,7 +71,7 @@ class openlayers_layer_type_image extends openlayers_layer_type {
         '#type' => 'textfield',
         '#title' => t('Max Extent'),
         '#default_value' => isset($this->data['maxExtent']) ? implode(', ', $this->data['maxExtent']) : '',
-        '#description' => t('Should consist of four values (left, bottom, right, top). The maximum extent for the layer. Defaults to null.'),
+        '#description' => t('Should consist of four values (left, bottom, right, top). The maximum extent for the layer. Image is stretched to cover whole map if left empty.'),
       ),
       'numZoomLevels' => array(
          '#title' => 'Zoomlevels',
@@ -119,6 +119,9 @@ class openlayers_layer_type_image extends openlayers_layer_type {
     $form_state['values']['data']['size']['w'] = $infos['width'];
     $form_state['values']['data']['size']['h'] = $infos['height'];
     $form_state['values']['data']['maxExtent'] = array_map('floatval', explode(",", $form_state['values']['data']['maxExtent']));
+    if(count($form_state['values']['data']['maxExtent'])!==4){
+      $form_state['values']['data']['maxExtent'] = NULL;
+    }
   }
 
   /*
