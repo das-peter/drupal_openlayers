@@ -19,7 +19,8 @@ Drupal.openlayers.layer.wmts = function(title, map, options) {
     style: options.style,
     matrixSet: options.matrixSet,
     formatSuffix: options.formatSuffix,
-    maxExtent: OpenLayers.Bounds.fromArray(options.maxExtent)
+    maxExtent: OpenLayers.Bounds.fromArray(options.maxExtent),
+    isBaseLayer: options.isBaseLayer
   };
 
   if (options.resolutions) {
