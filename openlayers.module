@@ -185,6 +185,28 @@ function openlayers_build_map($map = array()) {
   $map['behaviors'] = _openlayers_behaviors_render($map['behaviors'], $map);
   $map['styles'] = _openlayers_styles_process($map['styles'], $map['layer_styles'], $map['layer_styles_select'], $map);
 
+  // Restrict map to its projection extent (data outwith cannot be represented).
+  // Layer can additionally specfiy their maxExtent in case they use
+  // non-default grids.
+  $projection = openlayers_get_projection_by_identifier($map['projection']);
+  $map['maxExtent'] = $projection->getProjectedExtent();
+
+  // In case the layer offers the same projection as the map, use this and do not provide
+  // projection definition to client. Otherwise rely on the client to reproject on the fly.
+  foreach ($map['layers'] as $layer_name => $layer) {
+    if(in_array($map['projection'], $map['layers'][$layer_name]['projection'])){
+      $map['layers'][$layer_name]['projection'] = $map['projection'];
+    } else {
+      // Client is able to reproject any possible projection because their definitions need to be
+      // known to be able to set up a layer with a certain projection. Thus choice does not matter.
+      $layerProjectionIdentifier = $map['layers'][$layer_name]['projection'][0];
+      $map['layers'][$layer_name]['projection'] = $layerProjectionIdentifier;
+    }
+
+    // Ensure JavaScript gets proper type.
+    $map['layers'][$layer_name]['isBaseLayer'] = (boolean)($map['layers'][$layer_name]['isBaseLayer']);
+  }
+
   // Hook to alter map one last time.  Final modification to existing
   // styles, behaviors, layers can happen here, but adding new styles,
   // behaviors will not get rendered.
@@ -212,12 +234,6 @@ function openlayers_build_map($map = array()) {
 function openlayers_render_map_data($map = array()) {
   // Run map through build process
   $map = openlayers_build_map($map);
-
-  // Restrict map to its projection extent (data outwith cannot be represented).
-  // Layer can additionally specfiy their maxExtent in case they use
-  // non-default grids.
-  $projection = openlayers_get_projection_by_identifier($map['projection']);
-  $map['maxExtent'] = $projection->getProjectedExtent();
 
   $output = '';
 
@@ -247,33 +263,22 @@ function openlayers_render_map_data($map = array()) {
 
   // Return themed map if no errors found
   if (empty($map['errors'])) {
+
     // In case the layer offers the same projection as the map, use this and do not provide
     // projection definition to client. Otherwise rely on the client to reproject on the fly.
     foreach ($map['layers'] as $layer_name => $layer) {
-      if(in_array($map['projection'], $map['layers'][$layer_name]['projection'])){
-        $map['layers'][$layer_name]['projection'] = $map['projection'];
-      } else {
-        // Client is able to reproject any possible projection because their definitions need to be
-        // known to be able to set up a layer with a certain projection. Thus choice does not matter.
-        $layerProjectionIdentifier = $map['layers'][$layer_name]['projection'][0];
-        $map['layers'][$layer_name]['projection'] = $layerProjectionIdentifier;
         // Provide client with projection definition so that it can reproject
         openlayers_add_js_projection_definition(
-          openlayers_get_projection_by_identifier($layerProjectionIdentifier)
+          openlayers_get_projection_by_identifier($map['layers'][$layer_name]['projection'])
         );
-      }
-
-      // Ensure JavaScript gets proper type.
-      $map['layers'][$layer_name]['isBaseLayer'] = (boolean)($map['layers'][$layer_name]['isBaseLayer']);
     }
+
+    // Ensure projections in use are known to the client (loads Proj4js if required)
+    openlayers_add_js_projection_definition(openlayers_get_projection_by_identifier($map['projection']));
+    openlayers_add_js_projection_definition(openlayers_get_projection_by_identifier($map['displayProjection']));
 
     $js = array('openlayers' => array('maps' => array($map['id'] => $map)));
     drupal_add_js($js, 'setting');
-
-    // Ensure projections in use are known to the client (loads Proj4js if required)
-    openlayers_add_js_projection_definition($projection);
-    $display_projection = openlayers_get_projection_by_identifier($map['displayProjection']);
-    openlayers_add_js_projection_definition($display_projection);
 
     // Push map through theme function and return
     $output = theme('openlayers_map', array(
