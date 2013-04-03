@@ -212,8 +212,13 @@ function openlayers_build_map($map = array()) {
 function openlayers_render_map_data($map = array()) {
   // Run map through build process
   $map = openlayers_build_map($map);
+
+  // Restrict map to its projection extent (data outwith cannot be represented).
+  // Layer can additionally specfiy their maxExtent in case they use
+  // non-default grids.
   $projection = openlayers_get_projection_by_identifier($map['projection']);
   $map['maxExtent'] = $projection->getProjectedExtent();
+
   $output = '';
 
   // Given hide_empty_map flag, check if the map has any features
@@ -257,6 +262,9 @@ function openlayers_render_map_data($map = array()) {
           openlayers_get_projection_by_identifier($layerProjectionIdentifier)
         );
       }
+
+      // Ensure JavaScript gets proper type.
+      $map['layers'][$layer_name]['isBaseLayer'] = (boolean)($map['layers'][$layer_name]['isBaseLayer']);
     }
 
     $js = array('openlayers' => array('maps' => array($map['id'] => $map)));
@@ -1223,7 +1231,6 @@ class openlayers_layer_type {
       // TODO: Remove hard-coded resolutions
       'projection' => array('EPSG:900913'),
       'serverResolutions' => openlayers_get_resolutions('EPSG:900913'),
-      'maxExtent' => openlayers_get_extent('EPSG', '900913'),
       'resolutions' => openlayers_get_resolutions('EPSG:900913'),
       'base_url' => NULL,
       'transitionEffect' => 'resize',
@@ -1279,10 +1286,9 @@ class openlayers_layer_type {
    */
   function options_form_submit($form, &$form_state) {
     $form_state['values']['data']['projection'] = array_keys($form_state['values']['data']['projection']);
-    // TODO Resolutions and maximum extent should be processed only in layers
+    // TODO Resolutions should be processed only in layers
     // that provide a form field for it.
     $form_state['values']['data']['resolutions'] = array_map('floatval', array_values($form_state['values']['data']['resolutions']));
-    $form_state['values']['data']['maxExtent'] = array_map('floatval', $form_state['values']['data']['maxExtent']);
   }
 
   /**

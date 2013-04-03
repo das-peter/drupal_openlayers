@@ -32,7 +32,6 @@ class openlayers_layer_type_image extends openlayers_layer_type {
     return array(
       'layer_handler' => 'image',
       'file' => NULL,
-      'maxExtent' => openlayers_get_extent('EPSG', '4326'),
       'opacity' => 1,
       'factors' => array(
         'x' => 1,
@@ -120,6 +119,7 @@ class openlayers_layer_type_image extends openlayers_layer_type {
     $form_state['values']['data']['size']['h'] = $infos['height'];
     $form_state['values']['data']['maxExtent'] = array_map('floatval', explode(",", $form_state['values']['data']['maxExtent']));
     if(count($form_state['values']['data']['maxExtent'])!==4){
+      // Ignore invalid input.
       $form_state['values']['data']['maxExtent'] = NULL;
     }
   }
