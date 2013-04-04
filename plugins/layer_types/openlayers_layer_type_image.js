@@ -18,7 +18,7 @@ Drupal.openlayers.layer.image = function(title, map, options) {
     {
       numZoomLevels: options.numZoomLevels,
       opacity: options.opacity,
-      projection: options.projection,
+      projection: new OpenLayers.Projection(options.projection),
       transitionEffect: options.transitionEffect,
       isBaseLayer: options.isBaseLayer,
       attribution: options.attribution
