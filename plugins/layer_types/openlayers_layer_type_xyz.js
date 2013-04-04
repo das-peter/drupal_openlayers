@@ -8,7 +8,6 @@
  * Openlayer layer handler for XYZ layer
  */
 Drupal.openlayers.layer.xyz = function(title, map, options) {
-  var styleMap = Drupal.openlayers.getStyleMap(map, options.drupalID);
   if (OpenLayers.Util.isArray(options.maxExtent)) {
     options.maxExtent = OpenLayers.Bounds.fromArray(options.maxExtent);
   }
@@ -32,7 +31,5 @@ Drupal.openlayers.layer.xyz = function(title, map, options) {
 
   options.projection = new OpenLayers.Projection(options.projection);
 
-  var layer = new OpenLayers.Layer.XYZ(title, options.url, options);
-  layer.styleMap = styleMap;
-  return layer;
+  return new OpenLayers.Layer.XYZ(title, options.url, options);
 };

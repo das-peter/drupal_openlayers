@@ -8,8 +8,6 @@
  * Openlayer layer handler for WMS layer
  */
 Drupal.openlayers.layer.wms = function(title, map, options) {
-  var styleMap = Drupal.openlayers.getStyleMap(map, options.drupalID);
-
   /* TODO: have PHP take care of the casts here, not JS! */
   if (options.params.buffer) {
     options.params.buffer = parseInt(options.params.buffer, 10);
@@ -36,10 +34,5 @@ Drupal.openlayers.layer.wms = function(title, map, options) {
   // OpenLayers can calculate the resolutions usually if provided with the number of zoom levels and tile sizes
   paramsClone.numZoomLevels=18;
 
-  // TODO: Is styleMap an option for WMS Layers ?
-  // According to the doc, styleMap is only an option for layers
-  // extending the Vector layer class. WMS is not extending it... so ?
-  var layer = new OpenLayers.Layer.WMS(title, options.base_url, optionsClone, paramsClone);
-  layer.styleMap = styleMap;
-  return layer;
+  return new OpenLayers.Layer.WMS(title, options.base_url, optionsClone, paramsClone);
 };

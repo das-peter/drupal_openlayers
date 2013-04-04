@@ -2,17 +2,15 @@
  * OpenLayers Image Layer Handler
  */
 Drupal.openlayers.layer.image = function(title, map, options) {
-  var maxExtent;
-  if(options.maxExtent===null){
+  if (options.maxExtent === null) {
     // Stretch image to cover whole map if not specified.
-    maxExtent = map.maxExtent;
-  } else {
-    maxExtent = options.maxExtent;
+    options.maxExtent = map.maxExtent;
   }
+
   return new OpenLayers.Layer.Image(
     title,
     options.file,
-    new OpenLayers.Bounds.fromArray(maxExtent),
+    OpenLayers.Bounds.fromArray(options.maxExtent),
     new OpenLayers.Size(options.size.w/options.factors.x, options.size.h/options.factors.y),
     {
       numZoomLevels: options.numZoomLevels,
