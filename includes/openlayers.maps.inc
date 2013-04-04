@@ -286,8 +286,8 @@ function _openlayers_openlayers_maps() {
     'hide_empty_map' => 0,
     'center' => array(
       'initial' => array(
-        'centerpoint' => '-63.281250000007, -20.46819494553',
-        'zoom' => '2',
+        'centerpoint' => '0, 0',
+        'zoom' => '3',
       ),
       'restrict' => array(
         'restrictextent' => 0,
@@ -346,8 +346,8 @@ function _openlayers_openlayers_maps() {
     'hide_empty_map' => 0,
     'center' => array(
       'initial' => array(
-        'centerpoint' => '-0.093009923589588, 51.500381463117',
-        'zoom' => '12',
+        'centerpoint' => '0, 0',
+        'zoom' => '3',
       ),
       'restrict' => array(
         'restrictextent' => 0,
