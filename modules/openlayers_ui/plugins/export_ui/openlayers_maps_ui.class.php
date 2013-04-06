@@ -389,6 +389,7 @@ class openlayers_maps_ui extends ctools_export_ui {
       // Create overlay options.
       $form['layerstyles']['layer_styles']['#tree'] = TRUE;
       $form['layerstyles']['layer_styles_select']['#tree'] = TRUE;
+      $form['layerstyles']['layer_styles_temporary']['#tree'] = TRUE;
       $form['layerstyles']['layer_weight']['#tree'] = TRUE;
       foreach ($overlay_options_keys as $id) {
         $description = $overlay_options[$id];
@@ -408,6 +409,14 @@ class openlayers_maps_ui extends ctools_export_ui {
           '#options' => array('<' . t('use default style') . '>') + openlayers_ui_get_style_options(),
           '#default_value' => !empty($defaults['layer_styles_select'][$id]) ?
             $defaults['layer_styles_select'][$id] : '',
+        );
+
+        // Layer select style.
+        $form['layerstyles']['layer_styles_temporary'][$id] = array(
+          '#type' => 'select',
+          '#options' => array('<' . t('use default style') . '>') + openlayers_ui_get_style_options(),
+          '#default_value' => !empty($defaults['layer_styles_temporary'][$id]) ?
+            $defaults['layer_styles_temporary'][$id] : '',
         );
 
         // Weight of layer.  This will affect how the layer shows up in the

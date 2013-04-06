@@ -107,7 +107,7 @@ function _openlayers_behaviors_render($behaviors = array(), &$map = array()) {
  *   Array of processed styles ( <style_name> => <style_array> )
  */
 function _openlayers_styles_process($styles = array(),
-  $layer_styles = array(), $layer_styles_select = array(), &$map = array()) {
+  $layer_styles = array(), $layer_styles_select = array(), $layer_styles_temporary = array(), &$map = array()) {
 
   // Get styles info array
   $styles_info = openlayers_styles();
@@ -138,6 +138,15 @@ function _openlayers_styles_process($styles = array(),
     if (!isset($processed[$style]) &&
         !empty($styles_info[$style]) &&
         $info = $styles_info[$style]->data) {
+      $processed[$style] = $info;
+    }
+  }
+
+  // Add layer styles temporary
+  foreach ($layer_styles_temporary as $style) {
+    if (!isset($processed[$style]) &&
+      !empty($styles_info[$style]) &&
+      $info = $styles_info[$style]->data) {
       $processed[$style] = $info;
     }
   }

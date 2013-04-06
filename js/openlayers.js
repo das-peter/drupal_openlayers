@@ -314,6 +314,10 @@ Drupal.openlayers = {
         var style = map.layer_styles_select[layername];
         stylesAdded['select'] = new OpenLayers.Style(map.styles[style]);
       }
+      if (map.layer_styles_temporary !== undefined && map.layer_styles_temporary[layername]) {
+        var style = map.layer_styles_temporary[layername];
+        stylesAdded['temporary'] = new OpenLayers.Style(map.styles[style]);
+      }
 
       return new OpenLayers.StyleMap(stylesAdded);
     }
