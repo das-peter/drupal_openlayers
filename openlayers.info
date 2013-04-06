@@ -7,6 +7,7 @@ dependencies[] = libraries (=2.x)
 dependencies[] = proj4js
 dependencies[] = ctools
 dependencies[] = file
+dependencies[] = image
 
 ; Core files
 files[] = openlayers.module
