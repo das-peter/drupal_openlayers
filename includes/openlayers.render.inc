@@ -151,15 +151,6 @@ function _openlayers_styles_process($styles = array(),
     }
   }
 
-  // Add layer styles
-  foreach ($layer_styles as $style) {
-    if (!isset($processed[$style]) &&
-        !empty($styles_info[$style]) &&
-        $info = $styles_info[$style]->data) {
-      $processed[$style] = $info;
-    }
-  }
-
   // Update URLs to support different types of paths
   foreach ($processed as $k => $style) {
     $processed[$k] = openlayers_render_style($style);
