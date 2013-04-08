@@ -158,6 +158,7 @@ function openlayers_ui_maps_form_process($values = array()) {
 function openlayers_ui_get_behavior_options($type, $defaults) {
   $form = array();
   $behaviors = openlayers_behaviors();
+  $enabled_behaviors = array();
 
   foreach ($defaults['behaviors'] as $key => $options) {
     $enabled_behaviors[$key] = $behaviors[$key];
