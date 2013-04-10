@@ -395,7 +395,7 @@ class openlayers_maps_ui extends ctools_export_ui {
         $description = $overlay_options[$id];
         $form['layerstyles']['layers']['overlaylabels'][$id] = array('#markup' => $description);
 
-        // Layer styles tha define the default style of layer.
+        // Layer styles that define the default style of layer.
         $form['layerstyles']['layer_styles'][$id] = array(
           '#type' => 'select',
           '#options' => array('<' . t('use default style') . '>') + openlayers_ui_get_style_options(),
@@ -411,7 +411,7 @@ class openlayers_maps_ui extends ctools_export_ui {
             $defaults['layer_styles_select'][$id] : '',
         );
 
-        // Layer select style.
+        // Layer temporary style.
         $form['layerstyles']['layer_styles_temporary'][$id] = array(
           '#type' => 'select',
           '#options' => array('<' . t('use default style') . '>') + openlayers_ui_get_style_options(),
