@@ -195,17 +195,24 @@ function openlayers_build_map($map = array()) {
   // In case the layer offers the same projection as the map, use this and do not provide
   // projection definition to client. Otherwise rely on the client to reproject on the fly.
   foreach ($map['layers'] as $layer_name => $layer) {
-    if(in_array($map['projection'], $map['layers'][$layer_name]['projection'])){
+    if(in_array($map['projection'], $layer['projection'])){
       $map['layers'][$layer_name]['projection'] = $map['projection'];
     } else {
       // Client is able to reproject any possible projection because their definitions need to be
       // known to be able to set up a layer with a certain projection. Thus choice does not matter.
-      $layerProjectionIdentifier = $map['layers'][$layer_name]['projection'][0];
+      $layerProjectionIdentifier = reset($layer['projection']);
+      if($layerProjectionIdentifier===FALSE){
+        throw new Exception(
+          t('Layer !title lacks its projection. Please edit it to select a projection.', array(
+              '!title' => $layer['title']
+          ))
+        );
+      }
       $map['layers'][$layer_name]['projection'] = $layerProjectionIdentifier;
     }
 
     // Ensure JavaScript gets proper type.
-    $map['layers'][$layer_name]['isBaseLayer'] = (boolean)($map['layers'][$layer_name]['isBaseLayer']);
+    $map['layers'][$layer_name]['isBaseLayer'] = (boolean)($layer['isBaseLayer']);
   }
 
   // Hook to alter map one last time.  Final modification to existing
