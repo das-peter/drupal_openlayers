@@ -399,16 +399,6 @@ function openlayers_layer_load($name, $reset = FALSE) {
   if (is_array($layer) && isset($layer[$name])) {
     $layer_object = openlayers_get_layer_object($layer[$name]);
     if (openlayers_layer_sanity_check($layer_object)) {
-      // Automatic layer load for layers.
-      /*
-      $definitions = ctools_get_plugins('openlayers', 'layer_types');
-      $type = get_class($layer_object);
-      $base = basename($definitions[$type]['file'], '.inc');
-      $js = $definitions[$type]['path'] . '/' . $base .'.js';
-      $css = $definitions[$type]['path'] . '/' . $base .'.css';
-      drupal_add_js($js);
-      drupal_add_css($css);
-      */
       return $layer_object;
     }
   }
