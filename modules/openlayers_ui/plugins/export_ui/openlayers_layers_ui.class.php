@@ -92,6 +92,8 @@ class openlayers_layers_ui extends ctools_export_ui {
   }
 
   function edit_form_validate(&$form, &$form_state) {
+    ctools_get_plugins('openlayers', 'layer_types');
+
     $layer = openlayers_layer_type_load($form_state['values']['layer_type']);
     $form_state['values']['data'] = $form_state['values'][$form_state['values']['layer_type']];
 
