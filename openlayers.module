@@ -1387,6 +1387,22 @@ function openlayers_ctools_plugin_api($module, $api) {
 }
 
 /**
+ * Implements hook_openlayers_behaviors().
+ */
+function openlayers_openlayers_behaviors() {
+  module_load_include('inc', 'openlayers', 'includes/openlayers.behaviors');
+  return _openlayers_openlayers_behaviors();
+}
+
+/**
+ * Implements hook_openlayers_layer_types().
+ */
+function openlayers_openlayers_layer_types() {
+  module_load_include('inc', 'openlayers', 'includes/openlayers.layer_types');
+  return _openlayers_openlayers_layer_types();
+}
+
+/**
  * Implements hook_openlayers_layers().
  */
 function openlayers_openlayers_layers() {
@@ -1395,8 +1411,7 @@ function openlayers_openlayers_layers() {
 }
 
 /**
- * Gather list of default projections
- * @return array<openlayers_projection>
+ * Implements hook_openlayers_projections().
  */
 function openlayers_openlayers_projections() {
   module_load_include('inc', 'openlayers', 'includes/openlayers.projections');

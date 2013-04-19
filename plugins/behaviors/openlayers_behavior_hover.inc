@@ -5,24 +5,7 @@
  */
 
 /**
- * Ctools plugin definition.
- */
-function openlayers_openlayers_behavior_hover_openlayers_behaviors() {
-  return array(
-    'title' => t('Hover features'),
-    'description' => t('Provides on hover behavior on features. A temporary
-    style will be applied on features when hovering them.'),
-    'type' => 'layer',
-    'behavior' => array(
-      'file' => 'openlayers_behavior_hover.inc',
-      'class' => 'openlayers_behavior_hover',
-      'parent' => 'openlayers_behavior',
-    ),
-  );
-}
-
-/**
- * Scaleline Behavior
+ * Hover Behavior
  */
 class openlayers_behavior_hover extends openlayers_behavior {
   /**

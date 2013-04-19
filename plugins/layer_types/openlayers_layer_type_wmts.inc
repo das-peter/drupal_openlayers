@@ -5,22 +5,6 @@
  */
 
 /**
- * Define the Ctools plugin options.
- */
-function openlayers_openlayers_layer_type_wmts_openlayers_layer_types() {
-  return array(
-    'title' => t('WMTS'),
-    'description' => t('<a href="!url">Web Map Tile Service</a>',
-      array('!url' => 'http://en.wikipedia.org/wiki/Tile_Map_Service')),
-    'layer_type' => array(
-      'file' => 'openlayers_layer_type_wmts.inc',
-      'class' => 'openlayers_layer_type_wmts',
-      'parent' => 'openlayers_layer_type',
-    ),
-  );
-}
-
-/**
  * OpenLayers TMS Layer Type class
  */
 class openlayers_layer_type_wmts extends openlayers_layer_type {

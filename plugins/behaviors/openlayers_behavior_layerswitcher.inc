@@ -5,22 +5,6 @@
  */
 
 /**
- * Ctools plugin definition.
- */
-function openlayers_openlayers_behavior_layerswitcher_openlayers_behaviors() {
-  return array(
-    'title' => t('Layer Switcher'),
-    'description' => t('Provides the ability to switch layers in the map interface.  This provides an expandable box on the map to enable and disable layers.'),
-    'type' => 'map',
-    'behavior' => array(
-      'file' => 'openlayers_behavior_layerswitcher.inc',
-      'class' => 'openlayers_behavior_layerswitcher',
-      'parent' => 'openlayers_behavior',
-    ),
-  );
-}
-
-/**
  * Layer Switcher Behavior
  */
 class openlayers_behavior_layerswitcher extends openlayers_behavior {

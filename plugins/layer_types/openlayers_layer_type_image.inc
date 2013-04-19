@@ -6,21 +6,6 @@
  */
 
 /**
- * Define the Ctools plugin options.
- */
-function openlayers_openlayers_layer_type_image_openlayers_layer_types() {
-  return array(
-    'title' => t('Image'),
-    'description' => t('Use an image as a layer.'),
-    'layer_type' => array(
-      'file' => 'openlayers_layer_type_image.inc',
-      'class' => 'openlayers_layer_type_image',
-      'parent' => 'openlayers_layer_type',
-    ),
-  );
-}
-
-/**
  * OpenLayers Image Layer Type class
  */
 class openlayers_layer_type_image extends openlayers_layer_type {
