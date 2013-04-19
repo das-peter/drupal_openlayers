@@ -206,7 +206,7 @@ function _openlayers_openlayers_maps() {
     'hide_empty_map' => 0,
     'center' => array(
       'initial' => array(
-        'centerpoint' => '-122.0822035425683, 37.42228990140251',
+        'centerpoint' => '0, 0',
         'zoom' => '6',
       ),
       'restrict' => array(
@@ -240,7 +240,6 @@ function _openlayers_openlayers_maps() {
         'panMapIfOutOfView' => 0,
         'keepInMap' => 1,
       ),
-      /*
       'openlayers_behavior_zoomtolayer' => array(
         'zoomtolayer' => array(
           'openlayers_kml_example' => 'openlayers_kml_example',
@@ -248,7 +247,6 @@ function _openlayers_openlayers_maps() {
         'point_zoom_level' => '5',
         'zoomtolayer_scale' => '1',
       ),
-      */
     ),
     'default_layer' => 'mapquest_osm',
     'layers' => array(
