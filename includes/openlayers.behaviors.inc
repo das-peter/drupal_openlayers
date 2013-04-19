@@ -1,7 +1,15 @@
 <?php
 
 /**
- * Implements hook_openlayers_behaviors().
+ * @file
+ * This file contains behaviors implementations.
+ *
+ * @ingroup openlayers
+ */
+
+/**
+ * Internal callback
+ * Helper function to return default behaviors.
  *
  * @return mixed
  */

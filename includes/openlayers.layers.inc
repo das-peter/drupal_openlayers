@@ -2,8 +2,16 @@
 
 /**
  * @file
+ * This file contains layers implementations.
  *
- * OpenLayers default packaged layers
+ * @ingroup openlayers
+ */
+
+/**
+ * Internal callback
+ * Helper function to return default layers.
+ *
+ * @return mixed
  */
 function _openlayers_openlayers_layers() {
   global $is_https;

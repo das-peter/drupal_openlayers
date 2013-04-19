@@ -1,7 +1,15 @@
 <?php
 
 /**
- * Implements hook_openlayers_layer_types().
+ * @file
+ * This file contains layer types implementations.
+ *
+ * @ingroup openlayers
+ */
+
+/**
+ * Internal callback
+ * Helper function to return default layer types.
  *
  * @return mixed
  */

@@ -2,18 +2,16 @@
 
 /**
  * @file
- * This file contains map implementations
+ * This file contains map implementations.
  *
  * @ingroup openlayers
  */
 
 /**
- * Map definitions
+ * Internal callback
+ * Helper function to return default maps.
  *
- * Internal callback for openlayers map implementation.
- *
- * @return
- *   Array of maps
+ * @return mixed
  */
 function _openlayers_openlayers_maps() {
   $items = array();
