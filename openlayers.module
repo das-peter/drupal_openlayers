@@ -66,6 +66,18 @@ function openlayers_theme($existing, $type, $theme, $path) {
 }
 
 /**
+ * Implements hook_ctools_plugin_directory().
+ */
+function openlayers_ctools_plugin_directory($module, $plugin) {
+  if ($plugin == 'content_types' && !empty($plugin)) {
+    return 'includes/' . $plugin;
+  }
+  if ($module == 'openlayers' && !empty($plugin)) {
+    return 'plugins/' . $plugin;
+  }
+}
+
+/**
  * Implements hook_ctools_plugin_type().
  */
 function openlayers_ctools_plugin_type() {
