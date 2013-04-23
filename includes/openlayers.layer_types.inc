@@ -30,6 +30,10 @@ function _openlayers_openlayers_layer_types() {
     'title' => t('Google'),
     'description' => t('Google Maps API Map'),
   );
+  $layer_types['openlayers_layer_type_gpx'] = array(
+    'title' => t('GPX'),
+    'description' => t('GPX Overlay'),
+  );
   $layer_types['openlayers_layer_type_image'] = array(
     'title' => t('Image'),
     'description' => t('Use an image as a layer.'),
