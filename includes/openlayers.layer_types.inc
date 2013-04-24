@@ -22,6 +22,10 @@ function _openlayers_openlayers_layer_types() {
     'title' => t('CloudMade'),
     'description' => t('<a href="!url">CloudMade</a> Custom Map', array('!url' => 'http://cloudmade.com/')),
   );
+  $layer_types['openlayers_layer_type_dummy'] = array(
+    'title' => t('Blank layer'),
+    'description' => t('Blank layer. Dummy blank layer to be used as a placeholder for other module (with <code>hook_openlayers_map_preprocess</code> for example).')
+  );
   $layer_types['openlayers_layer_type_geojson'] = array(
     'title' => t('GeoJSON'),
     'description' => t('Provides a vector layer based on <a href="!url">GeoJSON</a>.', array('!url' => 'http://geojson.org/')),
