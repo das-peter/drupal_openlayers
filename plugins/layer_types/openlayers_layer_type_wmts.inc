@@ -62,7 +62,7 @@ class openlayers_layer_type_wmts extends openlayers_layer_type {
           'image/gif' => 'image/gif',
           'image/jpeg' => 'image/jpeg'
         ),
-        '#default_value' => isset($this->data['format']) ? $this->data['format'] : 'image/png',
+        '#default_value' => isset($this->data['format']) ? $this->data['format'] : 'image/jpeg',
         '#description' => t('The image MIME type.  Default is "image/jpeg".'),
       ),
       'formatSuffix' => array(
