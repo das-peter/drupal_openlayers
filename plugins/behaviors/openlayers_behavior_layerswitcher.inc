@@ -19,6 +19,7 @@ class openlayers_behavior_layerswitcher extends openlayers_behavior {
       'roundedCorner' => TRUE,
       'roundedCornerColor' => '#222222',
       'maximizeDefault' => FALSE,
+      'div' => FALSE,
     );
   }
 
@@ -58,6 +59,12 @@ class openlayers_behavior_layerswitcher extends openlayers_behavior {
         '#title' => t('Maximize by Default'),
         '#description' => t('Turn on to have the Layer Switcher open by default.'),
         '#default_value' => isset($defaults['maximizeDefault']) ? $defaults['maximizeDefault'] : FALSE,
+      ),
+      'div' => array(
+        '#type' => 'textfield',
+        '#title' => t('DIV element for LayerSwitcher'),
+        '#description' => t('To create the LayerSwitcher outside of the map, pass the ID attribute of an HTML div element.'),
+        '#default_value' => isset($defaults['div']) ? $defaults['div'] : FALSE,
       ),
     );
   }
