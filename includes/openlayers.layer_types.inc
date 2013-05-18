@@ -76,7 +76,7 @@ function _openlayers_openlayers_layer_types() {
   );
 
   foreach ($layer_types as $key => $data) {
-    $layer_types[$key]['path'] = drupal_get_path('module', 'openlayers') . '/plugins/layer_types';
+    $layer_types[$key]['path'] = drupal_get_path('module', 'openlayers') . openlayers_ctools_plugin_directory('openlayers', 'layer_types');
     $layer_types[$key]['layer_type'] = array(
       'class' => $key,
       'file' => $key . '.inc',
