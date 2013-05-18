@@ -120,7 +120,8 @@ function openlayers_ui_admin_settings() {
  */
 function openlayers_ui_admin_settings_validate($form, &$form_state) {
   if ($form_state['values']['openlayers_source_type'] == 'external') {
-    if (!valid_url($form_state['values']['openlayers_source_external'], TRUE)) {
+    $url = $form_state['values']['openlayers_source_external'];
+    if (!valid_url($url, TRUE) && !url_is_external($url)) {
       form_set_error('openlayers_source_external', 'The source must be a valid external URL, beginning with http(s).');
     }
   }
