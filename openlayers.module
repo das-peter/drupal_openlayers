@@ -110,7 +110,7 @@ function openlayers_include() {
     if (!isset($once)) {
       $once = TRUE;
 
-      $path = check_plain(variable_get('openlayers_source', OPENLAYERS_DEFAULT_LIBRARY));
+      $path = check_plain(variable_get('openlayers_source_external', OPENLAYERS_DEFAULT_LIBRARY));
 
       // Correctly handle URLs beginning with a double backslash, see RFC 1808 Section 4
       if (substr($path, 0, 2) == '//') {
