@@ -155,7 +155,7 @@ function _openlayers_openlayers_behaviors() {
   );
 
   foreach ($behaviors as $key => $data) {
-    $behaviors[$key]['path'] = drupal_get_path('module', 'openlayers') . openlayers_ctools_plugin_directory('openlayers', 'behaviors');
+    $behaviors[$key]['path'] = drupal_get_path('module', 'openlayers') . '/' . openlayers_ctools_plugin_directory('openlayers', 'behaviors');
     $behaviors[$key]['behavior'] = array(
       'class' => $key,
       'file' => $key . '.inc',

@@ -76,7 +76,7 @@ function openlayers_ctools_plugin_directory($module, $plugin) {
  * Implements hook_ctools_plugin_type().
  */
 function openlayers_ctools_plugin_type() {
-  // For backwards compatability, we allow for the use
+  // For backwards compatibility, we allow for the use
   // of hooks to define these plugins.
   //
   // This should be removed in 7.x-3.x
