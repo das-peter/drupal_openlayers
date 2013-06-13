@@ -60,6 +60,12 @@ Drupal.openlayers.addBehavior('openlayers_behavior_popup', function (data, optio
   var popupSelect = new OpenLayers.Control.SelectFeature(layers,
     {
       onSelect: function(feature) {
+        // I think we should check that the feature is a cluster or a polygon,
+        // but I'm not sure how to check for polygon.
+        // if (options.zoomToFeature && (feature.cluster.length > 1 || feature.??? == 'polygon')) {
+        if (options.zoomToFeature) {
+          map.zoomToExtent(feature.geometry.getBounds());
+        }
         // Create FramedCloud popup.
         popup = new OpenLayers.Popup.FramedCloud(
           'popup',
@@ -85,6 +91,13 @@ Drupal.openlayers.addBehavior('openlayers_behavior_popup', function (data, optio
         map.addPopup(popup);
       },
       onUnselect: function(feature) {
+        if (options.zoomToFeature) {
+          // Zoom back out to layer extent on unselect - not sure what is the
+          // best behaviour here. This doesn't currently work, because there's
+          // no situation where a feature is unselected except when another is,
+          // and it just zooms to the next feature.
+          map.zoomToExtent(feature.layer.getExtent());
+        }
         map.removePopup(feature.popup);
         feature.popup.destroy();
         feature.popup = null;
