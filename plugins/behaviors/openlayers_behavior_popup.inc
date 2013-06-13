@@ -16,7 +16,6 @@ class openlayers_behavior_popup extends openlayers_behavior {
       'layers' => array(),
       'panMapIfOutOfView' => FALSE,
       'keepInMap' => TRUE,
-      'zoomToFeature' => FALSE,
     );
   }
 
@@ -53,12 +52,6 @@ class openlayers_behavior_popup extends openlayers_behavior {
         '#title' => t('Keep in map'),
         '#description' => t('If panMapIfOutOfView is false, and this property is true, contrain the popup such that it always fits in the available map space.'),
         '#default_value' => isset($defaults['keepInMap']) ? $defaults['keepInMap'] : TRUE
-        ),
-      'zoomToFeature' => array(
-        '#type' => 'checkbox',
-        '#title' => t('Zoom to feature'),
-        '#description' => t('When feature is clicked, zoom to feature.'),
-        '#default_value' => isset($defaults['zoomToFeature']) ? $defaults['zoomToFeature'] : FALSE
         ),
     );
   }
