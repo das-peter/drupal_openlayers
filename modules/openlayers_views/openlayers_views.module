@@ -136,6 +136,30 @@ function openlayers_views_openlayers_layers() {
         $layers[$layer->name] = $layer;
       }
 
+      // Check for OpenLayers Data Image Overlays
+      if ($view->display_handler->get_option('style_plugin') == 'openlayers_data_image' && $display != 'default') {
+        //Build Layer
+        $layer = new stdClass();
+        $layer->api_version = 1;
+        $layer->name = $view->name . '_' . $display;
+        $layer->title = empty($data->display_options['title']) ? $view->name : $data->display_options['title'];
+        $layer->title .= ' - ' . $data->display_title;
+        $layer->description = $view->description;
+        $layer->data = array(
+          'layer_type' => 'openlayers_views_image',
+          'layer_handler' => 'image',
+          'projection' => array('EPSG:3857'),
+          'isBaseLayer' => TRUE,
+          'vector' => FALSE,
+          'type' => 'Vector',
+          'url' => array(),
+          'options' => array(),
+          'events' => array(),
+          'views' => array('view' => $view->name, 'display' => $display),
+        );
+        $layers[$layer->name] = $layer;
+      }
+
       // Make GeoJSON layers from the views_geojson module
       if ($view->display_handler->get_option('style_plugin') == 'views_geojson' &&
         $view->display_handler->display->display_plugin == 'page' &&

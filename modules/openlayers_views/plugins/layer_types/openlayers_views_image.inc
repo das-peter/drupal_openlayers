@@ -7,34 +7,34 @@
 /**
  * Ctools plugin definition
  */
-function openlayers_views_openlayers_views_vector_openlayers_layer_types() {
+function openlayers_views_openlayers_views_image_openlayers_layer_types() {
   return array(
-    'title' => t('OpenLayers Views'),
-    'description' => t('OpenLayers Views Vector'),
+    'title' => t('OpenLayers Views Image'),
+    'description' => t('OpenLayers Views Image'),
     'layer_type' => array(
-      'file' => 'openlayers_views_vector.inc',
-      'class' => 'openlayers_layer_type_openlayers_views_vector',
+      'file' => 'openlayers_views_image.inc',
+      'class' => 'openlayers_layer_type_openlayers_views_image',
       'parent' => 'openlayers_layer_type',
     ),
   );
 }
 
-class openlayers_layer_type_openlayers_views_vector
+class openlayers_layer_type_openlayers_views_image
   extends openlayers_layer_type {
   /**
    * Provide initial values for options.
    */
   function options_init() {
     return array(
-      'layer_handler' => 'openlayers_views_vector',
-      'projection' => array('EPSG:4326'),
-      'isBaseLayer' => FALSE,
-      'vector' => TRUE,
-      'type' => 'Vector',
+      'layer_handler' => 'image',
+      'projection' => array('EPSG:3857'),
+      'isBaseLayer' => TRUE,
+      'vector' => FALSE,
+      'type' => 'image',
       'url' => array(),
       'options' => array(),
       'events' => array(),
-      'views' => array()
+      'views' => array(),
     );
   }
 
@@ -49,7 +49,8 @@ class openlayers_layer_type_openlayers_views_vector
     $options = array('' => '<none>');
     foreach ($views as $view) {
       foreach ($view->display as $display => $data) {
-        if ($data->display_plugin == 'openlayers' && ($view->display_handler->get_option('style_plugin') == 'openlayers_data')) {;
+        $view->set_display($display);
+        if ($data->display_plugin == 'openlayers' && ($view->display_handler->get_option('style_plugin') == 'openlayers_data_image')) {;
           $options[$view->name . '::' . $display] = $view->human_name . ': ' . $display;
         }
       }
@@ -83,17 +84,6 @@ class openlayers_layer_type_openlayers_views_vector
     }
   }
 
-
-  /**
-   * Get features for this view
-   *
-   * @param $view_name
-   *   the view name
-   * @param $display_name
-   *   the view display name
-   * @return
-   *   array of features
-   */
   function get_features() {
     if ($view = views_get_view($this->data['views']['view'])) {
       $args = array();
@@ -119,16 +109,18 @@ class openlayers_layer_type_openlayers_views_vector
       $view->destroy();
     }
 
-    $this->data['features'] = isset($features) ? $features : array();
-    return $this->data['features'];
+    if (is_array($features)) {
+      $this->data = array_merge($this->data, $features);
+    }
+    return $this->data;
   }
 
   /**
    * Render.
    */
   function render(&$map) {
-    drupal_add_js(drupal_get_path('module', 'openlayers_views') .
-      '/plugins/layer_types/openlayers_views_vector.js');
-    $this->get_features();
+    drupal_add_js(drupal_get_path('module', 'openlayers') .
+    '/plugins/layer_types/openlayers_layer_type_image.js');
+    return $this->get_features();
   }
 }
