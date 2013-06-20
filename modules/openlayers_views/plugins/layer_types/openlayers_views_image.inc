@@ -111,7 +111,11 @@ class openlayers_layer_type_openlayers_views_image
 
     if (is_array($features)) {
       $this->data = array_merge($this->data, $features);
+    } else {
+      $this->data['layer_type'] = 'openlayers_layer_type_dummy';
+      $this->data['layer_handler'] = 'dummy';
     }
+
     return $this->data;
   }
 
@@ -119,8 +123,13 @@ class openlayers_layer_type_openlayers_views_image
    * Render.
    */
   function render(&$map) {
-    drupal_add_js(drupal_get_path('module', 'openlayers') .
-    '/plugins/layer_types/openlayers_layer_type_image.js');
+    if ($this->data['layer_handler'] == 'dummy') {
+      drupal_add_js(drupal_get_path('module', 'openlayers') .
+      '/plugins/layer_types/openlayers_layer_type_dummy.js');
+    } else {
+      drupal_add_js(drupal_get_path('module', 'openlayers') .
+      '/plugins/layer_types/openlayers_layer_type_image.js');
+    }
     return $this->get_features();
   }
 }
