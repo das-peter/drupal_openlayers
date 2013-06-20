@@ -16,7 +16,18 @@
  */
 class openlayers_views_style_data_image extends views_plugin_style {
 
-   /**
+  /**
+   * Set default options
+   *
+   * Overrides views_plugin_style->option_definition
+   */
+  function option_definition() {
+    $options = parent::option_definition();
+    $options['config'] = array();
+    return $options;
+  }
+
+  /**
    * Render the map.
    *
    * Overrides views_plugin_style->render
@@ -59,16 +70,6 @@ class openlayers_views_style_data_image extends views_plugin_style {
     } else {
       return print_r($data[0], 1);
     }
-  }
-
-  /**
-   * Set default options
-   *
-   * Overrides views_plugin_style->option_definition
-   */
-  function option_definition() {
-    $options = parent::option_definition();
-    return $options;
   }
 
   /**
