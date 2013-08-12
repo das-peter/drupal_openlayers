@@ -174,9 +174,9 @@ function openlayers_views_openlayers_layers() {
 
         // Determine if we should use a BBOX strategy.
         $useBBOX = FALSE;
-        if (isset($view->display['default']->display_options['arguments']) &&
-          isset($view->display['default']->display_options['arguments']['bbox_argument']) &&
-          $view->display['default']->display_options['arguments']['bbox_argument']['arg_id'] == 'bbox') {
+        if (isset($data->display_options['arguments']) &&
+          isset($data->display_options['arguments']['bbox_argument']) &&
+          $view->data->display_options['arguments']['bbox_argument']['arg_id'] == 'bbox') {
           $useBBOX = TRUE;
         }
 
