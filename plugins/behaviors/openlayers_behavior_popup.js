@@ -111,7 +111,7 @@ Drupal.openlayers.addBehavior('openlayers_behavior_popup', function (data, optio
         selectedFeature = feature;
         feature.popup = popup;
         Drupal.attachBehaviors();
-        map.addPopup(popup);
+        map.addPopup(popup, true);
       },
       onUnselect: function(feature) {
         // If the feature has a popup, remove it.
