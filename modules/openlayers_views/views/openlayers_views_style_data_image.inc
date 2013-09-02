@@ -46,7 +46,8 @@ class openlayers_views_style_data_image extends views_plugin_style {
     foreach ($this->view->result as $count => $row) {
       if (isset($view->style_plugin->rendered_fields[$count][$image_field])) {
         $image = $view->style_plugin->rendered_fields[$count][$image_field];
-        $field_output = array_shift($view->style_plugin->get_field_value($count, $image_field));
+        $value = $view->style_plugin->get_field_value($count, $image_field);
+        $field_output = array_shift($value);
 
         $data[] = array(
           'file' => $image,
