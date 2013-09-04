@@ -34,7 +34,8 @@ class openlayers_layer_type_openlayers_views_vector
       'url' => array(),
       'options' => array(),
       'events' => array(),
-      'views' => array()
+      'views' => array(),
+      'yOrdering' => TRUE
     );
   }
 
