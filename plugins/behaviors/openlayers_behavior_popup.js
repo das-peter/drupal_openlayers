@@ -124,6 +124,8 @@ Drupal.openlayers.addBehavior('openlayers_behavior_popup', function (data, optio
       }
     }
   );
+  popupSelect.handlers['feature'].stopDown = false;
+  popupSelect.handlers['feature'].stopUp = false;
 
   map.addControl(popupSelect);
   popupSelect.activate();
