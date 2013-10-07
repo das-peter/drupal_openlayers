@@ -65,11 +65,15 @@ class openlayers_views_style_data_image extends views_plugin_style {
       }
     }
 
-    // Skip rendering if view is being edited or previewed.
-    if (empty($this->view->live_preview)) {
-      return $data[0];
+    if (!empty($data)) {
+      // Skip rendering if view is being edited or previewed.
+      if (empty($this->view->live_preview)) {
+        return $data[0];
+      } else {
+        return print_r($data[0], 1);
+      }
     } else {
-      return print_r($data[0], 1);
+      return '';
     }
   }
 

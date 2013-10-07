@@ -26,6 +26,7 @@ class openlayers_layer_type_openlayers_views_image
    */
   function options_init() {
     return array(
+      'layer_type' => 'openlayers_views_image',
       'layer_handler' => 'image',
       'projection' => array('EPSG:3857'),
       'isBaseLayer' => TRUE,

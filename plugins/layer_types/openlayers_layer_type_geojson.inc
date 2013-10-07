@@ -14,6 +14,7 @@ class openlayers_layer_type_geojson extends openlayers_layer_type {
    */
   function options_init() {
     return array(
+      'layer_type' => 'openlayers_layer_type_geojson',
       'layer_handler' => 'geojson',
       'projection' => array('EPSG:4326'),
       'serverResolutions' => openlayers_get_resolutions('EPSG:4326'),
