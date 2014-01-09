@@ -119,13 +119,34 @@ Drupal.openlayers.addBehavior('openlayers_behavior_drawfeatures', function (data
     );
   }
 
-  // Add modify feature tool
-  control.addControls(new OpenLayers.Control.ModifyFeature(
-    dataLayer, {
-      displayClass: 'olControlModifyFeature',
-      deleteCodes: [46, 68, 100]
+  var deleteFeatureControl = new OpenLayers.Control.SelectFeature(layer, {
+    clickout: false,
+    toggle: false,
+    title: "Delete",
+    displayClass: "olControlDelete"
+  });
+
+  deleteFeatureControl.events.register("featurehighlighted", this, function(e) {
+    if (confirm('Are you sure you want to delete this feature?')) {
+      layer.removeFeatures([e.feature]);
+      deleteFeatureControl.deactivate();
+    } else {
+      deleteFeatureControl.unselect(e.feature);
     }
-  )
+  });
+
+  controls.addControls([deleteFeatureControl]);
+
+  // Add modify feature tool
+  control.addControls(
+    new OpenLayers.Control.ModifyFeature(
+      dataLayer, {
+       displayClass: 'olControlModifyFeature',
+       deleteCodes: [46, 68, 100]
+      }
+    )
   );
+
+
 
 });
