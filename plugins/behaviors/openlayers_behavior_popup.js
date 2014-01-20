@@ -110,8 +110,8 @@ Drupal.openlayers.addBehavior('openlayers_behavior_popup', function (data, optio
         popup.keepInMap = options.keepInMap;
         selectedFeature = feature;
         feature.popup = popup;
-        Drupal.attachBehaviors();
         map.addPopup(popup, true);
+        Drupal.attachBehaviors();
       },
       onUnselect: function(feature) {
         // If the feature has a popup, remove it.
@@ -121,6 +121,7 @@ Drupal.openlayers.addBehavior('openlayers_behavior_popup', function (data, optio
           feature.popup = null;
         }
         this.unselectAll();
+        Drupal.attachBehaviors();
       }
     }
   );
