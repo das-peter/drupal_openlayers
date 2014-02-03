@@ -28,7 +28,7 @@ Drupal.openlayers.addBehavior('openlayers_behavior_drawfeatures', function (data
   // Create element
   var feature_types = options.feature_types;
   if (options.element_id != "") {
-    this.element = $('#' + options.element_id);
+    this.element = jQuery('#' + options.element_id);
   }
   // Handle vector layer for drawing on
   this.feature_limit = options.feature_limit;
@@ -146,7 +146,5 @@ Drupal.openlayers.addBehavior('openlayers_behavior_drawfeatures', function (data
       }
     )
   );
-
-
 
 });
