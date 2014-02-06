@@ -67,7 +67,8 @@ Drupal.openlayers.addBehavior('openlayers_behavior_popup', function (data, optio
           var fullExtent;
           // If we have zoomToCluster enabled and the feature is a cluster,
           // accumulate the fullExtent of all points in the cluster.
-          if (options.zoomToCluster && feature.cluster.length > 1) {
+          var isCluster = typeof feature.cluster != 'undefined' && feature.cluster.length > 1;
+          if (options.zoomToCluster && isCluster) {
             for (var i = 0; i < feature.cluster.length; i++) {
               point = feature.cluster[i];
               if (fullExtent instanceof OpenLayers.Bounds) {
@@ -79,7 +80,7 @@ Drupal.openlayers.addBehavior('openlayers_behavior_popup', function (data, optio
           }
           // Otherwise, if zoomToPoint is enabled and it's not a cluster, set
           // the fullExtent to the bounds of the point.
-          else if (options.zoomToPoint && feature.cluster.length < 2){
+          else if (options.zoomToPoint && !isCluster){
             fullExtent = feature.geometry.getBounds();
           }
 
