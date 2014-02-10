@@ -18,6 +18,7 @@ class openlayers_layer_type_bing extends openlayers_layer_type {
       'layer_handler' => 'bing',
       'key' => variable_get('openlayers_layers_bing_api', ''),
       'type' => 'Road',
+      'culture' => variable_get('openlayers_layers_bing_language', ''),
     ) + parent::options_init();
   }
 
@@ -59,7 +60,20 @@ class openlayers_layer_type_bing extends openlayers_layer_type {
         '#default_value' => variable_get('openlayers_layers_bing_api', ''),
         '#description' => t('<a href="@microsoft">Get a MS Bing API Key</a>',
           array('@microsoft' => 'http://bingmapsportal.com'))
-      )
+      ),
+      'openlayers_layers_bing_language' => array(
+        '#type' => 'textfield',
+        '#title' => t('Culture'),
+        '#description' => t(' The culture parameter provides the strings in
+          the language of the culture for geographic place names, map labels,
+          and route instructions.  By default, Bing Maps REST Services will
+          determine the culture automatically.  Only use this is you
+          want to force a specific language.  Please see
+          <a href="!url">this list of supported culture codes</a>.',
+          array('!url' => 'http://msdn.microsoft.com/en-us/library/hh441729.aspx')
+        ),
+        '#default_value' => variable_get('openlayers_layers_bing_language', ''),
+      ),
     );
 
   }
