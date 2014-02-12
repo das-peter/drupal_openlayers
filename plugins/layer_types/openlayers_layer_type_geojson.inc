@@ -98,10 +98,10 @@ class openlayers_layer_type_geojson extends openlayers_layer_type {
     }
 
     if (module_exists('facetapi') && (isset($_GET['f']))) {
-      $this->data['url'] = !empty($this->data['url']) ? url($this->data['url'], array('query' => array('f' => $_GET['f']))) : '';
+      $this->data['url'] = !empty($this->data['url']) ? file_create_url($this->data['url'], array('query' => array('f' => $_GET['f']))) : '';
     }
     else {
-      $this->data['url'] = !empty($this->data['url']) ? url($this->data['url']) : '';
+      $this->data['url'] = !empty($this->data['url']) ? file_create_url($this->data['url']) : '';
     }
 
     drupal_add_js(drupal_get_path('module', 'openlayers')
