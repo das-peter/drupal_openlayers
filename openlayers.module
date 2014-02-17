@@ -98,11 +98,19 @@ function openlayers_ctools_plugin_type() {
  * @ingroup openlayers_api
  */
 function openlayers_include() {
-
+  // Get the page language for string translation.
+  global $language;
+  $lang = $language->language;
+  
   if ('internal' == variable_get('openlayers_source_type', 'external')) {
     $variant = variable_get('openlayers_source_internal_variant', NULL);
     if ($variant == 'original') $variant = NULL;
     libraries_load('openlayers', $variant);
+
+    if ($lang != 'en') {
+      drupal_add_js(libraries_get_path('openlayers') . '/lib/OpenLayers/Lang.js', 'file');
+      drupal_add_js(libraries_get_path('openlayers') . '/lib/OpenLayers/Lang/' . $lang . '.js', 'file');
+    }
   }
   else {
     // Use a static variable to prevent running URL check code repeatedly.
@@ -124,6 +132,10 @@ function openlayers_include() {
       }
       else {
         drupal_add_js($path);
+      }
+      if ($lang != 'en') {
+        drupal_add_js(libraries_get_path('openlayers') . '/lib/OpenLayers/Lang.js', 'file');
+        drupal_add_js(libraries_get_path('openlayers') . '/lib/OpenLayers/Lang/' . $lang . '.js', 'file');
       }
 
       drupal_add_css(drupal_get_path('module', 'openlayers') .

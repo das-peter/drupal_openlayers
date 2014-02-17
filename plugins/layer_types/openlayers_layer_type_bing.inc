@@ -14,11 +14,22 @@ class openlayers_layer_type_bing extends openlayers_layer_type {
    * Provide initial values for options.
    */
   function options_init() {
+    // Get the page language and the map language, if set.
+    global $language;
+    $lang = $language->language;
+    $culture = variable_get('openlayers_layers_bing_language', '');
+
+    // Bing does not provide imagery for a language without a country code.
+    // Best guess is to double-up on the language code ('fr' becomes 'fr-FR').
+    // This methods succeeds for all but Dutch (Belgium) 'nl-BE'.
+    // See http://msdn.microsoft.com/en-us/library/hh441729.aspx
+    $lang = $lang . '-' . strtoupper ($lang);
+
     return array(
       'layer_handler' => 'bing',
       'key' => variable_get('openlayers_layers_bing_api', ''),
       'type' => 'Road',
-      'culture' => variable_get('openlayers_layers_bing_language', ''),
+      'culture' => $culture == '' ? $lang : $culture,
     ) + parent::options_init();
   }
 

@@ -109,6 +109,7 @@ class openlayers_layer_type_google extends openlayers_layer_type {
    * Render.
    */
   function render(&$map) {
+    global $language;
     static $google_maps_included;
 
     if (!isset($google_maps_included)) {
@@ -131,6 +132,7 @@ class openlayers_layer_type_google extends openlayers_layer_type {
       }
 
       $lang = variable_get('openlayers_layers_google_language', '');
+      $lang == '' ? $language->language : $lang;
       // Google v2 uses hl and v3 uses language
       $url .= !empty($lang) ? '&hl=' . $lang : '';
       $url .= !empty($lang) ? '&language=' . $lang : '';
