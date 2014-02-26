@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class for tab content of type "block" - this is for rendering a block as tab
+ * Class for tab content of type "map" - this is for rendering a map as tab
  * content.
  */
 class QuickMap extends QuickContent {
