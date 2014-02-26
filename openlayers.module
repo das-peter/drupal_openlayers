@@ -101,7 +101,7 @@ function openlayers_include() {
   // Get the page language for string translation.
   global $language;
   $lang = $language->language;
-  
+
   if ('internal' == variable_get('openlayers_source_type', 'external')) {
     $variant = variable_get('openlayers_source_internal_variant', NULL);
     if ($variant == 'original') $variant = NULL;
@@ -1463,6 +1463,22 @@ function openlayers_boxes_plugins() {
       )
     )
   );
+}
+
+/**
+ * Implements hook_quicktabs_contents().
+ */
+function openlayers_quicktabs_contents() {
+  $info = array();
+  $path = drupal_get_path('module', 'openlayers') . '/plugins/quicktabs';
+  $info['map'] = array(
+    'path' => $path,
+    'handler' => array(
+      'file' => 'QuickMap.inc',
+      'class' => 'QuickMap',
+    ),
+  );
+  return $info;
 }
 
 /**
