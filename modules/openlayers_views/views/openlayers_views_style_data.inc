@@ -276,31 +276,37 @@ class openlayers_views_style_data extends views_plugin_style {
         $wkt = NULL;
         $field_exclude = array();
 
+        // Save the 'exclude' options of fields as backup.
         foreach ($this->view->field as $fid => $field) {
           $field_exclude[$fid] = $field->options['exclude'];
         }
+        // Loop through each fields and render it if there were only one
+        // field in the row, so we have all the goodness of Views's field
+        // wrapping, class customizations and label.
         foreach ($handlers as $hid => $handler) {
           $field_id = $handler->options['id'];
+          // Exclude all the field from rendering
           foreach ($this->view->field as $field) {
             $field->options['exclude'] = TRUE;
           }
+          // Enable only the field we want to render the row.
           $this->view->field[$field_id]->options['exclude'] = FALSE;
+          // Render the row.
           $attributes[$hid] = trim($this->row_plugin->render($record));
-
-          if ($hid == $this->options['data_source']['wkt']) {
-            $attributes[$hid] = $handler->allow_advanced_render() ? $handler->advanced_render($record) : $handler->render($record);
-          }
         }
+        // Restore the state of the exclude options in the fields.
         foreach ($this->view->field as $fid => $field) {
           $this->view->field[$fid]->options['exclude'] = $field_exclude[$fid];
         }
 
+        // Add the 'name' attribute.
         if (isset($this->options['data_source']['name_field'])) {
           if (isset($attributes[$this->options['data_source']['name_field']])) {
             $attributes['name'] = $attributes[$this->options['data_source']['name_field']];
           }
         }
 
+        // Add the 'description' attribute.
         if (isset($this->options['data_source']['description_field'])) {
           // Handle rendering the whole record.
           if ($this->options['data_source']['description_field'] === '#row') {
@@ -312,17 +318,22 @@ class openlayers_views_style_data extends views_plugin_style {
           }
         }
 
+        // We do not need the rendered value for these fields,
+        // just the raw value.
+        // This is why we use $this->rendered_fields.
         if (isset($this->options['data_source']['value'])) {
           switch ($this->options['data_source']['value']) {
             case 'wkt':
-              $wkt = $attributes[$this->options['data_source']['wkt']];
+              $wkt = $this->rendered_fields[$id][$this->options['data_source']['wkt']];
               break;
             case 'other_latlon':
-              $wkt = 'POINT(' . $attributes[$this->options['data_source']['other_lon']] . ' ' . $attributes[$this->options['data_source']['other_lat']] . ')';
+              $wkt = 'POINT(' . $this->rendered_fields[$id][$this->options['data_source']['other_lon']] . ' ' . $this->rendered_fields[$id][$this->options['data_source']['other_lat']] . ')';
               break;
           }
         }
 
+        // Only render features that has been enabled in the configuration
+        // of the display.
         if (isset($this->options['attributes']['display'])) {
           foreach($this->options['attributes']['display'] as $id => $value) {
             if ($this->options['attributes']['display'][$id] === 0) {
