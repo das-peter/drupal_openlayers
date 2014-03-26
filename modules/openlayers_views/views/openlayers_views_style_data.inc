@@ -276,19 +276,23 @@ class openlayers_views_style_data extends views_plugin_style {
         $wkt = NULL;
         $field_exclude = array();
 
-        foreach ($this->view->field as $id => $field) {
-          $field_exclude[$id] = $field->options['exclude'];
+        foreach ($this->view->field as $fid => $field) {
+          $field_exclude[$fid] = $field->options['exclude'];
         }
         foreach ($handlers as $hid => $handler) {
           $field_id = $handler->options['id'];
-          foreach ($this->view->field as $id => $field) {
+          foreach ($this->view->field as $field) {
             $field->options['exclude'] = TRUE;
           }
           $this->view->field[$field_id]->options['exclude'] = FALSE;
           $attributes[$hid] = trim($this->row_plugin->render($record));
+
+          if ($hid == $this->options['data_source']['wkt']) {
+            $attributes[$hid] = $handler->allow_advanced_render() ? $handler->advanced_render($record) : $handler->render($record);
+          }
         }
-        foreach ($this->view->field as $id => $field) {
-          $this->view->field[$id]->options['exclude'] = $field_exclude[$id];
+        foreach ($this->view->field as $fid => $field) {
+          $this->view->field[$fid]->options['exclude'] = $field_exclude[$fid];
         }
 
         if (isset($this->options['data_source']['name_field'])) {
