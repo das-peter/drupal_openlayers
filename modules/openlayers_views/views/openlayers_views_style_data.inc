@@ -229,7 +229,6 @@ class openlayers_views_style_data extends views_plugin_style {
     foreach ($this->view->display_handler->get_handlers('field') as
              $field => $handler) {
         $variable_fields[$field] = '${' . $field . '}';
-        $variable_fields[$field . '_rendered'] = '${' . $field . '_rendered}';
     }
     if (!empty($this->options['data_source']['name_field'])) {
       $variable_fields['name'] = '${name}';
@@ -250,14 +249,13 @@ class openlayers_views_style_data extends views_plugin_style {
           . 'themes.  This is accomplished by using the %syntax syntax in the '
           . 'values for a style.  You can see a list of available variables in '
           . 'the view preview; these can be placed right in the style interface. '
-          . 'The %rendered one means that it has been processed '
-          . 'by Views and may have a different value.'
+          . 'The field has been processed by Views.'
           . 'By disabling some of them, you can reduce the size '
           . 'of the Javascript included in your pages.'
           . 'Please note that this does not apply to Grouped Displays.',
           array(
-            '%syntax' => '${field_name}',
-            '%rendered' => '_rendered'))
+            '%syntax' => '${field_name}'
+          ))
     );
   }
 
@@ -287,16 +285,15 @@ class openlayers_views_style_data extends views_plugin_style {
             $field->options['exclude'] = TRUE;
           }
           $this->view->field[$field_id]->options['exclude'] = FALSE;
-          $attributes[$hid] = $this->view->render_field($field_id, $this->view->row_index);
-          $attributes[$hid . '_rendered'] = trim($this->row_plugin->render($record));
+          $attributes[$hid] = trim($this->row_plugin->render($record));
         }
         foreach ($this->view->field as $id => $field) {
           $this->view->field[$id]->options['exclude'] = $field_exclude[$id];
         }
 
         if (isset($this->options['data_source']['name_field'])) {
-          if (isset($attributes[$this->options['data_source']['name_field'] . '_rendered'])) {
-            $attributes['name'] = $attributes[$this->options['data_source']['name_field'] . '_rendered'];
+          if (isset($attributes[$this->options['data_source']['name_field']])) {
+            $attributes['name'] = $attributes[$this->options['data_source']['name_field']];
           }
         }
 
@@ -305,8 +302,8 @@ class openlayers_views_style_data extends views_plugin_style {
           if ($this->options['data_source']['description_field'] === '#row') {
             $attributes['description'] = $this->row_plugin->render($record);
           } else {
-            if (isset($attributes[$this->options['data_source']['description_field'] . '_rendered'])) {
-              $attributes['description'] = $attributes[$this->options['data_source']['description_field'] . '_rendered'];
+            if (isset($attributes[$this->options['data_source']['description_field']])) {
+              $attributes['description'] = $attributes[$this->options['data_source']['description_field']];
             }
           }
         }
@@ -326,9 +323,6 @@ class openlayers_views_style_data extends views_plugin_style {
           foreach($this->options['attributes']['display'] as $id => $value) {
             if ($this->options['attributes']['display'][$id] === 0) {
               unset($attributes[$id]);
-            }
-            if ($this->options['attributes']['display'][$id.'_rendered'] === 0) {
-              unset($attributes[$id . '_rendered']);
             }
           }
         }
@@ -480,35 +474,6 @@ class openlayers_views_style_data extends views_plugin_style {
     geophp_load();
     $geophp = geoPHP::load($wkt_array, 'wkt');
     return $geophp->out('wkt');
-  }
-
-  /**
-   * Retrieve name and description for individual features when grouping is not enabled.
-   *
-   * openlayers_views_style_data specific
-   */
-  function add_title_desc($features, $handlers, $ds) {
-    foreach ($features as $k => &$f) {
-      // Create name/title attribute
-      if (isset($handlers[$ds['name_field']])) {
-        $f['attributes']['name'] = $f['attributes'][$ds['name_field'] . '_rendered'];
-      }
-
-      // Create description attribute.  Note that there are a couple
-      // exceptions to using fields
-      $exceptions = array('#row');
-      if (isset($ds['description_field'])) {
-        if (in_array($ds['description_field'], $exceptions) || isset($handlers[$ds['description_field']])) {
-          $f['attributes']['description'] = $f['attributes'][$ds['description_field'] . '_rendered'];
-
-          // Remove rendered row to keep data size down for JS.
-          if (in_array($ds['description_field'], $exceptions)) {
-            unset($f['attributes'][$ds['description_field'] . '_rendered']);
-          }
-        }
-      }
-    }
-    return $features;
   }
 
   /**
