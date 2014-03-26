@@ -295,8 +295,9 @@ class openlayers_views_style_data extends views_plugin_style {
         }
 
         if (isset($this->options['data_source']['name_field'])) {
-          $attributes['name'] = $attributes[$this->options['data_source']['name_field'] . '_rendered'];
-          $attribute_to_delete = $this->options['data_source']['name_field'];
+          if (isset($attributes[$this->options['data_source']['name_field'] . '_rendered'])) {
+            $attributes['name'] = $attributes[$this->options['data_source']['name_field'] . '_rendered'];
+          }
         }
 
         if (isset($this->options['data_source']['description_field'])) {
@@ -304,9 +305,10 @@ class openlayers_views_style_data extends views_plugin_style {
           if ($this->options['data_source']['description_field'] === '#row') {
             $attributes['description'] = $this->row_plugin->render($record);
           } else {
-            $attributes['description'] = $attributes[$this->options['data_source']['description_field'] . '_rendered'];
+            if (isset($attributes[$this->options['data_source']['description_field'] . '_rendered'])) {
+              $attributes['description'] = $attributes[$this->options['data_source']['description_field'] . '_rendered'];
+            }
           }
-          $attribute_to_delete = $this->options['data_source']['description_field'];
         }
 
         if (isset($this->options['data_source']['value'])) {
