@@ -407,24 +407,6 @@ class openlayers_views_style_data extends views_plugin_style {
   }
 
   /**
-   * Find the data source of an element and pull it into a wkt field
-   *
-   * openlayers_views_style_data specific
-   */
-  function get_wkt($feature, $handlers, $datasource) {
-    $feature['projection'] = '4326';
-    switch ($datasource['value']) {
-      case 'wkt':
-        return strip_tags($feature[$datasource['wkt']]);
-        break;
-
-      case 'other_latlon':
-        return 'POINT(' . strip_tags($feature[$datasource['other_lon']]) . ' ' . strip_tags($feature[$datasource['other_lat']]) . ')';
-        break;
-    }
-  }
-
-  /**
    * Coalesce features into single grouped feature when grouping is enabled.
    *
    * openlayers_views_style_data specific
