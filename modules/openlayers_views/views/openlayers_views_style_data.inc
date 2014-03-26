@@ -326,6 +326,8 @@ class openlayers_views_style_data extends views_plugin_style {
           foreach($this->options['attributes']['display'] as $id => $value) {
             if ($this->options['attributes']['display'][$id] === 0) {
               unset($attributes[$id]);
+            }
+            if ($this->options['attributes']['display'][$id.'_rendered'] === 0) {
               unset($attributes[$id . '_rendered']);
             }
           }
