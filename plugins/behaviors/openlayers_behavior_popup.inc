@@ -18,6 +18,7 @@ class openlayers_behavior_popup extends openlayers_behavior {
       'keepInMap' => TRUE,
       'zoomToPoint' => FALSE,
       'zoomToCluster' => FALSE,
+      'popupAtPosition' => 'mouse'
     );
   }
 
@@ -42,6 +43,16 @@ class openlayers_behavior_popup extends openlayers_behavior {
         '#description' => t('Select layer to apply popups to.'),
         '#default_value' => isset($defaults['layers']) ?
           $defaults['layers'] : array(),
+      ),
+      'popupAtPosition' => array(
+        '#type' => 'select',
+        '#title' => t('Select where the popup should pop up'),
+        '#description' => t('When selecting a feature, should the popup appear at the mouse position or in the center of the feature ?'),
+        '#default_value' => isset($defaults['popupAtPosition']) ? $defaults['popupAtPosition'] : 'mouse',
+        '#options' => array(
+          'mouse' => 'At the mouse position',
+          'computed' => 'Computed from the center of the feature'
+        )
       ),
       'panMapIfOutOfView' => array(
         '#type' => 'checkbox',

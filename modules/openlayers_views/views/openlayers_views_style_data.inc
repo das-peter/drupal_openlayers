@@ -180,20 +180,10 @@ class openlayers_views_style_data extends views_plugin_style {
       '#default_value' => $this->options['data_source']['name_field'],
     );
 
-    // For node content type, we can render the node as with a specific
-    // view mode.
-    if ($this->view->base_table == 'node') {
-      $desc_options = array_merge(array(
-        '' => '',
-        '#row' => '<' . t('entire row') . '>',
-      ), $fields);
-    }
-    else {
-      $desc_options = array_merge(array(
-        '' => '',
-        '#row' => '<' . t('entire row') . '>',
-      ), $fields);
-    }
+    $desc_options = array_merge(array(
+      '' => '',
+      '#row' => '<' . t('entire row') . '>',
+    ), $fields);
 
     // Description field
     $form['data_source']['description_field'] = array(
@@ -335,9 +325,9 @@ class openlayers_views_style_data extends views_plugin_style {
         // Only render features that has been enabled in the configuration
         // of the display.
         if (isset($this->options['attributes']['display'])) {
-          foreach($this->options['attributes']['display'] as $id => $value) {
-            if ($this->options['attributes']['display'][$id] === 0) {
-              unset($attributes[$id]);
+          foreach($this->options['attributes']['display'] as $fid => $value) {
+            if ($this->options['attributes']['display'][$fid] === 0) {
+              unset($attributes[$fid]);
             }
           }
         }
