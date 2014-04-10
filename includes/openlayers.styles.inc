@@ -16,6 +16,19 @@
 function _openlayers_openlayers_styles() {
   $styles = array();
 
+  // Hides features
+  $style = new stdClass();
+  $style->api_version = 1;
+  $style->name = 'invisible';
+  $style->title = t('Invisible style');
+  $style->description = t('Invisible default style.');
+  $style->data = array(
+    'pointRadius' => '0',
+    'strokeWidth' => '0',
+    'fillOpacity' => '0'
+  );
+  $styles[$style->name] = $style;
+
   // Default style
   $style = new stdClass();
   $style->api_version = 1;
@@ -32,19 +45,6 @@ function _openlayers_openlayers_styles() {
   );
   $styles[$style->name] = $style;
 
-  // Hides features
-  $style = new stdClass();
-  $style->api_version = 1;
-  $style->name = 'invisible';
-  $style->title = t('Invisible style');
-  $style->description = t('Invisible default style.');
-  $style->data = array(
-    'pointRadius' => '0',
-    'strokeWidth' => '0',
-    'fillOpacity' => '0'
-  );
-  $styles[$style->name] = $style;
-
   // Default select style
   $style = new stdClass();
   $style->api_version = 1;
@@ -57,6 +57,22 @@ function _openlayers_openlayers_styles() {
     'strokeColor' => '#888888',
     'strokeWidth' => '4',
     'fillOpacity' => '0.7',
+    'strokeOpacity' => '0.8',
+  );
+  $styles[$style->name] = $style;
+
+  // Default temporary style
+  $style = new stdClass();
+  $style->api_version = 1;
+  $style->name = 'default_temporary_select';
+  $style->title = t('Default temporary select style');
+  $style->description = t('Default temporary style when using tooltips or hovering behavior');
+  $style->data = array(
+    'pointRadius' => '6',
+    'fillColor' => '#222222',
+    'strokeColor' => '#888888',
+    'strokeWidth' => '4',
+    'fillOpacity' => '0.9',
     'strokeOpacity' => '0.8',
   );
   $styles[$style->name] = $style;

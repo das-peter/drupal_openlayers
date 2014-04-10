@@ -24,19 +24,11 @@ class openlayers_styles_ui extends ctools_export_ui {
         <li>Absolute path, such as /icon.png (though this is not suggested for maintainability reasons)</li></ul>'),
         'maxlength' => 2083
       ),
-      'imageStyle' => array(
-        'type'    => 'select',
-        'title'    => 'Image style',
-        'options' => array(''=> 'None (original image)') + image_style_options(FALSE),
-        'default' => '',
-        'desc'    => t('The Drupal Image Style to apply to the marker.'),
-      ),
       'pointRadius' => array(
         'default' => 6,
         'desc' => t('The radius of a vector point or the size of
         an icon. Note that, when using icons, this value should be half the
         width of the icon image.'),
-        'type' => 'integer',
       ),
       'fillColor' => array(
         'default' => '#EE9900',
@@ -59,8 +51,6 @@ class openlayers_styles_ui extends ctools_export_ui {
         polygons and point marks, it is used as an outline to
         the feature. On lines, this is the representation of the
         feature.  This is a value in pixels.'),
-        'type' => 'integer',
-        'element_validate' => array('element_validate_integer_positive'),
       ),
       'fillOpacity' => array(
         'default' => 1,
@@ -69,8 +59,6 @@ class openlayers_styles_ui extends ctools_export_ui {
         color of circles or other shapes. It is not used if an
         externalGraphic is applied to a point.  This should be a value
         between 0 and 1.'),
-        'type' => 'float',
-        'element_validate' => array('_element_validate_between_zero_and_one', 'element_validate_number'),
       ),
       'strokeOpacity' => array(
         'default' => 1,
@@ -78,8 +66,6 @@ class openlayers_styles_ui extends ctools_export_ui {
         On polygons and point marks, it is used as an outline to the
         feature. On lines, this is the representation of the feature.
         This should be a value between 0 and 1.'),
-        'type' => 'float',
-        'element_validate' => array('_element_validate_between_zero_and_one', 'element_validate_number'),
       ),
       'strokeLinecap' => array(
         'default' => 'round',
@@ -119,8 +105,6 @@ class openlayers_styles_ui extends ctools_export_ui {
         This is an alternative to the pointRadius symbolizer property
         to be used when your graphic has different sizes in the X and
         Y direction.  This should be in pixels.'),
-        'type' => 'integer',
-        'element_validate' => array('element_validate_integer_positive'),
       ),
       'graphicHeight' => array(
         'default' => '',
@@ -128,8 +112,6 @@ class openlayers_styles_ui extends ctools_export_ui {
         This is an alternative to the pointRadius symbolizer property
         to be used when your graphic has different sizes in the X and
         Y direction.  This should be in pixels.'),
-        'type' => 'integer',
-        'element_validate' => array('element_validate_integer_positive'),
       ),
       'graphicOpacity' => array(
         'default' => '1',
@@ -137,22 +119,16 @@ class openlayers_styles_ui extends ctools_export_ui {
         value between 0 and 1. Graphics that are already semitransparent,
         like alpha PNGs, should have this set to 1, or rendering problems in
         Internet Explorer will ensue.'),
-        'type' => 'float',
-        'element_validate' => array('_element_validate_between_zero_and_one', 'element_validate_number'),
       ),
       'graphicXOffset' => array(
         'default' => '',
         'desc' => t('Where the X value of the "center" of an
       externalGraphic should be.  This should be in pixels.'),
-        'type' => 'integer',
-        'element_validate' => array('element_validate_integer'),
       ),
       'graphicYOffset' => array(
         'default' => '',
         'desc' => t('Where the Y value of the "center" of an
       externalGraphic should be.  This should be in pixels.'),
-        'type' => 'integer',
-        'element_validate' => array('element_validate_integer'),
       ),
       'graphicName' => array(
         'default' => '',
@@ -196,14 +172,10 @@ class openlayers_styles_ui extends ctools_export_ui {
       'labelXOffset' => array(
         'default' => '',
         'desc' => t('Label X offset. Positive numbers move label right.'),
-        'type' => 'integer',
-        'element_validate' => array('element_validate_integer'),
       ),
       'labelYOffset' => array(
         'default' => '',
         'desc' => t('Label Y offset. Positive numbers move label up.'),
-        'type' => 'integer',
-        'element_validate' => array('element_validate_integer'),
       ),
       'fontColor' => array(
         'default' => '',
@@ -223,22 +195,6 @@ class openlayers_styles_ui extends ctools_export_ui {
       ),
     );
 
-    // Provide a preview of the style
-    if (isset($form_state['clicked_button']['#id']) && ($form_state['clicked_button']['#id'] == 'edit-preview')) {
-      $preview_style = new stdClass();
-      $preview_style->name = $form_state['values']['name'];
-      $preview_style->title = $form_state['input']['title'];
-      $preview_style->description = $form_state['input']['description'];
-      $preview_style->data = $form_state['input']['data'];
-
-      $form['info']['preview_style_container'] = array(
-        '#type' => 'item',
-        '#title' => t('Preview'),
-        '#markup' => openlayers_ui_style_preview($preview_style, TRUE),
-        '#description' => t('If you are using attribute replacement, the style may not show properly.  The crosshairs point out where the feature is centered.'),
-      );
-    }
-
     $form['info']['title'] = array(
       '#id' => 'styletitle',
       '#type' => 'textfield',
@@ -248,6 +204,32 @@ class openlayers_styles_ui extends ctools_export_ui {
       '#description' => t('The friendly name of your style, which will appear in the administration interface as well on the map interface.'),
     );
     $form['info']['name']['#machine_name']['source'] = array('info', 'title');
+
+    $instances = field_info_instances();
+    foreach ($instances as $entity_type => $type_bundles) {
+      foreach ($type_bundles as $bundle => $bundle_instances) {
+        foreach ($bundle_instances as $field_name => $instance) {
+          $fields[$field_name] = '${' . $field_name . '}';
+        }
+      }
+    }
+
+    $form['available_fields'] = array(
+      '#type' => 'fieldset',
+      '#tree' => TRUE,
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#title' => t('Available fields to use as token'),
+      '#description' => t('Notice: Since OpenLayers beta 9, the rendering of
+        . the fields has changed, it\'s not using the raw value of the field,
+        . but the full row rendering. You must disable all the HTML element by
+        . selecting None in the Style setting fieldset of the field in Views or
+        . you might get a mix of HTML with the raw value of the field.'),
+    );
+
+    $form['available_fields']['fields'] = array(
+      '#markup' => theme('item_list', array('items' => $fields))
+    );
 
     // OpenLayers style properties
     $form['data'] = array(
@@ -416,21 +398,5 @@ class openlayers_styles_ui extends ctools_export_ui {
     );
 
     return $options;
-  }
-}
-
-/**
- * Custom validations functions.
- * See #element_validate in Form API.
- */
-function _element_validate_between_zero_and_one($element, &$form_state, $form) {
-  if ($element['#value'] < 0 || $element['#value'] > 1) {
-    form_error($element, t('The @property property must be between 0 and 1.', array('@property' => $element['#title'])));
-  }
-}
-
-function _element_validate_number_positive($element, &$form_state, $form) {
-  if ($element['#value'] <= 0) {
-    form_error($element, t('The @property property must be a positive number.', array('@property' => $element['#title'])));
   }
 }
