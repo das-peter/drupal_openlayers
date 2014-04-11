@@ -303,7 +303,7 @@ class openlayers_views_style_data extends views_plugin_style {
         if (isset($this->options['data_source']['description_field'])) {
           // Handle rendering the whole record.
           if ($this->options['data_source']['description_field'] === '#row') {
-            $attributes['description'] = $this->row_plugin->render($record);
+            $attributes['description'] = trim($this->row_plugin->render($record));
           } else {
             if (isset($attributes[$this->options['data_source']['description_field']])) {
               $attributes['description'] = $attributes[$this->options['data_source']['description_field']];
