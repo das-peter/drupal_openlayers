@@ -196,19 +196,6 @@ class openlayers_views_style_data extends views_plugin_style {
       '#default_value' => $this->options['data_source']['description_field'],
     );
 
-    $styles = openlayers_styles();
-    $styles = array_combine(array_keys($styles), array_keys($styles));
-
-    $form['data_source']['style'] = array(
-      '#type'          => 'select',
-      '#title'         => t('Style Field'),
-      '#description'   => t('Choose the style that will be applied on the
-         . features in the layer.'),
-      '#required'      => FALSE,
-      '#options'       => array('' => '') +  $styles,
-      '#default_value' => $this->options['data_source']['style'],
-    );
-
     // A simple way to display attributes and styling
     $form['attributes'] = array(
       '#type' => 'fieldset',

@@ -24,6 +24,31 @@ class openlayers_styles_ui extends ctools_export_ui {
         <li>Absolute path, such as /icon.png (though this is not suggested for maintainability reasons)</li></ul>'),
         'maxlength' => 2083
       ),
+      'backgroundGraphic' => array(
+        'default' => '',
+        'desc' => t('Url to a graphic to be used as the background under an externalGraphic.'),
+        'maxlength' => 2083
+      ),
+      'backgroundGraphicZIndex' => array(
+        'default' => '',
+        'desc' => t('The integer z-index value to use in rendering the background graphic.'),
+      ),
+      'backgroundXOffset' => array(
+        'default' => '',
+        'desc' => t('The x offset (in pixels) for the background graphic.'),
+      ),
+      'backgroundYOffset' => array(
+        'default' => '',
+        'desc' => t('The y offset (in pixels) for the background graphic.'),
+      ),
+      'backgroundHeight' => array(
+        'default' => '',
+        'desc' => t('The height of the background graphic.  If not provided, the graphicHeight will be used.'),
+      ),
+      'backgroundWidth' => array(
+        'default' => '',
+        'desc' => t('The width of the background width.  If not provided, the graphicWidth will be used.'),
+      ),
       'pointRadius' => array(
         'default' => 6,
         'desc' => t('The radius of a vector point or the size of
@@ -38,6 +63,14 @@ class openlayers_styles_ui extends ctools_export_ui {
         not used if an externalGraphic is applied to a point.  This should be
         a hexadecimal value like #FFFFFF.'),
       ),
+      'fillOpacity' => array(
+        'default' => 1,
+        'desc' => t('This is the opacity used for filling in Polygons.
+        It is also used in the center of marks for points: the interior
+        color of circles or other shapes. It is not used if an
+        externalGraphic is applied to a point.  This should be a value
+        between 0 and 1.'),
+      ),
       'strokeColor' => array(
         'default' => '#EE9900',
         'desc' => t('This is color of the line on features. On
@@ -51,14 +84,6 @@ class openlayers_styles_ui extends ctools_export_ui {
         polygons and point marks, it is used as an outline to
         the feature. On lines, this is the representation of the
         feature.  This is a value in pixels.'),
-      ),
-      'fillOpacity' => array(
-        'default' => 1,
-        'desc' => t('This is the opacity used for filling in Polygons.
-        It is also used in the center of marks for points: the interior
-        color of circles or other shapes. It is not used if an
-        externalGraphic is applied to a point.  This should be a value
-        between 0 and 1.'),
       ),
       'strokeOpacity' => array(
         'default' => 1,
@@ -135,6 +160,10 @@ class openlayers_styles_ui extends ctools_export_ui {
         'desc' => t('Name of a type of symbol to be used
         for a point mark.'),
       ),
+      'graphicZIndex' => array(
+        'default' => '',
+        'desc' => t('The integer z-index value to use in rendering.'),
+      ),
       'rotation' => array(
         'default' => '',
         'desc' => t('The rotation angle in degrees clockwise for
@@ -149,10 +178,13 @@ class openlayers_styles_ui extends ctools_export_ui {
           'none' => t('None (off)'),
         ),
       ),
+      'title' => array(
+        'default' => '',
+        'desc' => t('Tooltip when hovering over a feature.  Not supported by the canvas renderer.')
+      ),
       'label' => array(
         'default' => '',
-        'desc' => t('A label to show for features. '
-          . 'Typically used with ${attribute} syntax.')
+        'desc' => t('The text for an optional label. For browsers that use the canvas renderer, this requires either fillText or mozDrawText to be available. Typically used with ${attribute} syntax.')
       ),
       'labelAlign' => array(
         'default' => 'cm',
@@ -179,19 +211,27 @@ class openlayers_styles_ui extends ctools_export_ui {
       ),
       'fontColor' => array(
         'default' => '',
-        'desc' => t('Label font color.'),
+        'desc' => t('The font color for the label, to be provided like CSS.'),
       ),
-      'fontSize' => array(
+      'fontOpacity' => array(
         'default' => '',
-        'desc' => t('Label font size.'),
+        'desc' => t('Opacity (0-1) for the label'),
       ),
       'fontFamily' => array(
         'default' => '',
-        'desc' => t('Label font family.'),
+        'desc' => t('The font family for the label, to be provided like in CSS.'),
+      ),
+      'fontSize' => array(
+        'default' => '',
+        'desc' => t('The font size for the label, to be provided like in CSS.'),
+      ),
+      'fontStyle' => array(
+        'default' => '',
+        'desc' => t('The font style for the label, to be provided like in CSS.'),
       ),
       'fontWeight' => array(
         'default' => '',
-        'desc' => t('Label font weight.'),
+        'desc' => t('The font weight for the label, to be provided like in CSS.'),
       ),
     );
 
