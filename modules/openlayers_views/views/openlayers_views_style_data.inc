@@ -304,10 +304,15 @@ class openlayers_views_style_data extends views_plugin_style {
         if (isset($this->options['data_source']['value'])) {
           switch ($this->options['data_source']['value']) {
             case 'wkt':
-              $wkt = $this->rendered_fields[$id][$this->options['data_source']['wkt']];
+              $handler = $handlers[$this->options['data_source']['wkt']];
+              $wkt = $handler->allow_advanced_render() ? $handler->advanced_render($record) : $handler->render($record);
               break;
             case 'other_latlon':
-              $wkt = 'POINT(' . $this->rendered_fields[$id][$this->options['data_source']['other_lon']] . ' ' . $this->rendered_fields[$id][$this->options['data_source']['other_lat']] . ')';
+              $handler = $handlers[$this->options['data_source']['other_lon']];
+              $other_lon = $handler->allow_advanced_render() ? $handler->advanced_render($record) : $handler->render($record);
+              $handler = $handlers[$this->options['data_source']['other_lat']];
+              $other_lat = $handler->allow_advanced_render() ? $handler->advanced_render($record) : $handler->render($record);
+              $wkt = 'POINT(' . $other_lon . ' ' . $other_lat . ')';
               break;
           }
         }
