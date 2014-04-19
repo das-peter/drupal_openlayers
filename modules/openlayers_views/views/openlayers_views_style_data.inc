@@ -391,16 +391,16 @@ class openlayers_views_style_data extends views_plugin_style {
         $formatted_features[] = theme('openlayers_views_group_display_item',
           array(
             'name' => isset($handlers[$ds['name_field']]) ?
-              $subfeature['attributes'][$ds['name_field'] . '_rendered'] : FALSE,
+              $subfeature['attributes'][$ds['name_field']] : FALSE,
             'description' => (in_array($ds['description_field'], $exceptions) ||
               isset($handlers[$ds['description_field']])) ?
-              $subfeature['attributes'][$ds['description_field'] . '_rendered'] : FALSE
+              $subfeature['attributes'][$ds['description_field']] : FALSE
           )
         );
 
         // Remove rendered rows to keep data size down for JS.
         if (in_array($ds['description_field'], $exceptions)) {
-          unset($subfeature['attributes'][$ds['description_field'] . '_rendered']);
+          unset($subfeature['attributes'][$ds['description_field']]);
         }
       }
 
