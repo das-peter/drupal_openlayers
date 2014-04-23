@@ -77,31 +77,6 @@ function _openlayers_openlayers_styles() {
   );
   $styles[$style->name] = $style;
 
-  // Marker styles
-  $markers = array(
-    'red' => t('Red'),
-    'green' => t('Green'),
-    'gold' => t('Gold'),
-    'blue' => t('Blue'),
-  );
-  foreach ($markers as $marker => $color) {
-    $style = new stdClass();
-    $style->api_version = 1;
-    $style->name = 'default_marker_' . $marker;
-    $style->title = t('Marker !color', array('!color' => $color));
-    $style->description = t('!color marker provided by the OpenLayers module.',
-      array('!color' => $color));
-    $style->data = array(
-      'externalGraphic' => drupal_get_path('module', 'openlayers') .
-        '/themes/default_dark/img/marker-' . $marker . '.png',
-      'graphicWidth' => 21,
-      'graphicHeight' => 25,
-      'graphicXOffset' => -10,
-      'graphicYOffset' => -25,
-    );
-    $styles[$style->name] = $style;
-  }
-
   // Custom black markers
   $style = new stdClass();
   $style->api_version = 1;
@@ -109,8 +84,14 @@ function _openlayers_openlayers_styles() {
   $style->title = t('Marker Black');
   $style->description = t('Black marker provided by the OpenLayers module.');
   $style->data = array(
-    'externalGraphic' => drupal_get_path('module', 'openlayers') .
+    'externalGraphic' => url(
+      drupal_get_path('module', 'openlayers') .
       '/themes/default_dark/markers/marker-black.png',
+      array(
+        'absolute' => TRUE,
+        'language' => LANGUAGE_NONE
+      )
+    ),
     'graphicWidth' => 25,
     'graphicHeight' => 41,
     'graphicXOffset' => -12,
@@ -124,14 +105,52 @@ function _openlayers_openlayers_styles() {
   $style->title = t('Marker Black Small');
   $style->description = t('Small black marker provided by the OpenLayers module.');
   $style->data = array(
-    'externalGraphic' => drupal_get_path('module', 'openlayers') .
+    'externalGraphic' => url(
+      drupal_get_path('module', 'openlayers') .
       '/themes/default_dark/markers/marker-black-small.png',
+      array(
+        'absolute' => TRUE,
+        'language' => LANGUAGE_NONE
+      )
+    ),
     'graphicWidth' => 16,
     'graphicHeight' => 26,
     'graphicXOffset' => -8,
     'graphicYOffset' => -26,
   );
   $styles[$style->name] = $style;
+
+  // Marker styles
+  $markers = array(
+    'red' => t('Red'),
+    'green' => t('Green'),
+    'gold' => t('Gold'),
+    'blue' => t('Blue'),
+  );
+
+  foreach ($markers as $marker => $color) {
+    $style = new stdClass();
+    $style->api_version = 1;
+    $style->name = 'default_marker_' . $marker;
+    $style->title = t('Marker !color', array('!color' => $color));
+    $style->description = t('!color marker provided by the OpenLayers module.',
+      array('!color' => $color));
+    $style->data = array(
+      'externalGraphic' => url(
+        drupal_get_path('module', 'openlayers') .
+        '/themes/default_dark/img/marker-' . $marker . '.png',
+        array(
+          'absolute' => TRUE,
+          'language' => LANGUAGE_NONE
+        )
+      ),
+      'graphicWidth' => 21,
+      'graphicHeight' => 25,
+      'graphicXOffset' => -10,
+      'graphicYOffset' => -25,
+    );
+    $styles[$style->name] = $style;
+  }
 
   return $styles;
 }
