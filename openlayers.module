@@ -292,6 +292,10 @@ function openlayers_render_map_data($map = array()) {
     openlayers_add_js_projection_definition(openlayers_get_projection_by_identifier($map['projection']));
     openlayers_add_js_projection_definition(openlayers_get_projection_by_identifier($map['displayProjection']));
 
+    // Make sure, that any previously added settings are removed (see Drupal core issue #208611).
+    $js = array('openlayers' => array('maps' => array($map['id'] => '')));
+    drupal_add_js($js, 'setting');
+    
     $js = array('openlayers' => array('maps' => array($map['id'] => $map)));
     drupal_add_js($js, 'setting');
 
