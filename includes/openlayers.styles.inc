@@ -85,7 +85,7 @@ function _openlayers_openlayers_styles() {
   $style->description = t('Black marker provided by the OpenLayers module.');
   $style->data = array(
     'externalGraphic' => base_path() . drupal_get_path('module', 'openlayers') .
-      '/themes/default_dark/img/marker-black.png',
+      '/themes/default_dark/markers/marker-black.png',
     'graphicWidth' => 25,
     'graphicHeight' => 41,
     'graphicXOffset' => -12,
@@ -100,7 +100,7 @@ function _openlayers_openlayers_styles() {
   $style->description = t('Small black marker provided by the OpenLayers module.');
   $style->data = array(
     'externalGraphic' => base_path() . drupal_get_path('module', 'openlayers') .
-      '/themes/default_dark/img/marker-black-small.png',
+      '/themes/default_dark/markers/marker-black-small.png',
     'graphicWidth' => 16,
     'graphicHeight' => 26,
     'graphicXOffset' => -8,
