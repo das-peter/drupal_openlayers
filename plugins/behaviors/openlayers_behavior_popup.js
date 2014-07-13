@@ -75,37 +75,6 @@ Drupal.openlayers.addBehavior('openlayers_behavior_popup', function (data, optio
         }
       },
       onSelect: function(feature) {
-        // Check if we have any zoom settings set. If zoom to point is enabled,
-        // it will disable the popup behavior for points,
-        // and the same for clusters.
-        if (options.zoomToPoint || options.zoomToCluster) {
-          var fullExtent;
-          // If we have zoomToCluster enabled and the feature is a cluster,
-          // accumulate the fullExtent of all points in the cluster.
-          var isCluster = typeof feature.cluster != 'undefined' && feature.cluster.length > 1;
-          if (options.zoomToCluster && isCluster) {
-            for (var i = 0; i < feature.cluster.length; i++) {
-              point = feature.cluster[i];
-              if (fullExtent instanceof OpenLayers.Bounds) {
-                fullExtent.extend(point.geometry.getBounds());
-              } else {
-                fullExtent = point.geometry.getBounds();
-              }
-            }
-          }
-          // Otherwise, if zoomToPoint is enabled and it's not a cluster, set
-          // the fullExtent to the bounds of the point.
-          else if (options.zoomToPoint && !isCluster){
-            fullExtent = feature.geometry.getBounds();
-          }
-
-          if (fullExtent instanceof OpenLayers.Bounds) {
-            map.zoomToExtent(fullExtent);
-            // Don't attempt to popup when zooming.
-            return;
-          }
-        }
-
         var lonlat;
         if (options.popupAtPosition == 'mouse') {
           lonlat = map.getLonLatFromPixel(
@@ -141,12 +110,9 @@ Drupal.openlayers.addBehavior('openlayers_behavior_popup', function (data, optio
         Drupal.attachBehaviors();
       },
       onUnselect: function(feature) {
-        // If the feature has a popup, remove it.
-        if (feature.popup) {
-          map.removePopup(feature.popup);
-          feature.popup.destroy();
-          feature.popup = null;
-        }
+        map.removePopup(feature.popup);
+        feature.popup.destroy();
+        feature.popup = null;
         this.unselectAll();
         Drupal.attachBehaviors();
       }

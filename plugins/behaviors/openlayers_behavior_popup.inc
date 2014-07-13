@@ -16,8 +16,6 @@ class openlayers_behavior_popup extends openlayers_behavior {
       'layers' => array(),
       'panMapIfOutOfView' => FALSE,
       'keepInMap' => TRUE,
-      'zoomToPoint' => FALSE,
-      'zoomToCluster' => FALSE,
       'popupAtPosition' => 'mouse'
     );
   }
@@ -65,18 +63,6 @@ class openlayers_behavior_popup extends openlayers_behavior {
         '#title' => t('Keep in map'),
         '#description' => t('If panMapIfOutOfView is false, and this property is true, contrain the popup such that it always fits in the available map space.'),
         '#default_value' => isset($defaults['keepInMap']) ? $defaults['keepInMap'] : TRUE
-      ),
-      'zoomToPoint' => array(
-        '#type' => 'checkbox',
-        '#title' => t('Zoom to point'),
-        '#description' => t('When a point is clicked, zoom to it instead of displaying a popup.'),
-        '#default_value' => isset($defaults['zoomToPoint']) ? $defaults['zoomToPoint'] : FALSE
-      ),
-      'zoomToCluster' => array(
-        '#type' => 'checkbox',
-        '#title' => t('Zoom to cluster'),
-        '#description' => t('When a cluster is clicked, zoom to it instead of displaying a popup.'),
-        '#default_value' => isset($defaults['zoomToCluster']) ? $defaults['zoomToCluster'] : FALSE
       ),
     );
   }
