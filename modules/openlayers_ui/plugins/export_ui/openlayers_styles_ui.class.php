@@ -245,6 +245,7 @@ class openlayers_styles_ui extends ctools_export_ui {
     );
     $form['info']['name']['#machine_name']['source'] = array('info', 'title');
 
+    $fields = array();
     $views = views_get_all_views();
     foreach($views as $vid => $view) {
       if (isset($view->display)) {
@@ -275,9 +276,30 @@ class openlayers_styles_ui extends ctools_export_ui {
         . you might get a mix of HTML with the raw value of the field.'),
     );
 
-    $form['available_fields']['fields'] = array(
-      '#markup' => theme('item_list', array('items' => $fields))
-    );
+    if ($fields) {
+      $form['available_fields']['fields'] = array(
+        '#markup' => theme('item_list', array('items' => $fields)),
+      );
+    }
+    else {
+      $form['available_fields']['fields'] = array(
+        '#prefix' => '<p class="no-fields-message">',
+        '#markup' => t('There are no available fields to use as tokens.'),
+        '#suffix' => '</p>',
+      );
+
+      $form['available_fields']['fields_instruction'] = array(
+        '#access' => user_access('administer views'),
+        '#prefix' => '<p class="no-fields-instruction">',
+        '#markup' => t(
+          'Go to the <a !attributes>Views administration</a> page and create an "OpenLayers Data Overlay" display.',
+          array(
+            '!attributes' => drupal_attributes(array('href' => url('admin/structure/views'))),
+          )
+        ),
+        '#suffix' => '</p>',
+      );
+    }
 
     // OpenLayers style properties
     $form['data'] = array(
