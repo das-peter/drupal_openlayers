@@ -129,12 +129,18 @@ class openlayers_layer_type_openlayers_views_vector
     return $this->data['features'];
   }
 
+  function attached() {
+    return array(
+      'js' => array(
+        drupal_get_path('module', 'openlayers_views') . '/plugins/layer_types/openlayers_views_vector.js'
+      )
+    );
+  }
+
   /**
    * Render.
    */
   function render(&$map) {
-    drupal_add_js(drupal_get_path('module', 'openlayers_views') .
-      '/plugins/layer_types/openlayers_views_vector.js');
     $this->get_features();
   }
 }

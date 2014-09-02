@@ -43,12 +43,11 @@ class openlayers_behavior_zoomtolayer extends openlayers_behavior {
     );
   }
 
-  /**
-   * Render.
-   */
-  function render(&$map) {
-    drupal_add_js(drupal_get_path('module', 'openlayers') .
-      '/plugins/behaviors/openlayers_behavior_zoomtolayer.js');
-    return $this->options;
+  function attached() {
+    return array(
+      'js' => array(
+        drupal_get_path('module', 'openlayers') . '/plugins/behaviors/openlayers_behavior_zoomtolayer.js'
+      )
+    );
   }
 }

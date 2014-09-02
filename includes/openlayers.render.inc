@@ -37,10 +37,9 @@ function _openlayers_layers_process($layers = array(), &$map = array()) {
   // Process into array-based layer data for the map
   foreach ($layers as $type => $layer_object) {
     if (is_object($layer_object)) {
-      $layer_object->render($map);
       $layer_object->data['title'] = $layer_object->title;
       $layer_object->data['weight'] = $layer_object->weight;
-      $layer_data[$layer_object->name] = $layer_object->data;
+      $layer_data[$layer_object->name] = $layer_object;
     }
   }
 
@@ -76,8 +75,7 @@ function _openlayers_behaviors_render($behaviors = array(), &$map = array()) {
 
   foreach (openlayers_behaviors() as $key => $plugin) {
     if (isset($behaviors[$key]) && $class = ctools_plugin_get_class($plugin, 'behavior')) {
-      $behavior = new $class($behaviors[$key], $map);
-      $rendered[$key] = $behavior->render($map);
+      $rendered[$key] = new $class($behaviors[$key], $map);
     }
   }
 
@@ -163,12 +161,6 @@ function _openlayers_styles_process($styles = array(),
     }
   }
 
-  // Run through theme function
-  $processed = theme('openlayers_styles', array(
-    'styles' => $processed,
-    'map' => $map)
-  );
-
   // Return processed
   return $processed;
 }
@@ -184,6 +176,6 @@ function _openlayers_styles_process($styles = array(),
  * @return
  *   New map id
  */
-function _openlayers_create_map_id() {
-  return drupal_html_id('openlayers-map');
+function _openlayers_create_map_id($default = 'openlayers-map') {
+  return drupal_html_id($default);
 }

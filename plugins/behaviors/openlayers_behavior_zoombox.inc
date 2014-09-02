@@ -17,20 +17,11 @@ class openlayers_behavior_zoombox extends openlayers_behavior {
     );
   }
 
-  function js_dependency() {
-    return array('OpenLayers.Control.ZoomBox');
-  }
-
-  function options_form($defaults = array()) {
-    return array();
-  }
-
-  /**
-   * Render.
-   */
-  function render(&$map) {
-    drupal_add_js(drupal_get_path('module', 'openlayers') .
-      '/plugins/behaviors/openlayers_behavior_zoombox.js');
-    return $this->options;
+  function attached() {
+    return array(
+      'js' => array(
+        drupal_get_path('module', 'openlayers') . '/plugins/behaviors/openlayers_behavior_zoombox.js'
+      )
+    );
   }
 }

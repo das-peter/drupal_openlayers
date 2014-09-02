@@ -69,6 +69,14 @@ class openlayers_behavior_layerswitcher extends openlayers_behavior {
     );
   }
 
+  function attached() {
+    return array(
+      'js' => array(
+        drupal_get_path('module', 'openlayers') . '/plugins/behaviors/openlayers_behavior_layerswitcher.js'
+      )
+    );
+  }
+
   /**
    * Render.
    */
@@ -87,9 +95,6 @@ class openlayers_behavior_layerswitcher extends openlayers_behavior {
         $map['layers'] = array_reverse($map['layers'], TRUE);
       }
     }
-
-    drupal_add_js(drupal_get_path('module', 'openlayers') .
-      '/plugins/behaviors/openlayers_behavior_layerswitcher.js');
     return $this->options;
   }
 }

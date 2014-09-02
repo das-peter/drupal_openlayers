@@ -17,18 +17,11 @@ class openlayers_behavior_zoompanel extends openlayers_behavior {
     );
   }
 
-  function js_dependency() {
+  function attached() {
     return array(
-      'OpenLayers.Control.ZoomPanel'
+      'js' => array(
+        drupal_get_path('module', 'openlayers') . '/plugins/behaviors/openlayers_behavior_zoompanel.js'
+      )
     );
-  }
-
-  /**
-   * Render.
-   */
-  function render(&$map) {
-    drupal_add_js(drupal_get_path('module', 'openlayers') .
-      '/plugins/behaviors/openlayers_behavior_zoompanel.js');
-    return $this->options;
   }
 }

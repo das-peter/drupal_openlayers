@@ -31,21 +31,15 @@ class openlayers_behavior_fullscreen extends openlayers_behavior {
     );
   }
 
-  function js_dependency() {
+  function attached() {
     return array(
-      'OpenLayers.Control.Button'
+      'js' => array(
+        drupal_get_path('module', 'openlayers') . '/plugins/behaviors/openlayers_behavior_fullscreen.js'
+      ),
+      'css' => array(
+        drupal_get_path('module', 'openlayers') . '/plugins/behaviors/openlayers_behavior_fullscreen.css'
+      )
     );
-  }
-
-  /**
-   * Render.
-   */
-  function render(&$map) {
-    drupal_add_css(drupal_get_path('module', 'openlayers') .
-      '/plugins/behaviors/openlayers_behavior_fullscreen.css');
-    drupal_add_js(drupal_get_path('module', 'openlayers') .
-      '/plugins/behaviors/openlayers_behavior_fullscreen.js');
-    return $this->options;
   }
 }
 

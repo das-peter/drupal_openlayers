@@ -44,28 +44,6 @@ function openlayers_help($path, $arg) {
 }
 
 /**
- * Implements hook_theme().
- */
-function openlayers_theme($existing, $type, $theme, $path) {
-  return array(
-    'openlayers_map' => array(
-      'arguments' => array(
-        'map' => array(),
-      ),
-      'file' => 'includes/openlayers.theme.inc',
-      'template' => '/templates/openlayers-map'
-    ),
-    'openlayers_styles' => array(
-      'arguments' => array(
-        'styles' => array(),
-        'map' => array(),
-      ),
-      'file' => 'includes/openlayers.theme.inc',
-    ),
-  );
-}
-
-/**
  * Implements hook_ctools_plugin_directory().
  */
 function openlayers_ctools_plugin_directory($module, $plugin) {
@@ -128,7 +106,7 @@ function openlayers_include() {
 
       // Check for full URL and include it manually if external.
       if (valid_url($path, TRUE)) {
-        drupal_add_js($path, 'external');
+        drupal_add_js($path, array('type' => 'external', 'weight' => -3));
       }
       else {
         drupal_add_js($path);
@@ -137,30 +115,25 @@ function openlayers_include() {
         drupal_add_js(libraries_get_path('openlayers') . '/lib/OpenLayers/Lang.js', 'file');
         drupal_add_js(libraries_get_path('openlayers') . '/lib/OpenLayers/Lang/' . $lang . '.js', 'file');
       }
-
-      drupal_add_css(drupal_get_path('module', 'openlayers') .
-        '/css/openlayers.css', 'file');
-      drupal_add_js(drupal_get_path('module', 'openlayers') .
-        '/js/openlayers.js', 'file');
     }
   }
-
 }
 
 /**
- * Prepare a map for rendering.
+ * Render map array
  *
- * Takes a map array and builds up the data given the
- * reference to objects like styles, layers, and behaviors.
+ * Given a map array, render into HTML to display
+ * a map.
  *
  * @ingroup openlayers_api
  *
  * @param $map
- *   Array of map settings
+ *   Associative array of map paramters.
  * @return
- *   Filled in map array.
+ *   Map HTML.
  */
-function openlayers_build_map($map = array()) {
+function openlayers_render_map_data($map = array()) {
+  // Run map through build process
   // Get the necessary parts
   openlayers_include();
   module_load_include('inc', 'openlayers', 'includes/openlayers.render');
@@ -172,10 +145,6 @@ function openlayers_build_map($map = array()) {
       $map = $loaded_map->data;
     }
   }
-
-  // Create ID for map as this will help with alters.
-  $map['id'] = !isset($map['id']) ?
-    _openlayers_create_map_id() : $map['id'];
 
   // Hook to alter map before main processing.  Styles, behaviors,
   // layers may all be added here.
@@ -199,29 +168,6 @@ function openlayers_build_map($map = array()) {
   $projection = openlayers_get_projection_by_identifier($map['projection']);
   $map['maxExtent'] = $projection->getProjectedExtent();
 
-  // In case the layer offers the same projection as the map, use this and do not provide
-  // projection definition to client. Otherwise rely on the client to reproject on the fly.
-  foreach ($map['layers'] as $layer_name => $layer) {
-    if(in_array($map['projection'], $layer['projection'])){
-      $map['layers'][$layer_name]['projection'] = $map['projection'];
-    } else {
-      // Client is able to reproject any possible projection because their definitions need to be
-      // known to be able to set up a layer with a certain projection. Thus choice does not matter.
-      $layerProjectionIdentifier = reset($layer['projection']);
-      if($layerProjectionIdentifier===FALSE){
-        throw new Exception(
-          t('Layer !title lacks its projection. Please edit it to select a projection.', array(
-              '!title' => $layer['title']
-          ))
-        );
-      }
-      $map['layers'][$layer_name]['projection'] = $layerProjectionIdentifier;
-    }
-
-    // Ensure JavaScript gets proper type.
-    $map['layers'][$layer_name]['isBaseLayer'] = (boolean)($layer['isBaseLayer']);
-  }
-
   // Hook to alter map one last time.  Final modification to existing
   // styles, behaviors, layers can happen here, but adding new styles,
   // behaviors will not get rendered.
@@ -230,27 +176,6 @@ function openlayers_build_map($map = array()) {
 
   // Check map for errors
   $map['errors'] = openlayers_error_check_map($map);
-  return $map;
-}
-
-/**
- * Render map array
- *
- * Given a map array, render into HTML to display
- * a map.
- *
- * @ingroup openlayers_api
- *
- * @param $map
- *   Associative array of map paramters.
- * @return
- *   Map HTML.
- */
-function openlayers_render_map_data($map = array()) {
-  // Run map through build process
-  $map = openlayers_build_map($map);
-
-  $output = '';
 
   // Given hide_empty_map flag, check if the map has any features
   // defined. If not, assume it is an empty map and shouldn't be displayed.
@@ -267,44 +192,138 @@ function openlayers_render_map_data($map = array()) {
     }
   }
 
-  // Currently the restricted extent of maps is always given in EPSG:3857 so
-  // this projection needs to be available in the client for all restricted
-  // maps. Using EPSG:4326 instead would likely be better.
-  if(array_key_exists('restrict', $map['center']) && (boolean)$map['center']['restrict']['restrictextent']){
-    openlayers_add_js_projection_definition(
-      openlayers_get_projection_by_identifier('EPSG:3857')
-    );
-  }
-
   // Return themed map if no errors found
   if (empty($map['errors'])) {
 
-    // In case the layer offers the same projection as the map, use this and do not provide
-    // projection definition to client. Otherwise rely on the client to reproject on the fly.
-    foreach ($map['layers'] as $layer_name => $layer) {
-        // Provide client with projection definition so that it can reproject
-        openlayers_add_js_projection_definition(
-          openlayers_get_projection_by_identifier($map['layers'][$layer_name]['projection'])
-        );
+    $styles = array(
+      'width' => $map['width'],
+      'height' => $map['height']
+    );
+
+    $css_styles = '';
+    foreach ($styles as $property => $value) {
+      $css_styles .= $property . ':' . $value . ';';
     }
 
-    // Ensure projections in use are known to the client (loads Proj4js if required)
-    openlayers_add_js_projection_definition(openlayers_get_projection_by_identifier($map['projection']));
-    openlayers_add_js_projection_definition(openlayers_get_projection_by_identifier($map['displayProjection']));
+    $map['map_name'] = isset($map['map_name']) ? $map['map_name'] : substr(str_shuffle(md5(time())), 0, 8);
+    $css_map_name = drupal_clean_css_identifier($map['map_name']);
 
-    // Make sure, that any previously added settings are removed (see Drupal core issue #208611).
-    $js = array('openlayers' => array('maps' => array($map['id'] => '')));
-    drupal_add_js($js, 'setting');
-    
-    $js = array('openlayers' => array('maps' => array($map['id'] => $map)));
-    drupal_add_js($js, 'setting');
+    // Create ID for map as this will help with alters.
+    $map['id'] = _openlayers_create_map_id('openlayers-map-' . $css_map_name);
 
-    // Push map through theme function and return
-    $output = theme('openlayers_map', array(
-      'map' => $map,
+    // TODO: contextual links
+    $links = array(
+      '#type' => 'contextual_links',
+      '#contextual_links' => array(
+        'openlayers' => array(
+          'admin/structure/openlayers/maps/list', array($map['map_name']),
+        ),
+      )
+    );
+
+    $container_classes = implode(" ", array(
+      'contextual-links-region',
+      'openlayers-container',
+      'openlayers-container-map-' . $css_map_name
     ));
+
+    $build = array(
+      '#type' => 'container',
+      '#attributes' => array(
+        'id' => 'openlayers-container-' . $map['id'],
+        'style' => $css_styles,
+        'class' => $container_classes
+      ),
+      'map' => array(
+        '#theme' => 'html_tag',
+        '#tag' => 'div',
+        '#value' => '',
+        '#attributes' => array(
+          'id' => $map['id'],
+          'style' => $css_styles,
+          'class' => 'openlayers-map openlayers-map-' . $css_map_name
+        )
+      )
+    );
+
+    $build['#attached'] = array();
+    $build['#attached']['js'] = array(
+      drupal_get_path('module', 'openlayers') . '/js/openlayers.js' => array(
+        'weight' => -2
+      )
+    );
+    $build['#attached']['css'] = array(
+      drupal_get_path('module', 'openlayers') . '/css/openlayers.css'
+    );
+
+    // Currently the restricted extent of maps is always given in EPSG:3857 so
+    // this projection needs to be available in the client for all restricted
+    // maps. Using EPSG:4326 instead would likely be better.
+    if(array_key_exists('restrict', $map['center']) && (boolean)$map['center']['restrict']['restrictextent']){
+      $build['#attached']['js'][] = array(
+        'data' => openlayers_add_js_projection_definition(openlayers_get_projection_by_identifier('EPSG:3857')),
+        'type' => 'setting',
+      );
+    }
+
+    $build['#attached']['js'][] = array(
+      'data' => openlayers_add_js_projection_definition(openlayers_get_projection_by_identifier($map['projection'])),
+      'type' => 'setting',
+    );
+    $build['#attached']['js'][] = array(
+      'data' => openlayers_add_js_projection_definition(openlayers_get_projection_by_identifier($map['displayProjection'])),
+      'type' => 'setting',
+    );
+
+    $build['#attached']['libraries_load'][] = array('proj4js');
+
+    foreach ($map['layers'] as $layer_name => $layer_object) {
+      $layer_object->render($map);
+
+      if(in_array($map['projection'], $layer_object->data['projection'])){
+        $map['layers'][$layer_name]->data['projection'] = $map['projection'];
+      } else {
+        // Client is able to reproject any possible projection because their definitions need to be
+        // known to be able to set up a layer with a certain projection. Thus choice does not matter.
+        $layerProjectionIdentifier = reset($layer_object->data['projection']);
+        if($layerProjectionIdentifier===FALSE){
+          throw new Exception(
+            t('Layer !title lacks its projection. Please edit it to select a projection.', array(
+              '!title' => $layer['title']
+            ))
+          );
+        }
+        $map['layers'][$layer_name]->data['projection'] = $layerProjectionIdentifier;
+      }
+
+      // In case the layer offers the same projection as the map, use this and do not provide
+      // projection definition to client. Otherwise rely on the client to reproject on the fly.
+        // Provide client with projection definition so that it can reproject
+      $build['#attached']['js'][] = array(
+        'data' => openlayers_add_js_projection_definition(openlayers_get_projection_by_identifier($map['layers'][$layer_name]->data['projection'])),
+        'type' => 'setting',
+      );
+
+      // Ensure JavaScript gets proper type.
+      $map['layers'][$layer_name]->data['isBaseLayer'] = (boolean)($layer_object->data['isBaseLayer']);
+
+
+      $map['layers'][$layer_name] = $layer_object->data;
+      $build['#attached'] = array_merge_recursive($build['#attached'], $layer_object->attached());
+    }
+    foreach ($map['behaviors'] as $behavior_name => $behavior_object) {
+      $map['behaviors'][$behavior_name] = $behavior_object->options;
+      $build['#attached'] = array_merge_recursive($build['#attached'], $behavior_object->attached());
+    }
+
+    $build['#attached']['js'][] = array(
+      'data' => array('openlayers' => array('maps' => array($map['id'] => $map))),
+      'type' => 'setting',
+    );
+    $build['#map'] = $map['map_name'];
   }
-  return $output;
+
+  return $build;
 }
 
 /**
@@ -315,7 +334,7 @@ function openlayers_add_js_projection_definition(openlayers_projection $projecti
   $openlayers_natively_supported = array('EPSG:4326', 'EPSG:900913');
   // Only load Proj4js if projection not supported by OpenLayers anyway
   if (!in_array($projection->identifier, $openlayers_natively_supported)) {
-    proj4js_load_definition($projection->identifier, $projection->getDefinition());
+    return proj4js_load_definition_js_settings($projection->identifier, $projection->getDefinition());
   }
 }
 
@@ -335,7 +354,8 @@ function openlayers_render_map($map = '') {
 
   // If it's an array, then we have been passed the map data array
   if (is_array($map)) {
-    return openlayers_render_map_data($map);
+    $build = openlayers_render_map_data($map);
+    return render($build);
   }
 
   // If it's a string, then we are passing a map name instead of the whole map object
@@ -351,7 +371,8 @@ function openlayers_render_map($map = '') {
     }
   }
 
-  return openlayers_render_map_data($map->data);
+  $build = openlayers_render_map_data($map->data);
+  return render($build);
 }
 
 /**
@@ -1195,7 +1216,9 @@ function openlayers_get_resolutions($projection, $zoom_start = 0, $zoom_end = FA
  * All other parent classes can be autoloaded through ctools.
  */
 class openlayers_behavior {
-  var $options, $map;
+  var $options;
+
+  protected $map;
 
   function __construct($options = array(), $map = array()) {
     $this->options = $options + $this->options_init();
@@ -1222,6 +1245,10 @@ class openlayers_behavior {
     return array();
   }
 
+  function attached() {
+    return array();
+  }
+
   function render(&$map) {}
 }
 
@@ -1236,12 +1263,6 @@ class openlayers_layer_type {
    * @var array
    */
   public $data = array();
-
-  /**
-   * Stores the current map.
-   * @var array
-   */
-  public $map;
 
   /**
    * Set configuration and store map.
@@ -1260,8 +1281,6 @@ class openlayers_layer_type {
 
     // Extend options with the defaults.
     $this->data += $this->options_init();
-
-    $this->map = $map;
   }
 
   /**
@@ -1359,6 +1378,10 @@ class openlayers_layer_type {
    *   Array with form elements.
    */
   function settings_form() {
+    return array();
+  }
+
+  function attached() {
     return array();
   }
 
@@ -1550,27 +1573,31 @@ function openlayers_libraries_info() {
 }
 
 /**
- * Alias Functions
+ * Implements hook_element_info().
  *
- * These functions temporarily map the alias the renamed 'map' functions to their
- * previous 'preset' functions to allow time for contrib modules to catch up.
- * These will eventually be removed
- *
- * These should be removed in 7.x-3.x
+ * @return array
  */
-function openlayers_build_preset($map = array())                        { return openlayers_build_map($map); }
-function openlayers_preset_load($name = '', $reset = FALSE)             { return openlayers_map_load($name, $reset); }
-function openlayers_render_preset_data($map = array(), $map_name = '')  { return openlayers_render_map_data($map, $map_name); }
-function openlayers_presets($reset = FALSE)                             { return openlayers_maps($reset); }
-function openlayers_preset_save($map)                                   { return openlayers_map_save($map); }
-function openlayers_preset_delete($map)                                 { return openlayers_map_delete($map); }
-function openlayers_preset_options($reset = FALSE)                      { return openlayers_map_options($reset); }
-function openlayers_error_check_preset($map, $log_errors = TRUE)        { return openlayers_error_check_map($map, $log_errors); }
-function openlayers_render_preset($map = '', $map_name = '') {
-  if (is_array($map)) {
-    return openlayers_render_preset_data($map, $map_name);
-  }
-  else {
-    return openlayers_render_map($map);
-  }
+function openlayers_element_info() {
+  return array(
+    'openlayers' => array(
+      '#pre_render' => array('openlayers_element_pre_render_callback'),
+      '#theme_wrappers' => array('form_element')
+    )
+  );
 }
+
+/**
+ * Callback.
+ *
+ * @param $element
+ * @return mixed
+ */
+function openlayers_element_pre_render_callback($element) {
+  if (is_string($element['#map'])) {
+    $map = openlayers_map_load($element['#map']);
+    $element += openlayers_render_map_data($map->data);
+  }
+
+  return $element;
+}
+

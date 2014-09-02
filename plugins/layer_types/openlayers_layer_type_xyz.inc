@@ -83,11 +83,11 @@ class openlayers_layer_type_xyz extends openlayers_layer_type {
     $form_state['data']['zoomOffset'] = (int) $form_state['data']['zoomOffset'];
   }
 
-  /**
-   * Render.
-   */
-  function render(&$map) {
-    drupal_add_js(drupal_get_path('module', 'openlayers') .
-      '/plugins/layer_types/openlayers_layer_type_xyz.js');
+  function attached() {
+    return array(
+      'js' => array(
+        drupal_get_path('module', 'openlayers') . '/plugins/layer_types/openlayers_layer_type_xyz.js'
+      )
+    );
   }
 }

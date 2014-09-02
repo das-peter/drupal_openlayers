@@ -46,12 +46,11 @@ class openlayers_behavior_dragpan extends openlayers_behavior {
     return $form;
   }
 
-  /**
-   * Render.
-   */
-  function render(&$map) {
-    drupal_add_js(drupal_get_path('module', 'openlayers') .
-      '/plugins/behaviors/openlayers_behavior_dragpan.js');
-    return $this->options;
+  function attached() {
+    return array(
+      'js' => array(
+        drupal_get_path('module', 'openlayers') . '/plugins/behaviors/openlayers_behavior_dragpan.js'
+      )
+    );
   }
 }

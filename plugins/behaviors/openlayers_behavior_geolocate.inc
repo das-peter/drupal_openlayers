@@ -58,21 +58,11 @@ class openlayers_behavior_geolocate extends openlayers_behavior {
     );
   }
 
-  function js_dependency() {
+  function attached() {
     return array(
-      'OpenLayers.Control.Geolocate'
+      'js' => array(
+        drupal_get_path('module', 'openlayers') . '/plugins/behaviors/openlayers_behavior_geolocate.js'
+      )
     );
-  }
-
-  /**
-   * Render.
-   */
-  function render(&$map) {
-    //make sure that $option['bind'] is a true boolean, and not a string '0'.
-    $this->options['bind'] = !!$this->options['bind'];
-
-    drupal_add_js(drupal_get_path('module', 'openlayers') .
-      '/plugins/behaviors/openlayers_behavior_geolocate.js');
-    return $this->options;
   }
 }
