@@ -8,7 +8,7 @@
 /**
  * The OpenLayers library URI.
  */
-define('OPENLAYERS_DOWNLOAD_URI', 'http://openlayers.org/download/OpenLayers-2.13.tar.gz');
+define('OPENLAYERS_DOWNLOAD_URI', 'https://github.com/openlayers/openlayers/archive/release-2.13.1.zip');
 
 /**
  * Implementation of hook_drush_command().
