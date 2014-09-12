@@ -43,7 +43,6 @@ function openlayers_ui_admin_settings($form, &$form_state) {
     '#prefix' => '<div id="default_map_ajax">',
     '#suffix' => '</div>',
     '#type' => 'openlayers',
-    '#description' => t('This is the map set as default.'),
     '#map' => 'map_mapquest_openstreetmap'
   );
 
