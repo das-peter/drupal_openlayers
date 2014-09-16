@@ -1,6 +1,6 @@
 <?php
 
-class openlayers_maps_ui extends ctools_export_ui {
+class openlayers_maps_ui extends openlayers_objects_ui {
 
   /**
    * hook_menu() entry point.

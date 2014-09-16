@@ -6,3 +6,4 @@ dependencies[] = "openlayers"
 
 configure = admin/structure/openlayers
 files[] = openlayers_ui.module
+files[] = includes/openlayers_objects_ui.class.php
