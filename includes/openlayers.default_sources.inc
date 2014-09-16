@@ -93,5 +93,17 @@ function openlayers_default_sources() {
   );
   $export['source_imagestatic'] = $source;
 
+  $source = new stdClass();
+  $source->disabled = FALSE; /* Edit this to true to make a default source disabled initially */
+  $source->api_version = 1;
+  $source->machine_name = 'source_tiledebug';
+  $source->name = 'Tile debug';
+  $source->description = 'A pseudo tile source, which does not fetch tiles from a server, but renders a grid outline for the tile grid/projection along with the coordinates for each tile.';
+  $source->class = 'openlayers_source_tiledebug';
+  $source->options = array(
+    'maxZoom' => 22
+  );
+  $export['source_tiledebug'] = $source;
+
   return $export;
 }

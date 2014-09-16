@@ -36,7 +36,11 @@ function openlayers_default_interactions() {
   $interaction->name = 'DragPan';
   $interaction->description = 'DragPan interaction description';
   $interaction->class = 'openlayers_interaction_dragpan';
-  $interaction->options = array();
+  $interaction->options = array(
+    'decay' => -0.005,
+    'minVelocity' => 0.05,
+    'delay' => 100,
+  );
   $export['interaction_dragpan'] = $interaction;
 
   $interaction = new stdClass;

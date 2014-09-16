@@ -216,9 +216,46 @@ function openlayers_default_maps() {
       0 => 'layer_tile_openstreetmap',
     ),
     'controls' => array(),
-    'interactions' => array(),
+    'interactions' => array(
+      0 => 'interaction_doubleclickzoom',
+      1 => 'interaction_dragpan',
+      2 => 'interaction_mousewheelzoom',
+    ),
   );
   $export['map_openstreetmap'] = $map;
+
+  $map = new stdClass();
+  $map->disabled = FALSE; /* Edit this to true to make a default map disabled initially */
+  $map->api_version = 1;
+  $map->machine_name = 'map_openstreetmap_tiledebug';
+  $map->name = 'OpenStreetMap with tile debug.';
+  $map->description = '';
+  $map->class = 'openlayers_map_map';
+  $map->options = array(
+    'width' => 'auto',
+    'height' => '300px',
+    'contextualLinks' => 1,
+    'provideBlock' => 1,
+    'view' => array(
+      'center' => array(
+        'lat' => '0',
+        'lon' => '0',
+      ),
+      'rotation' => '0',
+      'zoom' => '2',
+    ),
+    'layers' => array(
+      0 => 'layer_tile_openstreetmap',
+      1 => 'layer_tile_tiledebug'
+    ),
+    'controls' => array(),
+    'interactions' => array(
+      0 => 'interaction_doubleclickzoom',
+      1 => 'interaction_dragpan',
+      2 => 'interaction_mousewheelzoom',
+    ),
+  );
+  $export['map_openstreetmap_tiledebug'] = $map;
 
   $map = new stdClass;
   $map->disabled = TRUE;
@@ -236,7 +273,7 @@ function openlayers_default_maps() {
         'lon' => '0',
       ),
       'rotation' => '0',
-      'zoom' => '0',
+      'zoom' => '2',
     ),
     'contextualLinks' => 0,
     'provideBlock' => 0,

@@ -13,8 +13,7 @@
  * @see system_settings_form()
  */
 function openlayers_ui_admin_settings($form, &$form_state) {
-
-  /*
+/*
   $form['test'] = array(
     '#type' => 'openlayers',
     '#map' => array(
@@ -89,26 +88,26 @@ function openlayers_ui_admin_settings($form, &$form_state) {
           'zoom' => '2',
         ),
         'layers' => array(
-          '0' => array(
-            'name' => 'Ma super layer',
-            'machine_name' => 'plouf',
-            'class' => 'openlayers_layer_tile',
-            'options' => array(
-              'source' => array(
-                'name' => 'Ma super source',
-                'class' => 'openlayers_source_osm'
-              ),
-            )
-          ),
+          0 => 'layer_tile_mapquest_sat',
+          1 => 'layer_tile_mapquest_hyb',
         ),
         'controls' => array(
           'control_zoomslider',
           'openlayers_control_attribution' => array(
             'name' => 'Control attribution',
-            'machine_name' => 'openlayers_control_attribution',
             'class' => 'openlayers_control_attribution',
             'options' => array(
-              'collapsible' => 1
+              'collapsible' => 0
+            )
+          ),
+        ),
+        'interactions' => array(
+          'interaction_dragpan' => array(
+            'class' => 'openlayers_interaction_dragpan',
+            'options' => array(
+              'decay' => -0.000125,
+              'minVelocity' => 0.05,
+              'delay' => 100,
             )
           ),
         ),
@@ -117,7 +116,7 @@ function openlayers_ui_admin_settings($form, &$form_state) {
   );
 
   return system_settings_form($form);
-  */
+*/
 
   ctools_include('plugins');
   ctools_include('export');
