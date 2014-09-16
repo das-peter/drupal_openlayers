@@ -14,6 +14,111 @@
  */
 function openlayers_ui_admin_settings($form, &$form_state) {
 
+  /*
+  $form['test'] = array(
+    '#type' => 'openlayers',
+    '#map' => array(
+      'name' => 'super test',
+      'machine_name' => 'super_test',
+      'class' => 'openlayers_map_map',
+      'options' => array(
+        'width' => 'auto',
+        'height' => '300px',
+        'contextualLinks' => 0,
+        'provideBlock' => 0,
+        'view' => array(
+          'center' => array(
+            'lat' => '0',
+            'lon' => '0',
+          ),
+          'rotation' => '0',
+          'zoom' => '2',
+        ),
+        'layers' => array(
+          '0' => array(
+            'name' => 'Ma super layer',
+            'machine_name' => 'plouf',
+            'class' => 'openlayers_layer_tile',
+            'options' => array(
+              'source' => array(
+                'name' => 'Ma super source',
+                'class' => 'openlayers_source_osm'
+              ),
+            )
+          ),
+        ),
+        'controls' => array(
+          'control_mouseposition',
+          'openlayers_control_attribution' => array(
+            'name' => 'Control attribution',
+            'machine_name' => 'openlayers_control_attribution',
+            'class' => 'openlayers_control_attribution',
+            'options' => array(
+              'collapsible' => 1
+            )
+          ),
+          'control_rotate',
+          'control_zoom',
+        ),
+        'interactions' => array(
+          'interaction_doubleclickzoom',
+          'interaction_dragpan',
+          'interaction_dragrotateandzoom',
+          'interaction_mousewheelzoom',
+        ),
+      )
+    )
+  );
+
+  $form['test2'] = array(
+    '#type' => 'openlayers',
+    '#map' => array(
+      'name' => 'super test',
+      'class' => 'openlayers_map_map',
+      'options' => array(
+        'width' => 'auto',
+        'height' => '300px',
+        'contextualLinks' => 0,
+        'provideBlock' => 0,
+        'view' => array(
+          'center' => array(
+            'lat' => '0',
+            'lon' => '0',
+          ),
+          'rotation' => '0',
+          'zoom' => '2',
+        ),
+        'layers' => array(
+          '0' => array(
+            'name' => 'Ma super layer',
+            'machine_name' => 'plouf',
+            'class' => 'openlayers_layer_tile',
+            'options' => array(
+              'source' => array(
+                'name' => 'Ma super source',
+                'class' => 'openlayers_source_osm'
+              ),
+            )
+          ),
+        ),
+        'controls' => array(
+          'control_zoomslider',
+          'openlayers_control_attribution' => array(
+            'name' => 'Control attribution',
+            'machine_name' => 'openlayers_control_attribution',
+            'class' => 'openlayers_control_attribution',
+            'options' => array(
+              'collapsible' => 1
+            )
+          ),
+        ),
+      )
+    )
+  );
+
+  return system_settings_form($form);
+  */
+
   ctools_include('plugins');
   ctools_include('export');
   $maps = ctools_export_crud_load_all('openlayers_maps');

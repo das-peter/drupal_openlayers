@@ -11,9 +11,10 @@ document.namespaces;
       if (typeof(Drupal.settings.openlayers) === 'object' && Drupal.settings.openlayers.maps) {
         $('.openlayers-map').once('openlayers-map', function() {
           var map_id = $(this).attr('id');
-          if (Drupal.settings.openlayers.maps[map_id]) {
+          if (map_id in Drupal.settings.openlayers.maps) {
             try {
               var object = Drupal.settings.openlayers.maps[map_id];
+
               var layers = object.layer || [];
               var controls = object.control || [];
               var interactions = object.interaction || [];
@@ -24,6 +25,7 @@ document.namespaces;
               objects.controls = {};
               objects.interactions = {};
               objects.layers = {};
+              objects.maps = {};
 
               object.map.options.layers = [];
               object.map.options.controls = [];
@@ -31,6 +33,7 @@ document.namespaces;
 
               Drupal.openlayers.console.info("Creating map object...");
               var map = Drupal.openlayers[object.map.class](object.map.options);
+              objects.maps[map_id] = map;
               Drupal.openlayers.console.info("Creating map object... done !");
 
               Drupal.openlayers.console.info("Building sources...");
@@ -41,8 +44,7 @@ document.namespaces;
 
               Drupal.openlayers.console.info("Building controls...");
               controls.map(function(data){
-                objects.controls[data.machine_name] = Drupal.openlayers.getObject(context, 'controls', data, map);
-                map.addControl(objects.controls[data.machine_name]);
+                Drupal.openlayers.getObject(context, 'controls', data, map).setMap(map);
               });
               Drupal.openlayers.console.info("Building controls... done !");
 
@@ -63,9 +65,10 @@ document.namespaces;
               });
               Drupal.openlayers.console.info("Building layers... done !");
 
+
               // Attach data to map DOM object
               Drupal.openlayers.console.info("Caching objects...");
-              jQuery(context).data('openlayers', {'map': map, 'objects': objects});
+              jQuery(context).data('openlayers', {'objects': objects});
               Drupal.openlayers.console.info("Caching objects... done !");
 
             }

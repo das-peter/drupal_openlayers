@@ -5,15 +5,15 @@ abstract class openlayers_layer extends openlayers_object {
   protected $attached = array();
 
   public function getSource() {
-    return $this->getOption('source');
+    if ($source = $this->getOption('source')) {
+      return openlayers_object_load('source', $this->getOption('source'));
+    }
+    return FALSE;
   }
 
-  public function attached() {
-    if ($source = $this->getSource()) {
-      $source = openlayers_object_load('source', $source);
-      $this->attached = drupal_array_merge_deep($this->attached, $source->attached());
+  public function develop() {
+    if ($data = $this->getSource()) {
+      $this->setOption('source', $data);
     }
-    $this->attached = drupal_array_merge_deep($this->attached, parent::attached());
-    return $this->attached;
   }
 }

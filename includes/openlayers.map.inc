@@ -3,7 +3,6 @@
 class openlayers_map extends openlayers_object {
 
   protected $id;
-  protected $attached = array();
 
   public function getId() {
     if (isset($this->id)) {
@@ -16,69 +15,103 @@ class openlayers_map extends openlayers_object {
   }
 
   public function getLayers() {
-    if ($this->getOption('layers')) {
-      if (is_array($this->getOption('layers'))) {
-        return $this->getOption('layers');
+    if ($layers = $this->getOption('layers')) {
+      $result = array();
+      foreach($layers as $layer) {
+        $result[] = clone openlayers_object_load('layer', $layer);
       }
+      return $result;
     }
-    return FALSE;
+    return array();
   }
 
   public function getSources() {
-    if ($this->getOption('layers')) {
-      if (is_array($this->getOption('layers'))) {
-        $sources = array();
-        foreach($this->getOption('layers') as $index => $machine_name) {
-          $layer = openlayers_object_load('layer', $machine_name);
-          if ($source = $layer->getOption('source')) {
-            $sources[] = $source;
-          }
-        }
-        return $sources;
+    $sources = array();
+    $layers = $this->getLayers();
+
+    foreach($layers as $index => $layer) {
+      if ($source = $layer->getSource()) {
+        $sources[] = $source;
       }
     }
-    return FALSE;
+
+    return $sources;
   }
 
   public function getControls() {
-    if ($this->getOption('controls')) {
-      if (is_array($this->getOption('controls'))) {
-        return $this->getOption('controls');
+    if ($controls = $this->getOption('controls')) {
+      $result = array();
+      foreach($controls as $control) {
+        $result[] = clone openlayers_object_load('control', $control);
       }
+      return $result;
     }
-    return FALSE;
+    return array();
   }
 
   public function getInteractions() {
-    if ($this->getOption('interactions')) {
-      if (is_array($this->getOption('interactions'))) {
-        return $this->getOption('interactions');
+    if ($interactions = $this->getOption('interactions')) {
+      $result = array();
+      foreach($interactions as $index => $interaction) {
+        $result[] = clone openlayers_object_load('interaction', $interaction);
       }
+      return $result;
     }
-    return FALSE;
+    return array();
   }
 
-  public function attached() {
-    $this->attached = parent::attached();
-
+  public function develop() {
     if ($layers = $this->getLayers()) {
-      foreach($layers as $index => $machine_name) {
-        $layer = openlayers_object_load('layer', $machine_name);
-        $this->attached = drupal_array_merge_deep($this->attached, $layer->attached());
+      $this->options['layers'] = array();
+      foreach ($layers as $data) {
+        $object = clone openlayers_object_load('layer', $data);
+        $this->options['layers'][] = $object;
       }
     }
-    if ($interactions = $this->getControls()) {
-      foreach($interactions as $index => $machine_name) {
-        $control = openlayers_object_load('control',$machine_name);
-        $this->attached = drupal_array_merge_deep($this->attached, $control->attached());
+    if ($controls = $this->getControls()) {
+      $this->options['controls'] = array();
+      foreach ($controls as $data) {
+        $object = clone openlayers_object_load('control', $data);
+        $this->options['controls'][] = $object;
       }
     }
     if ($interactions = $this->getInteractions()) {
-      foreach($interactions as $index => $machine_name) {
-        $interaction = openlayers_object_load('interaction',$machine_name);
-        $this->attached = drupal_array_merge_deep($this->attached, $interaction->attached());
+      $this->options['interactions'] = array();
+      foreach ($interactions as $index => $data) {
+        $object = clone openlayers_object_load('interaction', $data);
+        $this->options['interactions'][] = $object;
       }
     }
+  }
+
+  public function getObjects() {
+    $objects = array();
+    $objects['layer'] = $this->getLayers();
+    $objects['source'] = $this->getSources();
+    $objects['control'] = $this->getControls();
+    $objects['interaction'] = $this->getInteractions();
+
+    $objects = unserialize(serialize($objects));
+
+    foreach($objects['layer'] as $index => $layer) {
+      $objects['layer'][$index]->options['source'] = $objects['layer'][$index]->options['source']->machine_name;
+    }
+
+    return $objects;
+  }
+
+
+  public function attached() {
+    $this->attached = parent::attached();
+    $objects = $this->getObjects();
+
+    foreach($objects as $type => $list) {
+      if ($list == FALSE) continue;
+      foreach($list as $index => $data) {
+        $this->attached = drupal_array_merge_deep($this->attached, $data->attached());
+      }
+    }
+
     return $this->attached;
   }
 }

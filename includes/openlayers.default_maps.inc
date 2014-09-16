@@ -139,7 +139,8 @@ function openlayers_default_maps() {
       'zoom' => '2',
     ),
     'layers' => array(
-      0 => 'layer_tile_mapquest_hyb',
+      0 => 'layer_tile_mapquest_sat',
+      1 => 'layer_tile_mapquest_hyb',
     ),
     'controls' => array(
       0 => 'control_attribution',

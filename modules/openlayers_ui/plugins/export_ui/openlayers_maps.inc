@@ -310,8 +310,7 @@ function openlayers_map_form_styles_submit($form, &$form_state) {
 }
 
 function openlayers_map_form_preview($form, &$form_state) {
-  $map = openlayer_object_factory_create('map', $form_state['item']->class);
-  $map->init($form_state['item']);
+  $map = openlayer_object_factory_create('map', $form_state['item']->class, $form_state['item']);
   $map->setOption('contextualLinks', FALSE);
 
   $form['preview'] = array(

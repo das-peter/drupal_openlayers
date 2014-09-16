@@ -44,7 +44,6 @@ class openlayers_layer_image extends openlayers_layer {
   }
 
   function options_form_validate($form, &$form_state) {
-    dpm($form_state);
     if ($file = file_load($form_state['options']['file'])) {
       // Do something with the file if needed.
     } else {
