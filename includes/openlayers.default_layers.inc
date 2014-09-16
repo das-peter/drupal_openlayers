@@ -93,5 +93,41 @@ function openlayers_default_layers() {
   );
   $export['layer_tile_tiledebug'] = $layer;
 
+  $layer = new stdClass();
+  $layer->disabled = FALSE; /* Edit this to true to make a default layer disabled initially */
+  $layer->api_version = 1;
+  $layer->machine_name = 'layer_tile_stamen_terrain_labels';
+  $layer->name = 'Stamen terrain labels';
+  $layer->description = '';
+  $layer->class = 'openlayers_layer_tile';
+  $layer->options = array(
+    'source' => 'source_stamen1'
+  );
+  $export['layer_tile_stamen_terrain_labels'] = $layer;
+
+  $layer = new stdClass();
+  $layer->disabled = FALSE; /* Edit this to true to make a default layer disabled initially */
+  $layer->api_version = 1;
+  $layer->machine_name = 'layer_tile_stamen_watercolor';
+  $layer->name = 'Stamen watercolor';
+  $layer->description = '';
+  $layer->class = 'openlayers_layer_tile';
+  $layer->options = array(
+    'source' => 'source_stamen2'
+  );
+  $export['layer_tile_stamen_watercolor'] = $layer;
+
+  $layer = new stdClass();
+  $layer->disabled = FALSE; /* Edit this to true to make a default layer disabled initially */
+  $layer->api_version = 1;
+  $layer->machine_name = 'layer_tile_esri';
+  $layer->name = 'ESRI';
+  $layer->description = '';
+  $layer->class = 'openlayers_layer_tile';
+  $layer->options = array(
+    'source' => 'source_esri'
+  );
+  $export['layer_tile_esri'] = $layer;
+
   return $export;
 }

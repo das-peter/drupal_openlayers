@@ -105,5 +105,41 @@ function openlayers_default_sources() {
   );
   $export['source_tiledebug'] = $source;
 
+  $source = new stdClass();
+  $source->disabled = FALSE; /* Edit this to true to make a default source disabled initially */
+  $source->api_version = 1;
+  $source->machine_name = 'source_stamen1';
+  $source->name = 'Stamen terrain labels';
+  $source->description = '';
+  $source->class = 'openlayers_source_stamen';
+  $source->options = array(
+    'layer' => 'terrain-labels'
+  );
+  $export['source_stamen1'] = $source;
+
+  $source = new stdClass();
+  $source->disabled = FALSE; /* Edit this to true to make a default source disabled initially */
+  $source->api_version = 1;
+  $source->machine_name = 'source_stamen2';
+  $source->name = 'Stamen watercolor';
+  $source->description = '';
+  $source->class = 'openlayers_source_stamen';
+  $source->options = array(
+    'layer' => 'watercolor'
+  );
+  $export['source_stamen2'] = $source;
+
+  $source = new stdClass();
+  $source->disabled = FALSE; /* Edit this to true to make a default source disabled initially */
+  $source->api_version = 1;
+  $source->machine_name = 'source_esri';
+  $source->name = 'ESRI';
+  $source->description = '';
+  $source->class = 'openlayers_source_xyz';
+  $source->options = array(
+    'url' => 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
+  );
+  $export['source_esri'] = $source;
+
   return $export;
 }

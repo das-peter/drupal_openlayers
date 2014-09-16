@@ -9,41 +9,13 @@ function openlayers_openlayers_source_xyz_openlayers_source() {
 }
 
 class openlayers_source_xyz extends openlayers_source {
-
-  function options_init() {
+  function options_form() {
     return array(
-      'data' => array()
-    );
-  }
-
-  function options_form($defaults = array()) {
-    $layer_types = array(
-      'Road' => 'Road',
-      'AerialWithLabels' => 'Hybrid',
-      'Aerial' => 'Aerial',
-    );
-
-    return array(
-      'type' => array(
-        '#title' => t('Source type'),
-        '#type' => 'select',
-        '#default_value' => isset($this->data['type']) ? $this->data['type'] : 'Road',
-        '#options' => $layer_types
+      'url' => array(
+        '#title' => t('URL(s)'),
+        '#type' => 'textarea',
+        '#default_value' => $this->getOption('url') ? $this->getOption('url') : '',
       )
     );
   }
-
-  function settings_form() {
-    return array();
-  }
-
-  function attached() {
-    return array(
-      'js' => array(
-        drupal_get_path('module', 'openlayers') . '/plugins/source/openlayers_source_xyz.js'
-      )
-    );
-  }
-
-  function render(&$map) {}
 }
