@@ -4,6 +4,7 @@ function openlayers_openlayers_source_stamen_openlayers_source() {
   return array(
     'handler' => array(
       'class' => 'openlayers_source_stamen',
+      'file' => 'openlayers_source_stamen.inc',
     )
   );
 }

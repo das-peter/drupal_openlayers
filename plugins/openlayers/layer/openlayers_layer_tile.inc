@@ -4,6 +4,7 @@ function openlayers_openlayers_layer_tile_openlayers_layer() {
   return array(
     'handler' => array(
       'class' => 'openlayers_layer_tile',
+      'file' => 'openlayers_layer_tile.inc',
     )
   );
 }

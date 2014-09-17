@@ -4,6 +4,7 @@ function openlayers_openlayers_map_map_openlayers_map() {
   return array(
     'handler' => array(
       'class' => 'openlayers_map_map',
+      'file' => 'openlayers_map_map.inc'
     )
   );
 }

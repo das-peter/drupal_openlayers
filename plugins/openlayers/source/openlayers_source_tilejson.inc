@@ -4,6 +4,7 @@ function openlayers_openlayers_source_tilejson_openlayers_source() {
   return array(
     'handler' => array(
       'class' => 'openlayers_source_tilejson',
+      'file' => 'openlayers_source_tilejson.inc'
     )
   );
 }

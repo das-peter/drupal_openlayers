@@ -4,6 +4,7 @@ function openlayers_openlayers_layer_heatmap_openlayers_layer() {
   return array(
     'handler' => array(
       'class' => 'openlayers_layer_heatmap',
+      'file' => 'openlayers_layer_heatmap.inc',
     )
   );
 }

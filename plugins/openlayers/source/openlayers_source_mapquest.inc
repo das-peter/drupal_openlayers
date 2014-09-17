@@ -4,6 +4,7 @@ function openlayers_openlayers_source_mapquest_openlayers_source() {
   return array(
     'handler' => array(
       'class' => 'openlayers_source_mapquest',
+      'file' => 'openlayers_source_mapquest.inc',
     )
   );
 }

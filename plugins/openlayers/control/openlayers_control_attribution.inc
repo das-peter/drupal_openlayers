@@ -4,6 +4,7 @@ function openlayers_openlayers_control_attribution_openlayers_control() {
   return array(
     'handler' => array(
       'class' => 'openlayers_control_attribution',
+      'file' => 'openlayers_control_attribution.inc',
     )
   );
 }

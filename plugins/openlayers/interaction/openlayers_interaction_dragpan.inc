@@ -4,6 +4,7 @@ function openlayers_openlayers_interaction_dragpan_openlayers_interaction() {
   return array(
     'handler' => array(
       'class' => 'openlayers_interaction_dragpan',
+      'file' => 'openlayers_interaction_dragpan.inc',
     )
   );
 }

@@ -4,6 +4,7 @@ function openlayers_openlayers_source_xyz_openlayers_source() {
   return array(
     'handler' => array(
       'class' => 'openlayers_source_xyz',
+      'file' => 'openlayers_source_xyz.inc'
     )
   );
 }

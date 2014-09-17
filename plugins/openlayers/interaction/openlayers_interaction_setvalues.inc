@@ -4,6 +4,7 @@ function openlayers_openlayers_interaction_setvalues_openlayers_interaction() {
   return array(
     'handler' => array(
       'class' => 'openlayers_interaction_setvalues',
+      'file' => 'openlayers_interaction_setvalues.inc',
     )
   );
 }
