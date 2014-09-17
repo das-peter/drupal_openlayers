@@ -105,7 +105,6 @@ function openlayers_render_build_map(openlayers_map $map) {
 
   drupal_alter('openlayers_map', $map);
 
-  // Return themed map if no errors found
   $setting = array(
     'openlayers' => array(
       'maps' => array(
@@ -119,6 +118,21 @@ function openlayers_render_build_map(openlayers_map $map) {
     'type' => 'setting'
   );
 
+  $current_path = current_path();
+  if ('system/ajax' == $current_path) {
+    $current_path = $_SESSION['current_path'];
+  }
+
+  $links = array(
+    'openlayers' => array(
+      'title' => 'Edit this map',
+      'href' => 'admin/structure/openlayers/maps/list/' . $map->machine_name . '/edit',
+      'query' => array(
+        'destination' => $current_path
+      )
+    ),
+  );
+
   $styles = array(
     'width' => $map->getOption('width'),
     'height' => $map->getOption('height')
@@ -128,27 +142,6 @@ function openlayers_render_build_map(openlayers_map $map) {
   foreach ($styles as $property => $value) {
     $css_styles .= $property . ':' . $value . ';';
   }
-
-  $current_path = current_path();
-  if ('system/ajax' == $current_path) {
-    $current_path = $_SESSION['current_path'];
-  }
-
-  $links = array(
-    'openlayers' => array(
-      'title' => 'Edit',
-      'href' => 'admin/structure/openlayers/maps/list/' . $map->machine_name . '/edit',
-      'query' => array(
-        'destination' => $current_path
-      )
-    ),
-  );
-
-  $container_classes = implode(" ", array(
-    'contextual-links-region',
-    'openlayers-container',
-    'openlayers-container-map-' . $map->getId()
-  ));
 
   $build = array(
     '#type' => 'container',
@@ -164,7 +157,11 @@ function openlayers_render_build_map(openlayers_map $map) {
     ),
     '#attributes' => array(
       'id' => 'openlayers-container-' . $map->getId(),
-      'class' => $container_classes
+      'style' => $css_styles,
+      'class' => array(
+        'contextual-links-region',
+        'openlayers-container'
+      )
     ),
     'map' => array(
       '#theme' => 'html_tag',
@@ -172,12 +169,14 @@ function openlayers_render_build_map(openlayers_map $map) {
       '#value' => '',
       '#attributes' => array(
         'id' => $map->getId(),
-        'style' => $css_styles,
-        'class' => 'openlayers-map openlayers-map-' . $map->getId()
+        'class' => array(
+          'openlayers-map',
+          $map->getId()
+        ),
       ),
       '#attached' => array(
-        'js' => $attached['js']
-      )
+        'js' => $attached['js'],
+      ),
     )
   );
 
@@ -258,7 +257,7 @@ function openlayers_block_info() {
   foreach ($all_maps as $key => $map) {
     $map = openlayers_object_load('map', $map->machine_name);
     if ($map->getOption('provideBlock', 1)) {
-      $key = _olebs_get_block_id($key);
+      $key = _openlayers_get_block_id($key);
       $blocks[$key]['info'] = t('OpenLayers block for ' . $map->name);
     }
   }
@@ -272,7 +271,7 @@ function openlayers_block_info() {
 function openlayers_block_view($delta = '') {
   ctools_include('export');
   $block = array();
-  $delta = _olebs_get_map_name($delta);
+  $delta = _openlayers_get_map_name($delta);
 
   if ($map = openlayers_object_load('map', $delta)) {
     if ($map->getOption('provideBlock', 1)) {
@@ -282,4 +281,26 @@ function openlayers_block_view($delta = '') {
   }
 
   return $block;
+}
+
+/**
+ * Helper function
+ * Return the blocks delta according to the map_name.
+ */
+function _openlayers_get_block_id($map_name) {
+  return substr(sha1($map_name), 0, -32) . '_mapblock';
+}
+/**
+ * Helper function
+ * Return the map name according to the block delta.
+ */
+function _openlayers_get_map_name($delta) {
+  $all_maps = ctools_export_crud_load_all('openlayers_maps');
+
+  foreach ($all_maps as $key => $map) {
+    if (_openlayers_get_block_id($key) == $delta) {
+      return $key;
+    }
+  }
+  return FALSE;
 }
