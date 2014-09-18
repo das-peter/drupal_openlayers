@@ -138,7 +138,6 @@ function openlayers_layer_form_third($form, &$form_state) {
 }
 
 function openlayers_layer_form_third_validate($form, &$form_state) {
-
 /*
   $layer = openlayer_object_factory_create('layer', $form_state['item']->class, $form_state['item']);
   $layer->init($form_state['item']);
@@ -158,5 +157,5 @@ function openlayers_layer_form_third_submit($form, &$form_state) {
     file_usage_add($file, 'openlayers', 'layer', $form_state['item']->machine_name);
   }
 
-  $form_state['item']->options = array_replace_recursive((array) $form_state['item']->options, $form_state['values']['options']);
+  //$form_state['item']->options = array_replace_recursive((array) $form_state['item']->options, $form_state['values']['options']);
 }

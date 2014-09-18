@@ -19,17 +19,22 @@ document.namespaces;
               var controls = object.control || [];
               var interactions = object.interaction || [];
               var sources = object.source || [];
+              var components = object.component || [];
               // Todo: see why this is not working with ajax.
               var objects = {};
               objects.sources = {};
               objects.controls = {};
               objects.interactions = {};
+              objects.components = {};
               objects.layers = {};
               objects.maps = {};
+
+              console.log(object);
 
               object.map.options.layers = [];
               object.map.options.controls = [];
               object.map.options.interactions = [];
+              object.map.options.components = [];
 
               Drupal.openlayers.console.info("Creating map object...");
               var map = Drupal.openlayers[object.map.class](object.map.options);
@@ -65,6 +70,11 @@ document.namespaces;
               });
               Drupal.openlayers.console.info("Building layers... done !");
 
+              Drupal.openlayers.console.info("Building components...");
+              components.map(function(data){
+                objects.components[data.machine_name] = Drupal.openlayers.getObject(context, 'components', data, map);
+              });
+              Drupal.openlayers.console.info("Building components... done !");
 
               // Attach data to map DOM object
               Drupal.openlayers.console.info("Caching objects...");
@@ -102,6 +112,7 @@ document.namespaces;
         cache.controls = [];
         cache.layers = [];
         cache.interactions = [];
+        cache.components = [];
         cache.map = [];
       }
 

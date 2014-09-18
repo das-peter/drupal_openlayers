@@ -27,6 +27,7 @@ function openlayers_ui_openlayers_maps_ctools_export_ui() {
         'layers' => t('Layers'),
         'controls' => t('Controls'),
         'interactions' => t('Interactions'),
+        'components' => t('Components'),
         'styles' => t('Styles'),
         'preview' => t('Preview')
       ),
@@ -45,6 +46,9 @@ function openlayers_ui_openlayers_maps_ctools_export_ui() {
         ),
         'interactions' => array(
           'form id' => 'openlayers_map_form_interactions'
+        ),
+        'components' => array(
+          'form id' => 'openlayers_map_form_components'
         ),
         'styles' => array(
           'form id' => 'openlayers_map_form_styles'
@@ -300,6 +304,44 @@ function openlayers_map_form_interactions($form, &$form_state) {
 function openlayers_map_form_interactions_submit($form, &$form_state) {
   $form_state['item']->options = array_replace_recursive($form_state['item']->options, $form_state['values']['options']);
   $form_state['item']->options['interactions'] = array_filter(array_values($form_state['values']['options']['interactions']));
+}
+
+function openlayers_map_form_components($form, &$form_state) {
+  $all_components = ctools_export_crud_load_all('openlayers_components');
+
+  $header = array(
+    'name' => t('Name'),
+    'machine_name' => t('Machine name'),
+    'description' => t('Description'),
+  );
+
+  $rows = array();
+  foreach ($all_components as $machine_name => $component) {
+    $rows[$machine_name] = array(
+      'name' => $component->name,
+      'machine_name' => $component->machine_name,
+      'description' => $component->description,
+    );
+  }
+
+  $form['options']['#tree'] = TRUE;
+
+  if (!isset($form_state['item']->options['components'])) {
+    $form_state['item']->options['components'] = array();
+  }
+
+  $form['options']['components'] = array(
+    '#type' => 'tableselect',
+    '#header' => $header,
+    '#options' => $rows,
+    '#default_value' => drupal_map_assoc($form_state['item']->options['components'])
+  );
+
+  return $form;
+}
+function openlayers_map_form_components_submit($form, &$form_state) {
+  $form_state['item']->options = array_replace_recursive($form_state['item']->options, $form_state['values']['options']);
+  $form_state['item']->options['components'] = array_filter(array_values($form_state['values']['options']['components']));
 }
 
 function openlayers_map_form_styles($form, &$form_state) {

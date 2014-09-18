@@ -1,6 +1,7 @@
 <?php
 
 include 'includes/openlayers.object.inc';
+include 'includes/openlayers.component.inc';
 include 'includes/openlayers.interaction.inc';
 include 'includes/openlayers.map.inc';
 include 'includes/openlayers.control.inc';
@@ -44,6 +45,10 @@ function openlayers_ctools_plugin_type() {
       'classes' => array('handler')
     ),
     'interaction' => array(
+      'use hooks' => FALSE,
+      'classes' => array('handler')
+    ),
+    'component' => array(
       'use hooks' => FALSE,
       'classes' => array('handler')
     )
@@ -100,7 +105,6 @@ function openlayers_render_build_map(openlayers_map $map) {
   $objects = $map->getObjects();
   $attached = $map->attached();
 
-  $map->setOption('target', $map->getId());
   $objects['map'] = $map->toArray();
 
   drupal_alter('openlayers_map', $map);
@@ -175,7 +179,10 @@ function openlayers_render_build_map(openlayers_map $map) {
         ),
       ),
       '#attached' => array(
+        'library' => $attached['library'],
+        'libraries_load' => $attached['libraries_load'],
         'js' => $attached['js'],
+        'css' => $attached['css']
       ),
     )
   );

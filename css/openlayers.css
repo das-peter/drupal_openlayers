@@ -27,3 +27,10 @@
   height:100%;
   width:100%;
 }
+
+.popover {
+  z-index: auto;
+}
+.popover-content {
+  min-width: 180px;
+}

@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * Implements hook_views_api().
+ */
+function openlayers_views_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'openlayers_views') .'/views',
+  );
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function openlayers_views_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'openlayers' && !empty($plugin)) {
+    return 'plugins/' . $plugin;
+  }
+}
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function openlayers_views_ctools_plugin_api($module, $api) {
+  $path = drupal_get_path('module', 'openlayers_views') . '/includes';
+  return array(
+    'version' => 1,
+    'path' => $path
+  );
+}
+

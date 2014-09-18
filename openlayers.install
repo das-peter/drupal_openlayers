@@ -288,6 +288,59 @@ function openlayers_schema() {
       'unique keys' => array(
         'machine_name' => array('machine_name'),
       ),
+    ),
+    $schema['openlayers_components'] = array(
+      'description' => 'Storage for user defined OpenLayers components.',
+      'export' => array(
+        'admin_title' => 'machine_name',
+        'key' => 'machine_name',
+        'key name' => 'Machine name',
+        'primary key' => 'machine_name',
+        'identifier' => 'interaction',
+        'default hook' => 'default_components',
+        'api' => array(
+          'owner' => 'openlayers',
+          'api' => 'default_components',
+          'minimum_version' => 1,
+          'current_version' => 1,
+        ),
+      ),
+      'fields' => array(
+        'machine_name' => array(
+          'type' => 'varchar',
+          'length' => '255',
+          'not null' => TRUE,
+          'default' => '',
+          'description' => 'Component system name.',
+        ),
+        'name' => array(
+          'type' => 'varchar',
+          'length' => '255',
+          'not null' => TRUE,
+          'default' => '',
+          'description' => 'Component name.',
+        ),
+        'description' => array(
+          'type' => 'text',
+          'not null' => TRUE,
+          'description' => 'Component description.',
+        ),
+        'class' => array(
+          'type' => 'text',
+          'not null' => TRUE,
+          'description' => 'Component class.',
+        ),
+        'options' => array(
+          'type' => 'text',
+          'not null' => FALSE,
+          'description' => 'Component options serialized.',
+          'serialize' => TRUE,
+        ),
+      ),
+      'primary key' => array('machine_name'),
+      'unique keys' => array(
+        'machine_name' => array('machine_name'),
+      ),
     )
   );
   return $schema;

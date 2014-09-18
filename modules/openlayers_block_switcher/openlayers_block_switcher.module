@@ -1,0 +1,126 @@
+<?php
+
+/**
+ * Implements hook_block_info().
+ */
+function openlayers_block_switcher_block_info() {
+
+  $maps = _olebs_get_maps_with_blockswitcher();
+  $blocks = array();
+
+  foreach ($maps as $key => $map) {
+    $blockid = _olebs_get_block_id($key);
+    $blocks[$blockid]['info'] = t('OpenLayers layer switcher for ' . $map->name);
+  }
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function openlayers_block_switcher_block_view($delta = '') {
+
+  $block = array();
+  $maps = _olebs_get_maps_with_blockswitcher();
+  $map_name = _olebs_get_map_name($delta);
+
+  $map = openlayers_object_load('map', $map_name);
+
+  $block['subject'] = t('Map layers');
+  $form = drupal_get_form('olebs_blockswitcher_form', $map);
+  $block['content'] = drupal_render($form);
+
+  return $block;
+}
+
+/**
+ * Helper function.
+ * Returns maps with the blockswitcher behavior enabled.
+ *
+ * @return array
+ */
+function _olebs_get_maps_with_blockswitcher() {
+  $maps = &drupal_static(__FUNCTION__);
+
+  if (!isset($maps)) {
+    ctools_include('export');
+    $maps = ctools_export_crud_load_all('openlayers_maps');
+  }
+
+  return $maps;
+}
+
+/**
+ * Helper function.
+ * Returns default configuration.
+ *
+ * @return array
+ */
+function _olebs_get_default_config() {
+  return array(
+    'baselayers_element_type' => 'radios'
+  );
+}
+
+/**
+ * Helper function
+ * Return the blocks delta according to the map_name.
+ */
+function _olebs_get_block_id($map_name) {
+  return substr(sha1($map_name), 0, -32) . '_blockswitcher';
+}
+
+/**
+ * Helper function
+ * Return the map name according to the block delta.
+ */
+function _olebs_get_map_name($delta) {
+  foreach (_olebs_get_maps_with_blockswitcher() as $map_name => $map) {
+    if (_olebs_get_block_id($map_name) == $delta) {
+      return $map_name;
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * Form for the layer switcher.
+ *
+ * @param $form
+ * @param $form_state
+ * @param $map
+ * @return mixed
+ */
+function olebs_blockswitcher_form($form, &$form_state, $map) {
+
+  if ($layers = $map->getOption('layers')) {
+    foreach($layers as $machine_name) {
+      $layer = openlayers_object_load('layer', $machine_name);
+      $options_overlays[$machine_name] = $layer->name;
+    }
+  }
+
+  if (!empty($options_overlays)) {
+    $form['overlays']= array(
+      '#title'   => t('Overlays'),
+      '#type'    => 'radios',
+      '#options' => $options_overlays,
+    );
+  }
+
+  $css_map_name = drupal_clean_css_identifier($map->machine_name);
+
+  $form['map']= array(
+    '#type'    => 'hidden',
+    '#value' => 'openlayers-map-' . $css_map_name,
+  );
+  $form['#attached']['css'] = array();
+  $form['#attached']['library'] = array();
+  $form['#attached']['js'][] = array(
+    'data' => drupal_get_path('module', 'openlayers_block_switcher') . '/olbs.js',
+    'type' => 'file'
+  );
+
+  return $form;
+}

@@ -7,7 +7,12 @@ abstract class openlayers_object {
   public $description;
   public $class;
   public $options = array();
-  protected $attached = array();
+  protected $attached = array(
+    'js' => array(),
+    'css' => array(),
+    'library' => array(),
+    'libraries_load' => array()
+  );
 
   function defauts_properties() {
     return array(
