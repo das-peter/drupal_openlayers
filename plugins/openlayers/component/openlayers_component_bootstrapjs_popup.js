@@ -2,10 +2,8 @@ Drupal.openlayers.openlayers_component_bootstrapjs_popup = function(options, map
 
   jQuery("body").append("<div id='popup'></div>");
 
-  var element = document.getElementById('popup');
-
   var popup = new ol.Overlay({
-    element: element,
+    element: document.getElementById('popup'),
     positioning: 'bottom-center',
     stopEvent: false
   });
@@ -16,19 +14,26 @@ Drupal.openlayers.openlayers_component_bootstrapjs_popup = function(options, map
       function(feature, layer) {
         return feature;
       });
+
+    var element = popup.getElement();
+    jQuery(element).popover('destroy');
+
     if (feature) {
       var geometry = feature.getGeometry();
       var coord = geometry.getCoordinates();
-      popup.setPosition(coord);
+
+      jQuery(element).popover('destroy');
+
       jQuery(element).popover({
         'placement': 'top',
         'html': true,
         'title': feature.get('name'),
         'content': feature.get('description')
       });
+
+      popup.setPosition(coord);
       jQuery(element).popover('show');
-    } else {
-      jQuery(element).popover('destroy');
     }
   });
+
 };
