@@ -17,4 +17,10 @@ class openlayers_component_bootstrapjs_popup extends openlayers_component {
     return $attached;
   }
 
+  function dependencies() {
+    return array(
+      'bootstrapjs'
+    );
+  }
+
 }

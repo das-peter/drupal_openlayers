@@ -29,8 +29,6 @@ document.namespaces;
               objects.layers = {};
               objects.maps = {};
 
-              console.log(object);
-
               object.map.options.layers = [];
               object.map.options.controls = [];
               object.map.options.interactions = [];

@@ -93,4 +93,8 @@ abstract class openlayers_object {
     return $this->attached;
   }
 
+  public function dependencies() {
+    return array();
+  }
+
 }
