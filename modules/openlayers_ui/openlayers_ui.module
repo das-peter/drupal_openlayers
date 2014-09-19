@@ -19,7 +19,7 @@ function openlayers_ui_menu() {
   $items['admin/structure/openlayers/settings'] = array(
     'title' => 'Settings',
     'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => -20,
+    'weight' => 10,
   );
 
  return $items;
