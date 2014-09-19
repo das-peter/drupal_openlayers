@@ -16,7 +16,7 @@ function openlayers_default_components() {
   $component->api_version = 1;
   $component->machine_name = 'component_bootstrapjs_alert';
   $component->name = 'Bootstrap JS alert';
-  $component->description = '';
+  $component->description = 'Display an alert on the top of the map.';
   $component->class = 'openlayers_component_bootstrapjs_alert';
   $component->options = array(
     'message' => '<strong>Success !</strong>The map has been loaded.'
@@ -28,7 +28,7 @@ function openlayers_default_components() {
   $component->api_version = 1;
   $component->machine_name = 'graticule_with_inline_js';
   $component->name = 'Graticule with inline JS';
-  $component->description = '';
+  $component->description = 'Display a graticule on the map.';
   $component->class = 'openlayers_component_evaljs';
   $component->options = array(
     'javascript' => 'var graticule = new ol.Graticule({

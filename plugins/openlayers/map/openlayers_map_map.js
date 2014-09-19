@@ -3,7 +3,7 @@ Drupal.openlayers.openlayers_map_map = function(options, map, context) {
 
   options.view = new ol.View({
     center: [options.view.center.lat, options.view.center.lon],
-    rotation: options.view.rotation,
+    rotation: options.view.rotation * (Math.PI/180),
     zoom: options.view.zoom,
     projection: projection,
     extent: projection.getExtent()

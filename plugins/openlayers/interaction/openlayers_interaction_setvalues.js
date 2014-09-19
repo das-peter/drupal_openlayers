@@ -6,7 +6,7 @@ Drupal.openlayers.openlayers_interaction_setvalues = function(options, map) {
     var selector = '#' + options.longitude;
     jQuery(selector).val(map.getView().getCenter()[1]);
     var selector = '#' + options.rotation;
-    jQuery(selector).val(map.getView().getRotation());
+    jQuery(selector).val(Math.round(map.getView().getRotation()*(180/Math.PI)));
     var selector = '#' + options.zoom;
     jQuery(selector).val(map.getView().getZoom());
   });
