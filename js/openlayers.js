@@ -34,8 +34,8 @@ document.namespaces;
               object.map.options.interactions = [];
               object.map.options.components = [];
 
-              Drupal.openlayers.console.info("Creating map object...");
-              var map = Drupal.openlayers[object.map.class](object.map.options);
+              Drupal.openlayers.console.info("Creating map " + object.map.machine_name + "...");
+              var map = Drupal.openlayers[object.map.class](object.map.options, object.map, context);
               objects.maps[map_id] = map;
               Drupal.openlayers.console.info("Creating map object... done !");
 
@@ -121,10 +121,10 @@ document.namespaces;
       var object;
       if (typeof cache[type][data.machine_name] == 'undefined') {
         Drupal.openlayers.console.info(" Computing " + type + " " + data.machine_name + "...");
-        cache[type][data.machine_name] = Drupal.openlayers[data.class](data.options, map);
+        cache[type][data.machine_name] = Drupal.openlayers[data.class](data.options, map, context);
         object = cache[type][data.machine_name];
       } else {
-        Drupal.openlayers.console.info(" Loading " + type + " " + data.machine_name +" from cache");
+        Drupal.openlayers.console.info(" Loading " + type + " " + data.machine_name +" from cache...");
         object = cache[type][data.machine_name];
       }
 
