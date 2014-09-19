@@ -28,18 +28,18 @@ function openlayers_ui_openlayers_interactions_ctools_export_ui() {
     'form info' => array(
       'order' => array(
         'start' => t('Administrative settings'),
-        'second' => t('Interaction type'),
-        'third' => t('Interaction type options'),
+        'type' => t('Interaction type'),
+        'options' => t('Interaction type options'),
       ),
       'forms' => array(
         'start' => array(
           'form id' => 'openlayers_interaction_form_start'
         ),
-        'second' => array(
-          'form id' => 'openlayers_interaction_form_second'
+        'type' => array(
+          'form id' => 'openlayers_interaction_form_type'
         ),
-        'third' => array(
-          'form id' => 'openlayers_interaction_form_third'
+        'options' => array(
+          'form id' => 'openlayers_interaction_form_options'
         ),
       )
     ),
@@ -81,7 +81,7 @@ function openlayers_interaction_form_start_submit($form, &$form_state) {
   $class->edit_form_submit($form, $form_state);
 }
 
-function openlayers_interaction_form_second($form, &$form_state) {
+function openlayers_interaction_form_type($form, &$form_state) {
   $layers = ctools_get_plugins('openlayers', 'interaction');
   $options = array('' => t('<Choose the interaction type>'));
   foreach ($layers as $class => $plugin) {
@@ -99,17 +99,17 @@ function openlayers_interaction_form_second($form, &$form_state) {
 
   return $form;
 }
-function openlayers_interaction_form_second_submit($form, &$form_state) {
+function openlayers_interaction_form_type_submit($form, &$form_state) {
   $form_state['item']->class = $form_state['values']['class'];
 }
 
-function openlayers_interaction_form_third($form, &$form_state) {
+function openlayers_interaction_form_options($form, &$form_state) {
   $interaction = openlayer_object_factory_create('interaction', $form_state['item']->class, $form_state['item']);
   $form['options'] = $interaction->options_form();
   $form['options']['#tree'] = TRUE;
 
   return $form;
 }
-function openlayers_interaction_form_third_submit($form, &$form_state) {
+function openlayers_interaction_form_options_submit($form, &$form_state) {
   $form_state['item']->options = array_replace_recursive((array) $form_state['item']->options, $form_state['values']['options']);
 }

@@ -182,6 +182,17 @@ function openlayers_map_form_layers($form, &$form_state) {
         check_plain($entry['machine_name']),
         check_plain($entry['description']),
         check_plain($entry['class']),
+        l(t('Edit'), 'admin/structure/openlayers/layers/list/'.$entry['machine_name'].'/edit/options',
+          array(
+            'query' => array(
+              'destination' => current_path(),
+            ),
+            'attributes' => array(
+              // Todo: Use CTools modal window ajax for this form.
+              'class' => 'ctools-use-modall'
+            )
+          )
+        )
       ),
       'class' => array('draggable'),
     );
@@ -208,6 +219,7 @@ function openlayers_map_form_layers($form, &$form_state) {
       t('Machine name'),
       t('Description'),
       t('Class'),
+      t('Operations'),
     ),
     '#rows' => $rows,
     '#empty' => t('There are no entries available.'),
@@ -238,6 +250,7 @@ function openlayers_map_form_controls($form, &$form_state) {
     'name' => t('Name'),
     'machine_name' => t('Machine name'),
     'description' => t('Description'),
+    'operations' => t('Operations')
   );
 
   $rows = array();
@@ -246,6 +259,19 @@ function openlayers_map_form_controls($form, &$form_state) {
       'name' => $control->name,
       'machine_name' => $control->machine_name,
       'description' => $control->description,
+      'operations' => l(
+        t('Edit'),
+        'admin/structure/openlayers/controls/list/'.$machine_name.'/edit/options',
+        array(
+          'query' => array(
+            'destination' => current_path(),
+          ),
+          'attributes' => array(
+            // Todo: Use CTools modal window ajax for this form.
+            'class' => 'ctools-use-modall'
+          )
+        )
+      )
     );
   }
 
@@ -275,6 +301,7 @@ function openlayers_map_form_interactions($form, &$form_state) {
     'name' => t('Name'),
     'machine_name' => t('Machine name'),
     'description' => t('Description'),
+    'operations' => t('Operations')
   );
 
   $rows = array();
@@ -283,6 +310,19 @@ function openlayers_map_form_interactions($form, &$form_state) {
       'name' => $interaction->name,
       'machine_name' => $interaction->machine_name,
       'description' => $interaction->description,
+      'operations' => l(
+        t('Edit'),
+        'admin/structure/openlayers/interactions/list/'.$machine_name.'/edit/options',
+        array(
+          'query' => array(
+            'destination' => current_path(),
+          ),
+          'attributes' => array(
+            // Todo: Use CTools modal window ajax for this form.
+            'class' => 'ctools-use-modall'
+          )
+        )
+      )
     );
   }
 
@@ -313,6 +353,7 @@ function openlayers_map_form_components($form, &$form_state) {
     'name' => t('Name'),
     'machine_name' => t('Machine name'),
     'description' => t('Description'),
+    'operations' => t('Operations')
   );
 
   $rows = array();
@@ -321,7 +362,20 @@ function openlayers_map_form_components($form, &$form_state) {
       'name' => $component->name,
       'machine_name' => $component->machine_name,
       'description' => $component->description,
-    );
+      'operations' => l(
+        t('Edit'),
+        'admin/structure/openlayers/components/list/'.$machine_name.'/edit/options',
+        array(
+          'query' => array(
+            'destination' => current_path(),
+          ),
+          'attributes' => array(
+            // Todo: Use CTools modal window ajax for this form.
+            'class' => 'ctools-use-modall'
+          )
+        )
+      )
+  );
   }
 
   $form['options']['#tree'] = TRUE;

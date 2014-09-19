@@ -23,5 +23,24 @@ function openlayers_default_components() {
   );
   $export['component_bootstrapjs_alert'] = $component;
 
+  $component = new stdClass();
+  $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */
+  $component->api_version = 1;
+  $component->machine_name = 'graticule_with_inline_js';
+  $component->name = 'Graticule with inline JS';
+  $component->description = '';
+  $component->class = 'openlayers_component_evaljs';
+  $component->options = array(
+    'javascript' => 'var graticule = new ol.Graticule({
+    strokeStyle: new ol.style.Stroke({
+        color: \'rgba(255,120,0,0.9)\',
+        width: 2,
+        lineDash: [0.5, 4]
+    })
+});
+graticule.setMap(map);',
+  );
+  $export['graticule_with_inline_js'] = $component;
+
   return $export;
 }

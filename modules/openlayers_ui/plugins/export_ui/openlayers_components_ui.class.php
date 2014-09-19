@@ -11,7 +11,9 @@ class openlayers_components_ui extends openlayers_objects_ui {
   function hook_menu(&$items) {
     parent::hook_menu($items);
     $items['admin/structure/openlayers/components']['type'] = MENU_LOCAL_TASK;
-    $items['admin/structure/openlayers/components']['weight'] = 1;
+    $items['admin/structure/openlayers/components']['weight'] = 3;
   }
+
+
 
 }

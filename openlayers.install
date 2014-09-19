@@ -296,7 +296,7 @@ function openlayers_schema() {
         'key' => 'machine_name',
         'key name' => 'Machine name',
         'primary key' => 'machine_name',
-        'identifier' => 'interaction',
+        'identifier' => 'component',
         'default hook' => 'default_components',
         'api' => array(
           'owner' => 'openlayers',

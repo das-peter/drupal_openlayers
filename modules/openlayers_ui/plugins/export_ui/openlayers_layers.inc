@@ -23,18 +23,18 @@ function openlayers_ui_openlayers_layers_ctools_export_ui() {
     'form info' => array(
       'order' => array(
         'start' => t('Administrative settings'),
-        'second' => t('type'),
-        'third' => t('type options'),
+        'type' => t('Layer type'),
+        'options' => t('Layer type options'),
       ),
       'forms' => array(
         'start' => array(
           'form id' => 'openlayers_layer_form_start'
         ),
-        'second' => array(
-          'form id' => 'openlayers_layer_form_second'
+        'type' => array(
+          'form id' => 'openlayers_layer_form_type'
         ),
-        'third' => array(
-          'form id' => 'openlayers_layer_form_third'
+        'options' => array(
+          'form id' => 'openlayers_layer_form_options'
         ),
       )
     ),
@@ -81,7 +81,7 @@ function openlayers_layer_form_start_submit($form, &$form_state) {
   $class->edit_form_submit($form, $form_state);
 }
 
-function openlayers_layer_form_second($form, &$form_state) {
+function openlayers_layer_form_type($form, &$form_state) {
   $layers = ctools_get_plugins('openlayers', 'layer');
   $options = array('' => t('<Choose the layer type>'));
   foreach ($layers as $class => $plugin) {
@@ -123,13 +123,13 @@ function openlayers_layer_form_second($form, &$form_state) {
   return $form;
 }
 
-function openlayers_layer_form_second_submit($form, &$form_state) {
+function openlayers_layer_form_type_submit($form, &$form_state) {
   $form_state['item']->class = $form_state['values']['class'];
   $form_state['item']->options = array_replace_recursive((array) $form_state['item']->options, $form_state['values']['options']);
 }
 
 
-function openlayers_layer_form_third($form, &$form_state) {
+function openlayers_layer_form_options($form, &$form_state) {
   $layer = openlayer_object_factory_create('layer', $form_state['item']->class, $form_state['item']);
   $form['options'] = $layer->options_form();
   $form['options']['#tree'] = TRUE;
@@ -137,7 +137,7 @@ function openlayers_layer_form_third($form, &$form_state) {
   return $form;
 }
 
-function openlayers_layer_form_third_validate($form, &$form_state) {
+function openlayers_layer_form_options_validate($form, &$form_state) {
 /*
   $layer = openlayer_object_factory_create('layer', $form_state['item']->class, $form_state['item']);
   $layer->init($form_state['item']);
@@ -145,7 +145,7 @@ function openlayers_layer_form_third_validate($form, &$form_state) {
 */
 }
 
-function openlayers_layer_form_third_submit($form, &$form_state) {
+function openlayers_layer_form_options_submit($form, &$form_state) {
 
   if (isset($form_state['item']->options['file']) && $file = file_load($form_state['item']->options['file'])) {
     file_delete($file);

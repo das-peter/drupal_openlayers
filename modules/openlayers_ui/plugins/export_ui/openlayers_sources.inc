@@ -28,18 +28,18 @@ function openlayers_ui_openlayers_sources_ctools_export_ui() {
     'form info' => array(
       'order' => array(
         'start' => t('Administrative settings'),
-        'second' => t('Source type'),
-        'third' => t('Source type options'),
+        'type' => t('Source type'),
+        'options' => t('Source type options'),
       ),
       'forms' => array(
         'start' => array(
           'form id' => 'openlayers_source_form_start'
         ),
-        'second' => array(
-          'form id' => 'openlayers_source_form_second'
+        'type' => array(
+          'form id' => 'openlayers_source_form_type'
         ),
-        'third' => array(
-          'form id' => 'openlayers_source_form_third'
+        'options' => array(
+          'form id' => 'openlayers_source_form_options'
         ),
       )
     ),
@@ -82,7 +82,7 @@ function openlayers_source_form_start_submit($form, &$form_state) {
   $class->edit_form_submit($form, $form_state);
 }
 
-function openlayers_source_form_second($form, &$form_state) {
+function openlayers_source_form_type($form, &$form_state) {
   $sources = ctools_get_plugins('openlayers', 'source');
   $options = array('' => t('<Choose the source type>'));
   foreach ($sources as $class => $plugin) {
@@ -101,18 +101,18 @@ function openlayers_source_form_second($form, &$form_state) {
   return $form;
 }
 
-function openlayers_source_form_second_submit($form, &$form_state) {
+function openlayers_source_form_type_submit($form, &$form_state) {
   $form_state['item']->class = $form_state['values']['class'];
 }
 
 
-function openlayers_source_form_third($form, &$form_state) {
+function openlayers_source_form_options($form, &$form_state) {
   $source = openlayer_object_factory_create('source', $form_state['item']->class, $form_state['item']);
   $form['options'] = $source->options_form();
   $form['options']['#tree'] = TRUE;
 
   return $form;
 }
-function openlayers_source_form_third_submit($form, &$form_state) {
+function openlayers_source_form_options_submit($form, &$form_state) {
   $form_state['item']->options = array_replace_recursive((array) $form_state['item']->options, $form_state['values']['options']);
 }
