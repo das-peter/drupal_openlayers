@@ -47,7 +47,9 @@ document.namespaces;
 
               Drupal.openlayers.console.info("Building controls...");
               controls.map(function(data){
-                Drupal.openlayers.getObject(context, 'controls', data, map).setMap(map);
+                object = Drupal.openlayers.getObject(context, 'controls', data, map);
+                objects.controls[data.machine_name] = object;
+                object.setMap(map);
               });
               Drupal.openlayers.console.info("Building controls... done !");
 
@@ -120,10 +122,10 @@ document.namespaces;
       if (typeof cache[type][data.machine_name] == 'undefined') {
         Drupal.openlayers.console.info(" Computing " + type + " " + data.machine_name + "...");
         cache[type][data.machine_name] = Drupal.openlayers[data.class](data.options, map);
-        object = cache[type][data.machine_name]
+        object = cache[type][data.machine_name];
       } else {
-        Drupal.openlayers.console.info("Loading " + type + " " + data.machine_name +" from cache");
-        object = cache[type][data.machine_name]
+        Drupal.openlayers.console.info(" Loading " + type + " " + data.machine_name +" from cache");
+        object = cache[type][data.machine_name];
       }
 
       return object;
