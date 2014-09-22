@@ -1,15 +1,15 @@
 <?php
 
-function openlayers_openlayers_component_evaljs_openlayers_component() {
+function openlayers_openlayers_component_js_openlayers_component() {
   return array(
     'handler' => array(
-      'class' => 'openlayers_component_evaljs',
-      'file' => 'openlayers_component_evaljs.inc',
+      'class' => 'openlayers_component_js',
+      'file' => 'openlayers_component_js.inc',
     )
   );
 }
 
-class openlayers_component_evaljs extends openlayers_component {
+class openlayers_component_js extends openlayers_component {
 
   function options_form() {
     $attached = array();
@@ -21,7 +21,7 @@ class openlayers_component_evaljs extends openlayers_component {
           array('ace_editor', 'ace-editor')
         ),
         'js' => array(
-          drupal_get_path('module', 'openlayers') . '/plugins/openlayers/component/openlayers_component_evaljs_editor.js'
+          drupal_get_path('module', 'openlayers') . '/plugins/openlayers/component/openlayers_component_js_editor.js'
         )
       );
     } else {
