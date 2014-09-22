@@ -3,7 +3,7 @@
  * CTools Export UI required function for plugin definition
  * See function ctools_plugin_load_includes() in the module ctools.
  */
-function openlayers_ui_openlayers_layers_ctools_export_ui() {
+function openlayers_ui_openlayers_layers_ui_ctools_export_ui() {
   return array(
     'schema' => 'openlayers_layers',
     'access' => 'administer openlayers',

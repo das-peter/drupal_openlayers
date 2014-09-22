@@ -3,7 +3,7 @@
  * CTools Export UI required function for plugin definition
  * See function ctools_plugin_load_includes() in the module ctools.
  */
-function openlayers_ui_openlayers_maps_ctools_export_ui() {
+function openlayers_ui_openlayers_maps_ui_ctools_export_ui() {
   return array(
     'schema' => 'openlayers_maps',
     'access' => 'administer openlayers',
@@ -253,6 +253,12 @@ function openlayers_map_form_controls($form, &$form_state) {
     'operations' => t('Operations')
   );
 
+  ctools_include('modal');
+  ctools_modal_add_js();
+
+  $plugin_name = 'openlayers_controls';
+  $plugin = ctools_get_export_ui($plugin_name);
+
   $rows = array();
   foreach ($all_controls as $machine_name => $control) {
     $rows[$machine_name] = array(
@@ -261,14 +267,14 @@ function openlayers_map_form_controls($form, &$form_state) {
       'description' => $control->description,
       'operations' => l(
         t('Edit'),
-        'admin/structure/openlayers/controls/list/'.$machine_name.'/edit/options',
+        'admin/structure/openlayers/ajax/controls/list/'.$machine_name.'/edit',
         array(
           'query' => array(
             'destination' => current_path(),
           ),
           'attributes' => array(
             // Todo: Use CTools modal window ajax for this form.
-            'class' => 'ctools-use-modall'
+            'class' => 'ctools-use-modal'
           )
         )
       )

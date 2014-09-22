@@ -3,7 +3,7 @@
  * CTools Export UI required function for plugin definition
  * See function ctools_plugin_load_includes() in the module ctools.
  */
-function openlayers_ui_openlayers_controls_ctools_export_ui() {
+function openlayers_ui_openlayers_controls_ui_ctools_export_ui() {
   return array(
     'schema' => 'openlayers_controls',
     'access' => 'administer openlayers',
@@ -111,5 +111,5 @@ function openlayers_control_form_options($form, &$form_state) {
   return $form;
 }
 function openlayers_control_form_options_submit($form, &$form_state) {
-  $form_state['item']->options = array_replace_recursive($form_state['item']->options, $form_state['values']['options']);
+  $form_state['item']->options = array_replace_recursive((array) $form_state['item']->options, (array) $form_state['values']['options']);
 }
