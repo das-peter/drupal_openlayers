@@ -57,5 +57,79 @@ graticule.setMap(map);',
   );
   $export['graticule_with_inline_js'] = $component;
 
+  $component = new stdClass();
+  $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */
+  $component->api_version = 1;
+  $component->machine_name = 'geolocation';
+  $component->name = 'Geolocation';
+  $component->description = '';
+  $component->class = 'openlayers_component_js';
+  $component->options = array(
+    'javascript' => 'var geolocation = new ol.Geolocation({
+  projection: map.getView().getProjection()
+});
+
+var accuracyFeature = new ol.Feature();
+accuracyFeature.bindTo(\'geometry\', geolocation, \'accuracyGeometry\');
+
+var positionFeature = new ol.Feature();
+positionFeature.setStyle(new ol.style.Style({
+  image: new ol.style.Circle({
+    radius: 6,
+    fill: new ol.style.Fill({
+      color: \'#000000\'
+    }),
+    stroke: new ol.style.Stroke({
+      color: \'#fff\',
+      width: 2
+    })
+  })
+}));
+
+positionFeature.bindTo(\'geometry\', geolocation, \'position\')
+    .transform(function() {}, function(coordinates) {
+      return coordinates ? new ol.geom.Point(coordinates) : null;
+    });
+
+// from https://github.com/DmitryBaranovskiy/raphael
+function elastic(t) {
+  return Math.pow(2, -10 * t) * Math.sin((t - 0.075) * (2 * Math.PI) / 0.3) + 1;
+}
+
+// listen to changes in position
+geolocation.on(\'change\', function(evt) {
+    var coordinate = geolocation.getPosition();
+    var duration = 2000;
+    var start = +new Date();
+    var pan = ol.animation.pan({
+        duration: duration,
+        source: (map.getView().getCenter()),
+        start: start
+    });
+    var bounce = ol.animation.bounce({
+        duration: duration,
+        resolution: 2 * map.getView().getResolution(),
+        start: start
+    });
+    var rotate = ol.animation.rotate({
+        duration: duration,
+        rotation: -4 * Math.PI,
+        start: start
+    });
+    map.beforeRender(pan, bounce, rotate);
+    map.getView().setZoom(6);
+    map.getView().setCenter(coordinate);
+});
+
+geolocation.setTracking(true);
+
+var featuresOverlay = new ol.FeatureOverlay({
+  map: map,
+  features: [accuracyFeature, positionFeature]
+});
+',
+  );
+  $export['geolocation'] = $component;
+
   return $export;
 }

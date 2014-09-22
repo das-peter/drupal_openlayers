@@ -31,7 +31,7 @@ class openlayers_component_js extends openlayers_component {
     $form['javascript'] = array(
       '#type' => 'textarea',
       '#title' => t('Javascript'),
-      '#description' => t('Javascript to eval. The available variables are: options and map'),
+      '#description' => t('Javascript to eval. The available variables are: <em>options</em> and <em>map</em>'),
       '#rows' => 15,
       '#default_value' => $this->getOption('javascript'),
       '#attributes' => array(
