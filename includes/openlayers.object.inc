@@ -85,7 +85,7 @@ abstract class openlayers_object {
     if (isset($this->plugin)) {
       $file = $this->plugin['path'] . '/' . $this->class . '.js';
       if (file_exists($file)) {
-        $this->attached['js'][$file] = $file;
+        $this->attached['js'][$file] = array('data' => $file, 'type' => 'file', 'group' => OPENLAYERS_JS_GROUP, 'weight' => OPENLAYERS_JS_WEIGHT);
         unset($this->plugin);
       }
     }

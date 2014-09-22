@@ -96,4 +96,11 @@ class openlayers_map_map extends openlayers_map {
 
     return $form;
   }
+
+  function attached() {
+    $attached = parent::attached();
+    $attached['libraries_load'][] = array('openlayers3');
+    return $attached;
+  }
+
 }

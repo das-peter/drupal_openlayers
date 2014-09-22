@@ -1,5 +1,6 @@
 <?php
 
+include 'includes/openlayers.constants.inc';
 include 'includes/openlayers.object.inc';
 include 'includes/openlayers.component.inc';
 include 'includes/openlayers.interaction.inc';
@@ -98,8 +99,6 @@ function openlayers_object_load($object_type, $export) {
 }
 
 function openlayers_render_build_map(openlayers_map $map) {
-  libraries_load('openlayers3');
-
   drupal_alter('openlayers_map_preprocess', $map);
 
   $objects = $map->getObjects();
