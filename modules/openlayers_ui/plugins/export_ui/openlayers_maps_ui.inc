@@ -267,14 +267,14 @@ function openlayers_map_form_controls($form, &$form_state) {
       'description' => $control->description,
       'operations' => l(
         t('Edit'),
-        'admin/structure/openlayers/ajax/controls/list/'.$machine_name.'/edit',
+        'admin/structure/openlayers/controls/list/' . $machine_name . '/edit',
         array(
           'query' => array(
             'destination' => current_path(),
           ),
           'attributes' => array(
             // Todo: Use CTools modal window ajax for this form.
-            'class' => 'ctools-use-modal'
+            'class' => 'ctools-use-modall'
           )
         )
       )
