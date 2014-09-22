@@ -47,9 +47,7 @@ document.namespaces;
 
               Drupal.openlayers.console.info("Building controls...");
               controls.map(function(data){
-                object = Drupal.openlayers.getObject(context, 'controls', data, map);
-                objects.controls[data.machine_name] = object;
-                object.setMap(map);
+                map.addControl(Drupal.openlayers.getObject(context, 'controls', data, map));
               });
               Drupal.openlayers.console.info("Building controls... done !");
 
