@@ -1,4 +1,4 @@
-Drupal.openlayers.openlayers_interaction_setvalues = function(options, map) {
+Drupal.openlayers.openlayers_component_setvalues = function(options, map) {
 
   map.on('moveend', function(evt){
     var selector = '#' + options.latitude;
@@ -21,5 +21,4 @@ Drupal.openlayers.openlayers_interaction_setvalues = function(options, map) {
     map.getView().setCenter(coordinate);
   });
 
-  return new ol.interaction.Select(options);
 };

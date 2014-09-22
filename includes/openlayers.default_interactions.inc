@@ -151,20 +151,5 @@ function openlayers_default_interactions() {
   $interaction->options = array();
   $export['interaction_select'] = $interaction;
 
-  $interaction = new stdClass();
-  $interaction->disabled = TRUE; /* Edit this to true to make a default interaction disabled initially */
-  $interaction->api_version = 1;
-  $interaction->machine_name = 'map_edit_form_values';
-  $interaction->name = 'Map edit form values';
-  $interaction->description = 'Provides values for the center, rotation and zoom in the map edit form.';
-  $interaction->class = 'openlayers_interaction_setvalues';
-  $interaction->options = array(
-    'latitude' => 'edit-options-view-center-lat',
-    'longitude' => 'edit-options-view-center-lon',
-    'rotation' => 'edit-options-view-rotation',
-    'zoom' => 'edit-options-view-zoom',
-  );
-  $export['map_edit_form_values'] = $interaction;
-
   return $export;
 }

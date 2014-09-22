@@ -1,15 +1,15 @@
 <?php
 
-function openlayers_openlayers_interaction_setvalues_openlayers_interaction() {
+function openlayers_openlayers_component_setvalues_openlayers_component() {
   return array(
     'handler' => array(
-      'class' => 'openlayers_interaction_setvalues',
-      'file' => 'openlayers_interaction_setvalues.inc',
+      'class' => 'openlayers_component_setvalues',
+      'file' => 'openlayers_component_setvalues.inc',
     )
   );
 }
 
-class openlayers_interaction_setvalues extends openlayers_interaction {
+class openlayers_component_setvalues extends openlayers_component {
 
   function options_form() {
     return array(

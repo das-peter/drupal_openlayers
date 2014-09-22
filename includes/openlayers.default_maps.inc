@@ -358,11 +358,13 @@ function openlayers_default_maps() {
       5 => 'control_zoomtoextent',
     ),
     'interactions' => array(
-      0 => 'map_edit_form_values',
-      1 => 'interaction_dragpan',
-      2 => 'interaction_dragrotateandzoom',
-      3 => 'interaction_mousewheelzoom',
+      0 => 'interaction_dragpan',
+      1 => 'interaction_dragrotateandzoom',
+      2 => 'interaction_mousewheelzoom',
     ),
+    'components' => array(
+      0 => 'map_edit_form_values',
+    )
   );
   $export['map_view_edit_form'] = $map;
 

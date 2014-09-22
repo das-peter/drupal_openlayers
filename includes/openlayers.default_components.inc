@@ -24,6 +24,21 @@ function openlayers_default_components() {
   $export['component_bootstrapjs_alert'] = $component;
 
   $component = new stdClass();
+  $component->disabled = TRUE; /* Edit this to true to make a default component disabled initially */
+  $component->api_version = 1;
+  $component->machine_name = 'map_edit_form_values';
+  $component->name = 'Map edit form values';
+  $component->description = 'Provides values for the center, rotation and zoom in the map edit form.';
+  $component->class = 'openlayers_component_setvalues';
+  $component->options = array(
+    'latitude' => 'edit-options-view-center-lat',
+    'longitude' => 'edit-options-view-center-lon',
+    'rotation' => 'edit-options-view-rotation',
+    'zoom' => 'edit-options-view-zoom',
+  );
+  $export['map_edit_form_values'] = $component;
+
+  $component = new stdClass();
   $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */
   $component->api_version = 1;
   $component->machine_name = 'graticule_with_inline_js';
