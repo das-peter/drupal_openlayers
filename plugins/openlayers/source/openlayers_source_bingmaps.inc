@@ -13,17 +13,24 @@ class openlayers_source_bingmaps extends openlayers_source {
 
   function options_form() {
     $layer_types = array(
-      'Road' => 'Road',
-      'AerialWithLabels' => 'Hybrid',
-      'Aerial' => 'Aerial',
+      'Road',
+      'Aerial',
+      'AerialWithLabels',
+      'collinsBart',
+      'ordnanceSurvey'
     );
 
     return array(
-      'type' => array(
-        '#title' => t('Source type'),
+      'key' => array(
+        '#title' => t('Key'),
+        '#type' => 'textfield',
+        '#default_value' => $this->getOption('key', '')
+      ),
+      'imagerySet' => array(
+        '#title' => t('Imagery set'),
         '#type' => 'select',
-        '#default_value' => $this->getOption('type', 'Road'),
-        '#options' => $layer_types
+        '#default_value' => $this->getOption('imagerySet', 'Road'),
+        '#options' => array_combine($layer_types, $layer_types)
       )
     );
   }

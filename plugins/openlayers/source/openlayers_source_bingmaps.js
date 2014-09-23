@@ -1,3 +1,3 @@
-Drupal.openlayers.source.bingmaps = function(map, options) {
+Drupal.openlayers.openlayers_source_bingmaps = function(options, map) {
   return new ol.source.BingMaps(options);
 };
