@@ -3,6 +3,32 @@
 class openlayers_objects_ui extends ctools_export_ui {
 
   /**
+   * Create the filter/sort form at the top of a list of exports.
+   *
+   * This handles the very default conditions, and most lists are expected
+   * to override this and call through to parent::list_form() in order to
+   * get the base form and then modify it as necessary to add search
+   * gadgets for custom fields.
+   */
+  function list_form(&$form, &$form_state) {
+    parent::list_form($form, $form_state);
+
+    $form['top row'] += $form['bottom row'];
+
+    $form['filters'] = array(
+      '#type' => 'fieldset',
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#title' => t('Filters')
+    );
+
+    $form['filters']['top row'] = $form['top row'];
+
+    unset($form['bottom row']);
+    unset($form['top row']);
+  }
+
+  /**
    * Provide the table header.
    *
    * If you've added columns via list_build_row() but are still using a
