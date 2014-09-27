@@ -28,6 +28,8 @@ abstract class openlayers_object {
     return array();
   }
 
+  function option_form_validate() {}
+
   function init(array $data) {
     foreach ($this->defauts_properties() as $property => $value) {
       if (isset($data[$property])) {
@@ -68,12 +70,33 @@ abstract class openlayers_object {
   }
 
   public function getOption($key, $default_value = NULL) {
-    if (isset($this->options[$key])) {
-      return $this->options[$key];
+    $options = $this->options;
+
+    if (is_array($key)) {
+      $notfound = FALSE;
+      foreach($key as $item) {
+        if (isset($options[$item])) {
+          $options = $options[$item];
+        } else {
+          $notfound = TRUE;
+          break;
+        }
+      }
+      if (!$notfound) {
+        return $options;
+      }
     }
+
+    if (is_string($key)) {
+      if (isset($options[$key])) {
+        return $options[$key];
+      }
+    }
+
     if (is_null($default_value)) {
       return FALSE;
     }
+
     return $default_value;
   }
 

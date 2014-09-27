@@ -109,6 +109,15 @@ function openlayers_map_form_settings($form, &$form_state) {
 
   return $form;
 }
+function openlayers_map_form_settings_validate($form, &$form_state) {
+  $item = $form_state['item'];
+  $item->class = 'openlayers_map_map';
+  $item->options = array_replace_recursive((array) $form_state['item']->options, $form_state['values']['options']);
+
+  $map = openlayer_object_factory_create('map', 'openlayers_map_map', $item);
+  $map->options_form_validate();
+}
+
 function openlayers_map_form_settings_submit($form, &$form_state) {
   // todo: fix
   $form_state['item']->class = 'openlayers_map_map';

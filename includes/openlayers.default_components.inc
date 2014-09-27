@@ -41,10 +41,10 @@ function openlayers_default_components() {
   $component = new stdClass();
   $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */
   $component->api_version = 1;
-  $component->machine_name = 'graticule_with_inline_js';
+  $component->machine_name = 'graticule';
   $component->name = 'Graticule with inline JS';
   $component->description = 'Display a graticule on the map.';
-  $component->class = 'openlayers_component_evaljs';
+  $component->class = 'openlayers_component_js';
   $component->options = array(
     'javascript' => 'var graticule = new ol.Graticule({
     strokeStyle: new ol.style.Stroke({
@@ -55,7 +55,7 @@ function openlayers_default_components() {
 });
 graticule.setMap(map);',
   );
-  $export['graticule_with_inline_js'] = $component;
+  $export['graticule'] = $component;
 
   $component = new stdClass();
   $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */
