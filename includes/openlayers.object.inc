@@ -28,7 +28,7 @@ abstract class openlayers_object {
     return array();
   }
 
-  function option_form_validate() {}
+  function options_form_validate() {}
 
   function init(array $data) {
     foreach ($this->defauts_properties() as $property => $value) {
