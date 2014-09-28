@@ -83,6 +83,8 @@ function openlayers_layer_form_start_submit($form, &$form_state) {
 
 function openlayers_layer_form_type($form, &$form_state) {
   $layers = ctools_get_plugins('openlayers', 'layer');
+  $layer = openlayers_object_load('layer', $form_state['item'], FALSE);
+
   $options = array('' => t('<Choose the layer type>'));
   foreach ($layers as $class => $plugin) {
     $options[$class] = $class;
@@ -107,14 +109,10 @@ function openlayers_layer_form_type($form, &$form_state) {
     '#tree' => TRUE
   );
 
-  // Todo: Replace with getOption(). To get this, we'll probably need to use
-  // 'object factory' in the appropriate schema from ctools export.
-  // This way, objects create by ctools export UI will have the right class
-  // and the getOption() method will be available.
   $form['options']['source'] = array(
     '#type' => 'select',
     '#title' => t('Source'),
-    '#default_value' => isset($form_state['item']->options['source']) ? $form_state['item']->options['source']: '',
+    '#default_value' => $layer->getOption('source', ''),
     '#description' => t('Select the source.'),
     '#options' => $options,
     '#required' => TRUE
@@ -130,7 +128,7 @@ function openlayers_layer_form_type_submit($form, &$form_state) {
 
 
 function openlayers_layer_form_options($form, &$form_state) {
-  $layer = openlayer_object_factory_create('layer', $form_state['item']->class, $form_state['item']);
+  $layer = openlayers_object_load('layer', $form_state['item']);
   $form['options'] = $layer->options_form();
   $form['options']['#tree'] = TRUE;
 
@@ -138,11 +136,8 @@ function openlayers_layer_form_options($form, &$form_state) {
 }
 
 function openlayers_layer_form_options_validate($form, &$form_state) {
-/*
-  $layer = openlayer_object_factory_create('layer', $form_state['item']->class, $form_state['item']);
-  $layer->init($form_state['item']);
-  $layer->options_form_validate($form, $form_state);
-*/
+  $layer = openlayers_object_load('layer', $form_state['item']);
+  $layer->options_form_validate();
 }
 
 function openlayers_layer_form_options_submit($form, &$form_state) {

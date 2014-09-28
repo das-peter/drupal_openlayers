@@ -63,7 +63,7 @@ function openlayers_ctools_plugin_type() {
   );
 }
 
-function openlayer_object_factory_create($object_type, $object_class, $export = NULL) {
+function openlayers_object_factory_create($object_type, $object_class, $export = NULL) {
   ctools_include('plugins');
 
   $object_class = ctools_plugin_load_class('openlayers', $object_type, $object_class, 'handler');
@@ -80,17 +80,17 @@ function openlayer_object_factory_create($object_type, $object_class, $export = 
 }
 
 
-function openlayers_object_load($object_type, $export) {
+function openlayers_object_load($object_type, $export, $develop = TRUE) {
   ctools_include('export');
+  if (is_object($export)) {
+    $arrayObject = new ArrayObject($export);
+    $export = $arrayObject->getArrayCopy();
+  }
   if (is_string($export)) {
     $export = (array) ctools_export_crud_load('openlayers_' . $object_type .'s', $export);
-  }
+ }
   if (is_array($export)) {
-    $object = openlayer_object_factory_create($object_type, $export['class'], $export);
-  }
-  if (is_object($export)) {
-    $object = $export;
-    $export = (array) $export;
+    $object = openlayers_object_factory_create($object_type, $export['class'], $export);
   }
 
   if (!is_object($object)) {
@@ -101,7 +101,10 @@ function openlayers_object_load($object_type, $export) {
     $object->disabled = 1;
   }
 
-  $object->develop();
+  if ($develop) {
+    $object->develop();
+  }
+
   return $object;
 }
 

@@ -104,7 +104,7 @@ function openlayers_control_form_type_submit($form, &$form_state) {
 }
 
 function openlayers_control_form_options($form, &$form_state) {
-  $control = openlayer_object_factory_create('control', $form_state['item']->class, $form_state['item']);
+  $control = openlayers_object_load('control', $form_state['item']);
   $form['options'] = $control->options_form();
   $form['options']['#tree'] = TRUE;
 

@@ -102,8 +102,8 @@ function openlayers_map_form_start_submit($form, &$form_state) {
 }
 
 function openlayers_map_form_settings($form, &$form_state) {
-  // todo fix this class
-  $map = openlayer_object_factory_create('map', 'openlayers_map_map', $form_state['item']);
+  $form_state['item']->class = 'openlayers_map_map';
+  $map = openlayers_object_load('map', $form_state['item']);
   $form['options'] = $map->options_form();
   $form['options']['#tree'] = TRUE;
 
@@ -114,7 +114,7 @@ function openlayers_map_form_settings_validate($form, &$form_state) {
   $item->class = 'openlayers_map_map';
   $item->options = array_replace_recursive((array) $form_state['item']->options, $form_state['values']['options']);
 
-  $map = openlayer_object_factory_create('map', 'openlayers_map_map', $item);
+  $map = openlayers_object_load('map', $item);
   $map->options_form_validate();
 }
 
@@ -126,18 +126,14 @@ function openlayers_map_form_settings_submit($form, &$form_state) {
 
 function openlayers_map_form_layers($form, &$form_state) {
   $all_layers = ctools_export_crud_load_all('openlayers_layers');
-
-  $map_layers = array();
-  if (isset($form_state['item']->options['layers'])) {
-    $map_layers = $form_state['item']->options['layers'];
-  }
+  $map = openlayers_object_load('map', $form_state['item']);
 
   $layers = array();
-  foreach($map_layers as $i => $machine_name) {
-    if (isset($all_layers[$machine_name])) {
-      $layers[$machine_name] = $all_layers[$machine_name];
-      $layers[$machine_name]->enable = 1;
-      unset($all_layers[$machine_name]);
+  foreach($map->getLayers() as $index => $layer) {
+    if (isset($all_layers[$layer->machine_name])) {
+      $layers[$layer->machine_name] = $all_layers[$layer->machine_name];
+      $layers[$layer->machine_name]->enable = 1;
+      unset($all_layers[$layer->machine_name]);
     }
   }
 
@@ -421,7 +417,7 @@ function openlayers_map_form_styles_submit($form, &$form_state) {
 }
 
 function openlayers_map_form_preview($form, &$form_state) {
-  $map = openlayer_object_factory_create('map', $form_state['item']->class, $form_state['item']);
+  $map = openlayers_object_load('map', $form_state['item']);
   $map->setOption('contextualLinks', FALSE);
 
   $form['preview'] = array(
@@ -430,9 +426,7 @@ function openlayers_map_form_preview($form, &$form_state) {
 
   return $form;
 }
-function openlayers_map_form_preview_submit($form, &$form_state) {
-  $form_state['item']->options = $form_state['item']->options;
-}
+function openlayers_map_form_preview_submit($form, &$form_state) {}
 
 function _openlayers_maps_sort_by_weight($a, $b) {
   if (isset($a['weight']) && isset($b['weight'])) {
