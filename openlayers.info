@@ -9,6 +9,12 @@ dependencies[] = image
 
 ; Core files
 files[] = openlayers.module
+files[] = includes/openlayers.object.interface.inc
+files[] = includes/openlayers.map.interface.inc
+files[] = includes/openlayers.layer.interface.inc
+files[] = includes/openlayers.source.interface.inc
+files[] = includes/openlayers.interaction.interface.inc
+files[] = includes/openlayers.component.interface.inc
 files[] = includes/openlayers.object.inc
 files[] = includes/openlayers.component.inc
 files[] = includes/openlayers.interaction.inc

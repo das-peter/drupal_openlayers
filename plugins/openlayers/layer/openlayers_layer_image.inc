@@ -44,7 +44,7 @@ class openlayers_layer_image extends openlayers_layer {
     );
   }
 
-  function options_form_validate($form, &$form_state) {
+  function options_form_validate() {
     if ($file = file_load($form_state['options']['file'])) {
       // Do something with the file if needed.
     } else {
@@ -56,7 +56,7 @@ class openlayers_layer_image extends openlayers_layer {
   /**
    * hook_submit() of the form.
    */
-  function options_form_submit($form, &$form_state) {
+  function options_form_submit() {
     global $user;
 
     $item = $form_state['item'];

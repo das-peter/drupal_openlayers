@@ -1,6 +1,6 @@
 <?php
 
-abstract class openlayers_layer extends openlayers_object {
+abstract class openlayers_layer extends openlayers_object implements openlayers_layer_interface {
 
   protected $attached = array();
 

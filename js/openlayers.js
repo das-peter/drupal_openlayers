@@ -40,26 +40,26 @@ document.namespaces;
               Drupal.openlayers.console.info("Creating map object... done !");
 
               Drupal.openlayers.console.info("Building sources...");
-              sources.map(function(data){
+              sources.map(function(data) {
                 objects.sources[data.machine_name] = Drupal.openlayers.getObject(context, 'sources', data, map);
               });
               Drupal.openlayers.console.info("Building sources... done !");
 
               Drupal.openlayers.console.info("Building controls...");
-              controls.map(function(data){
+              controls.map(function(data) {
                 map.addControl(Drupal.openlayers.getObject(context, 'controls', data, map));
               });
               Drupal.openlayers.console.info("Building controls... done !");
 
               Drupal.openlayers.console.info("Building interactions...");
-              interactions.map(function(data){
+              interactions.map(function(data) {
                 objects.interactions[data.machine_name] = Drupal.openlayers.getObject(context, 'interactions', data, map);
                 map.addInteraction(objects.interactions[data.machine_name]);
               });
               Drupal.openlayers.console.info("Building interactions... done !");
 
               Drupal.openlayers.console.info("Building layers...");
-              layers.map(function(data){
+              layers.map(function(data) {
                 Drupal.openlayers.console.info(" Adding source to layer...");
                 data.options.source = objects.sources[data.options.source];
                 objects.layers[data.machine_name] = Drupal.openlayers.getObject(context, 'layers', data, map);
@@ -69,7 +69,7 @@ document.namespaces;
               Drupal.openlayers.console.info("Building layers... done !");
 
               Drupal.openlayers.console.info("Building components...");
-              components.map(function(data){
+              components.map(function(data) {
                 objects.components[data.machine_name] = Drupal.openlayers.getObject(context, 'components', data, map);
               });
               Drupal.openlayers.console.info("Building components... done !");
@@ -79,13 +79,11 @@ document.namespaces;
               jQuery(context).data('openlayers', {'objects': objects});
               Drupal.openlayers.console.info("Caching objects... done !");
 
-            }
-            catch (e) {
+            } catch (e) {
               var errorMessage = e.name + ': ' + e.message;
-              if (typeof console != 'undefined') {
+              if (typeof console !== 'undefined') {
                 Drupal.openlayers.console.log(errorMessage);
-              }
-              else {
+              } else {
                 $(this).text('Error during map rendering: ' + errorMessage);
               }
             }
@@ -100,10 +98,10 @@ document.namespaces;
    */
   Drupal.openlayers = {
 
-    'getObject': (function (context, type, data, map) {
+    getObject: (function (context, type, data, map) {
       var cache = $(context).data('openlayers') || {};
 
-      if (typeof cache.objects != 'undefined') {
+      if (typeof cache.objects !== 'undefined') {
         cache = cache.objects;
       } else {
         cache.sources = [];
@@ -117,7 +115,7 @@ document.namespaces;
       cache = $.extend({}, cache.objects, cache);
 
       var object;
-      if (typeof cache[type][data.machine_name] == 'undefined') {
+      if (typeof cache[type][data.machine_name] === 'undefined') {
         Drupal.openlayers.console.info(" Computing " + type + " " + data.machine_name + "...");
         cache[type][data.machine_name] = Drupal.openlayers[data.class](data.options, map, context);
         object = cache[type][data.machine_name];
@@ -137,11 +135,11 @@ document.namespaces;
     'console': (function(){
       var api = {};
       var logger;
-      if(typeof(console)==="object" && typeof(console.log)==="function"){
+      if (typeof(console)==="object" && typeof(console.log)==="function"){
         logger = function(){
           // Use console.log as fallback for missing parts of API if present.
           console.log.apply(console, arguments);
-        }
+        };
       } else {
         logger = function (){
           // Ignore call as no logging facility is available.
@@ -151,7 +149,7 @@ document.namespaces;
         "dirxml", "trace", "group", "groupEnd", "groupCollapsed", "profile",
         "profileEnd", "count", "clear", "time", "timeEnd", "timeStamp", "table",
         "error"]).each(function(index, functionName){
-        if(typeof(console)!=="object" || typeof(console[functionName])!=="function"){
+        if (typeof(console)!=="object" || typeof(console[functionName])!=="function"){
           // Use fallback as browser does not provide implementation.
           api[functionName] = logger;
         } else {
@@ -165,5 +163,4 @@ document.namespaces;
     })()
   };
 
-  Drupal.openlayers.layer = {};
 })(jQuery);

@@ -67,13 +67,13 @@ class openlayers_map_map extends openlayers_map {
         '#type' => 'textfield',
         '#title' => 'Latitude',
         // Todo: Replace with getOption() method.
-        '#default_value' => isset($this->options['view']['center']['lat']) ? $this->options['view']['center']['lat']:0,
+        '#default_value' => $this->getOption(array('view', 'center', 'lat'), 0),
         '#parents' => array('options', 'view', 'center', 'lat'),
       ),
       'lon' => array(
         '#type' => 'textfield',
         '#title' => 'Longitude',
-        '#default_value' => isset($this->options['view']['center']['lon']) ? $this->options['view']['center']['lon']:0,
+        '#default_value' => $this->getOption(array('view', 'center', 'lat'), 0),
         '#parents' => array('options', 'view', 'center', 'lon'),
       )
     );
@@ -81,17 +81,27 @@ class openlayers_map_map extends openlayers_map {
       'rotation' => array(
         '#type' => 'textfield',
         '#title' => 'Rotation',
-        '#default_value' => isset($this->options['view']['rotation']) ? $this->options['view']['rotation']:0,
+        '#default_value' => $this->getOption(array('view', 'rotation'), 0),
         '#parents' => array('options', 'view', 'rotation'),
       ),
     );
     $form['options']['view']['zoom'] = array(
-      'zoom' => array(
-        '#type' => 'textfield',
-        '#title' => 'Zoom',
-        '#default_value' => isset($this->options['view']['zoom']) ? $this->options['view']['zoom']:0,
-        '#parents' => array('options', 'view', 'zoom'),
-      ),
+      '#type' => 'textfield',
+      '#title' => 'Zoom',
+      '#default_value' => $this->getOption(array('view', 'zoom'), 0),
+      '#parents' => array('options', 'view', 'zoom'),
+    );
+    $form['options']['view']['minZoom'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Min zoom',
+      '#default_value' => $this->getOption(array('view', 'minZoom'), 0),
+      '#parents' => array('options', 'view', 'minZoom'),
+    );
+    $form['options']['view']['maxZoom'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Max zoom',
+      '#default_value' => $this->getOption(array('view', 'maxZoom'), 0),
+      '#parents' => array('options', 'view', 'maxZoom'),
     );
 
     return $form;

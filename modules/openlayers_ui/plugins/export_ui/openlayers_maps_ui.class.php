@@ -15,4 +15,14 @@ class openlayers_maps_ui extends openlayers_objects_ui {
     $items['admin/structure/openlayers/maps']['weight'] = -10;
   }
 
+  function delete_form_submit(&$form_state) {
+    parent::delete_form_submit($form_state);
+    $delta = _openlayers_get_block_id($form_state['item']->machine_name);
+
+    db_delete('block')
+      ->condition('module', 'openlayers')
+      ->condition('delta', $delta)
+      ->execute();
+  }
+
 }

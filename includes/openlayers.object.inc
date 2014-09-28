@@ -1,6 +1,6 @@
 <?php
 
-abstract class openlayers_object {
+abstract class openlayers_object implements openlayers_object_interface {
 
   public $machine_name;
   public $name;
@@ -24,11 +24,11 @@ abstract class openlayers_object {
     );
   }
 
-  function options_form() {
-    return array();
-  }
+  function options_form() {return array();}
 
   function options_form_validate() {}
+
+  function options_form_submit() {}
 
   function init(array $data) {
     foreach ($this->defauts_properties() as $property => $value) {
@@ -72,6 +72,10 @@ abstract class openlayers_object {
   public function getOption($key, $default_value = NULL) {
     $options = $this->options;
 
+    if (is_string($key)) {
+      $key = array($key);
+    }
+
     if (is_array($key)) {
       $notfound = FALSE;
       foreach($key as $item) {
@@ -84,12 +88,6 @@ abstract class openlayers_object {
       }
       if (!$notfound) {
         return $options;
-      }
-    }
-
-    if (is_string($key)) {
-      if (isset($options[$key])) {
-        return $options[$key];
       }
     }
 
