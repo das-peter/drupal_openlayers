@@ -53,7 +53,7 @@ function openlayers_default_components() {
         lineDash: [0.5, 4]
     })
 });
-graticule.setMap(map);',
+graticule.setMap(data.map);',
   );
   $export['graticule'] = $component;
 
@@ -66,7 +66,7 @@ graticule.setMap(map);',
   $component->class = 'openlayers_component_js';
   $component->options = array(
     'javascript' => 'var geolocation = new ol.Geolocation({
-  projection: map.getView().getProjection()
+  projection: data.map.getView().getProjection()
 });
 
 var accuracyFeature = new ol.Feature();
@@ -103,12 +103,12 @@ geolocation.on(\'change\', function(evt) {
     var start = +new Date();
     var pan = ol.animation.pan({
         duration: duration,
-        source: (map.getView().getCenter()),
+        source: (data.map.getView().getCenter()),
         start: start
     });
     var bounce = ol.animation.bounce({
         duration: duration,
-        resolution: 2 * map.getView().getResolution(),
+        resolution: 2 * data.map.getView().getResolution(),
         start: start
     });
     var rotate = ol.animation.rotate({
@@ -116,15 +116,15 @@ geolocation.on(\'change\', function(evt) {
         rotation: -4 * Math.PI,
         start: start
     });
-    map.beforeRender(pan, bounce, rotate);
-    map.getView().setZoom(6);
-    map.getView().setCenter(coordinate);
+    data.map.beforeRender(pan, bounce, rotate);
+    data.map.getView().setZoom(6);
+    data.map.getView().setCenter(coordinate);
 });
 
 geolocation.setTracking(true);
 
 var featuresOverlay = new ol.FeatureOverlay({
-  map: map,
+  map: data.map,
   features: [accuracyFeature, positionFeature]
 });
 ',

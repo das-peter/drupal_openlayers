@@ -31,7 +31,7 @@ class openlayers_control_js extends openlayers_control {
     $form['javascript'] = array(
       '#type' => 'textarea',
       '#title' => t('Javascript'),
-      '#description' => t('Javascript to eval. You must create the openlayers variable <em>control</em>. The available variables are: <em>options</em> and <em>map</em>'),
+      '#description' => t('Javascript to evaluate. The available variable is: <em>data</em>. You must create the openlayers variable <em>control</em>.'),
       '#rows' => 15,
       '#default_value' => $this->getOption('javascript'),
       '#attributes' => array(
