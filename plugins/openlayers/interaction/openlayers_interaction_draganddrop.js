@@ -1,3 +1,3 @@
-Drupal.openlayers.openlayers_interaction_draganddrop = function(options) {
-  return new ol.interaction.DragAndDrop(options);
+Drupal.openlayers.openlayers_interaction_draganddrop = function(data) {
+  return new ol.interaction.DragAndDrop(data.options);
 };

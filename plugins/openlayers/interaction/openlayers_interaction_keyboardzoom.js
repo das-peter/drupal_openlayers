@@ -1,3 +1,3 @@
-Drupal.openlayers.openlayers_interaction_keyboardzoom = function(options) {
-  return new ol.interaction.KeyboardZoom(options);
+Drupal.openlayers.openlayers_interaction_keyboardzoom = function(data) {
+  return new ol.interaction.KeyboardZoom(data.options);
 };

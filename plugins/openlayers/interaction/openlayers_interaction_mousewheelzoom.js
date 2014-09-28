@@ -1,3 +1,3 @@
-Drupal.openlayers.openlayers_interaction_mousewheelzoom = function(options) {
-  return new ol.interaction.MouseWheelZoom(options);
+Drupal.openlayers.openlayers_interaction_mousewheelzoom = function(data) {
+  return new ol.interaction.MouseWheelZoom(data.options);
 };

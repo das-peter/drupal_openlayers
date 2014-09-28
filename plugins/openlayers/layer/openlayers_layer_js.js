@@ -1,6 +1,6 @@
-Drupal.openlayers.openlayers_layer_js = function(options, map) {
+Drupal.openlayers.openlayers_layer_js = function(data) {
 
-  eval(options.javascript);
+  eval(data.options.javascript);
 
   return layer;
 }

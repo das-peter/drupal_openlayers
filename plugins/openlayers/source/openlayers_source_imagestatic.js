@@ -1,4 +1,4 @@
-Drupal.openlayers.openlayers_source_imagestatic = function(options, map) {
+Drupal.openlayers.openlayers_source_imagestatic = function(data) {
 
   var pixelProjection = new ol.proj.Projection({
     code: 'pixel',
@@ -6,15 +6,15 @@ Drupal.openlayers.openlayers_source_imagestatic = function(options, map) {
     extent: [0, 0, 1024, 968]
   });
 
-  options.imageSize = [1024, 1024];
-  options.projection = pixelProjection;
-  options.imageExtent = pixelProjection.getExtent();
+  data.options.imageSize = [1024, 1024];
+  data.options.projection = pixelProjection;
+  data.options.imageExtent = pixelProjection.getExtent();
 
-  map.setView(new ol.View({
+  data.map.setView(new ol.View({
     projection: pixelProjection,
     center: ol.extent.getCenter(pixelProjection.getExtent()),
-    zoom: map.getView().getZoom()
+    zoom: data.map.getView().getZoom()
   }));
 
-  return new ol.source.ImageStatic(options);
+  return new ol.source.ImageStatic(data.options);
 };

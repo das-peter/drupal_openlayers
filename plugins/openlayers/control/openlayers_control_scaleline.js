@@ -1,3 +1,3 @@
-Drupal.openlayers.openlayers_control_scaleline = function(map, options) {
-  return new ol.control.ScaleLine(options);
+Drupal.openlayers.openlayers_control_scaleline = function(data) {
+  return new ol.control.ScaleLine(data.options);
 }

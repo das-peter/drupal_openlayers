@@ -1,3 +1,3 @@
-Drupal.openlayers.openlayers_control_zoomslider = function(options) {
-  return new ol.control.ZoomSlider(options);
+Drupal.openlayers.openlayers_control_zoomslider = function(data) {
+  return new ol.control.ZoomSlider(data.options);
 }

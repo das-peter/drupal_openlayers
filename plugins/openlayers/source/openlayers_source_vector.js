@@ -1,7 +1,7 @@
-Drupal.openlayers.openlayers_source_vector = function(options, map) {
+Drupal.openlayers.openlayers_source_vector = function(data) {
 
   var format = new ol.format.WKT();
-  var feature = format.readFeature(options.features);
+  var feature = format.readFeature(data.options.features);
   feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
 
   var options = {

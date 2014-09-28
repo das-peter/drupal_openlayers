@@ -1,3 +1,3 @@
-Drupal.openlayers.openlayers_control_attribution = function(options) {
-  return new ol.control.Attribution(options);
+Drupal.openlayers.openlayers_control_attribution = function(data) {
+  return new ol.control.Attribution(data.options);
 }

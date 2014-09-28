@@ -1,3 +1,3 @@
-Drupal.openlayers.openlayers_control_rotate = function(map, options) {
-  return new ol.control.Rotate(options);
+Drupal.openlayers.openlayers_control_rotate = function(data) {
+  return new ol.control.Rotate(data.options);
 }

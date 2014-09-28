@@ -1,3 +1,3 @@
-Drupal.openlayers.openlayers_source_osm = function(options) {
-  return new ol.source.OSM(options);
+Drupal.openlayers.openlayers_source_osm = function(data) {
+  return new ol.source.OSM(data.options);
 };

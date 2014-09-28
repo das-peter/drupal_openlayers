@@ -1,3 +1,3 @@
-Drupal.openlayers.openlayers_interaction_dragbox = function(options) {
-  return new ol.interaction.DragBox(options);
+Drupal.openlayers.openlayers_interaction_dragbox = function(data) {
+  return new ol.interaction.DragBox(data.options);
 };

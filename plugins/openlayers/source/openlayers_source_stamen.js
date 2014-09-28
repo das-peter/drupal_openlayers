@@ -1,7 +1,7 @@
-Drupal.openlayers.openlayers_source_stamen = function(options) {
+Drupal.openlayers.openlayers_source_stamen = function(data) {
 
   var options = {
-    layer: options.layer
+    layer: data.options.layer
   };
 
   return new ol.source.Stamen(options);

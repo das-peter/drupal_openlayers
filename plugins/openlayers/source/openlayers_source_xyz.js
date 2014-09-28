@@ -1,3 +1,3 @@
-Drupal.openlayers.openlayers_source_xyz = function(options, map) {
-  return new ol.source.XYZ(options);
+Drupal.openlayers.openlayers_source_xyz = function(data) {
+  return new ol.source.XYZ(data.options);
 };

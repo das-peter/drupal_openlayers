@@ -1,4 +1,4 @@
-Drupal.openlayers.openlayers_component_bootstrapjs_popup = function(options, map) {
+Drupal.openlayers.openlayers_component_bootstrapjs_popup = function(data) {
 
   jQuery("body").append("<div id='popup'></div>");
 
@@ -7,10 +7,10 @@ Drupal.openlayers.openlayers_component_bootstrapjs_popup = function(options, map
     positioning: 'bottom-center',
     stopEvent: false
   });
-  map.addOverlay(popup);
+  data.map.addOverlay(popup);
 
-  map.on('click', function(evt) {
-    var feature = map.forEachFeatureAtPixel(evt.pixel,
+  data.map.on('click', function(evt) {
+    var feature = data.map.forEachFeatureAtPixel(evt.pixel,
       function(feature, layer) {
         return feature;
       });

@@ -1,3 +1,3 @@
-Drupal.openlayers.openlayers_interaction_modify = function(options) {
-  return new ol.interaction.Modify(options);
+Drupal.openlayers.openlayers_interaction_modify = function(data) {
+  return new ol.interaction.Modify(data.options);
 };

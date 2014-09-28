@@ -1,5 +1,5 @@
-Drupal.openlayers.openlayers_component_bootstrapjs_alert = function(options, map) {
+Drupal.openlayers.openlayers_component_bootstrapjs_alert = function(data) {
 
-  jQuery("#"+map.getTarget()).before("<div class='alert alert-success' data-dismiss='alert'><a href='#' class='close' data-dismiss='alert'>&times;</a>"+options.message+"</div>");
+  jQuery("#" + data.map.getTarget()).before("<div class='alert alert-success' data-dismiss='alert'><a href='#' class='close' data-dismiss='alert'>&times;</a>" + data.options.message + "</div>");
 
 };

@@ -1,5 +1,5 @@
-Drupal.openlayers.openlayers_component_js = function(options, map) {
+Drupal.openlayers.openlayers_component_js = function(data) {
 
-  eval(options.javascript);
+  eval(data.options.javascript);
 
 };

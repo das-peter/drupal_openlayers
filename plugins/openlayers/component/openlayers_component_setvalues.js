@@ -1,24 +1,24 @@
-Drupal.openlayers.openlayers_component_setvalues = function(options, map) {
+Drupal.openlayers.openlayers_component_setvalues = function(data) {
 
-  map.on('moveend', function(evt){
-    var selector = '#' + options.latitude;
-    jQuery(selector).val(map.getView().getCenter()[0]);
-    var selector = '#' + options.longitude;
-    jQuery(selector).val(map.getView().getCenter()[1]);
-    var selector = '#' + options.rotation;
-    jQuery(selector).val(Math.round(map.getView().getRotation()*(180/Math.PI)));
-    var selector = '#' + options.zoom;
-    jQuery(selector).val(map.getView().getZoom());
+  data.map.on('moveend', function(evt){
+    var selector = '#' + data.options.latitude;
+    jQuery(selector).val(data.map.getView().getCenter()[0]);
+    var selector = '#' + data.options.longitude;
+    jQuery(selector).val(data.map.getView().getCenter()[1]);
+    var selector = '#' + data.options.rotation;
+    jQuery(selector).val(Math.round(data.map.getView().getRotation() * (180 / Math.PI)));
+    var selector = '#' + data.options.zoom;
+    jQuery(selector).val(data.map.getView().getZoom());
   });
 
-  map.on('click', function(evt){
+  data.map.on('click', function(evt){
     var coordinate = evt.coordinate;
     var pan = ol.animation.pan({
       duration: 2000,
-      source: (map.getView().getCenter())
+      source: (data.map.getView().getCenter())
     });
-    map.beforeRender(pan);
-    map.getView().setCenter(coordinate);
+    data.map.beforeRender(pan);
+    data.map.getView().setCenter(coordinate);
   });
 
 };

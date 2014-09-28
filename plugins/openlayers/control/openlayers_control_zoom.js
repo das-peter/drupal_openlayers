@@ -1,3 +1,3 @@
-Drupal.openlayers.openlayers_control_zoom = function(map, options) {
-  return new ol.control.Zoom(options);
+Drupal.openlayers.openlayers_control_zoom = function(data) {
+  return new ol.control.Zoom(data.options);
 }

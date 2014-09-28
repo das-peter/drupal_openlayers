@@ -1,3 +1,3 @@
-Drupal.openlayers.openlayers_interaction_pointer = function(options) {
-  return new ol.interaction.Pointer(options);
+Drupal.openlayers.openlayers_interaction_pointer = function(data) {
+  return new ol.interaction.Pointer(data.options);
 };

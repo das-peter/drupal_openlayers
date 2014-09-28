@@ -1,4 +1,4 @@
-Drupal.openlayers.openlayers_interaction_draw = function(options, map) {
+Drupal.openlayers.openlayers_interaction_draw = function(data) {
 
   var featureOverlay = new ol.FeatureOverlay({
     style: new ol.style.Style({
@@ -17,15 +17,15 @@ Drupal.openlayers.openlayers_interaction_draw = function(options, map) {
       })
     })
   });
-  featureOverlay.setMap(map);
+  featureOverlay.setMap(data.map);
 
-  options.features = featureOverlay.getFeatures();
-  options.type = 'Point';
+  data.options.features = featureOverlay.getFeatures();
+  data.options.type = 'Point';
 
-  map.on('moveend', function(evt){
+  data.map.on('moveend', function(evt){
     var WKT = new ol.format.WKT();
     console.log(WKT.writeFeatures(featureOverlay.getFeatures()));
   });
 
-  return new ol.interaction.Draw(options);
+  return new ol.interaction.Draw(data.options);
 };

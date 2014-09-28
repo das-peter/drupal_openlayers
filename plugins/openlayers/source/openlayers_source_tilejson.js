@@ -1,3 +1,3 @@
-Drupal.openlayers.openlayers_source_tilejson = function(options) {
-  return new ol.source.TileJSON(options);
+Drupal.openlayers.openlayers_source_tilejson = function(data) {
+  return new ol.source.TileJSON(data.options);
 };

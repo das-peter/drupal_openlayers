@@ -1,3 +1,3 @@
-Drupal.openlayers.openlayers_interaction_dragzoom = function(options) {
-  return new ol.interaction.DragZoom(options);
+Drupal.openlayers.openlayers_interaction_dragzoom = function(data) {
+  return new ol.interaction.DragZoom(data.options);
 };
