@@ -99,6 +99,7 @@ function openlayers_control_form_type($form, &$form_state) {
 
   return $form;
 }
+
 function openlayers_control_form_type_submit($form, &$form_state) {
   $form_state['item']->class = $form_state['values']['class'];
 }
@@ -110,6 +111,12 @@ function openlayers_control_form_options($form, &$form_state) {
 
   return $form;
 }
+
+function openlayers_control_form_options_validate($form, &$form_state) {
+  $control = openlayers_object_load('control', $form_state['item']);
+  $control->options_form_validate();
+}
+
 function openlayers_control_form_options_submit($form, &$form_state) {
   $form_state['item']->options = array_replace_recursive((array) $form_state['item']->options, (array) $form_state['values']['options']);
 }

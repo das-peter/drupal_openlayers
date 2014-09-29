@@ -99,6 +99,7 @@ function openlayers_interaction_form_type($form, &$form_state) {
 
   return $form;
 }
+
 function openlayers_interaction_form_type_submit($form, &$form_state) {
   $form_state['item']->class = $form_state['values']['class'];
 }
@@ -110,6 +111,12 @@ function openlayers_interaction_form_options($form, &$form_state) {
 
   return $form;
 }
+
+function openlayers_interaction_form_options_validate($form, &$form_state) {
+  $interaction = openlayers_object_load('interaction', $form_state['item']);
+  $interaction->options_form_validate();
+}
+
 function openlayers_interaction_form_options_submit($form, &$form_state) {
   $form_state['item']->options = array_replace_recursive((array) $form_state['item']->options, $form_state['values']['options']);
 }

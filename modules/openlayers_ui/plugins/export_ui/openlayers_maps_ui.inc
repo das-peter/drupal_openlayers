@@ -109,6 +109,7 @@ function openlayers_map_form_settings($form, &$form_state) {
 
   return $form;
 }
+
 function openlayers_map_form_settings_validate($form, &$form_state) {
   $item = $form_state['item'];
   $item->class = 'openlayers_map_map';
@@ -233,6 +234,7 @@ function openlayers_map_form_layers($form, &$form_state) {
   drupal_add_tabledrag('entry-order', 'order', 'sibling', 'entry-order-weight');
   return $form;
 }
+
 function openlayers_map_form_layers_submit($form, &$form_state) {
   $layers = $form_state['values']['layers'];
 
@@ -301,6 +303,7 @@ function openlayers_map_form_controls($form, &$form_state) {
 
   return $form;
 }
+
 function openlayers_map_form_controls_submit($form, &$form_state) {
   $form_state['item']->options['controls'] = array_filter(array_values($form_state['values']['options']['controls']));
 }
@@ -352,6 +355,7 @@ function openlayers_map_form_interactions($form, &$form_state) {
 
   return $form;
 }
+
 function openlayers_map_form_interactions_submit($form, &$form_state) {
   $form_state['item']->options = array_replace_recursive($form_state['item']->options, $form_state['values']['options']);
   $form_state['item']->options['interactions'] = array_filter(array_values($form_state['values']['options']['interactions']));
@@ -404,6 +408,7 @@ function openlayers_map_form_components($form, &$form_state) {
 
   return $form;
 }
+
 function openlayers_map_form_components_submit($form, &$form_state) {
   $form_state['item']->options = array_replace_recursive($form_state['item']->options, $form_state['values']['options']);
   $form_state['item']->options['components'] = array_filter(array_values($form_state['values']['options']['components']));
@@ -412,6 +417,7 @@ function openlayers_map_form_components_submit($form, &$form_state) {
 function openlayers_map_form_styles($form, &$form_state) {
   return $form;
 }
+
 function openlayers_map_form_styles_submit($form, &$form_state) {
 //  $form_state['item']->options = $form_state['item']->options, (array) $form_state['values']['options']);
 }

@@ -126,7 +126,6 @@ function openlayers_layer_form_type_submit($form, &$form_state) {
   $form_state['item']->options = array_replace_recursive((array) $form_state['item']->options, $form_state['values']['options']);
 }
 
-
 function openlayers_layer_form_options($form, &$form_state) {
   $layer = openlayers_object_load('layer', $form_state['item']);
   $form['options'] = $layer->options_form();
