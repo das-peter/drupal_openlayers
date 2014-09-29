@@ -66,6 +66,22 @@ function openlayers_layer_form_start($form, &$form_state) {
   $class = new ctools_export_ui();
   $class->init($form_state['plugin']);
   $class->edit_form($form, $form_state);
+
+  $maps = ctools_export_crud_load_all('openlayers_maps');
+  $options = array('' => 'Dont attach');
+  foreach($maps as $machine_name => $data) {
+    $map = openlayers_object_load('map', $machine_name);
+    if (property_exists($map, 'disabled') && ($map->disabled == 1 || $map->disabled == TRUE)) continue;
+    $options[$machine_name] = $data->name;
+  }
+
+  $form['attachToMap'] = array(
+    '#type' => 'select',
+    '#title' => 'Add this to a map ?',
+    '#description' => 'Select the map to add this object to.',
+    '#options' => $options
+  );
+
   return $form;
 }
 
@@ -79,11 +95,16 @@ function openlayers_layer_form_start_submit($form, &$form_state) {
   $class = new ctools_export_ui();
   $class->init($form_state['plugin']);
   $class->edit_form_submit($form, $form_state);
+
+  if ($form_state['values']['attachToMap']) {
+    $map = ctools_export_crud_load('openlayers_maps', $form_state['values']['attachToMap']);
+    $map->options['layers'][] = $form_state['item']->machine_name;
+    ctools_export_crud_save('openlayers_maps', $map);
+  }
 }
 
 function openlayers_layer_form_type($form, &$form_state) {
   $layers = ctools_get_plugins('openlayers', 'layer');
-  $layer = openlayers_object_load('layer', $form_state['item'], FALSE);
 
   $options = array('' => t('<Choose the layer type>'));
   foreach ($layers as $class => $plugin) {
@@ -112,7 +133,7 @@ function openlayers_layer_form_type($form, &$form_state) {
   $form['options']['source'] = array(
     '#type' => 'select',
     '#title' => t('Source'),
-    '#default_value' => $layer->getOption('source', ''),
+    '#default_value' => isset($form_state['item']->options['source']) ? $form_state['item']->options['source']: '',
     '#description' => t('Select the source.'),
     '#options' => $options,
     '#required' => TRUE
@@ -140,16 +161,5 @@ function openlayers_layer_form_options_validate($form, &$form_state) {
 }
 
 function openlayers_layer_form_options_submit($form, &$form_state) {
-
-  if (isset($form_state['item']->options['file']) && $file = file_load($form_state['item']->options['file'])) {
-    file_delete($file);
-  }
-
-  if (isset($form_state['values']['file']) && $file = file_load($form_state['values']['file'])) {
-    $file->status = FILE_STATUS_PERMANENT;
-    file_save($file);
-    file_usage_add($file, 'openlayers', 'layer', $form_state['item']->machine_name);
-  }
-
-  //$form_state['item']->options = array_replace_recursive((array) $form_state['item']->options, $form_state['values']['options']);
+  $form_state['item']->options = array_replace_recursive((array) $form_state['item']->options, $form_state['values']['options']);
 }

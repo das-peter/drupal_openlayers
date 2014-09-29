@@ -66,6 +66,22 @@ function openlayers_source_form_start($form, &$form_state) {
   $class = new ctools_export_ui();
   $class->init($form_state['plugin']);
   $class->edit_form($form, $form_state);
+
+  $layers = ctools_export_crud_load_all('openlayers_layers');
+  $options = array('' => 'Dont attach');
+  foreach($layers as $machine_name => $data) {
+    $layer = openlayers_object_load('layer', $machine_name);
+    if (property_exists($layer, 'disabled') && ($layer->disabled == 1 || $layer->disabled == TRUE)) continue;
+    $options[$machine_name] = $data->name;
+  }
+
+  $form['attachToLayer'] = array(
+    '#type' => 'select',
+    '#title' => 'Add this to a layer ?',
+    '#description' => 'Select the layer to add this object to.',
+    '#options' => $options
+  );
+
   return $form;
 }
 
@@ -79,6 +95,12 @@ function openlayers_source_form_start_submit($form, &$form_state) {
   $class = new ctools_export_ui();
   $class->init($form_state['plugin']);
   $class->edit_form_submit($form, $form_state);
+
+  if ($form_state['values']['attachToLayer']) {
+    $layer = ctools_export_crud_load('openlayers_layers', $form_state['values']['attachToLayer']);
+    $layer->options['source'] = $form_state['item']->machine_name;
+    ctools_export_crud_save('openlayers_layers', $layer);
+  }
 }
 
 function openlayers_source_form_type($form, &$form_state) {

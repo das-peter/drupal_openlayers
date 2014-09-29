@@ -66,6 +66,22 @@ function openlayers_component_form_start($form, &$form_state) {
   $class = new ctools_export_ui();
   $class->init($form_state['plugin']);
   $class->edit_form($form, $form_state);
+
+  $maps = ctools_export_crud_load_all('openlayers_maps');
+  $options = array('' => 'Dont attach');
+  foreach($maps as $machine_name => $data) {
+    $map = openlayers_object_load('map', $machine_name);
+    if (property_exists($map, 'disabled') && ($map->disabled == 1 || $map->disabled == TRUE)) continue;
+    $options[$machine_name] = $data->name;
+  }
+
+  $form['attachToMap'] = array(
+    '#type' => 'select',
+    '#title' => 'Add this to a map ?',
+    '#description' => 'Select the map to add this object to.',
+    '#options' => $options
+  );
+
   return $form;
 }
 
@@ -79,6 +95,12 @@ function openlayers_component_form_start_submit($form, &$form_state) {
   $class = new ctools_export_ui();
   $class->init($form_state['plugin']);
   $class->edit_form_submit($form, $form_state);
+
+  if ($form_state['values']['attachToMap']) {
+    $map = ctools_export_crud_load('openlayers_maps', $form_state['values']['attachToMap']);
+    $map->options['components'][] = $form_state['item']->machine_name;
+    ctools_export_crud_save('openlayers_maps', $map);
+  }
 }
 
 function openlayers_component_form_type($form, &$form_state) {

@@ -84,6 +84,18 @@ function openlayers_default_layers() {
   $layer = new stdClass();
   $layer->disabled = FALSE; /* Edit this to true to make a default layer disabled initially */
   $layer->api_version = 1;
+  $layer->machine_name = 'layer_tile_opencyclemap';
+  $layer->name = 'OpenCycleMap';
+  $layer->description = '';
+  $layer->class = 'openlayers_layer_tile';
+  $layer->options = array(
+    'source' => 'source_osm_opencyclemap',
+  );
+  $export['layer_tile_opencyclemap'] = $layer;
+
+  $layer = new stdClass();
+  $layer->disabled = FALSE; /* Edit this to true to make a default layer disabled initially */
+  $layer->api_version = 1;
   $layer->machine_name = 'layer_tile_tiledebug';
   $layer->name = 'Tile Debug';
   $layer->description = '';

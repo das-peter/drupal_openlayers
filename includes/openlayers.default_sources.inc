@@ -12,6 +12,18 @@ function openlayers_default_sources() {
   $source->options = array();
   $export['source_osm'] = $source;
 
+  $source = new stdClass();
+  $source->disabled = FALSE; /* Edit this to true to make a default source disabled initially */
+  $source->api_version = 1;
+  $source->machine_name = 'source_osm_opencyclemap';
+  $source->name = 'OpenCycleMap';
+  $source->description = 'Source OpenCycleMap description';
+  $source->class = 'openlayers_source_osm';
+  $source->options = array(
+    'url' => 'http://{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png',
+  );
+  $export['source_osm_opencyclemap'] = $source;
+
   $source = new stdClass;
   $source->api_version = 1;
   $source->machine_name = 'source_bingmaps';
