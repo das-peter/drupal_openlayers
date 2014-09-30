@@ -41,6 +41,26 @@ function openlayers_default_components() {
   $component = new stdClass();
   $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */
   $component->api_version = 1;
+  $component->machine_name = 'map_edit_form_setsenter';
+  $component->name = 'Map center on mouseclick';
+  $component->description = '';
+  $component->class = 'openlayers_component_js';
+  $component->options = array(
+    'javascript' => 'data.map.on(\'click\', function(evt){
+  var coordinate = evt.coordinate;
+  var pan = ol.animation.pan({
+    duration: 2000,
+    source: (data.map.getView().getCenter())
+  });
+  data.map.beforeRender(pan);
+  data.map.getView().setCenter(coordinate);
+});',
+  );
+  $export['map_edit_form_setsenter'] = $component;
+
+  $component = new stdClass();
+  $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */
+  $component->api_version = 1;
   $component->machine_name = 'graticule';
   $component->name = 'Graticule with inline JS';
   $component->description = 'Display a graticule on the map.';
