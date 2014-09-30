@@ -11,14 +11,4 @@ Drupal.openlayers.openlayers_component_setvalues = function(data) {
     jQuery(selector).val(data.map.getView().getZoom());
   });
 
-  data.map.on('click', function(evt){
-    var coordinate = evt.coordinate;
-    var pan = ol.animation.pan({
-      duration: 2000,
-      source: (data.map.getView().getCenter())
-    });
-    data.map.beforeRender(pan);
-    data.map.getView().setCenter(coordinate);
-  });
-
 };
