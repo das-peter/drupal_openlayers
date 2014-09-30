@@ -59,28 +59,59 @@ abstract class openlayers_object implements openlayers_object_interface {
 
   public function develop() {}
 
-  public function setOption($key, $value = NULL) {
-    if (is_string($key) && !empty($value)) {
-      $this->options = array_replace_recursive($this->options, array($key => $value));
+  public function clearOption($parents) {
+    $ref = &$this->options;
+
+    if (is_string($parents)) {
+      $parents = array($parents);
     }
-    if (is_array($key)) {
-      $this->options = array_replace_recursive($this->options, $key);
+
+    $last = end($parents);
+    reset($parents);
+    foreach ($parents as $parent) {
+      if (isset($ref) && !is_array($ref)) {
+        $ref = array();
+      }
+      if ($last == $parent) {
+        unset($ref[$parent]);
+      } else {
+        if (isset($ref[$parent])) {
+          $ref = &$ref[$parent];
+        } else {
+          break;
+        }
+      }
     }
-    return $this;
   }
 
-  public function getOption($key, $default_value = NULL) {
-    $options = $this->options;
+  public function setOption($parents, $value = NULL) {
+    $ref = &$this->options;
 
-    if (is_string($key)) {
-      $key = array($key);
+    if (is_string($parents)) {
+      $parents = array($parents);
     }
 
-    if (is_array($key)) {
+    foreach ($parents as $parent) {
+      if (isset($ref) && !is_array($ref)) {
+        $ref = array();
+      }
+      $ref = &$ref[$parent];
+    }
+    $ref = $value;
+  }
+
+  public function getOption($parents, $default_value = NULL) {
+    $options = $this->options;
+
+    if (is_string($parents)) {
+      $parents = array($parents);
+    }
+
+    if (is_array($parents)) {
       $notfound = FALSE;
-      foreach($key as $item) {
-        if (isset($options[$item])) {
-          $options = $options[$item];
+      foreach($parents as $parent) {
+        if (isset($options[$parent])) {
+          $options = $options[$parent];
         } else {
           $notfound = TRUE;
           break;

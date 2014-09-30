@@ -5,8 +5,9 @@ interface openlayers_object_interface {
   public function init(array $data);
   public function getType();
   public function develop();
-  public function getOption($key, $default_value);
-  public function setOption($key, $value);
+  public function clearOption($parents);
+  public function getOption($parents, $default_value);
+  public function setOption($parents, $value);
   public function options_form();
   public function options_form_validate();
   public function options_form_submit();
