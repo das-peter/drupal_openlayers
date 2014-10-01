@@ -1,20 +1,20 @@
 <?php
 
-include 'includes/openlayers.constants.inc';
-include 'includes/openlayers.object.interface.inc';
-include 'includes/openlayers.map.interface.inc';
-include 'includes/openlayers.layer.interface.inc';
-include 'includes/openlayers.source.interface.inc';
-include 'includes/openlayers.control.interface.inc';
-include 'includes/openlayers.interaction.interface.inc';
-include 'includes/openlayers.component.interface.inc';
-include 'includes/openlayers.object.inc';
-include 'includes/openlayers.component.inc';
-include 'includes/openlayers.interaction.inc';
-include 'includes/openlayers.map.inc';
-include 'includes/openlayers.control.inc';
-include 'includes/openlayers.layer.inc';
-include 'includes/openlayers.source.inc';
+include 'includes/Classes/openlayers.config.inc';
+include 'includes/Interfaces/openlayers.object.interface.inc';
+include 'includes/Interfaces/openlayers.map.interface.inc';
+include 'includes/Interfaces/openlayers.layer.interface.inc';
+include 'includes/Interfaces/openlayers.source.interface.inc';
+include 'includes/Interfaces/openlayers.control.interface.inc';
+include 'includes/Interfaces/openlayers.interaction.interface.inc';
+include 'includes/Interfaces/openlayers.component.interface.inc';
+include 'includes/Classes/openlayers.object.inc';
+include 'includes/Classes/openlayers.component.inc';
+include 'includes/Classes/openlayers.interaction.inc';
+include 'includes/Classes/openlayers.map.inc';
+include 'includes/Classes/openlayers.control.inc';
+include 'includes/Classes/openlayers.layer.inc';
+include 'includes/Classes/openlayers.source.inc';
 
 function openlayers_ctools_plugin_api($module, $api) {
   $path = drupal_get_path('module', 'openlayers') . '/includes';
@@ -227,7 +227,7 @@ function openlayers_libraries_info() {
     ),
     'integration files' => array(
       'openlayers' => array(
-        'js' => array('js/openlayers.js' => array('type'=>'file', 'weight' => 0, 'group' => OPENLAYERS_JS_GROUP)),
+        'js' => array('js/openlayers.js' => array('type'=>'file', 'weight' => 0, 'group' => openlayers_config::OPENLAYERS_JS_GROUP)),
         'css' => array('css/openlayers.css' => array('weight' => 10))
       ),
     ),
