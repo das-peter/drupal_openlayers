@@ -39,7 +39,7 @@ function openlayers_default_components() {
   $export['map_edit_form_values'] = $component;
 
   $component = new stdClass();
-  $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */
+  $component->disabled = TRUE; /* Edit this to true to make a default component disabled initially */
   $component->api_version = 1;
   $component->machine_name = 'map_edit_form_setcenter';
   $component->name = 'Map center on mouse click';
