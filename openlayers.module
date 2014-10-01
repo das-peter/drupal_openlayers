@@ -227,7 +227,7 @@ function openlayers_libraries_info() {
     ),
     'integration files' => array(
       'openlayers' => array(
-        'js' => array('js/openlayers.js' => array('type'=>'file', 'weight' => 0, 'group' => openlayers_config::OPENLAYERS_JS_GROUP)),
+        'js' => array('js/openlayers.js' => array('type'=>'file', 'weight' => 0, 'group' => openlayers_config::JS_GROUP)),
         'css' => array('css/openlayers.css' => array('weight' => 10))
       ),
     ),
