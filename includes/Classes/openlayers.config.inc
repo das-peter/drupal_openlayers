@@ -2,7 +2,8 @@
 
 class openlayers_config {
 
-  const OPENLAYERS_JS_GROUP = 20;
-  const OPENLAYERS_JS_WEIGHT = 10;
+  const JS_GROUP = 20,
+    JS_WEIGHT = 10,
+    EDIT_VIEW_MAP = 'map_view_edit_form';
 
 }

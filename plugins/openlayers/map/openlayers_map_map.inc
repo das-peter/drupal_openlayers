@@ -50,15 +50,16 @@ class openlayers_map_map extends openlayers_map {
       '#tree' => TRUE,
     );
 
-    if ($this->machine_name != 'map_view_edit_form') {
-      $map = openlayers_object_load('map', 'map_view_edit_form');
+    if ($this->machine_name != openlayers_config::EDIT_VIEW_MAP) {
+      $map = openlayers_object_load('map', openlayers_config::EDIT_VIEW_MAP);
       if ($view = $this->getOption('view')) {
         $map->setOption('view', $view);
       }
 
       $form['view']['map'] = array(
         '#title' => 'Map',
-        '#markup' => openlayers_render_map($map),
+        '#type' => 'openlayers',
+        '#map' => $map
       );
     }
 
