@@ -402,7 +402,7 @@ function openlayers_default_maps() {
     ),
     'components' => array(
       0 => 'map_edit_form_values',
-      1 => 'map_edit_form_setsenter',
+      1 => 'map_edit_form_setcenter',
     )
   );
   $export['map_view_edit_form'] = $map;

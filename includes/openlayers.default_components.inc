@@ -41,9 +41,9 @@ function openlayers_default_components() {
   $component = new stdClass();
   $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */
   $component->api_version = 1;
-  $component->machine_name = 'map_edit_form_setsenter';
-  $component->name = 'Map center on mouseclick';
-  $component->description = '';
+  $component->machine_name = 'map_edit_form_setcenter';
+  $component->name = 'Map center on mouse click';
+  $component->description = 'Upon clicking, center the map at the mouse position.';
   $component->class = 'openlayers_component_js';
   $component->options = array(
     'javascript' => 'data.map.on(\'click\', function(evt){
@@ -56,7 +56,7 @@ function openlayers_default_components() {
   data.map.getView().setCenter(coordinate);
 });',
   );
-  $export['map_edit_form_setsenter'] = $component;
+  $export['map_edit_form_setcenter'] = $component;
 
   $component = new stdClass();
   $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */
