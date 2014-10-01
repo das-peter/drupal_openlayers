@@ -12,7 +12,7 @@ function openlayers_openlayers_map_map_openlayers_map() {
 class openlayers_map_map extends openlayers_map {
 
   function options_form() {
-    $form['options']['ui'] = array(
+    $form['ui'] = array(
       '#type' => 'fieldset',
       '#title' => t('Size of the map'),
       '#tree' => TRUE,
@@ -44,7 +44,7 @@ class openlayers_map_map extends openlayers_map {
       ),
     );
 
-    $form['options']['view'] = array(
+    $form['view'] = array(
       '#type' => 'fieldset',
       '#title' => t('View: center and rotation'),
       '#tree' => TRUE,
@@ -53,55 +53,47 @@ class openlayers_map_map extends openlayers_map {
     if ($this->machine_name != 'map_view_edit_form') {
       $map = openlayers_object_load('map', 'map_view_edit_form');
       if ($view = $this->getOption('view')) {
-        $map->options['view'] = $view;
+        $map->setOption('view', $view);
       }
 
-      $form['options']['view']['map'] = array(
+      $form['view']['map'] = array(
         '#title' => 'Map',
         '#markup' => openlayers_render_map($map),
       );
     }
 
-    $form['options']['view']['center'] = array(
+    $form['view']['center'] = array(
+      '#tree' => TRUE,
       'lat' => array(
         '#type' => 'textfield',
         '#title' => 'Latitude',
-        // Todo: Replace with getOption() method.
         '#default_value' => $this->getOption(array('view', 'center', 'lat'), 0),
-        '#parents' => array('options', 'view', 'center', 'lat'),
       ),
       'lon' => array(
         '#type' => 'textfield',
         '#title' => 'Longitude',
         '#default_value' => $this->getOption(array('view', 'center', 'lat'), 0),
-        '#parents' => array('options', 'view', 'center', 'lon'),
       )
     );
-    $form['options']['view']['rotation'] = array(
-      'rotation' => array(
-        '#type' => 'textfield',
-        '#title' => 'Rotation',
-        '#default_value' => $this->getOption(array('view', 'rotation'), 0),
-        '#parents' => array('options', 'view', 'rotation'),
-      ),
+    $form['view']['rotation'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Rotation',
+      '#default_value' => $this->getOption(array('view', 'rotation'), 0),
     );
-    $form['options']['view']['zoom'] = array(
+    $form['view']['zoom'] = array(
       '#type' => 'textfield',
       '#title' => 'Zoom',
       '#default_value' => $this->getOption(array('view', 'zoom'), 0),
-      '#parents' => array('options', 'view', 'zoom'),
     );
-    $form['options']['view']['minZoom'] = array(
+    $form['view']['minZoom'] = array(
       '#type' => 'textfield',
       '#title' => 'Min zoom',
       '#default_value' => $this->getOption(array('view', 'minZoom'), 0),
-      '#parents' => array('options', 'view', 'minZoom'),
     );
-    $form['options']['view']['maxZoom'] = array(
+    $form['view']['maxZoom'] = array(
       '#type' => 'textfield',
       '#title' => 'Max zoom',
       '#default_value' => $this->getOption(array('view', 'maxZoom'), 0),
-      '#parents' => array('options', 'view', 'maxZoom'),
     );
 
     return $form;
@@ -112,5 +104,4 @@ class openlayers_map_map extends openlayers_map {
     $attached['libraries_load'][] = array('openlayers3');
     return $attached;
   }
-
 }

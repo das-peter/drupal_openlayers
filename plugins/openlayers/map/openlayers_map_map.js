@@ -7,6 +7,9 @@ Drupal.openlayers.openlayers_map_map = function(data) {
     center: [options.view.center.lat, options.view.center.lon],
     rotation: options.view.rotation * (Math.PI / 180),
     zoom: options.view.zoom,
+    // Todo: Find why these following options makes problems
+    //minZoom: options.view.minZoom,
+    //maxZoom: options.view.maxZoom,
     projection: projection,
     extent: projection.getExtent()
   });
