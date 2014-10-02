@@ -10,7 +10,7 @@ function openlayers_openlayers_interaction_dragpan_openlayers_interaction() {
 }
 
 class openlayers_interaction_dragpan extends openlayers_interaction {
-  function options_form() {
+  function options_form($form, &$form_state) {
     return array(
       'decay' => array(
         '#type' => 'textfield',

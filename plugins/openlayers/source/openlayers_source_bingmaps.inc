@@ -11,7 +11,7 @@ function openlayers_openlayers_source_bingmaps_openlayers_source() {
 
 class openlayers_source_bingmaps extends openlayers_source {
 
-  function options_form() {
+  function options_form($form, &$form_state) {
     $layer_types = array(
       'Road',
       'Aerial',

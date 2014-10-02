@@ -11,7 +11,7 @@ function openlayers_openlayers_source_mapquest_openlayers_source() {
 
 class openlayers_source_mapquest extends openlayers_source {
 
-  function options_form() {
+  function options_form($form, &$form_state) {
     $layer_types = array(
       'osm' => 'OpenStreetMap',
       'sat' => 'Satellite',

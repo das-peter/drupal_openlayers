@@ -11,7 +11,7 @@ function openlayers_openlayers_control_js_openlayers_control() {
 
 class openlayers_control_js extends openlayers_control {
 
-  function options_form() {
+  function options_form($form, &$form_state) {
     $attached = array();
     $form = array();
 

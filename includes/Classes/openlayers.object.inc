@@ -24,11 +24,11 @@ abstract class openlayers_object implements openlayers_object_interface {
     );
   }
 
-  function options_form() {return array();}
+  public function options_form($form, &$form_state) {return array();}
 
-  function options_form_validate() {}
+  function options_form_validate($form, &$form_state) {}
 
-  function options_form_submit() {}
+  function options_form_submit($form, &$form_state) {}
 
   function init(array $data) {
     foreach ($this->defauts_properties() as $property => $value) {

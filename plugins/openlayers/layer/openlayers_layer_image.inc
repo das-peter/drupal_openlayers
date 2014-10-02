@@ -11,7 +11,7 @@ function openlayers_openlayers_layer_image_openlayers_layer() {
 
 class openlayers_layer_image extends openlayers_layer {
 
-  function options_form() {
+  function options_form($form, &$form_state) {
     return array(
       'file' => array(
         '#type' => 'managed_file',
@@ -44,7 +44,7 @@ class openlayers_layer_image extends openlayers_layer {
     );
   }
 
-  function options_form_validate() {
+  function options_form_validate($form, &$form_state) {
     if ($file = file_load($form_state['options']['file'])) {
       // Do something with the file if needed.
     } else {
@@ -56,7 +56,7 @@ class openlayers_layer_image extends openlayers_layer {
   /**
    * hook_submit() of the form.
    */
-  function options_form_submit() {
+  function options_form_submit($form, &$form_state) {
     global $user;
 
     $item = $form_state['item'];

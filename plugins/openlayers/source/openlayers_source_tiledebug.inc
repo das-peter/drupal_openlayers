@@ -11,7 +11,7 @@ function openlayers_openlayers_source_tiledebug_openlayers_source() {
 
 class openlayers_source_tiledebug extends openlayers_source {
 
-  function options_form() {
+  function options_form($form, &$form_state) {
     return array(
       'maxZoom' => array(
         '#title' => t('Maxzoom'),

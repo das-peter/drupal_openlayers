@@ -128,7 +128,7 @@ function openlayers_source_form_type_submit($form, &$form_state) {
 
 function openlayers_source_form_options($form, &$form_state) {
   $source = openlayers_object_load('source', $form_state['item']);
-  $form['options'] = $source->options_form();
+  $form['options'] = $source->options_form($form, $form_state);
   $form['options']['#tree'] = TRUE;
 
   return $form;
@@ -136,9 +136,11 @@ function openlayers_source_form_options($form, &$form_state) {
 
 function openlayers_source_form_options_validate($form, &$form_state) {
   $source = openlayers_object_load('source', $form_state['item']);
-  $source->options_form_validate();
+  $source->options_form_validate($form, $form_state);
 }
 
 function openlayers_source_form_options_submit($form, &$form_state) {
   $form_state['item']->options = array_replace_recursive((array) $form_state['item']->options, $form_state['values']['options']);
+  $source = openlayers_object_load('source', $form_state['item']);
+  $source->options_form_submit($form, $form_state);
 }

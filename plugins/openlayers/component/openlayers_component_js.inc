@@ -11,7 +11,7 @@ function openlayers_openlayers_component_js_openlayers_component() {
 
 class openlayers_component_js extends openlayers_component {
 
-  function options_form() {
+  function options_form($form, &$form_state) {
     $attached = array();
     $form = array();
 

@@ -11,7 +11,7 @@ function openlayers_openlayers_component_setvalues_openlayers_component() {
 
 class openlayers_component_setvalues extends openlayers_component {
 
-  function options_form() {
+  function options_form($form, &$form_state) {
     return array(
       'latitude' => array(
         '#type' => 'textfield',

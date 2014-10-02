@@ -11,7 +11,7 @@ function openlayers_openlayers_source_tilejson_openlayers_source() {
 
 class openlayers_source_tilejson extends openlayers_source {
 
-  function options_form() {
+  function options_form($form, &$form_state) {
     return array(
       'url' => array(
         '#title' => t('URL'),

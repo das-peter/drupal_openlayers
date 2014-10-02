@@ -11,7 +11,7 @@ function openlayers_openlayers_map_map_openlayers_map() {
 
 class openlayers_map_map extends openlayers_map {
 
-  function options_form() {
+  function options_form($form, &$form_state) {
     $form['ui'] = array(
       '#type' => 'fieldset',
       '#title' => t('Size of the map'),

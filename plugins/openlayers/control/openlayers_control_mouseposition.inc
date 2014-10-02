@@ -11,7 +11,7 @@ function openlayers_openlayers_control_mouseposition_openlayers_control() {
 
 class openlayers_control_mouseposition extends openlayers_control {
 
-  function options_form() {
+  function options_form($form, &$form_state) {
     return array(
       'target' => array(
         '#type' => 'textfield',
