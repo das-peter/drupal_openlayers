@@ -24,7 +24,7 @@ abstract class openlayers_object implements openlayers_object_interface {
     );
   }
 
-  public function options_form($form, &$form_state) {return array();}
+  public function options_form(&$form, &$form_state) {return array();}
 
   function options_form_validate($form, &$form_state) {}
 

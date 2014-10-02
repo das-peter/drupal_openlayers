@@ -10,13 +10,11 @@ function openlayers_openlayers_source_xyz_openlayers_source() {
 }
 
 class openlayers_source_xyz extends openlayers_source {
-  function options_form($form, &$form_state) {
-    return array(
-      'url' => array(
-        '#title' => t('URL(s)'),
-        '#type' => 'textarea',
-        '#default_value' => $this->getOption('url') ? $this->getOption('url') : '',
-      )
+  function options_form(&$form, &$form_state) {
+    $form['options']['url'] = array(
+      '#title' => t('URL(s)'),
+      '#type' => 'textarea',
+      '#default_value' => $this->getOption('url') ? $this->getOption('url') : '',
     );
   }
 }

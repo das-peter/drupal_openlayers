@@ -11,8 +11,8 @@ function openlayers_openlayers_map_map_openlayers_map() {
 
 class openlayers_map_map extends openlayers_map {
 
-  function options_form($form, &$form_state) {
-    $form['ui'] = array(
+  function options_form(&$form, &$form_state) {
+    $form['options']['ui'] = array(
       '#type' => 'fieldset',
       '#title' => t('Size of the map'),
       'width' => array(
@@ -43,7 +43,7 @@ class openlayers_map_map extends openlayers_map {
       ),
     );
 
-    $form['view'] = array(
+    $form['options']['view'] = array(
       '#type' => 'fieldset',
       '#title' => t('View: center and rotation'),
       '#tree' => TRUE,
@@ -55,14 +55,14 @@ class openlayers_map_map extends openlayers_map {
         $map->setOption('view', $view);
       }
 
-      $form['view']['map'] = array(
+      $form['options']['view']['map'] = array(
         '#type' => 'openlayers',
         '#description' => t('You can drag this map with your mouse, click to center and you can hold alt and shift key to rotate.'),
         '#map' => $map
       );
     }
 
-    $form['view']['center'] = array(
+    $form['options']['view']['center'] = array(
       '#tree' => TRUE,
       'lat' => array(
         '#type' => 'textfield',
@@ -75,28 +75,26 @@ class openlayers_map_map extends openlayers_map {
         '#default_value' => $this->getOption(array('view', 'center', 'lat'), 0),
       )
     );
-    $form['view']['rotation'] = array(
+    $form['options']['view']['rotation'] = array(
       '#type' => 'textfield',
       '#title' => 'Rotation',
       '#default_value' => $this->getOption(array('view', 'rotation'), 0),
     );
-    $form['view']['zoom'] = array(
+    $form['options']['view']['zoom'] = array(
       '#type' => 'textfield',
       '#title' => 'Zoom',
       '#default_value' => $this->getOption(array('view', 'zoom'), 0),
     );
-    $form['view']['minZoom'] = array(
+    $form['options']['view']['minZoom'] = array(
       '#type' => 'textfield',
       '#title' => 'Min zoom',
       '#default_value' => $this->getOption(array('view', 'minZoom'), 0),
     );
-    $form['view']['maxZoom'] = array(
+    $form['options']['view']['maxZoom'] = array(
       '#type' => 'textfield',
       '#title' => 'Max zoom',
       '#default_value' => $this->getOption(array('view', 'maxZoom'), 0),
     );
-
-    return $form;
   }
 
   function attached() {

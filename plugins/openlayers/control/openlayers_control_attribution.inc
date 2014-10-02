@@ -11,14 +11,12 @@ function openlayers_openlayers_control_attribution_openlayers_control() {
 
 class openlayers_control_attribution extends openlayers_control {
 
-  function options_form($form, &$form_state) {
-    return array(
-      'collapsible' => array(
-        '#type' => 'checkbox',
-        '#title' => t('Collapsible'),
-        '#default_value' => $this->getOption('collapsible'),
-        '#description' => t(''),
-      ),
+  function options_form(&$form, &$form_state) {
+    $form['options']['collapsible'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Collapsible'),
+      '#default_value' => $this->getOption('collapsible'),
+      '#description' => t(''),
     );
   }
 

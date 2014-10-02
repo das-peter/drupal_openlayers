@@ -11,14 +11,12 @@ function openlayers_openlayers_source_osm_openlayers_source() {
 
 class openlayers_source_osm extends openlayers_source {
 
-  function options_form($form, &$form_state) {
-    return array(
-      'url' => array(
-        '#type' => 'textarea',
-        '#title' => t('Base URL (template)'),
-        '#default_value' => $this->getOption('url') ? implode("\n", (array) $this->getOption('url')) : 'http://a.tile.openstreetmap.org/${z}/${x}/${y}.png',
-        '#maxlength' => 2083,
-      ),
+  function options_form(&$form, &$form_state) {
+    $form['options']['url'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Base URL (template)'),
+      '#default_value' => $this->getOption('url') ? implode("\n", (array) $this->getOption('url')) : 'http://a.tile.openstreetmap.org/${z}/${x}/${y}.png',
+      '#maxlength' => 2083,
     );
   }
 

@@ -11,7 +11,7 @@ function openlayers_openlayers_interaction_js_openlayers_control() {
 
 class openlayers_interaction_js extends openlayers_interaction {
 
-  function options_form($form, &$form_state) {
+  function options_form(&$form, &$form_state) {
     $attached = array();
     $form = array();
 
@@ -28,7 +28,7 @@ class openlayers_interaction_js extends openlayers_interaction {
       drupal_set_message(t('To get syntax highlighting, you should install the module <a href="@url1">ace_editor</a> and its <a href="@url2">library</a>.', array('@url1' => 'http://drupal.org/project/ace_editor', '@url2' => 'http://ace.c9.io/')), 'warning');
     }
 
-    $form['javascript'] = array(
+    $form['options']['javascript'] = array(
       '#type' => 'textarea',
       '#title' => t('Javascript'),
       '#description' => t('Javascript to evaluate. The available variable is: <em>data</em>. You must create the openlayers variable <em>interaction</em>.'),
@@ -39,8 +39,6 @@ class openlayers_interaction_js extends openlayers_interaction {
       ),
       '#attached' => $attached
     );
-
-    return $form;
   }
 
 }

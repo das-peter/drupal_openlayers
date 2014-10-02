@@ -23,13 +23,11 @@ class openlayers_component_bootstrapjs_alert extends openlayers_component {
     );
   }
 
-  function options_form($form, &$form_state) {
-    return array(
-      'message' => array(
-        '#type' => 'textarea',
-        '#title' => t('Text to display'),
-        '#default_value' => $this->getOption('message'),
-      ),
+  function options_form(&$form, &$form_state) {
+    $form['options']['message'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Text to display'),
+      '#default_value' => $this->getOption('message'),
     );
   }
 

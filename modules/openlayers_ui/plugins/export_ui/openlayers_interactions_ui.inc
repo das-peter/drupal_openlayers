@@ -128,7 +128,7 @@ function openlayers_interaction_form_type_submit($form, &$form_state) {
 
 function openlayers_interaction_form_options($form, &$form_state) {
   $interaction = openlayers_object_load('interaction', $form_state['item']);
-  $form['options'] = $interaction->options_form($form, $form_state);
+  $interaction->options_form($form, $form_state);
   $form['options']['#tree'] = TRUE;
 
   return $form;

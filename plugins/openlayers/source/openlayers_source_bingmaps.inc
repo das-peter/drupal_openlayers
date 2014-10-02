@@ -11,7 +11,7 @@ function openlayers_openlayers_source_bingmaps_openlayers_source() {
 
 class openlayers_source_bingmaps extends openlayers_source {
 
-  function options_form($form, &$form_state) {
+  function options_form(&$form, &$form_state) {
     $layer_types = array(
       'Road',
       'Aerial',
@@ -20,18 +20,16 @@ class openlayers_source_bingmaps extends openlayers_source {
       'ordnanceSurvey'
     );
 
-    return array(
-      'key' => array(
-        '#title' => t('Key'),
-        '#type' => 'textfield',
-        '#default_value' => $this->getOption('key', '')
-      ),
-      'imagerySet' => array(
-        '#title' => t('Imagery set'),
-        '#type' => 'select',
-        '#default_value' => $this->getOption('imagerySet', 'Road'),
-        '#options' => array_combine($layer_types, $layer_types)
-      )
+    $form['options']['key'] = array(
+      '#title' => t('Key'),
+      '#type' => 'textfield',
+      '#default_value' => $this->getOption('key', '')
+    );
+    $form['options']['imagerySet'] = array(
+      '#title' => t('Imagery set'),
+      '#type' => 'select',
+      '#default_value' => $this->getOption('imagerySet', 'Road'),
+      '#options' => array_combine($layer_types, $layer_types)
     );
   }
 

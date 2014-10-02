@@ -11,13 +11,11 @@ function openlayers_openlayers_source_geojson_openlayers_source() {
 
 class openlayers_source_geojson extends openlayers_source {
 
-  function options_form($form, &$form_state) {
-    return array(
-      'url' => array(
-        '#title' => t('URL'),
-        '#type' => 'textfield',
-        '#default_value' => $this->getOption('url'),
-      )
+  function options_form(&$form, &$form_state) {
+    $form['options']['url'] = array(
+      '#title' => t('URL'),
+      '#type' => 'textfield',
+      '#default_value' => $this->getOption('url'),
     );
   }
 }

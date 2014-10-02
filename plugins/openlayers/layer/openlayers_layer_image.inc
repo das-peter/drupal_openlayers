@@ -11,21 +11,20 @@ function openlayers_openlayers_layer_image_openlayers_layer() {
 
 class openlayers_layer_image extends openlayers_layer {
 
-  function options_form($form, &$form_state) {
-    return array(
-      'file' => array(
+  function options_form(&$form, &$form_state) {
+      $form['options']['file'] = array(
         '#type' => 'managed_file',
         '#title' => t('Image'),
         '#default_value' => $this->getOption('file'),
         '#upload_location' =>  'public://',
-      ),
-      'image_style' => array(
+      );
+      $form['options']['image_style'] = array(
         '#type' => 'select',
         '#options' => array(''=> 'None (original image)') + image_style_options(FALSE),
         '#default_value' => $this->getOption('image_style'),
         '#description' => t('Apply an image style.'),
-      ),
-      'factors' => array(
+      );
+      $form['options']['factors'] = array(
         '#tree' => TRUE,
         'x' => array(
           '#title' => 'Width divider',
@@ -40,8 +39,7 @@ class openlayers_layer_image extends openlayers_layer {
           '#default_value' => isset($this->options['factors']['y']) ? $this->options['factors']['y'] : 1,
           '#description' => t('Height divider.'),
         ),
-      ),
-    );
+      );
   }
 
   function options_form_validate($form, &$form_state) {

@@ -8,7 +8,7 @@ interface openlayers_object_interface {
   public function clearOption($parents);
   public function getOption($parents, $default_value);
   public function setOption($parents, $value);
-  public function options_form($form, &$form_state);
+  public function options_form(&$form, &$form_state);
   public function options_form_validate($form, &$form_state);
   public function options_form_submit($form, &$form_state);
   public function toArray();

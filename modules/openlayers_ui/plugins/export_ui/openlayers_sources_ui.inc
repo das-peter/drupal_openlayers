@@ -128,7 +128,7 @@ function openlayers_source_form_type_submit($form, &$form_state) {
 
 function openlayers_source_form_options($form, &$form_state) {
   $source = openlayers_object_load('source', $form_state['item']);
-  $form['options'] = $source->options_form($form, $form_state);
+  $source->options_form($form, $form_state);
   $form['options']['#tree'] = TRUE;
 
   return $form;

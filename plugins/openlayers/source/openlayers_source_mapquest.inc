@@ -11,20 +11,18 @@ function openlayers_openlayers_source_mapquest_openlayers_source() {
 
 class openlayers_source_mapquest extends openlayers_source {
 
-  function options_form($form, &$form_state) {
+  function options_form(&$form, &$form_state) {
     $layer_types = array(
       'osm' => 'OpenStreetMap',
       'sat' => 'Satellite',
       'hyb' => 'Hybrid',
     );
 
-    return array(
-      'layer' => array(
-        '#title' => t('Source type'),
-        '#type' => 'select',
-        '#default_value' => $this->getOption('layer', 'osm'),
-        '#options' => $layer_types
-      )
+    $form['options']['layer'] = array(
+      '#title' => t('Source type'),
+      '#type' => 'select',
+      '#default_value' => $this->getOption('layer', 'osm'),
+      '#options' => $layer_types
     );
   }
 

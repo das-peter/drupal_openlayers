@@ -104,7 +104,7 @@ function openlayers_map_form_start_submit($form, &$form_state) {
 function openlayers_map_form_settings($form, &$form_state) {
   $form_state['item']->class = 'openlayers_map_map';
   $map = openlayers_object_load('map', $form_state['item']);
-  $form['options'] = $map->options_form($form, $form_state);
+  $map->options_form($form, $form_state);
   $form['options']['#tree'] = TRUE;
 
   return $form;
