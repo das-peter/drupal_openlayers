@@ -11,7 +11,7 @@ function openlayers_openlayers_layer_heatmap_openlayers_layer() {
 
 class openlayers_layer_heatmap extends openlayers_layer {
 
-  function options_form($defaults = array()) {
+  function options_form($form, &$form_state) {
     return array(
       'opacity' => array(
         '#type' => 'textfield',
