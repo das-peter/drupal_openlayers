@@ -388,16 +388,14 @@ function openlayers_default_maps() {
       0 => 'layer_tile_mapquest_osm',
     ),
     'controls' => array(
-      0 => 'control_mouseposition',
-      1 => 'control_rotate',
-      2 => 'control_scaleline',
-      3 => 'control_zoom',
-      4 => 'control_zoomslider',
-      5 => 'control_zoomtoextent',
+      0 => 'control_rotate',
+      1 => 'control_zoom',
+      2 => 'control_zoomslider',
+      3 => 'control_zoomtoextent',
     ),
     'interactions' => array(
       0 => 'interaction_dragpan',
-      1 => 'interaction_dragrotateandzoom',
+      1 => 'interaction_dragrotate',
       2 => 'interaction_mousewheelzoom',
     ),
     'components' => array(

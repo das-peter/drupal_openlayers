@@ -57,8 +57,8 @@ class openlayers_map_map extends openlayers_map {
       }
 
       $form['view']['map'] = array(
-        '#title' => 'Map',
         '#type' => 'openlayers',
+        '#description' => t('You can drag this map with your mouse, click to center and you can hold alt and shift key to rotate.'),
         '#map' => $map
       );
     }
