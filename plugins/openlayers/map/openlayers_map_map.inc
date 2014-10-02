@@ -15,7 +15,6 @@ class openlayers_map_map extends openlayers_map {
     $form['ui'] = array(
       '#type' => 'fieldset',
       '#title' => t('Size of the map'),
-      '#tree' => TRUE,
       'width' => array(
         '#type' => 'textfield',
         '#title' => 'Width',
