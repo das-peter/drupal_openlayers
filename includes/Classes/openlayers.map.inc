@@ -120,7 +120,9 @@ class openlayers_map extends openlayers_object implements openlayers_map_interfa
     $objects = unserialize(serialize($objects));
 
     foreach($objects['layer'] as $index => $layer) {
-      $objects['layer'][$index]->options['source'] = $objects['layer'][$index]->options['source']->machine_name;
+      if ($source = $layer->getSource()) {
+        $objects['layer'][$index]->options['source'] = $source->machine_name;
+      }
     }
 
     return $objects;

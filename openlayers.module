@@ -9,6 +9,7 @@ include 'includes/Interfaces/openlayers.control.interface.inc';
 include 'includes/Interfaces/openlayers.interaction.interface.inc';
 include 'includes/Interfaces/openlayers.component.interface.inc';
 include 'includes/Classes/openlayers.object.inc';
+include 'includes/Classes/openlayers.error.inc';
 include 'includes/Classes/openlayers.component.inc';
 include 'includes/Classes/openlayers.interaction.inc';
 include 'includes/Classes/openlayers.map.inc';
@@ -68,9 +69,13 @@ function openlayers_object_factory_create($object_type, $object_class, $export =
 
   $object_class = ctools_plugin_load_class('openlayers', $object_type, $object_class, 'handler');
 
-  $object = call_user_func(array(
-      new ReflectionClass($object_class), 'newInstance')
-  );
+  if (isset($object_class)) {
+    $object = call_user_func(array(
+        new ReflectionClass($object_class), 'newInstance')
+    );
+  } else {
+    $object = new openlayers_error();
+  }
 
   if ($export) {
     $object->init((array) $export);
@@ -82,6 +87,9 @@ function openlayers_object_factory_create($object_type, $object_class, $export =
 
 function openlayers_object_load($object_type, $export, $develop = TRUE) {
   ctools_include('export');
+
+  $object = NULL;
+
   if (is_object($export)) {
     $arrayObject = new ArrayObject($export);
     $export = $arrayObject->getArrayCopy();
@@ -89,12 +97,18 @@ function openlayers_object_load($object_type, $export, $develop = TRUE) {
   if (is_string($export)) {
     $export = (array) ctools_export_crud_load('openlayers_' . $object_type .'s', $export);
  }
-  if (is_array($export)) {
+  if (is_array($export) && isset($export['class'])) {
     $object = openlayers_object_factory_create($object_type, $export['class'], $export);
   }
 
   if (!is_object($object)) {
-    return FALSE;
+    $args = func_get_args();
+    $export = array(
+      'machine_name' => $args[1],
+      'class' => 'undefined',
+      'error_message' => 'Unable to load @machine_name.'
+    );
+    return openlayers_object_factory_create('error', 'error', $export);
   }
 
   if (isset($export['disabled']) && ($export['disabled'] == 1 || $export['disabled'] == TRUE)) {
