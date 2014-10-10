@@ -16,6 +16,7 @@ include 'includes/Classes/openlayers.map.inc';
 include 'includes/Classes/openlayers.control.inc';
 include 'includes/Classes/openlayers.layer.inc';
 include 'includes/Classes/openlayers.source.inc';
+include 'includes/openlayers.helpers.inc';
 
 function openlayers_ctools_plugin_api($module, $api) {
   $path = drupal_get_path('module', 'openlayers') . '/includes';
@@ -75,6 +76,8 @@ function openlayers_object_factory_create($object_type, $object_class, $export =
     );
   } else {
     $object = new openlayers_error();
+    $object->type = $object_type;
+    $object->class = $object_class;
   }
 
   if ($export) {
@@ -106,9 +109,10 @@ function openlayers_object_load($object_type, $export, $develop = TRUE) {
     $export = array(
       'machine_name' => $args[1],
       'class' => 'undefined',
-      'error_message' => 'Unable to load @machine_name.'
+      'type' => $object_type,
+      'error_message' => 'Unable to load @type object @machine_name.'
     );
-    return openlayers_object_factory_create('error', 'error', $export);
+    return openlayers_object_factory_create($object_type, 'undefined', $export);
   }
 
   if (isset($export['disabled']) && ($export['disabled'] == 1 || $export['disabled'] == TRUE)) {

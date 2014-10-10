@@ -130,7 +130,9 @@ abstract class openlayers_object implements openlayers_object_interface {
   }
 
   public function toArray() {
-    return json_decode(json_encode($this), TRUE);
+    $js = json_decode(json_encode($this), TRUE);
+    $js = array_map_recursive('_floatval_if_numeric', $js);
+    return $js;
   }
 
   public function attached() {
