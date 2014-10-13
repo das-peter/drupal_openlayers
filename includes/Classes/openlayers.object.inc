@@ -3,10 +3,11 @@
 abstract class openlayers_object implements openlayers_object_interface {
 
   public $machine_name;
-  public $name;
-  public $description;
+  private $name;
+  private $description;
   public $class;
   public $options = array();
+  private $plugin = NULL;
   protected $attached = array(
     'js' => array(),
     'css' => array(),
@@ -19,16 +20,9 @@ abstract class openlayers_object implements openlayers_object_interface {
       'machine_name' => '',
       'name' => '',
       'description' => '',
-      'class' => '',
       'options' => array()
     );
   }
-
-  public function options_form(&$form, &$form_state) {return array();}
-
-  function options_form_validate($form, &$form_state) {}
-
-  function options_form_submit($form, &$form_state) {}
 
   function init(array $data) {
     foreach ($this->defauts_properties() as $property => $value) {
@@ -41,13 +35,21 @@ abstract class openlayers_object implements openlayers_object_interface {
       $this->options = array_replace_recursive((array) $this->options, (array) $data['options']);
     }
 
+    $this->class = get_class($this);
     $this->plugin = ctools_get_plugins('openlayers', $this->getType(), get_class($this));
 
     if (empty($this->machine_name)) {
       $this->machine_name = drupal_html_id($this->getType().'-'.time());
     }
-
   }
+
+  public function options_form(&$form, &$form_state) {return array();}
+
+  function options_form_validate($form, &$form_state) {}
+
+  function options_form_submit($form, &$form_state) {}
+
+  function alterBuild(&$build) {}
 
   public function getType() {
     list($module, $type) = explode('_', get_class($this));
@@ -136,11 +138,10 @@ abstract class openlayers_object implements openlayers_object_interface {
   }
 
   public function attached() {
-    if (isset($this->plugin) && isset($this->plugin['path'])) {
-      $file = $this->plugin['path'] . '/' . $this->class . '.js';
+    if ($plugin = $this->getPlugin()) {
+      $file = $plugin['path'] . '/' . get_class($this) . '.js';
       if (file_exists($file)) {
         $this->attached['js'][$file] = array('data' => $file, 'type' => 'file', 'group' => openlayers_config::JS_GROUP, 'weight' => openlayers_config::JS_WEIGHT);
-        unset($this->plugin);
       }
     }
 
@@ -149,6 +150,10 @@ abstract class openlayers_object implements openlayers_object_interface {
 
   public function dependencies() {
     return array();
+  }
+
+  public function getPlugin() {
+    return $this->plugin;
   }
 
 }

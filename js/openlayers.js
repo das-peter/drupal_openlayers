@@ -62,7 +62,7 @@
 
             // Attach data to map DOM object
             Drupal.openlayers.console.info("Caching objects...");
-            jQuery(context).data('openlayers', {'objects': objects});
+            jQuery('body').data('openlayers', {'objects': objects});
             Drupal.openlayers.console.info("Caching objects... done !");
 
           } catch (e) {
@@ -100,7 +100,8 @@
       cache = $.extend({}, cache.objects, cache);
 
       var object;
-      if (typeof cache[type][data.machine_name] === 'undefined') {
+      if (!(data.machine_name in cache[type])) {
+        // TODO: Check why layers doesnt cache
         Drupal.openlayers.console.info(" Computing " + type + " " + data.machine_name + "...");
         cache[type][data.machine_name] = Drupal.openlayers[data['class']]({'options': data.options, 'map': map, 'context': context});
         object = cache[type][data.machine_name];

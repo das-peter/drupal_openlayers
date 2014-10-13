@@ -46,36 +46,33 @@ class openlayers_map extends openlayers_object implements openlayers_map_interfa
   }
 
   public function getControls() {
+    $result = array();
     if ($controls = $this->getOption('controls')) {
-      $result = array();
       foreach($controls as $control) {
         $result[] = clone openlayers_object_load('control', $control);
       }
-      return $result;
     }
-    return array();
+    return $result;
   }
 
   public function getInteractions() {
+    $result = array();
     if ($interactions = $this->getOption('interactions')) {
-      $result = array();
       foreach($interactions as $index => $interaction) {
         $result[] = clone openlayers_object_load('interaction', $interaction);
       }
-      return $result;
     }
-    return array();
+    return $result;
   }
 
   public function getComponents() {
+    $result = array();
     if ($components = $this->getOption('components')) {
-      $result = array();
       foreach($components as $component) {
         $result[] = clone openlayers_object_load('component', $component);
       }
-      return $result;
     }
-    return array();
+    return $result;
   }
 
   public function develop() {

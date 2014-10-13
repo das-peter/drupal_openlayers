@@ -132,7 +132,7 @@ function openlayers_render_build_map(openlayers_map $map) {
   $objects = $map->getObjects();
   $attached = $map->attached();
 
-  $objects['map'] = $map->toArray();
+  $objects['map'] = $map;
 
   drupal_alter('openlayers_map', $map);
 
@@ -218,6 +218,13 @@ function openlayers_render_build_map(openlayers_map $map) {
     unset($build['contextual_links']);
   }
 
+  // This is temporary and will need to be worked on.
+  foreach(array('layer', 'source', 'control', 'interaction', 'component') as $type) {
+    foreach($objects[$type] as $object) {
+      $object->alterBuild($build);
+    }
+  }
+
   return $build;
 }
 
@@ -249,6 +256,14 @@ function openlayers_libraries_info() {
         'css' => array('css/openlayers.css' => array('weight' => 10))
       ),
     ),
+    'variants' => array(
+      'debug' => array(
+        'files' => array(
+          'js' => array('closure-library/closure/goog/base.js', 'build/ol-deps.js', 'build/ol-debug.js'),
+          'css' => array('css/ol.css')
+        ),
+      )
+    )
   );
 
   return $libraries;

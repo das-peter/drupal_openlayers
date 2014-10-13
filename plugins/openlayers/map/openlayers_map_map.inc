@@ -99,7 +99,9 @@ class openlayers_map_map extends openlayers_map {
 
   function attached() {
     $attached = parent::attached();
-    $attached['libraries_load'][] = array('openlayers3');
+    // TODO: OpenLayers settings form by default to debug mode.
+    $variant = OPENLAYERS_CONFIG::LIBRARY_VARIANT;
+    $attached['libraries_load'][] = array('openlayers3', $variant);
     return $attached;
   }
 }
