@@ -62,7 +62,8 @@ function openlayers_projection_form_start($form, &$form_state) {
   $form['definition'] = array(
     '#type' => 'textarea',
     '#title' => t('Projection definition'),
-    '#rows' => '10'
+    '#rows' => '10',
+    '#default_value' => isset($form_state['item']->definition) ? $form_state['item']->definition : ''
   );
 
   return $form;
