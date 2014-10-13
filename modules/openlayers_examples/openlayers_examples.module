@@ -1,0 +1,16 @@
+<?php
+
+function openlayers_examples_ctools_plugin_api($module, $api) {
+  $path = drupal_get_path('module', 'openlayers_examples') . '/includes';
+  return array(
+    'version' => 1,
+    'path' => $path
+  );
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function openlayers_examples_ctools_plugin_directory($module, $plugin) {
+  return 'plugins/openlayers/' . $plugin;
+}
