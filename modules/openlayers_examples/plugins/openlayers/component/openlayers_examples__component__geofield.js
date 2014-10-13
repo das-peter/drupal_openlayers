@@ -126,13 +126,13 @@ Drupal.openlayers.openlayers_examples__component__geofield = function (data) {
     // add it to the map
     map.addInteraction(draw_interaction);
 
+    // create a unique id
+    // it is later needed to delete features
+    var id = uid();
     // when a new feature has been drawn...
     draw_interaction.on('drawend', function(event) {
-      // create a unique id
-      // it is later needed to delete features
-      var id = uid();
       // give the feature this id
-      event.feature.setId(id);
+      event.feature.setId(id());
       // save the changed data
       saveData();
     });
@@ -189,7 +189,7 @@ Drupal.openlayers.openlayers_examples__component__geofield = function (data) {
   }
 
 // creates unique id's
-  function uid(){
+  function uid() {
     var id = 0;
     return function() {
       if (arguments[0] === 0) {
