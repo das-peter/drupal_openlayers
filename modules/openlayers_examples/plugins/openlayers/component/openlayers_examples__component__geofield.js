@@ -75,16 +75,16 @@ Drupal.openlayers.openlayers_examples__component__geofield = function (data) {
       // ...listen for changes and save them
       feature.on('change', saveData);
       // listen to pressing of delete key, then delete selected features
-      jQuery(document).on('keyup', function(event) {
+      jQuery(document).on('keyup', function (event) {
         if (event.keyCode == 46) {
           // remove all selected features from select_interaction and my_vectorlayer
-          selected_features.forEach(function(selected_feature) {
+          selected_features.forEach(function (selected_feature) {
             var selected_feature_id = selected_feature.getId();
             // remove from select_interaction
             selected_features.remove(selected_feature);
             // features aus vectorlayer entfernen
             var vectorlayer_features = vector_layer.getSource().getFeatures();
-            vectorlayer_features.forEach(function(source_feature) {
+            vectorlayer_features.forEach(function (source_feature) {
               var source_feature_id = source_feature.getId();
               if (source_feature_id === selected_feature_id) {
                 // remove from my_vectorlayer
