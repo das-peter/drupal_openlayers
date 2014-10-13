@@ -8,7 +8,7 @@ function openlayers_default_maps() {
   $map->machine_name = 'map_mapbox_natural_earth_hypso_bathy';
   $map->name = 'MapBox Natural Earth Hypso Bathy';
   $map->description = '';
-  $map->class = 'openlayers_map_map';
+  $map->class = 'openlayers__map__map';
   $map->options = array(
     'width' => 'auto',
     'height' => '300px',
@@ -46,7 +46,7 @@ function openlayers_default_maps() {
   $map->machine_name = 'map_mapbox_geography_class';
   $map->name = 'MapBox Geography Class';
   $map->description = '';
-  $map->class = 'openlayers_map_map';
+  $map->class = 'openlayers__map__map';
   $map->options = array(
     'width' => 'auto',
     'height' => '300px',
@@ -84,7 +84,7 @@ function openlayers_default_maps() {
   $map->machine_name = 'map_mapquest_openstreetmap';
   $map->name = 'MapQuest OpenStreetMap';
   $map->description = '';
-  $map->class = 'openlayers_map_map';
+  $map->class = 'openlayers__map__map';
   $map->options = array(
     'width' => 'auto',
     'height' => '300px',
@@ -124,7 +124,7 @@ function openlayers_default_maps() {
   $map->machine_name = 'map_mapquest_hybrid';
   $map->name = 'MapQuest Hybrid';
   $map->description = '';
-  $map->class = 'openlayers_map_map';
+  $map->class = 'openlayers__map__map';
   $map->options = array(
     'width' => 'auto',
     'height' => '300px',
@@ -162,7 +162,7 @@ function openlayers_default_maps() {
   $map->machine_name = 'map_mapquest_satellite';
   $map->name = 'MapQuest Satellite';
   $map->description = '';
-  $map->class = 'openlayers_map_map';
+  $map->class = 'openlayers__map__map';
   $map->options = array(
     'width' => 'auto',
     'height' => '300px',
@@ -198,7 +198,7 @@ function openlayers_default_maps() {
   $map->machine_name = 'map_openstreetmap';
   $map->name = 'OpenStreetMap';
   $map->description = '';
-  $map->class = 'openlayers_map_map';
+  $map->class = 'openlayers__map__map';
   $map->options = array(
     'width' => 'auto',
     'height' => '300px',
@@ -230,7 +230,7 @@ function openlayers_default_maps() {
   $map->machine_name = 'map_opencyclemap';
   $map->name = 'OpenCycleMap';
   $map->description = '';
-  $map->class = 'openlayers_map_map';
+  $map->class = 'openlayers__map__map';
   $map->options = array(
     'width' => 'auto',
     'height' => '300px',
@@ -268,7 +268,7 @@ function openlayers_default_maps() {
   $map->machine_name = 'map_openstreetmap_tiledebug';
   $map->name = 'OpenStreetMap with tile debug.';
   $map->description = '';
-  $map->class = 'openlayers_map_map';
+  $map->class = 'openlayers__map__map';
   $map->options = array(
     'width' => 'auto',
     'height' => '300px',
@@ -301,7 +301,7 @@ function openlayers_default_maps() {
   $map->machine_name = 'map_stamen';
   $map->name = 'Stamen map';
   $map->description = '';
-  $map->class = 'openlayers_map_map';
+  $map->class = 'openlayers__map__map';
   $map->options = array(
     'width' => 'auto',
     'height' => '300px',
@@ -336,7 +336,7 @@ function openlayers_default_maps() {
   $map->machine_name = 'map_esri';
   $map->name = 'ESRI map';
   $map->description = '';
-  $map->class = 'openlayers_map_map';
+  $map->class = 'openlayers__map__map';
   $map->options = array(
     'width' => 'auto',
     'height' => '300px',
@@ -370,7 +370,7 @@ function openlayers_default_maps() {
   $map->machine_name = 'map_view_edit_form';
   $map->name = 'Map view edit form';
   $map->description = 'Map used in the the map edit form to get center, zoom';
-  $map->class = 'openlayers_map_map';
+  $map->class = 'openlayers__map__map';
   $map->options = array(
     'width' => 'auto',
     'height' => '400px',

@@ -52,7 +52,7 @@ abstract class openlayers_object implements openlayers_object_interface {
   function alterBuild(&$build) {}
 
   public function getType() {
-    list($module, $type) = explode('_', get_class($this));
+    list($module, $type) = explode('__', get_class($this));
     if (isset($type)) {
       return $type;
     }

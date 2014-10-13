@@ -8,7 +8,7 @@ function openlayers_default_components() {
   $component->machine_name = 'component_bootstrapjs_popup';
   $component->name = 'Bootstrap JS popup';
   $component->description = 'Bootstrap JS popup component is a component who allows you to display popup when clicking on a feature. It requires the bootstrapjs module to work.';
-  $component->class = 'openlayers_component_bootstrapjs_popup';
+  $component->class = 'openlayers__component__bootstrapjs_popup';
   $component->options = array();
   $export['component_bootstrapjs_popup'] = $component;
 
@@ -17,7 +17,7 @@ function openlayers_default_components() {
   $component->machine_name = 'component_bootstrapjs_alert';
   $component->name = 'Bootstrap JS alert';
   $component->description = 'Display an alert on the top of the map.';
-  $component->class = 'openlayers_component_bootstrapjs_alert';
+  $component->class = 'openlayers__component__bootstrapjs_alert';
   $component->options = array(
     'message' => '<strong>Success !</strong>The map has been loaded.'
   );
@@ -29,7 +29,7 @@ function openlayers_default_components() {
   $component->machine_name = 'map_edit_form_values';
   $component->name = 'Map edit form values';
   $component->description = 'Provides values for the center, rotation and zoom in the map edit form.';
-  $component->class = 'openlayers_component_setvalues';
+  $component->class = 'openlayers__component__setvalues';
   $component->options = array(
     'latitude' => 'edit-options-view-center-lat',
     'longitude' => 'edit-options-view-center-lon',
@@ -44,7 +44,7 @@ function openlayers_default_components() {
   $component->machine_name = 'map_edit_form_setcenter';
   $component->name = 'Map center on mouse click';
   $component->description = 'Upon clicking, center the map at the mouse position.';
-  $component->class = 'openlayers_component_js';
+  $component->class = 'openlayers__component__js';
   $component->options = array(
     'javascript' => 'data.map.on(\'click\', function(evt){
   var coordinate = evt.coordinate;
@@ -64,7 +64,7 @@ function openlayers_default_components() {
   $component->machine_name = 'graticule';
   $component->name = 'Graticule with inline JS';
   $component->description = 'Display a graticule on the map.';
-  $component->class = 'openlayers_component_js';
+  $component->class = 'openlayers__component__js';
   $component->options = array(
     'javascript' => 'var graticule = new ol.Graticule({
     strokeStyle: new ol.style.Stroke({
@@ -83,7 +83,7 @@ graticule.setMap(data.map);',
   $component->machine_name = 'geolocation';
   $component->name = 'Geolocation';
   $component->description = '';
-  $component->class = 'openlayers_component_js';
+  $component->class = 'openlayers__component__js';
   $component->options = array(
     'javascript' => 'var geolocation = new ol.Geolocation({
   projection: data.map.getView().getProjection()

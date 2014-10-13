@@ -99,7 +99,7 @@ function openlayers_object_load($object_type, $export, $develop = TRUE) {
   }
   if (is_string($export)) {
     $export = (array) ctools_export_crud_load('openlayers_' . $object_type .'s', $export);
- }
+  }
   if (is_array($export) && isset($export['class'])) {
     $object = openlayers_object_factory_create($object_type, $export['class'], $export);
   }
