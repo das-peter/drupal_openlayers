@@ -341,6 +341,53 @@ function openlayers_schema() {
       'unique keys' => array(
         'machine_name' => array('machine_name'),
       ),
+    ),
+    $schema['openlayers_projections'] = array(
+      'description' => 'Storage for user defined OpenLayers projections.',
+      'export' => array(
+        'admin_title' => 'machine_name',
+        'key' => 'machine_name',
+        'key name' => 'Machine name',
+        'primary key' => 'machine_name',
+        'identifier' => 'projection',
+        'default hook' => 'default_projections',
+        'api' => array(
+          'owner' => 'openlayers',
+          'api' => 'default_projections',
+          'minimum_version' => 1,
+          'current_version' => 1,
+        ),
+      ),
+      'fields' => array(
+        'machine_name' => array(
+          'type' => 'varchar',
+          'length' => '255',
+          'not null' => TRUE,
+          'default' => '',
+          'description' => 'Projection system name.',
+        ),
+        'name' => array(
+          'type' => 'varchar',
+          'length' => '255',
+          'not null' => TRUE,
+          'default' => '',
+          'description' => 'Projection name.',
+        ),
+        'description' => array(
+          'type' => 'text',
+          'not null' => TRUE,
+          'description' => 'Projection description.'
+        ),
+        'definition' => array(
+          'type' => 'text',
+          'not null' => TRUE,
+          'description' => 'Projection options definition.'
+        ),
+      ),
+      'primary key' => array('machine_name'),
+      'unique keys' => array(
+        'machine_name' => array('machine_name'),
+      ),
     )
   );
   return $schema;
