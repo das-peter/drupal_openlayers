@@ -36,5 +36,27 @@ function openlayers_examples_default_layers() {
   );
   $export['layer_tile_mapbox_example3'] = $layer;
 
+  $layer = new stdClass;
+  $layer->api_version = 1;
+  $layer->machine_name = 'layer_vector_geojson_cities';
+  $layer->name = 'GeoJSON Cities';
+  $layer->description = 'GeoJSON Cities';
+  $layer->class = 'openlayers__layer__vector';
+  $layer->options = array(
+    'source' => 'source_geojson_cities',
+  );
+  $export['layer_vector_geojson_cities'] = $layer;
+
+  $layer = new stdClass;
+  $layer->api_version = 1;
+  $layer->machine_name = 'layer_vector_geojson_cities_heatmap';
+  $layer->name = 'GeoJSON Cities heatmap';
+  $layer->description = 'GeoJSON Cities Heatmap';
+  $layer->class = 'openlayers__layer__heatmap';
+  $layer->options = array(
+    'source' => 'source_geojson_cities',
+  );
+  $export['layer_vector_geojson_cities_heatmap'] = $layer;
+
   return $export;
 }
