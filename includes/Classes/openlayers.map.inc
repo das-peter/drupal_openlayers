@@ -125,6 +125,22 @@ class openlayers_map extends openlayers_object implements openlayers_map_interfa
     return $objects;
   }
 
+  public function getJSObjects() {
+    $objects = $this->getObjects();
+
+    foreach(array('layer', 'source', 'control', 'interaction', 'component') as $type) {
+      foreach($objects[$type] as $index => $object) {
+        $objects[$type][$index] = (array) $object->toJSArray();
+      }
+    }
+
+    $objects['map'] = $this->toJSArray();
+
+    $objects = array_map_recursive('_floatval_if_numeric', $objects);
+    $objects = removeEmptyElements($objects);
+
+    return $objects;
+  }
 
   public function attached() {
     $this->attached = parent::attached();

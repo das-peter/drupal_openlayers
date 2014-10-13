@@ -131,12 +131,6 @@ abstract class openlayers_object implements openlayers_object_interface {
     return $default_value;
   }
 
-  public function toArray() {
-    $js = json_decode(json_encode($this), TRUE);
-    $js = array_map_recursive('_floatval_if_numeric', $js);
-    return $js;
-  }
-
   public function attached() {
     if ($plugin = $this->getPlugin()) {
       $file = $plugin['path'] . '/' . get_class($this) . '.js';
@@ -154,6 +148,11 @@ abstract class openlayers_object implements openlayers_object_interface {
 
   public function getPlugin() {
     return $this->plugin;
+  }
+
+  public function toJSArray() {
+    // TODO: find a better solution here.
+    return json_decode(json_encode($this), TRUE);
   }
 
 }

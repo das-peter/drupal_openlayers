@@ -43,53 +43,11 @@ function openlayers_ui_admin_settings($form, &$form_state) {
     ),
   );
 
-
-  $map = openlayers_object_load('map', $map);
-  $map->clearOption('contextualLinks');
-  $map->setOption('height', '500px');
-  $map->setOption('controls', array('control_zoom', 'control_rotate'));
-  $map->setOption('interactions', array('interaction_doubleclickzoom', 'interaction_dragpan', 'interaction_dragrotate', 'interaction_mousewheelzoom'));
-  $map->setOption('components', array('component_olmenu_values'));
-
-  if (isset($form_state['input']['zoom'])) {
-    $map->setOption(array('view', 'zoom'), $form_state['input']['zoom']);
-  }
-  if (isset($form_state['input']['rot'])) {
-    $map->setOption(array('view','rotation'), $form_state['input']['rot']);
-  }
-  if (isset($form_state['input']['lat'])) {
-    $map->setOption(array('view', 'center', 'lat'), $form_state['input']['lat']);
-  }
-  if (isset($form_state['input']['lon'])) {
-    $map->setOption(array('view', 'center', 'lon'), $form_state['input']['lon']);
-  }
-
   $form['default_map'] = array(
     '#prefix' => '<div id="default_map_ajax">',
     '#suffix' => '</div>',
     '#type' => 'openlayers',
     '#map' => $map,
-  );
-
-  $form['lat'] = array(
-    '#type' => 'hidden',
-    '#attributes' => array('id' => 'lat'),
-    '#value' => 0
-  );
-  $form['lon'] = array(
-    '#type' => 'hidden',
-    '#attributes' => array('id' => 'lon'),
-    '#value' => 0
-  );
-  $form['rot'] = array(
-    '#type' => 'hidden',
-    '#attributes' => array('id' => 'rot'),
-    '#value' => 0
-  );
-  $form['zoom'] = array(
-    '#type' => 'hidden',
-    '#attributes' => array('id' => 'zoom'),
-    '#value' => 0
   );
 
   // This is for preventing 'system/ajax' as destination when using AJAX maps.

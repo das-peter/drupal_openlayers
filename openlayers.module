@@ -131,7 +131,6 @@ function openlayers_render_build_map(openlayers_map $map) {
 
   $objects = $map->getObjects();
   $attached = $map->attached();
-
   $objects['map'] = $map;
 
   drupal_alter('openlayers_map', $map);
@@ -139,7 +138,7 @@ function openlayers_render_build_map(openlayers_map $map) {
   $setting = array(
     'openlayers' => array(
       'maps' => array(
-        $map->getId() => $objects
+        $map->getId() => $map->getJSObjects()
       )
     )
   );
