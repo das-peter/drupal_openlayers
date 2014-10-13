@@ -52,6 +52,8 @@ class openlayers_examples__component__geofield extends openlayers_component {
     $build['component']['clearmap'] = array(
       '#markup' => "<a href='#' id='clearmap'>Clear the map</a>",
     );
+
+    unset($build['#attributes']['style']);
   }
 
 }

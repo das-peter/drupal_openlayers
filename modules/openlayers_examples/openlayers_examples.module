@@ -14,3 +14,136 @@ function openlayers_examples_ctools_plugin_api($module, $api) {
 function openlayers_examples_ctools_plugin_directory($module, $plugin) {
   return 'plugins/openlayers/' . $plugin;
 }
+
+/**
+ * Implements hook_menu().
+ */
+function openlayers_examples_menu() {
+  $items = array();
+
+  $items['openlayers_examples'] = array(
+    'title' => 'OpenLayers 3.1.x examples',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('openlayers_examples'),
+    'access arguments' => array('access content'),
+    'type' => MENU_NORMAL_ITEM
+  );
+
+  return $items;
+}
+
+function openlayers_examples($form, &$form_state) {
+  ctools_include('plugins');
+  ctools_include('export');
+  $maps = ctools_export_crud_load_all('openlayers_maps');
+  $options = array();
+  foreach($maps as $machine_name => $data) {
+    $map = openlayers_object_load('map', $machine_name);
+    if (property_exists($map, 'disabled') && ($map->disabled == 1 || $map->disabled == TRUE)) continue;
+    $options[$machine_name] = $data->name;
+  }
+
+  ksort($options);
+
+  $form['openlayers_default_map'] = array(
+    '#type' => 'select',
+    '#options' => $options,
+    '#default_value' => 'map_openstreetmap',
+    '#ajax' => array(
+      'callback' => '_openlayers_examples_ajax_reload_default_map',
+      'method' => 'replace',
+      'wrapper' => 'default_map_ajax',
+      'effect' => 'fade'
+    ),
+  );
+
+  $map = 'map_openstreetmap';
+  if (isset($form_state['values']['openlayers_default_map'])) {
+    $map = $form_state['values']['openlayers_default_map'];
+  }
+  $map = openlayers_object_load('map', $map);
+  $map->clearOption('contextualLinks');
+  $map->setOption('height', '500px');
+  $map->setOption('controls', array('control_zoom', 'control_rotate'), TRUE);
+  $map->setOption('interactions', array('interaction_doubleclickzoom', 'interaction_dragpan', 'interaction_dragrotate', 'interaction_mousewheelzoom'), TRUE);
+  $components = array_filter(array_merge((array) $map->getOption('components'), array('openlayers_examples_ajax_values')));
+  $map->setOption('components', $components);
+
+  if (isset($form_state['input']['zoom'])) {
+    $map->setOption(array('view', 'zoom'), $form_state['input']['zoom']);
+  }
+  if (isset($form_state['input']['rot'])) {
+    $map->setOption(array('view','rotation'), $form_state['input']['rot']);
+  }
+  if (isset($form_state['input']['lat'])) {
+    $map->setOption(array('view', 'center', 'lat'), $form_state['input']['lat']);
+  }
+  if (isset($form_state['input']['lon'])) {
+    $map->setOption(array('view', 'center', 'lon'), $form_state['input']['lon']);
+  }
+
+  $form['default_map'] = array(
+    '#prefix' => '<div id="default_map_ajax">',
+    '#suffix' => '</div>',
+    '#type' => 'openlayers',
+    '#map' => $map,
+    '#description' => 'Use your mouse to navigate the map. Double click to zoom, hold your click and move to dragpan, hold shift and alt keys and left button mouse to rotate.'
+  );
+
+  $form['lat'] = array(
+    '#type' => 'hidden',
+    '#attributes' => array('id' => 'lat'),
+    '#value' => 0
+  );
+
+  $form['lon'] = array(
+    '#type' => 'hidden',
+    '#attributes' => array('id' => 'lon'),
+    '#value' => 0
+  );
+
+  $form['rot'] = array(
+    '#type' => 'hidden',
+    '#attributes' => array('id' => 'rot'),
+    '#value' => 0
+  );
+
+  $form['zoom'] = array(
+    '#type' => 'hidden',
+    '#attributes' => array('id' => 'zoom'),
+    '#value' => 0
+  );
+
+  // This is for preventing 'system/ajax' as destination when using AJAX maps.
+  // See: http://drupal.stackexchange.com/questions/86958/get-current-url-arguments-inside-ajax-callback
+  $form['current_path'] = array('#type' => 'hidden', '#value' => current_path());
+
+  // Make a system setting form and return
+  return $form;
+}
+
+function _openlayers_examples_ajax_reload_default_map($form, &$form_state) {
+  // This is for preventing 'system/ajax' as destination when using AJAX maps.
+  // See: http://drupal.stackexchange.com/questions/86958/get-current-url-arguments-inside-ajax-callback
+  $_SESSION['current_path'] = $form_state['input']['current_path'];
+
+  return $form['default_map'];
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function openlayers_examples_block_info() {
+  return array(
+    'openlayers_examples' => array(
+      'info' => 'OpenLayers Examples'
+    )
+  );
+}
+
+function openlayers_examples_block_view($delta) {
+  return array(
+    'subject' => '',
+    'content' => drupal_get_form('openlayers_examples')
+  );
+}
