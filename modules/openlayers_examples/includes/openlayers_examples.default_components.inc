@@ -28,5 +28,22 @@ function openlayers_examples_default_components() {
   );
   $export['openlayers_examples_ajax_values'] = $component;
 
+  $component = new stdClass();
+  $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */
+  $component->api_version = 1;
+  $component->machine_name = 'openlayers_examples_geolocation';
+  $component->name = 'Geolocation example';
+  $component->description = '';
+  $component->class = 'openlayers_examples__component__geolocation';
+  $component->options = array(
+    'checkboxID' => 'trackPosition',
+    'positionAccuracyID' => 'positionAccuracy',
+    'altitudeID' => 'altitude',
+    'altitudeAccuracyID' => 'altitudeAccuracy',
+    'headingID' => 'heading',
+    'speedID' => 'speed',
+  );
+  $export['openlayers_examples_geolocation'] = $component;
+
   return $export;
 }

@@ -2,6 +2,8 @@
 
 class openlayers_error extends openlayers_object implements openlayers_object_interface {
 
+  var $error_message;
+
   function __construct() {
     foreach ($this->defauts_properties() as $property => $value) {
       $this->{$property} = $value;
@@ -32,8 +34,9 @@ class openlayers_error extends openlayers_object implements openlayers_object_in
   function getMessage() {
     $machine_name = isset($this->machine_name) ? $this->machine_name : 'undefined';
     $class = isset($this->class) ? $this->class : 'undefined';
+    $type = isset($this->type) ? $this->type : 'undefined';
 
-    return t($this->error_message, array('@machine_name' => $machine_name, '@class' => $class));
+    return t($this->error_message, array('@machine_name' => $machine_name, '@class' => $class, '@type' => $type));
   }
 
   function getSource() {
