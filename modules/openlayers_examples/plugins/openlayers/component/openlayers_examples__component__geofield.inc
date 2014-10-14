@@ -19,6 +19,7 @@ class openlayers_examples__component__geofield extends openlayers_component {
 
     $build['component']['actionFeature'] = array(
       '#type' => 'select',
+      '#title' => 'Type of interaction',
       '#options' => array('draw' => 'Draw', 'modify' => 'Modify'),
       '#attributes' => array(
         'id' => 'actionFeature'
@@ -27,6 +28,7 @@ class openlayers_examples__component__geofield extends openlayers_component {
 
     $build['component']['dataType'] = array(
       '#type' => 'select',
+      '#title' => 'Data type',
       '#options' => array('GeoJSON' => 'GeoJSON', 'KML' => 'KML', 'GPX' => 'GPX', 'WKT' => 'WKT'),
       '#attributes' => array(
         'id' => 'dataType'
@@ -35,6 +37,7 @@ class openlayers_examples__component__geofield extends openlayers_component {
 
     $build['component']['typeOfFeature'] = array(
       '#type' => 'select',
+      '#title' => 'Geometry type',
       '#options' => array('Point' => 'Point', 'LineString' => 'LineString', 'Polygon' => 'Polygon'),
       '#attributes' => array(
         'id' => 'typeOfFeature'
@@ -43,6 +46,7 @@ class openlayers_examples__component__geofield extends openlayers_component {
 
     $build['component']['data'] = array(
       '#type' => 'textarea',
+      '#title' => 'Data',
       '#attributes' => array(
         'id' => 'data'
       ),
