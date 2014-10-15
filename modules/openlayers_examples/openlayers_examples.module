@@ -57,7 +57,7 @@ function openlayers_examples($form, &$form_state) {
     ),
   );
 
-  $map = 'map_openstreetmap';
+  $map = $options[mt_rand(0, count($options) - 1)];
   if (isset($form_state['values']['openlayers_default_map'])) {
     $map = $form_state['values']['openlayers_default_map'];
   }
