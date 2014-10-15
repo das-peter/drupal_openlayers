@@ -32,7 +32,7 @@ function openlayers_examples_menu() {
   return $items;
 }
 
-function openlayers_examples($form, &$form_state) {
+function openlayers_examples($form, &$form_state, $map_arg = NULL) {
   ctools_include('plugins');
   ctools_include('export');
   $maps = ctools_export_crud_load_all('openlayers_maps');
@@ -45,7 +45,10 @@ function openlayers_examples($form, &$form_state) {
 
   ksort($options);
 
-  $map = array_rand($options, 1);
+  $map = $map_arg;
+  if (($map == NULL) || (!isset($options[$map]))) {
+    $map = array_rand($options, 1);
+  }
 
   $form['openlayers_default_map'] = array(
     '#type' => 'select',
@@ -113,6 +116,15 @@ function openlayers_examples($form, &$form_state) {
     '#type' => 'hidden',
     '#attributes' => array('id' => 'zoom'),
     '#value' => 0
+  );
+
+  $form['permalink'] = array(
+    '#title' => 'Permalink to this map',
+    '#description' => 'Use this link to come back to this map example or if you want to share it.',
+    '#type' => 'textfield',
+    '#default_value' => url('openlayers_examples', array('absolute' => TRUE)) . '/' . $map->machine_name,
+    '#size' => 128,
+    '#disabled' => TRUE
   );
 
   // This is for preventing 'system/ajax' as destination when using AJAX maps.
