@@ -45,10 +45,12 @@ function openlayers_examples($form, &$form_state) {
 
   ksort($options);
 
+  $map = array_rand($options, 1);
+
   $form['openlayers_default_map'] = array(
     '#type' => 'select',
     '#options' => $options,
-    '#default_value' => 'map_openstreetmap',
+    '#default_value' => $map,
     '#ajax' => array(
       'callback' => '_openlayers_examples_ajax_reload_default_map',
       'method' => 'replace',
@@ -57,7 +59,6 @@ function openlayers_examples($form, &$form_state) {
     ),
   );
 
-  $map = $options[mt_rand(0, count($options) - 1)];
   if (isset($form_state['values']['openlayers_default_map'])) {
     $map = $form_state['values']['openlayers_default_map'];
   }
