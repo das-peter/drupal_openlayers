@@ -118,15 +118,6 @@ function openlayers_examples($form, &$form_state, $map_arg = NULL) {
     '#value' => 0
   );
 
-  $form['permalink'] = array(
-    '#title' => 'Permalink to this map',
-    '#description' => 'Use this link to come back to this map example or if you want to share it.',
-    '#type' => 'textfield',
-    '#default_value' => url('openlayers_examples', array('absolute' => TRUE)) . '/' . $map->machine_name,
-    '#size' => 128,
-    '#disabled' => TRUE
-  );
-
   // This is for preventing 'system/ajax' as destination when using AJAX maps.
   // See: http://drupal.stackexchange.com/questions/86958/get-current-url-arguments-inside-ajax-callback
   $form['current_path'] = array('#type' => 'hidden', '#value' => current_path());
