@@ -45,5 +45,19 @@ function openlayers_examples_default_components() {
   );
   $export['openlayers_examples_geolocation'] = $component;
 
+  $component = new stdClass();
+  $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */
+  $component->api_version = 1;
+  $component->machine_name = 'openlayers_examples_graticule';
+  $component->name = 'Graticule example';
+  $component->description = '';
+  $component->class = 'openlayers__component__graticule';
+  $component->options = array(
+    'rgba' => '0, 0, 0, 0.2',
+    'width' => '2',
+    'lineDash' => '0.5, 4',
+  );
+  $export['openlayers_examples_graticule'] = $component;
+
   return $export;
 }
