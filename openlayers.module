@@ -306,7 +306,7 @@ function openlayers_block_info() {
     $map = openlayers_object_load('map', $map->machine_name);
     if ($map->getOption('provideBlock', 1)) {
       $key = _openlayers_get_block_id($key);
-      $blocks[$key]['info'] = t('OpenLayers block for ' . $map->name);
+      $blocks[$key]['info'] = t('OpenLayers block for ' . $map->machine_name);
     }
   }
 
@@ -323,7 +323,7 @@ function openlayers_block_view($delta = '') {
 
   if ($map = openlayers_object_load('map', $delta)) {
     if ($map->getOption('provideBlock', 1)) {
-      $block['subject'] = $map->name;
+      $block['subject'] = $map->machine_name;
       $block['content'] = openlayers_render_map($map);
     }
   }

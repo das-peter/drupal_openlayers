@@ -13,7 +13,6 @@ class openlayers__interaction__js extends openlayers_interaction {
 
   function options_form(&$form, &$form_state) {
     $attached = array();
-    $form = array();
 
     if (module_exists('ace_editor')) {
       $attached = array(

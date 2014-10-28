@@ -13,7 +13,7 @@ class openlayers__component__js extends openlayers_component {
 
   function options_form(&$form, &$form_state) {
     $attached = array();
-    $form = array();
+    //$form = array();
 
     if (module_exists('ace_editor')) {
       $attached = array(
