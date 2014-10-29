@@ -153,5 +153,26 @@ function openlayers_default_sources() {
   );
   $export['source_esri'] = $source;
 
+  // Include all "views_geojson_feed" views as sources.
+  if (module_exists('views_geojson')) {
+    foreach (views_get_all_views() as $view) {
+      foreach ($view->display as $display => $data) {
+        $view->set_display($display);
+        if ($view->display_handler->get_option('style_plugin') == 'views_geojson_feed') {
+          $source = new stdClass;
+          $source->api_version = 1;
+          $source->machine_name = 'views_geojson_'. $view->name . '_' . $display;
+          $source->name = 'Views GeoJSON source '. $view->name . '_' . $display;
+          $source->description = 'This source is automatically generated. See View ' . $view->name . ' at display ' . $display;
+          $source->class = 'openlayers__source__geojson';
+          $source->options = array(
+            'url' => url($view->display[$display]->display_options['path'], array('absolute' => TRUE))
+          );
+          $export[$source->machine_name] = $source;
+        }
+      }
+    }
+  }
+
   return $export;
 }
