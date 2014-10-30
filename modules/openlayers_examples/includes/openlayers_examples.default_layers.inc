@@ -70,5 +70,17 @@ function openlayers_examples_default_layers() {
   );
   $export['openlayers_examples_views_geojson'] = $layer;
 
+  $layer = new stdClass();
+  $layer->disabled = FALSE; /* Edit this to true to make a default layer disabled initially */
+  $layer->api_version = 1;
+  $layer->machine_name = 'layer_cluster_cities';
+  $layer->name = 'Layer cluster cities';
+  $layer->description = '';
+  $layer->class = 'openlayers__layer__vector';
+  $layer->options = array(
+    'source' => 'source_cluster_cities',
+  );
+  $export['layer_cluster_cities'] = $layer;
+
   return $export;
 }

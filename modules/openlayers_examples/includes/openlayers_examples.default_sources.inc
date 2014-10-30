@@ -51,5 +51,19 @@ function openlayers_examples_default_sources() {
   );
   $export['source_geojson_cities'] = $source;
 
+
+  $source = new stdClass();
+  $source->disabled = FALSE; /* Edit this to true to make a default source disabled initially */
+  $source->api_version = 1;
+  $source->machine_name = 'source_cities_cluster';
+  $source->name = 'Cluster cities';
+  $source->description = '';
+  $source->class = 'openlayers__source__cluster';
+  $source->options = array(
+    'source' => 'source_geojson_cities',
+    'distance' => '50',
+  );
+  $export['source_cluster_cities'] = $source;
+
   return $export;
 }

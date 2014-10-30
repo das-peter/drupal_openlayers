@@ -24,7 +24,7 @@ function openlayers_ui_openlayers_maps_ui_ctools_export_ui() {
       'order' => array(
         'start' => t('Administrative settings'),
         'settings' => t('Map settings'),
-        'layers' => t('Layers'),
+        'layers' => t('Layers and sources'),
         'controls' => t('Controls'),
         'interactions' => t('Interactions'),
         'components' => t('Components'),
@@ -180,13 +180,6 @@ function openlayers_map_form_layers($form, &$form_state) {
           '#default_value' => $entry['enable'],
           '#parents' => array('layers', $id, 'enable'),
         )),
-        array('data' => array(
-          '#type' => 'checkbox',
-          '#title' => t('Default'),
-          '#title_display' => 'invisible',
-          '#default_value' => $entry['default'],
-          '#parents' => array('layers', $id, 'default'),
-        )),
         check_plain($entry['name']),
         check_plain($entry['machine_name']),
         check_plain($entry['description']),
@@ -196,10 +189,6 @@ function openlayers_map_form_layers($form, &$form_state) {
             'query' => array(
               'destination' => current_path(),
             ),
-            'attributes' => array(
-              // Todo: Use CTools modal window ajax for this form.
-              'class' => 'ctools-use-modall'
-            )
           )
         )
       ),
@@ -209,7 +198,6 @@ function openlayers_map_form_layers($form, &$form_state) {
     $row_elements[$id] = array(
       'weight' => &$rows[$id]['data'][1]['data'],
       'enabled' => &$rows[$id]['data'][2]['data'],
-      'default' => &$rows[$id]['data'][3]['data'],
     );
   }
 
@@ -223,7 +211,6 @@ function openlayers_map_form_layers($form, &$form_state) {
       // We need two empty columns for the weigth field and the cross.
       array('data' => NULL, 'colspan' => 2),
       t('Enabled'),
-      t('Default'),
       t('Name'),
       t('Machine name'),
       t('Description'),
@@ -234,7 +221,8 @@ function openlayers_map_form_layers($form, &$form_state) {
     '#empty' => t('There are no entries available.'),
     '#attributes' => array('id' => 'entry-order-layers'),
   );
-  drupal_add_tabledrag('entry-order', 'order', 'sibling', 'entry-order-weight');
+  drupal_add_tabledrag('entry-order-layers', 'order', 'sibling', 'entry-order-weight');
+
 
   $all_sources = ctools_export_crud_load_all('openlayers_sources');
   $map = openlayers_object_load('map', $form_state['item']);
@@ -287,13 +275,6 @@ function openlayers_map_form_layers($form, &$form_state) {
           '#default_value' => $entry['enable'],
           '#parents' => array('sources', $id, 'enable'),
         )),
-        array('data' => array(
-          '#type' => 'checkbox',
-          '#title' => t('Default'),
-          '#title_display' => 'invisible',
-          '#default_value' => $entry['default'],
-          '#parents' => array('sources', $id, 'default'),
-        )),
         check_plain($entry['name']),
         check_plain($entry['machine_name']),
         check_plain($entry['description']),
@@ -303,10 +284,6 @@ function openlayers_map_form_layers($form, &$form_state) {
             'query' => array(
               'destination' => current_path(),
             ),
-            'attributes' => array(
-              // Todo: Use CTools modal window ajax for this form.
-              'class' => 'ctools-use-modall'
-            )
           )
         )
       ),
@@ -315,8 +292,7 @@ function openlayers_map_form_layers($form, &$form_state) {
     // Build rows of the form elements in the table.
     $row_elements[$id] = array(
       'weight' => &$rows[$id]['data'][1]['data'],
-      'enabled' => &$rows[$id]['data'][2]['data'],
-      'default' => &$rows[$id]['data'][3]['data'],
+      'enabled' => &$rows[$id]['data'][2]['data']
     );
   }
 
@@ -330,7 +306,6 @@ function openlayers_map_form_layers($form, &$form_state) {
       // We need two empty columns for the weigth field and the cross.
       array('data' => NULL, 'colspan' => 2),
       t('Enabled'),
-      t('Default'),
       t('Name'),
       t('Machine name'),
       t('Description'),
