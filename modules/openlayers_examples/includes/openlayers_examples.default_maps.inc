@@ -235,5 +235,40 @@ function openlayers_examples_default_maps() {
   );
   $export['map_geolocation'] = $map;
 
+  $map = new stdClass();
+  $map->disabled = FALSE; /* Edit this to true to make a default map disabled initially */
+  $map->api_version = 1;
+  $map->machine_name = 'openlayers_examples_mapquest_sat_geojson_views';
+  $map->name = 'MapQuest Satellite with features from Views GeoJSON';
+  $map->description = '';
+  $map->class = 'openlayers__map__map';
+  $map->options = array(
+    'width' => 'auto',
+    'height' => '300px',
+    'contextualLinks' => 1,
+    'provideBlock' => 1,
+    'view' => array(
+      'center' => array(
+        'lat' => '0',
+        'lon' => '0',
+      ),
+      'rotation' => '0',
+      'zoom' => '2',
+    ),
+    'layers' => array(
+      0 => 'layer_tile_mapquest_sat',
+      1 => 'openlayers_examples_views_geojson',
+    ),
+    'controls' => array(
+      0 => 'control_zoom',
+      1 => 'control_zoomslider',
+    ),
+    'interactions' => array(),
+    'components' => array(
+      0 => 'test',
+    ),
+  );
+  $export['openlayers_examples_mapquest_sat_geojson_views'] = $map;
+
   return $export;
 }

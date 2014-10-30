@@ -59,5 +59,22 @@ function openlayers_examples_default_components() {
   );
   $export['openlayers_examples_graticule'] = $component;
 
+  $component = new stdClass();
+  $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */
+  $component->api_version = 1;
+  $component->machine_name = 'openlayers_examples_zoom_to_source';
+  $component->name = 'Zoom To Source Examples';
+  $component->description = '';
+  $component->class = 'openlayers__component__zoomtosource';
+  $component->options = array(
+    'source' => 'views_geojson_openlayers_examples_geojson_feed_1',
+    'animations' => array(
+      'pan' => '500',
+      'zoom' => '500',
+    ),
+    'enableAnimations' => 1,
+  );
+  $export['openlayers_examples_zoom_to_source'] = $component;
+
   return $export;
 }

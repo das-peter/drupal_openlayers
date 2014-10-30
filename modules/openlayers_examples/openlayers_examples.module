@@ -151,3 +151,13 @@ function openlayers_examples_block_view($delta) {
     'content' => drupal_get_form('openlayers_examples')
   );
 }
+
+/**
+ *  Implements hook_views_api().
+ */
+function openlayers_examples_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'openlayers_examples') . '/views',
+  );
+}

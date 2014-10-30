@@ -58,5 +58,17 @@ function openlayers_examples_default_layers() {
   );
   $export['layer_vector_geojson_cities_heatmap'] = $layer;
 
+  $layer = new stdClass();
+  $layer->disabled = FALSE; /* Edit this to true to make a default layer disabled initially */
+  $layer->api_version = 1;
+  $layer->machine_name = 'openlayers_examples_views_geojson';
+  $layer->name = 'Layer with source from Views GeoJSON';
+  $layer->description = '';
+  $layer->class = 'openlayers__layer__vector';
+  $layer->options = array(
+    'source' => 'views_geojson_openlayers_examples_geojson_feed_1',
+  );
+  $export['openlayers_examples_views_geojson'] = $layer;
+
   return $export;
 }

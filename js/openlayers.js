@@ -103,8 +103,11 @@
       if (!(data.machine_name in cache[type])) {
         // TODO: Check why layers doesnt cache
         Drupal.openlayers.console.info(" Computing " + type + " " + data.machine_name + "...");
-        cache[type][data.machine_name] = Drupal.openlayers[data['class']]({'options': data.options, 'map': map, 'context': context});
-        object = cache[type][data.machine_name];
+        var object = Drupal.openlayers[data['class']]({'options': data.options, 'map': map, 'context': context});
+        if (object instanceof ol.Observable) {
+          object.name = data.machine_name;
+        }
+        cache[type][data.machine_name] = object;
       } else {
         Drupal.openlayers.console.info(" Loading " + type + " " + data.machine_name +" from cache...");
         object = cache[type][data.machine_name];
