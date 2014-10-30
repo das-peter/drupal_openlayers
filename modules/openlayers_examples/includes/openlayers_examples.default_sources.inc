@@ -55,7 +55,7 @@ function openlayers_examples_default_sources() {
   $source = new stdClass();
   $source->disabled = FALSE; /* Edit this to true to make a default source disabled initially */
   $source->api_version = 1;
-  $source->machine_name = 'source_cities_cluster';
+  $source->machine_name = 'source_cluster_cities';
   $source->name = 'Cluster cities';
   $source->description = '';
   $source->class = 'openlayers__source__cluster';
