@@ -201,8 +201,15 @@ function openlayers_map_form_layers($form, &$form_state) {
     );
   }
 
+  $form['layers'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'Layers',
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE
+  );
+
   // Add the table to the form.
-  $form['table_layers'] = array(
+  $form['layers']['table_layers'] = array(
     '#theme' => 'table',
     // The row form elements need to be processed and build,
     // therefore pass them as element children.
@@ -296,8 +303,15 @@ function openlayers_map_form_layers($form, &$form_state) {
     );
   }
 
+  $form['sources'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'Sources',
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE
+  );
+
   // Add the table to the form.
-  $form['table_sources'] = array(
+  $form['sources']['table_sources'] = array(
     '#theme' => 'table',
     // The row form elements need to be processed and build,
     // therefore pass them as element children.
