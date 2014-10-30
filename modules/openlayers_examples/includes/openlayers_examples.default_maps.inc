@@ -265,7 +265,7 @@ function openlayers_examples_default_maps() {
     ),
     'interactions' => array(),
     'components' => array(
-      0 => 'test',
+      0 => 'openlayers_examples_zoom_to_source',
     ),
   );
   $export['openlayers_examples_mapquest_sat_geojson_views'] = $map;

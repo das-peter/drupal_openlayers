@@ -390,6 +390,59 @@ function openlayers_schema() {
       ),
     )
   );
+  $schema['openlayers_styles'] = array(
+    'description' => 'Storage for user defined OpenLayers styles.',
+    'export' => array(
+      'admin_title' => 'machine_name',
+      'key' => 'machine_name',
+      'key name' => 'Machine name',
+      'primary key' => 'machine_name',
+      'identifier' => 'style',
+      'default hook' => 'default_styles',
+      'api' => array(
+        'owner' => 'openlayers',
+        'api' => 'default_styles',
+        'minimum_version' => 1,
+        'current_version' => 1,
+      ),
+    ),
+    'fields' => array(
+      'machine_name' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Style system name.',
+      ),
+      'name' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Style name.',
+      ),
+      'description' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'description' => 'Style description.',
+      ),
+      'class' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'description' => 'Style class.',
+      ),
+      'options' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+        'description' => 'Style options serialized.',
+        'serialize' => TRUE,
+      ),
+    ),
+    'primary key' => array('machine_name'),
+    'unique keys' => array(
+      'machine_name' => array('machine_name'),
+    ),
+  );
   return $schema;
 }
 
