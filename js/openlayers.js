@@ -84,7 +84,7 @@
   Drupal.openlayers = {
 
     'getObject': (function (context, type, data, map) {
-      var cache = $(context).data('openlayers') || {};
+      var cache = $('body').data('openlayers') || {};
 
       if (typeof cache.objects !== 'undefined') {
         cache = cache.objects;
@@ -103,9 +103,9 @@
       if (!(data.machine_name in cache[type])) {
         // TODO: Check why layers doesnt cache
         Drupal.openlayers.console.info(" Computing " + type + " " + data.machine_name + "...");
-        var object = Drupal.openlayers[data['class']]({'options': data.options, 'map': map, 'context': context});
-        if (object instanceof ol.Observable) {
-          object.name = data.machine_name;
+        var object = Drupal.openlayers[data['class']]({'options': data.options, 'map': map, 'context': context, 'cache': cache});
+        if (object instanceof ol.Observable || object instanceof ol.Object) {
+          object.machine_name = data.machine_name;
         }
         cache[type][data.machine_name] = object;
       } else {
@@ -113,6 +113,7 @@
         object = cache[type][data.machine_name];
       }
 
+      jQuery('body').data('openlayers', {'objects': cache});
       return object;
     }),
 

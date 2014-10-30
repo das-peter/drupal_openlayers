@@ -33,10 +33,12 @@ class openlayers_map extends openlayers_object implements openlayers_map_interfa
   }
 
   public function getSources() {
-    $sources = array();
-    $layers = $this->getLayers();
+    $sources = $this->getOption('sources', array());
+    foreach($sources as $index => $source) {
+      $sources[$index] = openlayers_object_load('source', $source);
+    }
 
-    foreach($layers as $index => $layer) {
+    foreach($this->getLayers() as $index => $layer) {
       if ($source = $layer->getSource()) {
         $sources[] = $source;
       }

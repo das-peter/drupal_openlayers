@@ -214,7 +214,7 @@ function openlayers_map_form_layers($form, &$form_state) {
   }
 
   // Add the table to the form.
-  $form['table'] = array(
+  $form['table_layers'] = array(
     '#theme' => 'table',
     // The row form elements need to be processed and build,
     // therefore pass them as element children.
@@ -232,9 +232,117 @@ function openlayers_map_form_layers($form, &$form_state) {
     ),
     '#rows' => $rows,
     '#empty' => t('There are no entries available.'),
-    '#attributes' => array('id' => 'entry-order'),
+    '#attributes' => array('id' => 'entry-order-layers'),
   );
   drupal_add_tabledrag('entry-order', 'order', 'sibling', 'entry-order-weight');
+
+  $all_sources = ctools_export_crud_load_all('openlayers_sources');
+  $map = openlayers_object_load('map', $form_state['item']);
+
+  $sources = array();
+  foreach($map->getSources() as $index => $source) {
+    if (isset($all_sources[$source->machine_name])) {
+      $sources[$source->machine_name] = $all_sources[$source->machine_name];
+      $sources[$source->machine_name]->enable = 1;
+      unset($all_sources[$source->machine_name]);
+    }
+  }
+
+  $sources = array_merge($sources, $all_sources);
+
+  $data = array();
+
+  $i = 0;
+  foreach ($sources as $machine_name => $source) {
+    $data[$machine_name] = array(
+      'name' => $source->name,
+      'machine_name' => $source->machine_name,
+      'description' => $source->description,
+      'class' => $source->class,
+      'weight' => $i++,
+      'enable' => isset($source->enable) ? $source->enable : 0,
+      'default' => 1
+    );
+  }
+
+  $rows = array();
+  foreach($data as $id => $entry) {
+    $rows[$id] = array(
+      'data' => array(
+        array('class', array('entry-cross')),
+        array('data' => array(
+          '#type' => 'weight',
+          '#title' => t('Weight'),
+          '#title_display' => 'invisible',
+          '#default_value' => $entry['weight'],
+          '#parents' => array('sources', $id, 'weight'),
+          '#attributes' => array(
+            'class' => array('entry-order-weight'),
+          )
+        )),
+        array('data' => array(
+          '#type' => 'checkbox',
+          '#title' => t('Enable'),
+          '#title_display' => 'invisible',
+          '#default_value' => $entry['enable'],
+          '#parents' => array('sources', $id, 'enable'),
+        )),
+        array('data' => array(
+          '#type' => 'checkbox',
+          '#title' => t('Default'),
+          '#title_display' => 'invisible',
+          '#default_value' => $entry['default'],
+          '#parents' => array('sources', $id, 'default'),
+        )),
+        check_plain($entry['name']),
+        check_plain($entry['machine_name']),
+        check_plain($entry['description']),
+        check_plain($entry['class']),
+        l(t('Edit'), 'admin/structure/openlayers/sources/list/'.$entry['machine_name'].'/edit/options',
+          array(
+            'query' => array(
+              'destination' => current_path(),
+            ),
+            'attributes' => array(
+              // Todo: Use CTools modal window ajax for this form.
+              'class' => 'ctools-use-modall'
+            )
+          )
+        )
+      ),
+      'class' => array('draggable'),
+    );
+    // Build rows of the form elements in the table.
+    $row_elements[$id] = array(
+      'weight' => &$rows[$id]['data'][1]['data'],
+      'enabled' => &$rows[$id]['data'][2]['data'],
+      'default' => &$rows[$id]['data'][3]['data'],
+    );
+  }
+
+  // Add the table to the form.
+  $form['table_sources'] = array(
+    '#theme' => 'table',
+    // The row form elements need to be processed and build,
+    // therefore pass them as element children.
+    'elements' => $row_elements,
+    '#header' => array(
+      // We need two empty columns for the weigth field and the cross.
+      array('data' => NULL, 'colspan' => 2),
+      t('Enabled'),
+      t('Default'),
+      t('Name'),
+      t('Machine name'),
+      t('Description'),
+      t('Class'),
+      t('Operations'),
+    ),
+    '#rows' => $rows,
+    '#empty' => t('There are no entries available.'),
+    '#attributes' => array('id' => 'entry-order-sources'),
+  );
+  drupal_add_tabledrag('entry-order-sources', 'order', 'sibling', 'entry-order-weight');
+
   return $form;
 }
 
@@ -250,7 +358,19 @@ function openlayers_map_form_layers_submit($form, &$form_state) {
 
   ksort($layers_enabled);
 
+  $sources = $form_state['values']['sources'];
+
+  $sources_enabled = array();
+  foreach($sources as $id => $data) {
+    if ($data['enable'] == 1) {
+      $sources_enabled[$data['weight']] = $id;
+    }
+  }
+
+  ksort($sources_enabled);
+
   $form_state['item']->options['layers'] = array_values($layers_enabled);
+  $form_state['item']->options['sources'] = array_values($sources_enabled);
 }
 
 function openlayers_map_form_controls($form, &$form_state) {

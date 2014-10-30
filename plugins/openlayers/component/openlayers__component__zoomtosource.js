@@ -3,7 +3,7 @@ Drupal.openlayers.openlayers__component__zoomtosource = function(data) {
 
   map.getLayers().forEach(function(layer) {
     var source = layer.getSource();
-    if (source.name === data.options.source) {
+    if (source.machine_name === data.options.source) {
       source.on('change', function() {
         if (data.options.enableAnimations == 1) {
           var pan = ol.animation.pan({duration: data.options.animations.pan, source: map.getView().getCenter()});
