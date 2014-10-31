@@ -49,6 +49,17 @@ function openlayers_examples_default_layers() {
 
   $layer = new stdClass;
   $layer->api_version = 1;
+  $layer->machine_name = 'layer_vector_geojson_cities_heatmap';
+  $layer->name = 'GeoJSON Cities heatmap';
+  $layer->description = 'GeoJSON Cities Heatmap';
+  $layer->class = 'openlayers__layer__heatmap';
+  $layer->options = array(
+    'source' => 'source_geojson_cities',
+  );
+  $export['layer_vector_geojson_cities_heatmap'] = $layer;
+
+  $layer = new stdClass;
+  $layer->api_version = 1;
   $layer->machine_name = 'layer_vector_kml_earthquakes';
   $layer->name = 'Earthquakes 2012';
   $layer->description = '';
@@ -60,14 +71,14 @@ function openlayers_examples_default_layers() {
 
   $layer = new stdClass;
   $layer->api_version = 1;
-  $layer->machine_name = 'layer_vector_geojson_cities_heatmap';
-  $layer->name = 'GeoJSON Cities heatmap';
-  $layer->description = 'GeoJSON Cities Heatmap';
+  $layer->machine_name = 'layer_vector_kml_earthquakes_heatmap';
+  $layer->name = 'Earthquakes 2012 Heatmap';
+  $layer->description = '';
   $layer->class = 'openlayers__layer__heatmap';
   $layer->options = array(
-    'source' => 'source_geojson_cities',
+    'source' => 'source_kml_earthquakes',
   );
-  $export['layer_vector_geojson_cities_heatmap'] = $layer;
+  $export['layer_vector_kml_earthquakes_heatmap'] = $layer;
 
   $layer = new stdClass();
   $layer->disabled = FALSE; /* Edit this to true to make a default layer disabled initially */

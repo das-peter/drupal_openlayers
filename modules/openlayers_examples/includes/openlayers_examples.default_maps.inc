@@ -25,7 +25,7 @@ function openlayers_examples_default_maps() {
     ),
     'layers' => array(
       0 => 'layer_tile_stamen_toner',
-      1 => 'layer_vector_kml_earthquakes'
+      1 => 'layer_vector_kml_earthquakes_heatmap'
     ),
     'controls' => array(
       0 => 'control_zoom'
