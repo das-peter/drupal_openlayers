@@ -338,11 +338,11 @@ function openlayers_examples_default_maps() {
     ),
     'layers' => array(
       0 => 'layer_tile_mapquest_osm',
-      1 => 'openlayers_examples_views_geojson',
+      1 => 'openlayers_examples_views_geojson_popup',
     ),
     'sources' => array(
       0 => 'source_mapquest_osm',
-      1 => 'source_geojson_cities',
+      1 => 'views_geojson_openlayers_examples_geojson_feed_1',
     ),
     'controls' => array(
       0 => 'control_attribution',

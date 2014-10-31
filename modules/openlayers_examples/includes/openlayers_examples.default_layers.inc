@@ -82,5 +82,17 @@ function openlayers_examples_default_layers() {
   );
   $export['layer_cluster_cities'] = $layer;
 
+  $layer = new stdClass();
+  $layer->disabled = FALSE; /* Edit this to true to make a default layer disabled initially */
+  $layer->api_version = 1;
+  $layer->machine_name = 'openlayers_examples_views_geojson_popup';
+  $layer->name = 'Layer with source from Views GeoJSON for popup';
+  $layer->description = '';
+  $layer->class = 'openlayers__layer__vector';
+  $layer->options = array(
+    'source' => 'views_geojson_openlayers_examples_geojson_feed_2',
+  );
+  $export['openlayers_examples_views_geojson_popup'] = $layer;
+
   return $export;
 }

@@ -84,7 +84,7 @@ function openlayers_examples_default_components() {
   $component->description = '';
   $component->class = 'openlayers__component__popup';
   $component->options = array(
-    'layer' => 'source_geojson_cities',
+    'layer' => 'openlayers_examples_views_geojson_popup',
   );
   $export['openlayers_examples_simple_popup'] = $component;
 

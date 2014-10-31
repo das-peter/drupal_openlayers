@@ -30,29 +30,20 @@ function openlayers_examples_views_default_views() {
   $handler->display->display_options['fields']['title']['label'] = '';
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
-  /* Field: Content: Address */
-  $handler->display->display_options['fields']['field_address']['id'] = 'field_address';
-  $handler->display->display_options['fields']['field_address']['table'] = 'field_data_field_address';
-  $handler->display->display_options['fields']['field_address']['field'] = 'field_address';
-  $handler->display->display_options['fields']['field_address']['label'] = '';
-  $handler->display->display_options['fields']['field_address']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['field_address']['click_sort_column'] = 'country';
-  $handler->display->display_options['fields']['field_address']['settings'] = array(
-    'use_widget_handlers' => 1,
-    'format_handlers' => array(
-      'address' => 'address',
-    ),
-  );
-  /* Field: Content: Coordinates */
-  $handler->display->display_options['fields']['field_coordinates']['id'] = 'field_coordinates';
-  $handler->display->display_options['fields']['field_coordinates']['table'] = 'field_data_field_coordinates';
-  $handler->display->display_options['fields']['field_coordinates']['field'] = 'field_coordinates';
-  $handler->display->display_options['fields']['field_coordinates']['label'] = '';
-  $handler->display->display_options['fields']['field_coordinates']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['field_coordinates']['click_sort_column'] = 'geom';
-  $handler->display->display_options['fields']['field_coordinates']['settings'] = array(
+  /* Field: Content: Geofield */
+  $handler->display->display_options['fields']['field_geofield']['id'] = 'field_geofield';
+  $handler->display->display_options['fields']['field_geofield']['table'] = 'field_data_field_geofield';
+  $handler->display->display_options['fields']['field_geofield']['field'] = 'field_geofield';
+  $handler->display->display_options['fields']['field_geofield']['label'] = '';
+  $handler->display->display_options['fields']['field_geofield']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_geofield']['click_sort_column'] = 'geom';
+  $handler->display->display_options['fields']['field_geofield']['settings'] = array(
     'data' => 'full',
   );
+  /* Field: Global: Custom text */
+  $handler->display->display_options['fields']['nothing']['id'] = 'nothing';
+  $handler->display->display_options['fields']['nothing']['table'] = 'views';
+  $handler->display->display_options['fields']['nothing']['field'] = 'nothing';
   /* Sort criterion: Global: Random */
   $handler->display->display_options['sorts']['random']['id'] = 'random';
   $handler->display->display_options['sorts']['random']['table'] = 'views';
@@ -74,12 +65,62 @@ function openlayers_examples_views_default_views() {
   $handler->display->display_options['style_options']['data_source']['value'] = 'wkt';
   $handler->display->display_options['style_options']['data_source']['latitude'] = 'title';
   $handler->display->display_options['style_options']['data_source']['longitude'] = 'title';
-  $handler->display->display_options['style_options']['data_source']['geofield'] = 'field_coordinates';
-  $handler->display->display_options['style_options']['data_source']['wkt'] = 'field_coordinates';
+  $handler->display->display_options['style_options']['data_source']['geofield'] = 'field_geofield';
+  $handler->display->display_options['style_options']['data_source']['wkt'] = 'field_geofield';
   $handler->display->display_options['style_options']['data_source']['name_field'] = 'title';
-  $handler->display->display_options['style_options']['data_source']['description_field'] = 'field_address';
+  $handler->display->display_options['style_options']['data_source']['description_field'] = '';
   $handler->display->display_options['style_options']['jsonp_prefix'] = '';
   $handler->display->display_options['path'] = 'openlayers-examples/feed.geojson';
+
+  /* Display: Feed */
+  $handler = $view->new_display('feed', 'Feed', 'feed_2');
+  $handler->display->display_options['pager']['type'] = 'some';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '100';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['style_plugin'] = 'views_geojson_feed';
+  $handler->display->display_options['style_options']['data_source']['value'] = 'wkt';
+  $handler->display->display_options['style_options']['data_source']['latitude'] = 'title';
+  $handler->display->display_options['style_options']['data_source']['longitude'] = 'title';
+  $handler->display->display_options['style_options']['data_source']['geofield'] = 'field_geofield';
+  $handler->display->display_options['style_options']['data_source']['wkt'] = 'field_geofield';
+  $handler->display->display_options['style_options']['data_source']['name_field'] = 'title';
+  $handler->display->display_options['style_options']['data_source']['description_field'] = 'nothing';
+  $handler->display->display_options['style_options']['jsonp_prefix'] = '';
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Content: Nid */
+  $handler->display->display_options['fields']['nid']['id'] = 'nid';
+  $handler->display->display_options['fields']['nid']['table'] = 'node';
+  $handler->display->display_options['fields']['nid']['field'] = 'nid';
+  $handler->display->display_options['fields']['nid']['label'] = '';
+  $handler->display->display_options['fields']['nid']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['nid']['element_label_colon'] = FALSE;
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'node';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
+  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+  $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['title']['link_to_node'] = FALSE;
+  /* Field: Content: Geofield */
+  $handler->display->display_options['fields']['field_geofield']['id'] = 'field_geofield';
+  $handler->display->display_options['fields']['field_geofield']['table'] = 'field_data_field_geofield';
+  $handler->display->display_options['fields']['field_geofield']['field'] = 'field_geofield';
+  $handler->display->display_options['fields']['field_geofield']['label'] = '';
+  $handler->display->display_options['fields']['field_geofield']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_geofield']['click_sort_column'] = 'geom';
+  $handler->display->display_options['fields']['field_geofield']['settings'] = array(
+    'data' => 'full',
+  );
+  /* Field: Global: Custom text */
+  $handler->display->display_options['fields']['nothing']['id'] = 'nothing';
+  $handler->display->display_options['fields']['nothing']['table'] = 'views';
+  $handler->display->display_options['fields']['nothing']['field'] = 'nothing';
+  $handler->display->display_options['fields']['nothing']['label'] = '';
+  $handler->display->display_options['fields']['nothing']['alter']['text'] = 'This is the description of node [nid].';
+  $handler->display->display_options['fields']['nothing']['element_label_colon'] = FALSE;
+  $handler->display->display_options['path'] = 'openlayers-examples/popup.geojson';
 
   $views[$view->name] = $view;
 
