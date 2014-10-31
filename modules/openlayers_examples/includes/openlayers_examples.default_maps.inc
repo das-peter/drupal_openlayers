@@ -6,6 +6,45 @@ function openlayers_examples_default_maps() {
   $map = new stdClass();
   $map->disabled = FALSE; /* Edit this to true to make a default map disabled initially */
   $map->api_version = 1;
+  $map->machine_name = 'openlayers_examples_map_earthquake';
+  $map->name = '2012 Earthquakes map';
+  $map->description = '';
+  $map->class = 'openlayers__map__map';
+  $map->options = array(
+    'width' => 'auto',
+    'height' => '300px',
+    'contextualLinks' => 1,
+    'provideBlock' => 1,
+    'view' => array(
+      'center' => array(
+        'lat' => 0,
+        'lon' => 0,
+      ),
+      'rotation' => '0',
+      'zoom' => '2',
+    ),
+    'layers' => array(
+      0 => 'layer_tile_stamen_toner',
+      1 => 'layer_vector_kml_earthquakes'
+    ),
+    'controls' => array(
+      0 => 'control_zoom'
+    ),
+    'interactions' => array(
+      0 => 'interaction_doubleclickzoom',
+      1 => 'interaction_dragpan',
+      2 => 'interaction_mousewheelzoom',
+    ),
+    'components' => array(
+      0 => 'openlayers_examples_earthquake_style',
+      1 => 'openlayers_examples_simple_popup_earthquakes'
+    )
+  );
+  $export['openlayers_examples_map_earthquake'] = $map;
+
+  $map = new stdClass();
+  $map->disabled = FALSE; /* Edit this to true to make a default map disabled initially */
+  $map->api_version = 1;
   $map->machine_name = 'map_openstreetmap_geofield';
   $map->name = 'OpenStreetMap with features';
   $map->description = '';

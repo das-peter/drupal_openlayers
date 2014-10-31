@@ -88,5 +88,64 @@ function openlayers_examples_default_components() {
   );
   $export['openlayers_examples_simple_popup'] = $component;
 
+  $component = new stdClass();
+  $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */
+  $component->api_version = 1;
+  $component->machine_name = 'openlayers_examples_earthquake_style';
+  $component->name = 'Earthquake style';
+  $component->description = '';
+  $component->class = 'openlayers__component__js';
+  $component->options = array(
+    'javascript' => 'var map = data.map;
+
+var styleCache = {};
+var styleFunction = function(feature, resolution) {
+  // 2012_Earthquakes_Mag5.kml stores the magnitude of each earthquake in a
+  // standards-violating <magnitude> tag in each Placemark.  We extract it from
+  // the Placemark\'s name instead.
+  var name = feature.get(\'name\');
+  var magnitude = parseFloat(name.substr(2));
+  var radius = 5 + 20 * (magnitude - 5);
+  var style = styleCache[radius];
+  if (!style) {
+    style = [new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: radius,
+        fill: new ol.style.Fill({
+          color: \'rgba(255, 153, 0, 0.4)\'
+        }),
+        stroke: new ol.style.Stroke({
+          color: \'rgba(255, 204, 0, 0.2)\',
+          width: 1
+        })
+      })
+    })];
+    styleCache[radius] = style;
+  }
+  return style;
+};
+
+map.getLayers().forEach(function(layer){
+   var source = layer.getSource();
+   if (source.machine_name == \'source_kml_earthquakes\') {
+       layer.setStyle(styleFunction);
+   }
+});',
+  );
+  $export['openlayers_examples_earthquake_style'] = $component;
+
+  $component = new stdClass();
+  $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */
+  $component->api_version = 1;
+  $component->machine_name = 'openlayers_examples_simple_popup_earthquakes';
+  $component->name = 'Earthquakes popup';
+  $component->description = '';
+  $component->class = 'openlayers__component__popup';
+  $component->options = array(
+    'layer' => 'layer_vector_kml_earthquakes',
+  );
+  $export['openlayers_examples_simple_popup_earthquakes'] = $component;
+
+
   return $export;
 }

@@ -132,6 +132,18 @@ function openlayers_default_layers() {
   $layer = new stdClass();
   $layer->disabled = FALSE; /* Edit this to true to make a default layer disabled initially */
   $layer->api_version = 1;
+  $layer->machine_name = 'layer_tile_stamen_toner';
+  $layer->name = 'Stamen toner';
+  $layer->description = '';
+  $layer->class = 'openlayers__layer__tile';
+  $layer->options = array(
+    'source' => 'source_stamen3'
+  );
+  $export['layer_tile_stamen_toner'] = $layer;
+
+  $layer = new stdClass();
+  $layer->disabled = FALSE; /* Edit this to true to make a default layer disabled initially */
+  $layer->api_version = 1;
   $layer->machine_name = 'layer_tile_esri';
   $layer->name = 'ESRI';
   $layer->description = '';

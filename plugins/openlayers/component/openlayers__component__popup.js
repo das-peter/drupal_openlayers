@@ -47,8 +47,11 @@ Drupal.openlayers.openlayers__component__popup = function(data) {
       var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(
         evt.coordinate, 'EPSG:3857', 'EPSG:4326'));
 
+      var name = feature.get('name') || '';
+      var description = feature.get('description') || '';
+
       overlay.setPosition(evt.coordinate);
-      content.innerHTML = '<div class="ol-popup-name">' + feature.get('name') + '</div><div class="ol-popup-description">' + feature.get('description') + '</div>';
+      content.innerHTML = '<div class="ol-popup-name">' + name + '</div><div class="ol-popup-description">' + description + '</div>';
       container.style.display = 'block';
     }
   });

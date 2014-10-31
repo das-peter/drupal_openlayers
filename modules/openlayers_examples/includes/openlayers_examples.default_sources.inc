@@ -51,6 +51,17 @@ function openlayers_examples_default_sources() {
   );
   $export['source_geojson_cities'] = $source;
 
+  $source = new stdClass();
+  $source->disabled = FALSE; /* Edit this to true to make a default source disabled initially */
+  $source->api_version = 1;
+  $source->machine_name = 'source_kml_earthquakes';
+  $source->name = '2012 Earthquakes';
+  $source->description = '';
+  $source->class = 'openlayers__source__kml';
+  $source->options = array(
+    'url' => url(drupal_get_path('module', 'openlayers_examples') . '/assets/2012_Earthquakes_Mag5.kml', array('absolute' => TRUE)),
+  );
+  $export['source_kml_earthquakes'] = $source;
 
   $source = new stdClass();
   $source->disabled = FALSE; /* Edit this to true to make a default source disabled initially */

@@ -144,6 +144,18 @@ function openlayers_default_sources() {
   $source = new stdClass();
   $source->disabled = FALSE; /* Edit this to true to make a default source disabled initially */
   $source->api_version = 1;
+  $source->machine_name = 'source_stamen3';
+  $source->name = 'Stamen toner';
+  $source->description = '';
+  $source->class = 'openlayers__source__stamen';
+  $source->options = array(
+    'layer' => 'toner'
+  );
+  $export['source_stamen3'] = $source;
+
+  $source = new stdClass();
+  $source->disabled = FALSE; /* Edit this to true to make a default source disabled initially */
+  $source->api_version = 1;
   $source->machine_name = 'source_esri';
   $source->name = 'ESRI';
   $source->description = '';

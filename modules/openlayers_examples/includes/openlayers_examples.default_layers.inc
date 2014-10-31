@@ -49,6 +49,17 @@ function openlayers_examples_default_layers() {
 
   $layer = new stdClass;
   $layer->api_version = 1;
+  $layer->machine_name = 'layer_vector_kml_earthquakes';
+  $layer->name = 'Earthquakes 2012';
+  $layer->description = '';
+  $layer->class = 'openlayers__layer__vector';
+  $layer->options = array(
+    'source' => 'source_kml_earthquakes',
+  );
+  $export['layer_vector_kml_earthquakes'] = $layer;
+
+  $layer = new stdClass;
+  $layer->api_version = 1;
   $layer->machine_name = 'layer_vector_geojson_cities_heatmap';
   $layer->name = 'GeoJSON Cities heatmap';
   $layer->description = 'GeoJSON Cities Heatmap';
