@@ -137,6 +137,10 @@ abstract class openlayers_object implements openlayers_object_interface {
       if (file_exists($file)) {
         $this->attached['js'][$file] = array('data' => $file, 'type' => 'file', 'group' => openlayers_config::JS_GROUP, 'weight' => openlayers_config::JS_WEIGHT);
       }
+      $file = $plugin['path'] . '/' . get_class($this) . '.css';
+      if (file_exists($file)) {
+        $this->attached['css'][$file] = array('data' => $file, 'type' => 'file', 'group' => openlayers_config::JS_GROUP, 'weight' => openlayers_config::JS_WEIGHT);
+      }
     }
 
     return $this->attached;

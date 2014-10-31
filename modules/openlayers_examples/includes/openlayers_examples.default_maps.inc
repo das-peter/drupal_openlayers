@@ -314,5 +314,51 @@ function openlayers_examples_default_maps() {
   );
   $export['openlayers_examples_cluster'] = $map;
 
+  $map = new stdClass();
+  $map->disabled = FALSE; /* Edit this to true to make a default map disabled initially */
+  $map->api_version = 1;
+  $map->machine_name = 'openlayers_examples_map_popup_overlay';
+  $map->name = 'Map with simple popup overlay';
+  $map->description = '';
+  $map->class = 'openlayers__map__map';
+  $map->options = array(
+    'width' => 'auto',
+    'height' => '300px',
+    'contextualLinks' => 1,
+    'provideBlock' => 1,
+    'view' => array(
+      'center' => array(
+        'lat' => '0',
+        'lon' => '0',
+      ),
+      'rotation' => '0',
+      'zoom' => '2',
+      'minZoom' => '0',
+      'maxZoom' => '0',
+    ),
+    'layers' => array(
+      0 => 'layer_tile_mapquest_osm',
+      1 => 'openlayers_examples_views_geojson',
+    ),
+    'sources' => array(
+      0 => 'source_mapquest_osm',
+      1 => 'source_geojson_cities',
+    ),
+    'controls' => array(
+      0 => 'control_attribution',
+      1 => 'control_scaleline',
+      2 => 'control_zoom',
+    ),
+    'interactions' => array(
+      0 => 'interaction_doubleclickzoom',
+      1 => 'interaction_dragpan',
+      2 => 'interaction_mousewheelzoom',
+    ),
+    'components' => array(
+      0 => 'openlayers_examples_simple_popup',
+    ),
+  );
+  $export['openlayers_examples_map_popup_overlay'] = $map;
+
   return $export;
 }

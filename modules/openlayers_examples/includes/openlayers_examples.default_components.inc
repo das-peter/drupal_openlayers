@@ -76,5 +76,17 @@ function openlayers_examples_default_components() {
   );
   $export['openlayers_examples_zoom_to_source'] = $component;
 
+  $component = new stdClass();
+  $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */
+  $component->api_version = 1;
+  $component->machine_name = 'openlayers_examples_simple_popup';
+  $component->name = 'Simple popup';
+  $component->description = '';
+  $component->class = 'openlayers__component__popup';
+  $component->options = array(
+    'layer' => 'source_geojson_cities',
+  );
+  $export['openlayers_examples_simple_popup'] = $component;
+
   return $export;
 }
