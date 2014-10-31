@@ -142,7 +142,7 @@ map.getLayers().forEach(function(layer){
   $component->description = '';
   $component->class = 'openlayers__component__popup';
   $component->options = array(
-    'layer' => 'layer_vector_kml_earthquakes',
+    'layer' => 'layer_vector_kml_earthquakes_heatmap',
   );
   $export['openlayers_examples_simple_popup_earthquakes'] = $component;
 
