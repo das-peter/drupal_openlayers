@@ -119,10 +119,29 @@ function openlayers_source_form_type($form, &$form_state) {
     '#required' => TRUE
   );
 
+  $form['options'] = array(
+    '#tree' => TRUE
+  );
+
+  $form['options']['attributions'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Attributions'),
+    '#default_value' => isset($form_state['item']->options['attributions']) ? $form_state['item']->options['attributions']: '',
+    '#description' => t('Attributions HTML text. Empty to disable.')
+  );
+
   return $form;
 }
 
 function openlayers_source_form_type_submit($form, &$form_state) {
+  if (!empty($form_state['values']['options'])) {
+    $form_state['item']->options = array_replace_recursive((array) $form_state['item']->options, (array) $form_state['values']['options']);
+  }
+
+  if (empty($form_state['values']['options']['attributions'])) {
+    unset($form_state['item']->options['attributions']);
+  }
+
   $form_state['item']->class = $form_state['values']['class'];
 }
 
