@@ -97,7 +97,7 @@ function openlayers_default_styles() {
    })
  ];',
   );
-  $export['openlayers_green_style'] = $style;
+  $export['openlayers_blue_style'] = $style;
 
   return $export;
 }
