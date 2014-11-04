@@ -1,15 +1,15 @@
 <?php
 
-function openlayers_openlayers__source__js_openlayers_source() {
+function openlayers_openlayers__style__js_openlayers_style() {
   return array(
     'handler' => array(
-      'class' => 'openlayers__source__js',
-      'file' => 'openlayers__source__js.inc',
+      'class' => 'openlayers__style__js',
+      'file' => 'openlayers__style__js.inc',
     )
   );
 }
 
-class openlayers__source__js extends openlayers_source {
+class openlayers__style__js extends openlayers_style {
 
   function options_form(&$form, &$form_state) {
     $attached = array();
@@ -30,7 +30,7 @@ class openlayers__source__js extends openlayers_source {
     $form['options']['javascript'] = array(
       '#type' => 'textarea',
       '#title' => t('Javascript'),
-      '#description' => t('Javascript to evaluate. The available variable is: <em>data</em>. You must create the openlayers variable <em>source</em>.'),
+      '#description' => t('Javascript to evaluate. The available variable is: <em>data</em>. You must create the javascript variable <em>style</em>.'),
       '#rows' => 15,
       '#default_value' => $this->getOption('javascript'),
       '#attributes' => array(

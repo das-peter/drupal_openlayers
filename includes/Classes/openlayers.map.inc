@@ -47,6 +47,21 @@ class openlayers_map extends openlayers_object implements openlayers_map_interfa
     return $sources;
   }
 
+  public function getStyles() {
+    $styles = $this->getOption('styles', array());
+    foreach($styles as $index => $source) {
+      $styles[$index] = openlayers_object_load('style', $source);
+    }
+
+    foreach($this->getLayers() as $layer) {
+      if ($style = $layer->getStyle()) {
+        $styles[] = $style;
+      }
+    }
+
+    return $styles;
+  }
+
   public function getControls() {
     $result = array();
     if ($controls = $this->getOption('controls')) {
@@ -111,6 +126,7 @@ class openlayers_map extends openlayers_object implements openlayers_map_interfa
   public function getObjects() {
     $objects = array();
     $objects['layer'] = $this->getLayers();
+    $objects['style'] = $this->getStyles();
     $objects['source'] = $this->getSources();
     $objects['control'] = $this->getControls();
     $objects['interaction'] = $this->getInteractions();
@@ -121,6 +137,9 @@ class openlayers_map extends openlayers_object implements openlayers_map_interfa
     foreach($objects['layer'] as $index => $layer) {
       if ($source = $layer->getSource()) {
         $objects['layer'][$index]->options['source'] = $source->machine_name;
+      }
+      if ($style = $layer->getStyle()) {
+        $objects['layer'][$index]->options['style'] = $style->machine_name;
       }
     }
 

@@ -8,13 +8,15 @@
 
           var object = Drupal.settings.openlayers.maps[map_id],
             layers = object.layer || [],
+            styles = object.style || [],
             controls = object.control || [],
             interactions = object.interaction || [],
             sources = object.source || [],
             components = object.component || [],
-            objects = {sources: {}, controls: {}, interactions: {}, components: {}, layers: {}, maps: {}};
+            objects = {sources: {}, controls: {}, interactions: {}, components: {}, styles: {}, layers: {}, maps: {}};
 
           object.map.options.layers = [];
+          object.map.options.styles = [];
           object.map.options.controls = [];
           object.map.options.interactions = [];
           object.map.options.components = [];
@@ -44,10 +46,20 @@
             });
             Drupal.openlayers.console.info("Building interactions... done !");
 
+            Drupal.openlayers.console.info("Building styles...");
+            styles.map(function(data) {
+              objects.styles[data.machine_name] = Drupal.openlayers.getObject(context, 'styles', data, map);
+            });
+            Drupal.openlayers.console.info("Building styles... done !");
+
             Drupal.openlayers.console.info("Building layers...");
             layers.map(function(data) {
               Drupal.openlayers.console.info(" Adding source to layer...");
               data.options.source = objects.sources[data.options.source];
+              if ((data.options.style !== undefined) && (objects.styles[data.options.style] !== undefined)) {
+                Drupal.openlayers.console.info(" Adding style to layer...");
+                data.options.style = objects.styles[data.options.style];
+              }
               objects.layers[data.machine_name] = Drupal.openlayers.getObject(context, 'layers', data, map);
               Drupal.openlayers.console.info(" Adding layer to map...");
               map.addLayer(objects.layers[data.machine_name]);
@@ -91,6 +103,7 @@
       } else {
         cache.sources = [];
         cache.controls = [];
+        cache.styles = [];
         cache.layers = [];
         cache.interactions = [];
         cache.components = [];
@@ -104,7 +117,7 @@
         // TODO: Check why layers doesnt cache
         Drupal.openlayers.console.info(" Computing " + type + " " + data.machine_name + "...");
         var object = Drupal.openlayers[data['class']]({'options': data.options, 'map': map, 'context': context, 'cache': cache});
-        if (object instanceof ol.Observable || object instanceof ol.Object) {
+        if (typeof object === 'object') {
           object.machine_name = data.machine_name;
         }
         cache[type][data.machine_name] = object;

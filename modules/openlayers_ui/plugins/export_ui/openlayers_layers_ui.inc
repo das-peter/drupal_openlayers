@@ -24,6 +24,7 @@ function openlayers_ui_openlayers_layers_ui_ctools_export_ui() {
       'order' => array(
         'start' => t('Administrative settings'),
         'type' => t('Layer type'),
+        'style' => t('Layer style'),
         'options' => t('Layer type options'),
       ),
       'forms' => array(
@@ -32,6 +33,9 @@ function openlayers_ui_openlayers_layers_ui_ctools_export_ui() {
         ),
         'type' => array(
           'form id' => 'openlayers_layer_form_type'
+        ),
+        'style' => array(
+          'form id' => 'openlayers_layer_form_style'
         ),
         'options' => array(
           'form id' => 'openlayers_layer_form_options'
@@ -145,6 +149,33 @@ function openlayers_layer_form_type($form, &$form_state) {
 function openlayers_layer_form_type_submit($form, &$form_state) {
   $form_state['item']->class = $form_state['values']['class'];
   $form_state['item']->options = array_replace_recursive((array) $form_state['item']->options, $form_state['values']['options']);
+}
+
+function openlayers_layer_form_style($form, &$form_state) {
+  $styles = ctools_export_crud_load_all('openlayers_styles');
+  $options = array('' => t('<Choose the style>'));
+  foreach($styles as $machine_name => $data) {
+    $options[$machine_name] = $data->name;
+  }
+
+  $form['options'] = array(
+    '#tree' => TRUE
+  );
+
+  $form['options']['style'] = array(
+    '#type' => 'select',
+    '#title' => t('Style'),
+    '#default_value' => isset($form_state['item']->options['style']) ? $form_state['item']->options['style']: '',
+    '#description' => t('Select the style.'),
+    '#options' => $options,
+    '#required' => TRUE
+  );
+
+  return $form;
+}
+
+function openlayers_layer_form_style_submit($form, &$form_state) {
+  $form_state['item']->options = array_replace_recursive((array) $form_state['item']->options, (array) $form_state['values']['options']);
 }
 
 function openlayers_layer_form_options($form, &$form_state) {

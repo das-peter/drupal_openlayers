@@ -4,6 +4,7 @@ include 'includes/Classes/openlayers.config.inc';
 include 'includes/Interfaces/openlayers.object.interface.inc';
 include 'includes/Interfaces/openlayers.map.interface.inc';
 include 'includes/Interfaces/openlayers.layer.interface.inc';
+include 'includes/Interfaces/openlayers.style.interface.inc';
 include 'includes/Interfaces/openlayers.source.interface.inc';
 include 'includes/Interfaces/openlayers.control.interface.inc';
 include 'includes/Interfaces/openlayers.interaction.interface.inc';
@@ -14,6 +15,7 @@ include 'includes/Classes/openlayers.component.inc';
 include 'includes/Classes/openlayers.interaction.inc';
 include 'includes/Classes/openlayers.map.inc';
 include 'includes/Classes/openlayers.control.inc';
+include 'includes/Classes/openlayers.style.inc';
 include 'includes/Classes/openlayers.layer.inc';
 include 'includes/Classes/openlayers.source.inc';
 include 'includes/openlayers.helpers.inc';
@@ -43,6 +45,10 @@ function openlayers_ctools_plugin_type() {
       'classes' => array('handler')
     ),
     'layer' => array(
+      'use hooks' => FALSE,
+      'classes' => array('handler')
+    ),
+    'style' => array(
       'use hooks' => FALSE,
       'classes' => array('handler')
     ),
@@ -218,7 +224,7 @@ function openlayers_render_build_map(openlayers_map $map) {
   }
 
   // This is temporary and will need to be worked on.
-  foreach(array('layer', 'source', 'control', 'interaction', 'component') as $type) {
+  foreach(array('style', 'layer', 'source', 'control', 'interaction', 'component') as $type) {
     foreach($objects[$type] as $object) {
       $object->alterBuild($build);
     }

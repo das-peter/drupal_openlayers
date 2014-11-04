@@ -11,6 +11,13 @@ abstract class openlayers_layer extends openlayers_object implements openlayers_
     return FALSE;
   }
 
+  public function getStyle() {
+    if ($style = $this->getOption('style')) {
+      return openlayers_object_load('style', $this->getOption('style'));
+    }
+    return FALSE;
+  }
+
   public function develop() {
     if ($data = $this->getSource()) {
       $this->setOption('source', $data);
