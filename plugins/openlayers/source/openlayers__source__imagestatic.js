@@ -1,11 +1,4 @@
 Drupal.openlayers.openlayers__source__imagestatic = function(data) {
-
-  if (data.options.attributions !== undefined) {
-    data.options.attributions = [new ol.Attribution({
-      'html': data.options.attributions
-    })];
-  }
-
   var pixelProjection = new ol.proj.Projection({
     code: 'pixel',
     units: 'pixels',

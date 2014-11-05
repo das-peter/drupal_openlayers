@@ -45,11 +45,11 @@ abstract class openlayers_object implements openlayers_object_interface {
 
   public function options_form(&$form, &$form_state) {return array();}
 
-  function options_form_validate($form, &$form_state) {}
+  public function options_form_validate($form, &$form_state) {}
 
-  function options_form_submit($form, &$form_state) {}
+  public function options_form_submit($form, &$form_state) {}
 
-  function alterBuild(&$build) {}
+  public function alterBuild(&$build) {}
 
   public function getType() {
     list($module, $type) = explode('__', get_class($this));
@@ -100,6 +100,10 @@ abstract class openlayers_object implements openlayers_object_interface {
       $ref = &$ref[$parent];
     }
     $ref = $value;
+  }
+
+  public function get($prop) {
+    return $this->$prop;
   }
 
   public function getOption($parents, $default_value = NULL) {

@@ -8,11 +8,5 @@ Drupal.openlayers.openlayers__source__vector = function(data) {
     features: [feature]
   };
 
-  if (data.options.attributions !== undefined) {
-    options.attributions = [new ol.Attribution({
-      'html': data.options.attributions
-    })];
-  }
-
   return new ol.source.Vector(options);
 };

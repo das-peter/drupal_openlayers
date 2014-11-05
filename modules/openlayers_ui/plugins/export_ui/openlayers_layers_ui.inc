@@ -143,6 +143,13 @@ function openlayers_layer_form_type($form, &$form_state) {
     '#required' => TRUE
   );
 
+  $form['options']['visible'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Visible ?'),
+    '#default_value' => isset($form_state['item']->options['visible']) ? (bool) $form_state['item']->options['visible']: TRUE,
+    '#description' => t('TODO'),
+  );
+
   return $form;
 }
 

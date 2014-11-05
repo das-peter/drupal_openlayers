@@ -4,13 +4,15 @@
  * Implements hook_block_info().
  */
 function openlayers_block_switcher_block_info() {
-
   $maps = _olebs_get_maps_with_blockswitcher();
   $blocks = array();
 
   foreach ($maps as $key => $map) {
-    $blockid = _olebs_get_block_id($key);
-    $blocks[$blockid]['info'] = t('OpenLayers layer switcher for ' . $map->name);
+    $map = openlayers_object_load('map', $map->machine_name);
+    if ($map->getOption('provideBlockLayerSwitcher', 0)) {
+      $blockid = _olebs_get_block_id($key);
+      $blocks[$blockid]['info'] = t('OpenLayers layer switcher for ' . $map->name);
+    }
   }
 
   return $blocks;
@@ -20,14 +22,10 @@ function openlayers_block_switcher_block_info() {
  * Implements hook_block_view().
  */
 function openlayers_block_switcher_block_view($delta = '') {
-
   $block = array();
-  $maps = _olebs_get_maps_with_blockswitcher();
-  $map_name = _olebs_get_map_name($delta);
+  $map = openlayers_object_load('map', _olebs_get_map_name($delta));
 
-  $map = openlayers_object_load('map', $map_name);
-
-  $block['subject'] = t('Map layers');
+  $block['subject'] = $map->get('name');
   $form = drupal_get_form('olebs_blockswitcher_form', $map);
   $block['content'] = drupal_render($form);
 
@@ -49,18 +47,6 @@ function _olebs_get_maps_with_blockswitcher() {
   }
 
   return $maps;
-}
-
-/**
- * Helper function.
- * Returns default configuration.
- *
- * @return array
- */
-function _olebs_get_default_config() {
-  return array(
-    'baselayers_element_type' => 'radios'
-  );
 }
 
 /**
@@ -93,28 +79,33 @@ function _olebs_get_map_name($delta) {
  * @return mixed
  */
 function olebs_blockswitcher_form($form, &$form_state, $map) {
+  $default_value = array();
+  $options_overlays = array();
 
   if ($layers = $map->getOption('layers')) {
-    foreach($layers as $machine_name) {
-      $layer = openlayers_object_load('layer', $machine_name);
-      $options_overlays[$machine_name] = $layer->name;
+    foreach($layers as $layer) {
+      $layer = openlayers_object_load('layer', $layer->machine_name);
+      $options_overlays[$layer->machine_name] = $layer->get('name');
+      if ('1' == $layer->getOption('visible', 1)) {
+        $default_value[] = $layer->machine_name;
+      }
     }
   }
 
   if (!empty($options_overlays)) {
     $form['overlays']= array(
       '#title'   => t('Overlays'),
-      '#type'    => 'radios',
+      '#type'    => 'checkboxes',
       '#options' => $options_overlays,
+      '#default_value' => $default_value
     );
   }
 
-  $css_map_name = drupal_clean_css_identifier($map->machine_name);
-
   $form['map']= array(
     '#type'    => 'hidden',
-    '#value' => 'openlayers-map-' . $css_map_name,
+    '#value' => $map->machine_name,
   );
+
   $form['#attached']['css'] = array();
   $form['#attached']['library'] = array();
   $form['#attached']['js'][] = array(

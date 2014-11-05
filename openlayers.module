@@ -207,7 +207,7 @@ function openlayers_render_build_map(openlayers_map $map) {
         'id' => $map->getId(),
         'class' => array(
           'openlayers-map',
-          $map->getId()
+          $map->machine_name
         ),
       ),
       '#attached' => array(

@@ -24,11 +24,19 @@
           try {
             Drupal.openlayers.console.info("Creating map " + object.map.machine_name + "...");
             var map = Drupal.openlayers[object.map['class']]({'map': object.map, 'context': context});
+            map.machine_name = object.map.machine_name;
             objects.maps[map_id] = map;
             Drupal.openlayers.console.info("Creating map object... done !");
 
             Drupal.openlayers.console.info("Building sources...");
             sources.map(function(data) {
+
+              if (data.options !== undefined && data.options.attributions !== undefined) {
+                data.options.attributions = [new ol.Attribution({
+                  'html': data.options.attributions
+                })];
+              }
+
               objects.sources[data.machine_name] = Drupal.openlayers.getObject(context, 'sources', data, map);
             });
             Drupal.openlayers.console.info("Building sources... done !");

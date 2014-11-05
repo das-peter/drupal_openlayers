@@ -41,6 +41,13 @@ class openlayers__map__map extends openlayers_map {
         '#default_value' => $this->getOption('provideBlock', TRUE),
         '#parents' => array('options', 'provideBlock'),
       ),
+      'provideBlockLayerSwitcher' => array(
+        '#type' => 'checkbox',
+        '#title' => 'Provide Drupal block layer switcher',
+        '#description' => t('Enable this to enable a block to display a layer switcher.'),
+        '#default_value' => $this->getOption('provideBlockLayerSwitcher', FALSE),
+        '#parents' => array('options', 'provideBlockLayerSwitcher'),
+      ),
     );
 
     $form['options']['view'] = array(
