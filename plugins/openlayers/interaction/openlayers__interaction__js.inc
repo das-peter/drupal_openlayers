@@ -1,6 +1,6 @@
 <?php
 
-function openlayers_openlayers__interaction__js_openlayers_control() {
+function openlayers_openlayers__interaction__js_openlayers_interaction() {
   return array(
     'handler' => array(
       'class' => 'openlayers__interaction__js',
