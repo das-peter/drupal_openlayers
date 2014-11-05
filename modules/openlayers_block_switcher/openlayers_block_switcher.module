@@ -11,7 +11,7 @@ function openlayers_block_switcher_block_info() {
     $map = openlayers_object_load('map', $map->machine_name);
     if ($map->getOption('provideBlockLayerSwitcher', 0)) {
       $blockid = _olebs_get_block_id($key);
-      $blocks[$blockid]['info'] = t('OpenLayers layer switcher for ' . $map->name);
+      $blocks[$blockid]['info'] = t('OpenLayers layer switcher for ' . $map->get('name'));
     }
   }
 
