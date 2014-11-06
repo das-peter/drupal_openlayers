@@ -399,5 +399,65 @@ function openlayers_examples_default_maps() {
   );
   $export['openlayers_examples_map_popup_overlay'] = $map;
 
+  $map = new stdClass();
+  $map->disabled = FALSE; /* Edit this to true to make a default map disabled initially */
+  $map->api_version = 1;
+  $map->machine_name = 'openlayers_examples_blocklayerswitcher';
+  $map->name = 'Map with block layer switcher';
+  $map->description = '';
+  $map->class = 'openlayers__map__map';
+  $map->options = array(
+    'width' => 'auto',
+    'height' => '300px',
+    'contextualLinks' => 1,
+    'provideBlock' => 1,
+    'view' => array(
+      'center' => array(
+        'lat' => '0',
+        'lon' => '0',
+      ),
+      'rotation' => '0',
+      'zoom' => '2',
+    ),
+    'layers' => array(
+      0 => 'layer_tile_mapbox_geography_class',
+      1 => 'layer_tile_mapquest_hyb',
+      2 => 'layer_tile_mapquest_sat',
+      3 => 'layer_tile_stamen_toner',
+      4 => 'layer_tile_mapquest_osm',
+      5 => 'layer_tile_openstreetmap',
+      6 => 'layer_vector_kml_earthquakes',
+      7 => 'openlayers_examples_views_geojson',
+      8 => 'layer_vector_geojson_cities_heatmap',
+      9 => 'layer_vector_kml_earthquakes_heatmap',
+      10 => 'layer_vector_geojson_cities',
+      11 => 'layer_cluster_cities',
+    ),
+    'controls' => array(
+      0 => 'control_zoom',
+    ),
+    'interactions' => array(
+      0 => 'interaction_doubleclickzoom',
+      1 => 'interaction_dragpan',
+      2 => 'interaction_mousewheelzoom',
+    ),
+    'sources' => array(
+      0 => 'source_osm',
+      1 => 'source_mapbox_geography_class',
+      2 => 'source_mapquest_hyb',
+      3 => 'source_mapquest_sat',
+      4 => 'source_stamen3',
+      5 => 'source_mapquest_osm',
+      6 => 'source_kml_earthquakes',
+      7 => 'views_geojson_openlayers_examples_geojson_feed_1',
+      8 => 'source_geojson_cities',
+      9 => 'source_cluster_cities',
+    ),
+    'components' => array(
+      0 => 'openlayers_examples_blocklayerswitcher',
+    ),
+  );
+  $export['openlayers_examples_blocklayerswitcher'] = $map;
+
   return $export;
 }

@@ -226,7 +226,7 @@ function openlayers_render_build_map(openlayers_map $map) {
   // This is temporary and will need to be worked on.
   foreach(array('style', 'layer', 'source', 'control', 'interaction', 'component') as $type) {
     foreach($objects[$type] as $object) {
-      $object->alterBuild($build);
+      $object->alterBuild($build, $map);
     }
   }
 

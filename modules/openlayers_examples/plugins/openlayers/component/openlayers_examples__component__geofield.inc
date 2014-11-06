@@ -11,7 +11,7 @@ function openlayers_examples_openlayers_examples__component__geofield_openlayers
 
 class openlayers_examples__component__geofield extends openlayers_component {
 
-  function alterBuild(&$build) {
+  function alterBuild(&$build, $map) {
     $build['component'] = array(
       '#type' => 'fieldset',
       '#title' => 'Example Geofield component'

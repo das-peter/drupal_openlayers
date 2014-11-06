@@ -146,6 +146,14 @@ map.getLayers().forEach(function(layer){
   );
   $export['openlayers_examples_simple_popup_earthquakes'] = $component;
 
+  $component = new stdClass();
+  $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */
+  $component->api_version = 1;
+  $component->machine_name = 'openlayers_examples_blocklayerswitcher';
+  $component->name = 'Block Layer Switcher';
+  $component->description = '';
+  $component->class = 'openlayers_examples__component__blocklayerswitcher';
+  $export['openlayers_examples_blocklayerswitcher'] = $component;
 
   return $export;
 }

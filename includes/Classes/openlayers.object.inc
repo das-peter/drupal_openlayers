@@ -49,7 +49,7 @@ abstract class openlayers_object implements openlayers_object_interface {
 
   public function options_form_submit($form, &$form_state) {}
 
-  public function alterBuild(&$build) {}
+  public function alterBuild(&$build, $map) {}
 
   public function getType() {
     list($module, $type) = explode('__', get_class($this));

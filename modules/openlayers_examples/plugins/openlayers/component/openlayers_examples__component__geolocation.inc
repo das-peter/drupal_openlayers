@@ -50,7 +50,7 @@ class openlayers_examples__component__geolocation extends openlayers_component {
     );
   }
 
-  function alterBuild(&$build) {
+  function alterBuild(&$build, $map) {
     $build['component'] = array(
       '#type' => 'fieldset',
       '#title' => 'Example Geolocation component'

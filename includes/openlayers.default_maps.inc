@@ -144,9 +144,8 @@ function openlayers_default_maps() {
     ),
     'controls' => array(
       0 => 'control_attribution',
-      1 => 'control_mouseposition',
-      2 => 'control_rotate',
-      3 => 'control_zoom',
+      1 => 'control_rotate',
+      2 => 'control_zoom',
     ),
     'interactions' => array(
       0 => 'interaction_doubleclickzoom',
