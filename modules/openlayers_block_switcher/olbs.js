@@ -9,9 +9,10 @@
           if (data.objects.maps[map].machine_name == machine_name) {
             var map = data.objects.maps[map];
             var layers = map.getLayers();
+            var target = $(e.target);
             layers.forEach(function(layer){
-              if (layer.machine_name == $(e.srcElement).val()) {
-                if ($(e.srcElement).prop('checked') == true) {
+              if (layer.machine_name == target.val()) {
+                if (target.prop('checked') == true) {
                   layer.setVisible(true);
                 } else {
                   layer.setVisible(false);
