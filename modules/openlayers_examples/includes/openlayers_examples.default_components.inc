@@ -149,11 +149,11 @@ map.getLayers().forEach(function(layer){
   $component = new stdClass();
   $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */
   $component->api_version = 1;
-  $component->machine_name = 'openlayers_examples_blocklayerswitcher';
+  $component->machine_name = 'openlayers_examples_component_blocklayerswitcher';
   $component->name = 'Block Layer Switcher';
   $component->description = '';
   $component->class = 'openlayers_examples__component__blocklayerswitcher';
-  $export['openlayers_examples_blocklayerswitcher'] = $component;
+  $export['openlayers_examples_component_blocklayerswitcher'] = $component;
 
   return $export;
 }

@@ -454,7 +454,7 @@ function openlayers_examples_default_maps() {
       9 => 'source_cluster_cities',
     ),
     'components' => array(
-      0 => 'openlayers_examples_blocklayerswitcher',
+      0 => 'openlayers_examples_component_blocklayerswitcher',
     ),
   );
   $export['openlayers_examples_blocklayerswitcher'] = $map;
