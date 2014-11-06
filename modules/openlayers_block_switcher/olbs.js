@@ -2,7 +2,7 @@
   Drupal.behaviors.olebs =  {
     attach: function(context, settings) {
 
-      $(".form-item-overlays input[type='checkbox']").change(function(e) {
+      $(".form-item-overlays input[type='checkbox']").on('change', function(e) {
         var machine_name = $(this).closest('form').find("input[name='map']").val();
         var data = $('body').data('openlayers');
         for (map in data.objects.maps) {
