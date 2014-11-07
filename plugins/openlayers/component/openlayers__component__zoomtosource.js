@@ -12,6 +12,7 @@ Drupal.openlayers.openlayers__component__zoomtosource = function(data) {
         }
         var dataExtent = source.getExtent();
         map.getView().fitExtent(dataExtent, map.getSize());
+        map.getView().setZoom(data.options.zoom);
       }, source);
     }
   });

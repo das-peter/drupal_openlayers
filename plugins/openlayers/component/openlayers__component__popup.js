@@ -44,9 +44,6 @@ Drupal.openlayers.openlayers__component__popup = function(data) {
       }
     });
     if (feature) {
-      var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(
-        evt.coordinate, 'EPSG:3857', 'EPSG:4326'));
-
       var name = feature.get('name') || '';
       var description = feature.get('description') || '';
 

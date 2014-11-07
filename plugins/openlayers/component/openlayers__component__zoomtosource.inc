@@ -27,6 +27,14 @@ class openlayers__component__zoomtosource extends openlayers_component {
       '#required' => TRUE
     );
 
+    $form['options']['zoom'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Zoom'),
+      '#default_value' => isset($form_state['item']->options['zoom']) ? $form_state['item']->options['zoom']: 10,
+      '#description' => t('TODO'),
+      '#required' => TRUE
+    );
+
     $form['options']['enableAnimations'] = array(
       '#type' => 'checkbox',
       '#title' => t('Enable animations'),
