@@ -1,7 +1,7 @@
 (function($) {
   $(document).on('openlayers.build_start', function(event, objects) {
     console.time('Total building time');
-    console.group("********************* Starting building " + objects.objects.map.machine_name + "*********************");
+    console.group("********************* Starting building " + objects.objects.map.machine_name + " *********************");
   });
 
   var message;
