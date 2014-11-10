@@ -25,7 +25,7 @@
 
           try {
             var map = Drupal.openlayers.getObject(context, 'maps', object.map, null);
-            objects.maps[map_id] = map;
+            objects.maps[map.machine_name] = map;
 
             sources.map(function(data) {
               if (data.options !== undefined && data.options.attributions !== undefined) {
@@ -105,7 +105,7 @@
       $(document).trigger('openlayers.object_pre_alter', [{'type': type, 'machine_name': data.machine_name, 'data': data, 'map': map, 'cache': cache, 'context': context}]);
       var object;
       if (!(data.machine_name in cache[type])) {
-        // TODO: Check why layers doesnt cache
+        // TODO: Check why layers and maps doesnt cache.
         var object = Drupal.openlayers[data['class']]({'options': data.options, 'map': map, 'context': context, 'cache': cache});
         if (typeof object === 'object') {
           object.machine_name = data.machine_name;
