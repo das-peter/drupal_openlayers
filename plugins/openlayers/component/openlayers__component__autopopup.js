@@ -8,13 +8,12 @@ Drupal.openlayers.openlayers__component__autopopup = function(data) {
   var content = jQuery('<div/>', {
     id: 'popup-content'
   }).appendTo('#popup');
-/*
   var closer = jQuery('<a/>', {
     href: '#',
     id: 'popup-closer',
     'class': 'ol-popup-closer'
   }).appendTo('#popup');
-*/
+
   var container = document.getElementById('popup');
   var content = document.getElementById('popup-content');
   var closer = document.getElementById('popup-closer');
@@ -23,13 +22,11 @@ Drupal.openlayers.openlayers__component__autopopup = function(data) {
    * Add a click handler to hide the popup.
    * @return {boolean} Don't follow the href.
    */
-  /*
   closer.onclick = function() {
     container.style.display = 'none';
     closer.blur();
     return false;
   };
-  */
 
   /**
    * Create an overlay to anchor the popup to the map.
@@ -61,7 +58,11 @@ Drupal.openlayers.openlayers__component__autopopup = function(data) {
           }
           var dataExtent = feature.getGeometry().getExtent();
           map.getView().fitExtent(dataExtent, map.getSize());
-          map.getView().setZoom(data.options.zoom);
+          if (data.options.zoom != 'auto') {
+            map.getView().setZoom(data.options.zoom);
+          } else {
+            map.getView().setZoom(map.getView().getZoom() - 1);
+          }
         }
       }, source);
 

@@ -67,14 +67,33 @@ function openlayers_examples_default_components() {
   $component->description = '';
   $component->class = 'openlayers__component__zoomtosource';
   $component->options = array(
-    'source' => 'views_geojson_openlayers_examples_geojson_feed_1',
+    'source' => 'views_geojson_openlayers_examples_geojson_feed_2',
     'animations' => array(
       'pan' => '500',
       'zoom' => '500',
     ),
+    'zoom' => 'auto',
     'enableAnimations' => 1,
   );
   $export['openlayers_examples_zoom_to_source'] = $component;
+
+  $component = new stdClass();
+  $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */
+  $component->api_version = 1;
+  $component->machine_name = 'openlayers_examples_autopopup';
+  $component->name = 'OpenLayers Examples Autopopup';
+  $component->description = '';
+  $component->class = 'openlayers__component__autopopup';
+  $component->options = array(
+    'source' => 'views_geojson_openlayers_examples_geojson_feed_2',
+    'zoom' => 'auto',
+    'enableAnimations' => 1,
+    'animations' => array(
+      'pan' => '500',
+      'zoom' => '500',
+    ),
+  );
+  $export['openlayers_examples_autopopup'] = $component;
 
   $component = new stdClass();
   $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */

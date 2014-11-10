@@ -31,7 +31,7 @@ class openlayers__component__zoomtosource extends openlayers_component {
       '#type' => 'textfield',
       '#title' => t('Zoom'),
       '#default_value' => isset($form_state['item']->options['zoom']) ? $form_state['item']->options['zoom']: 10,
-      '#description' => t('TODO'),
+      '#description' => t('Integer or <em>auto</em>.'),
       '#required' => TRUE
     );
 

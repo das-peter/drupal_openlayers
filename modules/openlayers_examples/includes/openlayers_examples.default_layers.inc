@@ -113,6 +113,7 @@ function openlayers_examples_default_layers() {
   $layer->class = 'openlayers__layer__vector';
   $layer->options = array(
     'source' => 'views_geojson_openlayers_examples_geojson_feed_2',
+    'style' => 'openlayers_examples_blue_marker',
   );
   $export['openlayers_examples_views_geojson_popup'] = $layer;
 
