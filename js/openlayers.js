@@ -6,8 +6,10 @@
         var map_id = $(this).attr('id');
         if (Drupal.settings.openlayers.maps[map_id] !== undefined) {
 
-          var object = Drupal.settings.openlayers.maps[map_id],
-            layers = object.layer || [],
+          var object = Drupal.settings.openlayers.maps[map_id];
+          $(document).trigger('openlayers.objects.alter', [{'type': 'objects', 'objects': object.map, 'context': context}]);
+
+          var layers = object.layer || [],
             styles = object.style || [],
             controls = object.control || [],
             interactions = object.interaction || [],
@@ -23,8 +25,7 @@
 
           try {
             Drupal.openlayers.console.info("Creating map " + object.map.machine_name + "...");
-            var map = Drupal.openlayers[object.map['class']]({'map': object.map, 'context': context});
-            map.machine_name = object.map.machine_name;
+            var map = Drupal.openlayers.getObject(context, 'maps', object.map, null);
             objects.maps[map_id] = map;
             Drupal.openlayers.console.info("Creating map object... done !");
 
@@ -86,11 +87,12 @@
             Drupal.openlayers.console.info("Caching objects... done !");
 
           } catch (e) {
-            var errorMessage = e.name + ': ' + e.message;
             if (typeof console !== 'undefined') {
-              Drupal.openlayers.console.log(errorMessage);
+              Drupal.openlayers.console.log(e.message);
+              Drupal.openlayers.console.log(e.stack);
             } else {
-              $(this).text('Error during map rendering: ' + errorMessage);
+              $(this).text('Error during map rendering: ' + e.message);
+              $(this).text('Stack: ' + e.stack);
             }
           }
         }
@@ -115,15 +117,17 @@
         cache.layers = [];
         cache.interactions = [];
         cache.components = [];
-        cache.map = [];
+        cache.maps = [];
       }
 
       cache = $.extend({}, cache.objects, cache);
 
+      $(document).trigger('openlayers.object_pre_alter', [{'type': type, 'machine_name': data.machine_name, 'data': data, 'map': map, 'cache': cache, 'context': context}]);
       var object;
       if (!(data.machine_name in cache[type])) {
         // TODO: Check why layers doesnt cache
         Drupal.openlayers.console.info(" Computing " + type + " " + data.machine_name + "...");
+
         var object = Drupal.openlayers[data['class']]({'options': data.options, 'map': map, 'context': context, 'cache': cache});
         if (typeof object === 'object') {
           object.machine_name = data.machine_name;
@@ -134,6 +138,7 @@
         object = cache[type][data.machine_name];
       }
 
+      $(document).trigger('openlayers.object_post_alter', [{'type': type, 'object': object, 'data': data, 'map': map, 'cache': cache, 'context': context}]);
       jQuery('body').data('openlayers', {'objects': cache});
       return object;
     }),
