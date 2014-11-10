@@ -9,7 +9,8 @@
           var object = Drupal.settings.openlayers.maps[map_id];
           $(document).trigger('openlayers.build_start', [{'type': 'objects', 'objects': object, 'context': context}]);
 
-          var layers = object.layer || [],
+          var count = 1,
+            layers = object.layer || [],
             styles = object.style || [],
             controls = object.control || [],
             interactions = object.interaction || [],
@@ -24,42 +25,48 @@
           object.map.options.components = [];
 
           try {
-            var map = Drupal.openlayers.getObject(context, 'maps', object.map, null);
+            var map = Drupal.openlayers.getObject(context, 'maps', object.map, null, count);
             objects.maps[map.machine_name] = map;
 
+            count = sources.length;
             sources.map(function(data) {
               if (data.options !== undefined && data.options.attributions !== undefined) {
                 data.options.attributions = [new ol.Attribution({
                   'html': data.options.attributions
                 })];
               }
-              objects.sources[data.machine_name] = Drupal.openlayers.getObject(context, 'sources', data, map);
+              objects.sources[data.machine_name] = Drupal.openlayers.getObject(context, 'sources', data, map, count--);
             });
 
+            count = controls.length;
             controls.map(function(data) {
-              map.addControl(Drupal.openlayers.getObject(context, 'controls', data, map));
+              map.addControl(Drupal.openlayers.getObject(context, 'controls', data, map, count--));
             });
 
+            count = interactions.length;
             interactions.map(function(data) {
-              objects.interactions[data.machine_name] = Drupal.openlayers.getObject(context, 'interactions', data, map);
+              objects.interactions[data.machine_name] = Drupal.openlayers.getObject(context, 'interactions', data, map, count--);
               map.addInteraction(objects.interactions[data.machine_name]);
             });
 
+            count = styles.length;
             styles.map(function(data) {
-              objects.styles[data.machine_name] = Drupal.openlayers.getObject(context, 'styles', data, map);
+              objects.styles[data.machine_name] = Drupal.openlayers.getObject(context, 'styles', data, map, count--);
             });
 
+            count = layers.length;
             layers.map(function(data) {
               data.options.source = objects.sources[data.options.source];
               if ((data.options.style !== undefined) && (objects.styles[data.options.style] !== undefined)) {
                 data.options.style = objects.styles[data.options.style];
               }
-              objects.layers[data.machine_name] = Drupal.openlayers.getObject(context, 'layers', data, map);
+              objects.layers[data.machine_name] = Drupal.openlayers.getObject(context, 'layers', data, map, count--);
               map.addLayer(objects.layers[data.machine_name]);
             });
 
+            count = components.length;
             components.map(function(data) {
-              objects.components[data.machine_name] = Drupal.openlayers.getObject(context, 'components', data, map);
+              objects.components[data.machine_name] = Drupal.openlayers.getObject(context, 'components', data, map, count--);
             });
 
             // Attach data to map DOM object
@@ -85,7 +92,7 @@
    */
   Drupal.openlayers = {
 
-    'getObject': (function (context, type, data, map) {
+    'getObject': (function (context, type, data, map, count) {
       var cache = $('body').data('openlayers') || {};
 
       if (typeof cache.objects !== 'undefined') {
@@ -102,7 +109,7 @@
 
       cache = $.extend({}, cache.objects, cache);
 
-      $(document).trigger('openlayers.object_pre_alter', [{'type': type, 'machine_name': data.machine_name, 'data': data, 'map': map, 'cache': cache, 'context': context}]);
+      $(document).trigger('openlayers.object_pre_alter', [{'type': type, 'machine_name': data.machine_name, 'data': data, 'map': map, 'cache': cache, 'context': context, 'count': count}]);
       var object;
       if (!(data.machine_name in cache[type])) {
         // TODO: Check why layers and maps doesnt cache.
@@ -115,7 +122,7 @@
         object = cache[type][data.machine_name];
       }
 
-      $(document).trigger('openlayers.object_post_alter', [{'type': type, 'object': object, 'data': data, 'map': map, 'cache': cache, 'context': context}]);
+      $(document).trigger('openlayers.object_post_alter', [{'type': type, 'object': object, 'data': data, 'map': map, 'cache': cache, 'context': context, 'count': count}]);
       jQuery('body').data('openlayers', {'objects': cache});
       return object;
     }),
