@@ -1,24 +1,28 @@
 (function($) {
   $(document).on('openlayers.build_start', function(event, objects) {
-    console.time('Building time');
+    console.time('Total building time');
     Drupal.openlayers.console.info("********************* Starting building OL objects *********************");
   });
 
+  var message;
   $(document).on('openlayers.object_pre_alter', function(event, objects) {
-    Drupal.openlayers.console.info("Building " + objects.type + "...");
+    console.groupEnd();
+    console.group("Building " + objects.type);
     if (!(objects.data.machine_name in objects.cache[objects.type])) {
-      Drupal.openlayers.console.info(" Computing " + objects.type + " " + objects.data.machine_name + "...");
+      message = " Computing " + objects.type + " " + objects.data.machine_name + "...";
     } else {
-      Drupal.openlayers.console.info(" Loading " + objects.type + " " + objects.data.machine_name + " from cache...");
+      message = " Loading " + objects.type + " " + objects.data.machine_name + " from cache...";
     }
+    console.time(message);
   });
 
   $(document).on('openlayers.object_post_alter', function(event, objects) {
-    Drupal.openlayers.console.info("Building " + objects.type + "... done.");
+    console.timeEnd(message);
   });
 
   $(document).on('openlayers.build_stop', function(event, objects) {
+    console.groupEnd();
     Drupal.openlayers.console.info("********************* End of building OL objects *********************");
-    console.timeEnd('Building time');
+    console.timeEnd('Total building time');
   });
 })(jQuery);
