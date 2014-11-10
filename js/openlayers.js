@@ -7,7 +7,7 @@
         if (Drupal.settings.openlayers.maps[map_id] !== undefined) {
 
           var object = Drupal.settings.openlayers.maps[map_id];
-          $(document).trigger('openlayers.objects.alter', [{'type': 'objects', 'objects': object.map, 'context': context}]);
+          $(document).trigger('openlayers.build_start', [{'type': 'objects', 'objects': object, 'context': context}]);
 
           var layers = object.layer || [],
             styles = object.style || [],
@@ -24,67 +24,47 @@
           object.map.options.components = [];
 
           try {
-            Drupal.openlayers.console.info("Creating map " + object.map.machine_name + "...");
             var map = Drupal.openlayers.getObject(context, 'maps', object.map, null);
             objects.maps[map_id] = map;
-            Drupal.openlayers.console.info("Creating map object... done !");
 
-            Drupal.openlayers.console.info("Building sources...");
             sources.map(function(data) {
-
               if (data.options !== undefined && data.options.attributions !== undefined) {
                 data.options.attributions = [new ol.Attribution({
                   'html': data.options.attributions
                 })];
               }
-
               objects.sources[data.machine_name] = Drupal.openlayers.getObject(context, 'sources', data, map);
             });
-            Drupal.openlayers.console.info("Building sources... done !");
 
-            Drupal.openlayers.console.info("Building controls...");
             controls.map(function(data) {
               map.addControl(Drupal.openlayers.getObject(context, 'controls', data, map));
             });
-            Drupal.openlayers.console.info("Building controls... done !");
 
-            Drupal.openlayers.console.info("Building interactions...");
             interactions.map(function(data) {
               objects.interactions[data.machine_name] = Drupal.openlayers.getObject(context, 'interactions', data, map);
               map.addInteraction(objects.interactions[data.machine_name]);
             });
-            Drupal.openlayers.console.info("Building interactions... done !");
 
-            Drupal.openlayers.console.info("Building styles...");
             styles.map(function(data) {
               objects.styles[data.machine_name] = Drupal.openlayers.getObject(context, 'styles', data, map);
             });
-            Drupal.openlayers.console.info("Building styles... done !");
 
-            Drupal.openlayers.console.info("Building layers...");
             layers.map(function(data) {
-              Drupal.openlayers.console.info(" Adding source to layer...");
               data.options.source = objects.sources[data.options.source];
               if ((data.options.style !== undefined) && (objects.styles[data.options.style] !== undefined)) {
-                Drupal.openlayers.console.info(" Adding style to layer...");
                 data.options.style = objects.styles[data.options.style];
               }
               objects.layers[data.machine_name] = Drupal.openlayers.getObject(context, 'layers', data, map);
-              Drupal.openlayers.console.info(" Adding layer to map...");
               map.addLayer(objects.layers[data.machine_name]);
             });
-            Drupal.openlayers.console.info("Building layers... done !");
 
-            Drupal.openlayers.console.info("Building components...");
             components.map(function(data) {
               objects.components[data.machine_name] = Drupal.openlayers.getObject(context, 'components', data, map);
             });
-            Drupal.openlayers.console.info("Building components... done !");
 
             // Attach data to map DOM object
-            Drupal.openlayers.console.info("Caching objects...");
+            $(document).trigger('openlayers.build_stop', [{'type': 'objects', 'objects': object, 'context': context}]);
             jQuery('body').data('openlayers', {'objects': objects});
-            Drupal.openlayers.console.info("Caching objects... done !");
 
           } catch (e) {
             if (typeof console !== 'undefined') {
@@ -126,15 +106,12 @@
       var object;
       if (!(data.machine_name in cache[type])) {
         // TODO: Check why layers doesnt cache
-        Drupal.openlayers.console.info(" Computing " + type + " " + data.machine_name + "...");
-
         var object = Drupal.openlayers[data['class']]({'options': data.options, 'map': map, 'context': context, 'cache': cache});
         if (typeof object === 'object') {
           object.machine_name = data.machine_name;
         }
         cache[type][data.machine_name] = object;
       } else {
-        Drupal.openlayers.console.info(" Loading " + type + " " + data.machine_name +" from cache...");
         object = cache[type][data.machine_name];
       }
 

@@ -267,6 +267,15 @@ function openlayers_libraries_info() {
           'js' => array('closure-library/closure/goog/base.js', 'build/ol-deps.js', 'build/ol-debug.js'),
           'css' => array('css/ol.css')
         ),
+        'integration files' => array(
+          'openlayers' => array(
+            'js' => array(
+              'js/openlayers.js' => array('type'=>'file', 'weight' => 0, 'group' => openlayers_config::JS_GROUP),
+              'js/debug.js'
+            ),
+            'css' => array('css/openlayers.css' => array('weight' => 10))
+          ),
+        ),
       )
     )
   );
