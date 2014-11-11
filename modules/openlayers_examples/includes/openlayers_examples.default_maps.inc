@@ -358,7 +358,7 @@ function openlayers_examples_default_maps() {
   $map->disabled = FALSE; /* Edit this to true to make a default map disabled initially */
   $map->api_version = 1;
   $map->machine_name = 'openlayers_examples_map_popup_overlay';
-  $map->name = 'Map with simple popup overlay';
+  $map->name = 'Map with simple popup overlay and autozoom.';
   $map->description = '';
   $map->class = 'openlayers__map__map';
   $map->options = array(
