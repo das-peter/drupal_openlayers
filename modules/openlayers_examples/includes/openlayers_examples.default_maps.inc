@@ -382,7 +382,6 @@ function openlayers_examples_default_maps() {
     ),
     'sources' => array(
       0 => 'source_mapquest_osm',
-      1 => 'views_geojson_openlayers_examples_geojson_feed_2',
     ),
     'controls' => array(
       0 => 'control_attribution',
