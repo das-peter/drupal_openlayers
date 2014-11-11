@@ -26,5 +26,17 @@ class openlayers__component__popup extends openlayers_component {
       '#options' => $options,
       '#required' => TRUE
     );
+
+    $positioning = array('bottom-left', 'bottom-center', 'bottom-right', 'center-left', 'center-center', 'center-right', 'top-left', 'top-center', 'top-right');
+
+    $form['options']['positioning'] = array(
+      '#type' => 'select',
+      '#title' => t('Positioning'),
+      '#default_value' => isset($form_state['item']->options['positioning']) ? $form_state['item']->options['positioning']: 'top-left',
+      '#description' => t('Defines how the overlay is actually positioned. Default is top-left.'),
+      '#options' => array_combine($positioning, $positioning),
+      '#required' => TRUE
+    );
+
   }
 }

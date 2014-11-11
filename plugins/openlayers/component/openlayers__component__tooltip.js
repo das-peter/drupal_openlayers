@@ -16,7 +16,8 @@ Drupal.openlayers.openlayers__component__tooltip = function(data) {
    * Create an overlay to anchor the popup to the map.
    */
   var overlay = new ol.Overlay({
-    element: container
+    element: container,
+    positioning: data.options.positioning
   });
 
   map.addOverlay(overlay);

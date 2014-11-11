@@ -92,6 +92,7 @@ function openlayers_examples_default_components() {
       'pan' => '500',
       'zoom' => '500',
     ),
+    'positioning' => 'top-right'
   );
   $export['openlayers_examples_autopopup'] = $component;
 
@@ -104,6 +105,7 @@ function openlayers_examples_default_components() {
   $component->class = 'openlayers__component__tooltip';
   $component->options = array(
     'layer' => 'layer_vector_kml_earthquakes_heatmap',
+    'positioning' => 'top-right'
   );
   $export['openlayers_examples_tooltip_earthquakes'] = $component;
 
@@ -174,6 +176,7 @@ map.getLayers().forEach(function(layer){
   $component->class = 'openlayers__component__popup';
   $component->options = array(
     'layer' => 'layer_vector_kml_earthquakes_heatmap',
+    'positioning' => 'top-right'
   );
   $export['openlayers_examples_simple_popup_earthquakes'] = $component;
 
