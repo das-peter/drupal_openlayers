@@ -47,7 +47,7 @@ function openlayers_examples_default_sources() {
   $source->description = '';
   $source->class = 'openlayers__source__geojson';
   $source->options = array(
-    'url' => url(drupal_get_path('module', 'openlayers_examples') . '/assets/cities.json', array('absolute' => TRUE)),
+    'url' => file_create_url(drupal_get_path('module', 'openlayers_examples') . '/assets/cities.json'),
   );
   $export['source_geojson_cities'] = $source;
 

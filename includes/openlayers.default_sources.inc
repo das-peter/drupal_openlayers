@@ -165,23 +165,40 @@ function openlayers_default_sources() {
   );
   $export['source_esri'] = $source;
 
-  // Include all "views_geojson_feed" views as sources.
-  if (module_exists('views_geojson')) {
-    foreach (views_get_all_views() as $view) {
-      foreach ($view->display as $display => $data) {
-        $view->set_display($display);
-        if ($view->display_handler->get_option('style_plugin') == 'views_geojson_feed') {
-          $source = new stdClass;
-          $source->api_version = 1;
-          $source->machine_name = 'views_geojson_'. $view->name . '_' . $display;
-          $source->name = 'Views GeoJSON source '. $view->name . '_' . $display;
-          $source->description = 'This source is automatically generated. See View ' . $view->name . ' at display ' . $display;
-          $source->class = 'openlayers__source__geojson';
-          $source->options = array(
-            'url' => url($view->display[$display]->display_options['path'], array('absolute' => TRUE))
-          );
-          $export[$source->machine_name] = $source;
+  return $export;
+}
+
+/**
+ * On behalf of views_geojson.
+ */
+function views_geojson_default_sources() {
+  $export = array();
+  foreach (views_get_all_views() as $view) {
+    foreach ($view->display as $display => $data) {
+      $view->set_display($display);
+      if (in_array($view->display_handler->get_option('style_plugin'), array('views_geojson_feed', 'views_geojson'))) {
+        $source = new stdClass();
+        $source->api_version = 1;
+        $source->machine_name = 'views_geojson_' . $view->name . '_' . $display;
+        $source->name = 'Views GeoJSON source: ' . $view->name . '_' . $display;
+        $source->description = 'This source is automatically generated. See View ' . $view->name . ' at display ' . $display;
+        $source->class = 'openlayers__source__geojson';
+
+        $source->options = array(
+          'url' => url($view->display_handler->get_url(), array('absolute' => TRUE)),
+        );
+
+        // Determine if we should use a BBox strategy.
+        if ($arguments = $view->display_handler->get_option('arguments')) {
+          foreach ($arguments as $id => $argument) {
+            if (strpos($id, 'bbox') !== FALSE && $argument['default_argument_type'] == 'querystring') {
+              if (isset($argument['default_argument_options'])) {
+                $source->options['useBBOX'] = TRUE;
+              }
+            }
+          }
         }
+        $export[$source->machine_name] = $source;
       }
     }
   }

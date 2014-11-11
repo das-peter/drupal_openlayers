@@ -5,7 +5,7 @@ function openlayers_openlayers__source__geojson_openlayers_source() {
     'handler' => array(
       'class' => 'openlayers__source__geojson',
       'file' => 'openlayers__source__geojson.inc',
-    )
+    ),
   );
 }
 
@@ -16,6 +16,58 @@ class openlayers__source__geojson extends openlayers_source {
       '#title' => t('URL'),
       '#type' => 'textfield',
       '#default_value' => $this->getOption('url'),
+    );
+    $form['options']['useBBOX'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Use Bounding Box Strategy'),
+      '#description' => t('Bounding Box strategy will add a query string onto the GeoJSON URL, which means that only data in the viewport of the map will be loaded.  This can be helpful if you have lots of data coming from the feed.'),
+      '#default_value' => $this->getOption('useBBOX'),
+    );
+    //see http://dev.openlayers.org/docs/files/OpenLayers/Strategy/BBOX-js.html#OpenLayers.Strategy.BBOX.resFactor
+    $form['options']['resFactor'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Bounding Box resFactor'),
+      '#description' => t('Used to determine when previously requested features are invalid (set to 1 if unsure).
+          The resFactor will be compared to the resolution of the previous request to the current map resolution.<br />
+          If resFactor > (old / new) and 1/resFactor < (old / new).
+          <ul>
+          <li>If you set a resFactor of 1, data will be requested every time the resolution changes.</li>
+          <li>If you set a resFactor of 3, data will be requested if the old resolution is 3 times the new, or if the new is 3 times the old.</li>
+          <li>If the old bounds do not contain the new bounds new data will always be requested (with or without considering resFactor).</li>
+          </ul>
+          '),
+      '#default_value' => $this->getOption('resFactor', 1),
+    );
+  //see hZttp://dev.openlayers.org/docs/files/OpenLayers/Strategy/BBOX-js.html#OpenLayers.Strategy.BBOX.ratio
+    $form['options']['ratio'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Bounding Box ratio'),
+      '#description' => t('The ratio of the data bounds to the viewport bounds (in each dimension).  Default is 3.'),
+      '#default_value' => $this->getOption('ratio', 3),
+    );
+    $form['options']['preload'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Preload layer'),
+      '#description' => t('Load data before layer is made visible. Useful when you want to avoid having to wait for an Ajax call to load the data'),
+      '#default_value' => $this->getOption('preload', FALSE),
+    );
+    $form['options']['useScript'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Use Script Method'),
+      '#description' => t('Avoid 405 error and XSS issues load data from another server with ajax'),
+      '#default_value' => $this->getOption('useScript', FALSE),
+    );
+    $form['options']['callbackKey'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Script Callback Key'),
+      '#description' => t('Key returned by callback along with geoJSON'),
+      '#default_value' => $this->getOption('callbackKey', NULL),
+    );
+    $form['options']['geojson_data'] = array(
+      '#type' => 'textarea',
+      '#title' => t('GeoJSON Data'),
+      '#description' => t('Paste raw GeoJSON data here. It is better to use a URL.  This is provided for very simple use cases like one or two features.  If there is data here, it will override the URL above.'),
+      '#default_value' => $this->getOption('geojson_data'),
     );
   }
 }
