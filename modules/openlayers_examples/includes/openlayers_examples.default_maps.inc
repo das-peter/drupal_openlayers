@@ -7,7 +7,7 @@ function openlayers_examples_default_maps() {
   $map->disabled = FALSE; /* Edit this to true to make a default map disabled initially */
   $map->api_version = 1;
   $map->machine_name = 'openlayers_examples_map_earthquake';
-  $map->name = '2012 Earthquakes map';
+  $map->name = '2012 Earthquakes map, tooltips and popups.';
   $map->description = '';
   $map->class = 'openlayers__map__map';
   $map->options = array(
@@ -37,7 +37,8 @@ function openlayers_examples_default_maps() {
     ),
     'components' => array(
       0 => 'openlayers_examples_earthquake_style',
-      1 => 'openlayers_examples_simple_popup_earthquakes'
+      1 => 'openlayers_examples_simple_popup_earthquakes',
+      2 => 'openlayers_examples_tooltip_earthquakes'
     )
   );
   $export['openlayers_examples_map_earthquake'] = $map;

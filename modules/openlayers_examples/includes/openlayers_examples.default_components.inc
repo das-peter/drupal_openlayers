@@ -98,6 +98,18 @@ function openlayers_examples_default_components() {
   $component = new stdClass();
   $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */
   $component->api_version = 1;
+  $component->machine_name = 'openlayers_examples_tooltip_earthquakes';
+  $component->name = 'Earthquakes tooltip';
+  $component->description = '';
+  $component->class = 'openlayers__component__tooltip';
+  $component->options = array(
+    'layer' => 'layer_vector_kml_earthquakes_heatmap',
+  );
+  $export['openlayers_examples_tooltip_earthquakes'] = $component;
+
+  $component = new stdClass();
+  $component->disabled = FALSE; /* Edit this to true to make a default component disabled initially */
+  $component->api_version = 1;
   $component->machine_name = 'openlayers_examples_simple_popup';
   $component->name = 'Simple popup';
   $component->description = '';
