@@ -3,25 +3,11 @@ Drupal.openlayers.openlayers__source__geojson = function(data) {
 
   //// If GeoJSON data is provided with the layer, use that.  Otherwise
   //// check if BBOX, then finally use AJAX method.
-  //if (data.options.geojson_data) {
-  //  var layer = new ol.Layer.Vector(title, options);
-  //
-  //  // Read data in.
-  //  features = new ol.Format.GeoJSON(geojson_options).read(data.options.geojson_data);
-  //  if (features) {
-  //    // If not array (ie only one feature)
-  //    if (features.constructor != Array) {
-  //      features = [features];
-  //    }
-  //  }
-  //
-  //  // Add features, if needed
-  //  if (features) {
-  //    layer.addFeatures(features);
-  //    layer.events.triggerEvent('loadend');
-  //  }
-  //}
-  //else {
+  if (data.options.geojson_data) {
+    data.options.text = data.options.geojson_data;
+    return new ol.source.GeoJSON(data.options);
+  }
+  else {
     // @todo Add more strategies. Paging strategy would be really interesting
     //   to use with views_geojson.
     if (data.options.useBBOX) {
@@ -107,7 +93,7 @@ Drupal.openlayers.openlayers__source__geojson = function(data) {
   //    });
   //  }
   //  var layer = new ol.Layer.Vector(title, options);
-  //}
+  }
 
   return new ol.source.GeoJSON(data.options);
 };
