@@ -106,7 +106,9 @@ function openlayers_map_form_start_submit($form, &$form_state) {
 }
 
 function openlayers_map_form_settings($form, &$form_state) {
-  $form_state['item']->class = 'openlayers__map__map';
+  if (!isset($form_state['item']->class)) {
+    $form_state['item']->class = 'openlayers__map__map';
+  }
   $map = openlayers_object_load('map', $form_state['item']);
   $map->options_form($form, $form_state);
   $form['options']['#tree'] = TRUE;
@@ -116,7 +118,9 @@ function openlayers_map_form_settings($form, &$form_state) {
 
 function openlayers_map_form_settings_validate($form, &$form_state) {
   $item = $form_state['item'];
-  $item->class = 'openlayers__map__map';
+  if (empty($item->class)) {
+    $item->class = 'openlayers__map__map';
+  }
   $item->options = array_replace_recursive((array) $form_state['item']->options, (array) $form_state['values']['options']);
 
   $map = openlayers_object_load('map', $item);
@@ -125,7 +129,9 @@ function openlayers_map_form_settings_validate($form, &$form_state) {
 
 function openlayers_map_form_settings_submit($form, &$form_state) {
   // todo: fix
-  $form_state['item']->class = 'openlayers__map__map';
+  if (empty($form_state['item']->class)) {
+    $form_state['item']->class = 'openlayers__map__map';
+  }
   $form_state['item']->options = array_replace_recursive((array) $form_state['item']->options, $form_state['values']['options']);
 
   $map = openlayers_object_load('map', $form_state['item']);
