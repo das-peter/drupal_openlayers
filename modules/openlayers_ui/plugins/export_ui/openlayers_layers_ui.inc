@@ -19,6 +19,10 @@ function openlayers_ui_openlayers_layers_ui_ctools_export_ui() {
       'parent' => 'ctools_export_ui'
     ),
 
+    'redirect' => array(
+      'edit' => 'admin/structure/openlayers/layers/list/%ctools_export_ui/edit',
+    ),
+
     'use wizard' => TRUE,
     'form info' => array(
       'order' => array(

@@ -19,6 +19,10 @@ function openlayers_ui_openlayers_sources_ui_ctools_export_ui() {
       'parent' => 'ctools_export_ui'
     ),
 
+    'redirect' => array(
+      'edit' => 'admin/structure/openlayers/sources/list/%ctools_export_ui/edit',
+    ),
+
     'export' => array(
       'admin_title' => 'name',
       'admin_description' => 'description',
