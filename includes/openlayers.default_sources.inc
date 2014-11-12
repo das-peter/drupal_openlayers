@@ -33,6 +33,15 @@ function openlayers_default_sources() {
   $source->options = array();
   $export['source_bingmaps'] = $source;
 
+  $source = new stdClass;
+  $source->api_version = 1;
+  $source->machine_name = 'source_googlemaps';
+  $source->name = 'Google Maps';
+  $source->description = 'Source Google description';
+  $source->class = 'openlayers__source__googlemaps';
+  $source->options = array();
+  $export['source_googlemaps'] = $source;
+
   $source = new stdClass();
   $source->disabled = FALSE; /* Edit this to true to make a default source disabled initially */
   $source->api_version = 1;
