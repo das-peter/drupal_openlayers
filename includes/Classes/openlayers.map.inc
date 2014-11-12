@@ -33,18 +33,21 @@ class openlayers_map extends openlayers_object implements openlayers_map_interfa
   }
 
   public function getSources() {
-    $sources = $this->getOption('sources', array());
-    foreach($sources as $index => $source) {
-      $sources[$index] = openlayers_object_load('source', $source);
+    $sources = array();
+    foreach ($this->getOption('sources', array()) as $index => $source) {
+      $sources[$source] = openlayers_object_load('source', $source);
     }
 
-    foreach($this->getLayers() as $index => $layer) {
+    // Add sources required / defined by the assigned layers.
+    foreach ($this->getLayers() as $index => $layer) {
       if ($source = $layer->getSource()) {
-        $sources[] = $source;
+        $sources[$source->machine_name] = $source;
       }
     }
 
-    return $sources;
+    // We set the machine name as key of the sources to avoid duplicated
+    // listing. But we return an array without associative keys.
+    return array_values($sources);
   }
 
   public function getStyles() {
