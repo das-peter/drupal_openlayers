@@ -64,8 +64,23 @@ class openlayers_views_plugin_style_source_vector extends views_plugin_style {
 
     $fields = array();
     foreach ($handlers as $field_id => $handler) {
-      $fields[$field_id] = $handler->ui_name() . ' (' . $field_id .')';
+      $fields[$field_id] = $handler->ui_name() . ' (' . $field_id . ')';
     }
+
+    // Ensure we've sane defaults:
+    $this->options['data_source'] = (!is_array($this->options['data_source'])) ? array() : $this->options['data_source'];
+    $this->options['data_source'] = $this->options['data_source'] + array(
+      'value' => 'other_latlon',
+      'other_lat' => key($fields),
+      'other_lon' => key($fields),
+      'wkt' => key($fields),
+      'other_top' => key($fields),
+      'other_right' => key($fields),
+      'other_bottom' => key($fields),
+      'other_left' => key($fields),
+      'name_field' => '',
+      'description_field' => '',
+    );
 
     $form['data_source'] = array(
       '#type' => 'fieldset',
@@ -308,10 +323,10 @@ class openlayers_views_plugin_style_source_vector extends views_plugin_style {
           }
         }
 
-        $result[] = array_map('_minify_html', $attributes);
+        $result = array_map(array($this, 'minify_data'), $attributes);
 
         // Create features array.
-        $features = array(
+        $features[] = array(
           'projection' => 'EPSG:4326',
           'attributes' => $result,
           'wkt' => $wkt,
@@ -321,6 +336,53 @@ class openlayers_views_plugin_style_source_vector extends views_plugin_style {
     }
 
     return $features;
+  }
+
+  /**
+   * Helper function to minify the output data.
+   *
+   * Borrowed from the Minify module.
+   * @link https://www.drupal.org/project/minify
+   *
+   * @param string $buffer
+   *   The string to minify.
+   *
+   * @return string
+   *   The minified string.
+   */
+  public function minify_data($buffer) {
+    if (module_exists('minify')) {
+      return _minify_html($buffer);
+    }
+    $search = array(
+      '/\>[^\S ]+/s',     // strip whitespaces after tags, except space
+      '/[^\S ]+\</s',     // strip whitespaces before tags, except space
+      '/(\s)+/s',         // shorten multiple whitespace sequences
+      '/^\\s+|\\s+$/m',   // trim each line
+    );
+    $replace = array(
+      '>',
+      '<',
+      '\\1',
+      '',
+    );
+    $buffer = preg_replace($search, $replace, $buffer);
+    $buffer = preg_replace_callback('/<!--([\\s\\S]*?)-->/', array($this, 'minify_remove_html_comment'), $buffer);
+    return $buffer;
+  }
+
+  /**
+   * Remove HTML comments (not containing IE conditional comments).
+   *
+   * Borrowed from the Minify module.
+   * @link https://www.drupal.org/project/minify
+   *
+   * @see openlayers_views_plugin_style_source_vector::minify_data()
+   */
+  public function  minify_remove_html_comment($string) {
+    return (0 === strpos($string[1], '[') || false !== strpos($string[1], '<!['))
+      ? $string[0]
+      : '';
   }
 
   /**
