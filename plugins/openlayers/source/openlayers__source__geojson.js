@@ -58,16 +58,16 @@ Drupal.openlayers.openlayers__source__geojson = function(data) {
       //  };
       //data.options.strategies = [strategy];
     }
-    else {
-      // Fixed strategy.
-      // @see http://dev.ol.org/releases/OpenLayers-2.12/doc/apidocs/files/OpenLayers/Strategy/Fixed-js.html
-      if (data.options.preload) {
-        data.options.strategies = [new ol.Strategy.Fixed({preload: true})];
-      }
-      else {
-        data.options.strategies = [new ol.Strategy.Fixed()];
-      }
-    }
+  //else {
+  //  // Fixed strategy.
+  //  // @see http://dev.ol.org/releases/OpenLayers-2.12/doc/apidocs/files/OpenLayers/Strategy/Fixed-js.html
+  //  if (data.options.preload) {
+  //    data.options.strategies = [new ol.Strategy.Fixed({preload: true})];
+  //  }
+  //  else {
+  //    data.options.strategies = [new ol.Strategy.Fixed()];
+  //  }
+  //}
   //  if(data.options.useScript){
   //    //use Script protocol to get around xss issues and 405 error
   //    data.options.protocol = new ol.Protocol.Script({
