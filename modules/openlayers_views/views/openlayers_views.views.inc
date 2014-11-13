@@ -8,7 +8,7 @@
  */
 
 /**
- * Implementation of hook_views_plugins().
+ * Implements hook_views_plugins().
  */
 function openlayers_views_views_plugins() {
   return array(
@@ -37,6 +37,17 @@ function openlayers_views_views_plugins() {
         'uses grouping' => TRUE,
         'type' => 'openlayers',
         'even empty' => TRUE,
+      ),
+      'openlayers_map_views' => array(
+        'title' => t('OpenLayers Views Map'),
+        'help' => t('Provides a map based on a views configureation.'),
+        'handler' => 'openlayers_views_plugin_map_views',
+        'uses fields' => TRUE,
+        'uses row plugin' => TRUE,
+        'uses options' => TRUE,
+        // 'uses grouping' => TRUE,
+        'even empty' => TRUE,
+        'type' => 'normal',
       ),
     ),
   );
