@@ -17,10 +17,19 @@ Drupal.openlayers.openlayers__source__geojson = function(data) {
         // Ensure the bbox values are in the correct projection.
         var bbox = ol.proj.transformExtent(extent, data.map.getView().getProjection(), 'EPSG:4326');
 
-        var params = {
-          'bbox': bbox.join(','),
-          'zoom': data.map.getView().getZoom()
-        };
+
+        // Check if parameter forwarding is enabled.
+        var params = {};
+        if (data.options.paramForwarding) {
+          var get_params = location.search.substring(location.search.indexOf('?') + 1 ).split('&');
+          jQuery.each(get_params, function(i, val){
+            var param = val.split('=');
+            params[param[0]] = param[1] || '';
+          })
+        }
+        params.bbox = bbox.join(',');
+        params.zoom = data.map.getView().getZoom();
+
         var url = data.options.url;
         jQuery(document).trigger('openlayers.bbox_pre_loading', [{'url': url, 'params': params, 'data':  data}]);
 
@@ -35,28 +44,6 @@ Drupal.openlayers.openlayers__source__geojson = function(data) {
       };
       var vectorSource = new ol.source.ServerVector(data.options);
       return vectorSource;
-
-      ///*
-      // * We override the triggerRead of the strategy so we can add a zoom=thecurrentzoomlevel in the URL
-      // * This is used by the geocluster module http://drupal.org/project/geocluster
-      // */
-      //strategy.triggerRead =
-      //  function(options) {
-      //    if (this.response && !(options && data.options.noAbort === true)) {
-      //      this.layer.protocol.abort(this.response);
-      //      this.layer.events.triggerEvent("loadend");
-      //    }
-      //    this.layer.events.triggerEvent("loadstart");
-      //    data.options.params = new Array();
-      //    data.options.params['zoom'] = data.options.object.map.zoom;
-      //    this.response = this.layer.protocol.read(
-      //      ol.Util.applyDefaults({
-      //        filter: this.createFilter(),
-      //        callback: this.merge,
-      //        scope: this
-      //      }, options));
-      //  };
-      //data.options.strategies = [strategy];
     }
   //else {
   //  // Fixed strategy.
